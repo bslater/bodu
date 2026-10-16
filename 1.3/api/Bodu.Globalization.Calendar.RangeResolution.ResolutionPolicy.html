@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ResolutionPolicy Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ResolutionPolicy Class
+ | BODU ">
+      
+      <meta name="description" content="Captures the resource-level policies that govern duplicate declarations, same-day and span collisions, priority direction, category precedence, range inclusion, and the working week.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy">
+
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ResolutionPolicy Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.html">RangeResolution</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs">ResolutionPolicy.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Captures the resource-level policies that govern duplicate declarations, same-day and span collisions, priority
+direction, category precedence, range inclusion, and the working week.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ResolutionPolicy</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ResolutionPolicy</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+The defaults mirror the recommended policy in the schema strategy: duplicates are an error, collisions keep all
+occurrences, higher priority wins, and the observed (emitted) occurrence controls range inclusion.
+</p>
+<p>
+The loader applies <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy">DuplicatePolicy</a> to the loaded document's own declarations. The service applies
+<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy">SameDayCollisionPolicy</a>, then <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SpanCollisionPolicy">SpanCollisionPolicy</a>, and decides inclusion in a window
+with <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy">ObservedDateRangePolicy</a>.
+</p>
+<example>
+<pre><code class="lang-csharp">// The policy is authored on the document; the builder route sets each knob fluently
+// (the XML form is the &lt;ResolutionPolicy&gt; element):
+NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
+    .WithResolutionPolicy(p =&gt; p
+        .WithDuplicatePolicy(DuplicatePolicy.KeepFirst)
+        .WithSameDayCollisionPolicy(CollisionPolicy.HighestPriorityOnly)
+        .WithCategoryPrecedence(NotableDateCategory.PublicHoliday, NotableDateCategory.Observance))
+    .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c =&gt; c
+        .AddRule("default", r =&gt; r.Fixed(1, 1)))
+    .Build();</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy__ctor_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy__ctor_Bodu_Globalization_Calendar_RangeResolution_DuplicatePolicy_Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Bodu_Globalization_Calendar_RangeResolution_PriorityDirection_Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_System_Nullable_Bodu_DayOfWeekSet__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateCategory__" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.#ctor(Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy,Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy,Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy,Bodu.Globalization.Calendar.RangeResolution.PriorityDirection,Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy,System.Nullable{Bodu.DayOfWeekSet},System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateCategory})">
+  ResolutionPolicy(DuplicatePolicy, CollisionPolicy, CollisionPolicy, PriorityDirection, ObservedDateRangePolicy, DayOfWeekSet?, IReadOnlyList&lt;NotableDateCategory&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ResolutionPolicy(DuplicatePolicy duplicatePolicy = DuplicatePolicy.Error, CollisionPolicy sameDayCollisionPolicy = CollisionPolicy.KeepAll, CollisionPolicy spanCollisionPolicy = CollisionPolicy.KeepAll, PriorityDirection priorityDirection = PriorityDirection.HigherWins, ObservedDateRangePolicy observedDateRangePolicy = ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion, DayOfWeekSet? workingWeek = null, IReadOnlyList&lt;NotableDateCategory&gt;? categoryPrecedence = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>duplicatePolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a></dt>
+    <dd><p>The policy for two concepts, or two rules of one concept, that the document declares with one identifier.</p>
+</dd>
+    <dt><code>sameDayCollisionPolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></dt>
+    <dd><p>The policy applied when distinct notable dates resolve to the same emitted date.</p>
+</dd>
+    <dt><code>spanCollisionPolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></dt>
+    <dd><p>The policy applied, after same-day settlement, to occurrences connected through overlapping spans.</p>
+</dd>
+    <dt><code>priorityDirection</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a></dt>
+    <dd><p>The direction in which numeric priority is interpreted.</p>
+</dd>
+    <dt><code>observedDateRangePolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a></dt>
+    <dd><p>The span of an occurrence that controls range-query inclusion.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
+    <dd><p>The working week that defines which weekdays are working days, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the default
+Monday-to-Friday working week (a Saturday and Sunday weekend).</p>
+</dd>
+    <dt><code>categoryPrecedence</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a>&gt;</dt>
+    <dd><p>The category precedence, highest-winning first, applied by <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_CategoryPriority">CategoryPriority</a>, or
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the built-in precedence. A partial list is completed with the remaining categories
+in built-in order so every ranked category retains a position.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_CategoryPrecedence_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.CategoryPrecedence*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_CategoryPrecedence" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.CategoryPrecedence">
+  CategoryPrecedence
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the category precedence applied by <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_CategoryPriority">CategoryPriority</a>, highest-winning first.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NotableDateCategory&gt; CategoryPrecedence { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a>&gt;</dt>
+    <dd><p>The effective category precedence; every ranked category appears exactly once, with any categories an authored
+list omits appended in built-in order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_Default_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.Default*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_Default" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.Default">
+  Default
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> populated with the recommended default values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResolutionPolicy Default { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a></dt>
+    <dd><p>A shared default policy instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.DuplicatePolicy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.DuplicatePolicy">
+  DuplicatePolicy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the policy the loader applies to two concepts, or two rules of one concept, that the document declares with
+one identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DuplicatePolicy DuplicatePolicy { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a></dt>
+    <dd><p>The configured <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy">DuplicatePolicy</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The loader applies it when the document is loaded, to that document's own declarations; a loaded resource holds
+no duplicate the policy settles. See <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a>.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.ObservedDateRangePolicy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.ObservedDateRangePolicy">
+  ObservedDateRangePolicy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the span of an occurrence, emitted, actual, or either, that decides whether a range query includes it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ObservedDateRangePolicy ObservedDateRangePolicy { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a></dt>
+    <dd><p>The configured <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy">ObservedDateRangePolicy</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>See <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a>.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_PriorityDirection_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.PriorityDirection*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_PriorityDirection" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.PriorityDirection">
+  PriorityDirection
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the direction in which numeric priority is interpreted.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PriorityDirection PriorityDirection { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a></dt>
+    <dd><p>The configured <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_PriorityDirection">PriorityDirection</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.SameDayCollisionPolicy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.SameDayCollisionPolicy">
+  SameDayCollisionPolicy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the policy applied when distinct notable dates resolve to the same day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CollisionPolicy SameDayCollisionPolicy { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></dt>
+    <dd><p>The configured same-day <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The policy settles each emitted date over every occurrence emitted on it, independent of the queried range, so a
+multi-day occurrence that loses on its emitted date is absent from every range its span reaches into.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SpanCollisionPolicy_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.SpanCollisionPolicy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SpanCollisionPolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.SpanCollisionPolicy">
+  SpanCollisionPolicy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the policy applied, after same-day settlement, to distinct notable dates whose emitted spans overlap.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CollisionPolicy SpanCollisionPolicy { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></dt>
+    <dd><p>The configured span <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SpanCollisionPolicy_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The policy settles every chain of occurrences connected through overlapping emitted spans that holds a multi-day
+occurrence, as one group ranked as a same-day group is; a chain is the whole connected run, not each overlapping
+pair. Occurrences that overlap only by sharing their emitted date, none of them multi-day, are left to
+<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy">SameDayCollisionPolicy</a>.
+</p>
+<p>
+A chain is settled whole, whatever window is queried: while a chain that reaches the window may continue into a
+civil year the query has not gathered, the query gathers one more year on that side, up to ten civil years
+beyond its one-year margin. A chain that never ends is settled over what was gathered at that limit.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_WorkingWeek_" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.WorkingWeek*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_WorkingWeek" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.WorkingWeek">
+  WorkingWeek
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the working week that defines which weekdays are working days, and therefore which are weekend
+(non-working) days for weekend-sensitive triggers and working-day searches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DayOfWeekSet WorkingWeek { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The configured working-week pattern; <a class="xref" href="Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_MondayToFriday">MondayToFriday</a> when the resource leaves it
+unspecified.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></div>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy">DuplicatePolicy</a></div>
+      <div><span><a href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date
+             resolution (guide)</a></span></div>
+  </div>
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

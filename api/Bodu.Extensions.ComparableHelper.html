@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Extensions_ComparableHelper" data-uid="Bodu.Extensions.ComparableHelper" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ComparableHelper Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/ComparableHelper.Coalesce.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/ComparableHelper.Coalesce.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ ComparableHelper Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/ComparableHelper.Coalesce.cs">ComparableHelper.Coalesce.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/ComparableHelper.Coalesce.cs">ComparableHelper.Coalesce.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides null-tolerant ordering helpers - <code>Min</code>, <code>Max</code>, and <code>Coalesce</code> - for pairs of operands.
@@ -186,9 +186,10 @@ return the smaller or larger operand respectively; when one operand is <a href="
 unchanged, and when both are <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> the result is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.
 </p>
 <p>
-Each method accepts an optional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a> override; when omitted,
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.comparer-1.default">Default</a> is used. Because the ordering call only occurs when both operands are non-null,
-callers can supply comparers that throw on <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> input without guarding separately.
+<code>Min</code> and <code>Max</code> each have an overload that accepts an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>; the other overload
+orders the operands with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1.compareto">CompareTo(T)</a>. Because the ordering call only occurs when both
+operands are non-null, callers can supply comparers that throw on <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> input without guarding
+separately. <code>Coalesce</code> does not compare and takes no comparer.
 </p>
 <p>
 These helpers complement <a class="xref" href="Bodu.Extensions.ComparableExtensions.html">ComparableExtensions</a>, which provides instance-style comparison predicates (
@@ -208,7 +209,7 @@ bounds.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableHelper_Coalesce__1___0___0_" data-uid="Bodu.Extensions.ComparableHelper.Coalesce``1(``0,``0)">
   Coalesce&lt;T&gt;(T?, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/ComparableHelper.Coalesce.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/ComparableHelper.Coalesce.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -260,7 +261,7 @@ bounds.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableHelper_Max__1___0___0_" data-uid="Bodu.Extensions.ComparableHelper.Max``1(``0,``0)">
   Max&lt;T&gt;(T?, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/ComparableHelper.Max.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/ComparableHelper.Max.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -316,7 +317,7 @@ values are <code>null</code>, <code>null</code> is returned.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableHelper_Max__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableHelper.Max``1(``0,``0,System.Collections.Generic.IComparer{``0})">
   Max&lt;T&gt;(T?, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/ComparableHelper.Max.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/ComparableHelper.Max.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -381,7 +382,7 @@ non-null value is returned. If both values are <code>null</code>, <code>null</co
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableHelper_Min__1___0___0_" data-uid="Bodu.Extensions.ComparableHelper.Min``1(``0,``0)">
   Min&lt;T&gt;(T?, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/ComparableHelper.Min.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/ComparableHelper.Min.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -437,7 +438,7 @@ values are <code>null</code>, <code>null</code> is returned.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableHelper_Min__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableHelper.Min``1(``0,``0,System.Collections.Generic.IComparer{``0})">
   Min&lt;T&gt;(T?, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/ComparableHelper.Min.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/ComparableHelper.Min.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -524,7 +525,7 @@ non-null value is returned. If both values are <code>null</code>, <code>null</co
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

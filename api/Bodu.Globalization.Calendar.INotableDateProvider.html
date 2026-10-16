@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_INotableDateProvider" data-uid="Bodu.Globalization.Calendar.INotableDateProvider" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 INotableDateProvider Interface
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/INotableDateProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/INotableDateProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ INotableDateProvider Interface
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/INotableDateProvider.cs">INotableDateProvider.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/INotableDateProvider.cs">INotableDateProvider.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Contributes fully-formed notable-date occurrences to a <a class="xref" href="Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> in code, for sources that
@@ -174,17 +174,18 @@ public sealed class FoundingDayProvider : INotableDateProvider
     }
 }
 
-// Register the provider through the collaborator-aware constructor.
-NotableDateService service = new(
-    resource, algorithms: null, collisionResolver: null, handlers: null,
-    triggerHandlers: null, providers: new[] { new FoundingDayProvider() });</code></pre>
+// Register the provider through the service options.
+NotableDateService service = new(resource, new NotableDateServiceOptions
+{
+    Providers = new[] { new FoundingDayProvider() },
+});</code></pre>
 
 
   <h2 id="Bodu_Globalization_Calendar_INotableDateProvider_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 A provider returns finished <a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> occurrences - date and all metadata - for a requested window
 and territory, complementing the resource-authored rules. It is the code-first counterpart to authoring a rule, and
-is registered with the service through the provider-aware constructor.
+is registered with the service through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html#Bodu_Globalization_Calendar_NotableDateServiceOptions_Providers">Providers</a>.
 </p>
 <p>
 Provider occurrences are <b>terminal</b>: the service emits them as supplied (after intersecting them with the
@@ -192,6 +193,14 @@ requested range and applying any query filter), so they do <b>not</b> pass throu
 overrides, territory specificity, or the occupied-day interaction that resource rules participate in. They do take
 part in the final date ordering and the resource's same-day collision policy alongside resource occurrences. A
 provider that needs observed-date shifting must compute it itself.
+</p>
+<p>
+Under a same-day collision policy other than <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_KeepAll">KeepAll</a>, the service
+asks for a range that starts before the queried window, early enough to hold every day an occurrence reaching into
+the window can be emitted on, so that a provider occurrence on such a day takes part in that day's collision even
+when its own span ends before the window. When a provider occurrence reaching into the window is longer than any the
+range allowed for, the service asks again from an earlier start. Occurrences that do not reach into the window take
+part only in collisions and are not returned.
 </p>
 </div>
 
@@ -205,7 +214,7 @@ provider that needs observed-date shifting must compute it itself.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_INotableDateProvider_GetNotableDates_Bodu_Globalization_Calendar_DateRange_System_String_" data-uid="Bodu.Globalization.Calendar.INotableDateProvider.GetNotableDates(Bodu.Globalization.Calendar.DateRange,System.String)">
   GetNotableDates(DateRange, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/INotableDateProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/INotableDateProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -280,7 +289,7 @@ intersect <code class="paramref">range</code> are ignored by the service.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

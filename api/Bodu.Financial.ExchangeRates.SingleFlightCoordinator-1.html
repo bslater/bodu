@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ExchangeRates_SingleFlightCoordinator_1" data-uid="Bodu.Financial.ExchangeRates.SingleFlightCoordinator`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 SingleFlightCoordinator&lt;TKey&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ SingleFlightCoordinator&lt;TKey&gt; Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates">Bodu.Financial.ExchangeRates</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates">Bodu.Financial.ExchangeRates</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs">SingleFlightCoordinator{T}.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs">SingleFlightCoordinator{T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Coordinates concurrent asynchronous operations keyed by <code class="typeparamref">TKey</code> so that at most one operation
@@ -188,19 +188,19 @@ per key runs at a time, with every concurrent caller for that key awaiting the s
   <div class="markdown level0 remarks"><p>
 This is the classic single-flight (request-coalescing) pattern: when several callers request the same key while a
 fetch is already running, they join the running task instead of starting duplicate work. The in-flight entry is
-removed as soon as the operation completes - including when it faults - so a failure never poisons the key and the
-next caller starts a fresh attempt. Callers that join an in-flight operation observe its outcome, including its
-exception.
+removed as soon as the operation completes, including when it faults, and before its callers observe the outcome, so
+a failure never poisons the key and the next caller starts a fresh attempt. Callers that join an in-flight operation
+observe its outcome, including its exception.
 </p>
 <p>
 <strong>Cancellation.</strong> The cancellation-aware overloads decouple the shared operation's lifetime from any
 single caller's token. Once started, the operation runs to completion and fulfills the shared promise even if every
 caller abandons its wait; the operation itself is invoked with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none">None</a> because its
 result populates shared state for the next caller. A caller's <code>cancellationToken</code> governs only that caller's
-wait: when it is signalled the caller observes <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> for itself and stops
-waiting, without cancelling the shared operation or affecting any other caller. This makes the coalesced work safe
+wait: when it is signaled the caller observes <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> for itself and stops
+waiting, without canceling the shared operation or affecting any other caller. This makes the coalesced work safe
 for idempotent cache-warming fetches, where one caller's cancellation must never fault the other joiners. A
-reference-counted variant that cancels the shared operation only once <em>all</em> participants have cancelled is a
+reference-counted variant that cancels the shared operation only once <em>all</em> participants have canceled is a
 deliberate non-goal here. The token-less overloads carry no caller token into the operation and never cancel a
 caller's wait.
 </p>
@@ -219,7 +219,7 @@ A given key must always be used with the same result type. Instances are safe fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_SingleFlightCoordinator_1__ctor" data-uid="Bodu.Financial.ExchangeRates.SingleFlightCoordinator`1.#ctor">
   SingleFlightCoordinator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -253,13 +253,13 @@ A given key must always be used with the same result type. Instances are safe fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_SingleFlightCoordinator_1_RunAsync__0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.SingleFlightCoordinator`1.RunAsync(`0,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
   RunAsync(TKey, Func&lt;CancellationToken, Task&gt;, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Runs <code class="paramref">operation</code> for <code class="paramref">key</code>, or joins the operation already in flight for
 that key, then awaits its completion, abandoning this caller's wait when <code class="paramref">cancellationToken</code>
-is signalled.</p>
+is signaled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -298,10 +298,10 @@ decoupled from any caller.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
-    <dd><p>Thrown when <code class="paramref">operation</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+    <dd><p>Thrown when <code class="paramref">key</code> or <code class="paramref">operation</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
-    <dd><p>Thrown when <code class="paramref">cancellationToken</code> is signalled before the shared operation completes; the shared
+    <dd><p>Thrown when <code class="paramref">cancellationToken</code> is signaled before the shared operation completes; the shared
 operation continues regardless.</p>
 </dd>
   </dl>
@@ -315,7 +315,7 @@ operation continues regardless.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_SingleFlightCoordinator_1_RunAsync__0_System_Func_System_Threading_Tasks_Task__" data-uid="Bodu.Financial.ExchangeRates.SingleFlightCoordinator`1.RunAsync(`0,System.Func{System.Threading.Tasks.Task})">
   RunAsync(TKey, Func&lt;Task&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -355,7 +355,7 @@ that key, then awaits its completion.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
-    <dd><p>Thrown when <code class="paramref">operation</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+    <dd><p>Thrown when <code class="paramref">key</code> or <code class="paramref">operation</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
   </dl>
 
@@ -368,13 +368,13 @@ that key, then awaits its completion.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_SingleFlightCoordinator_1_RunAsync__1__0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.SingleFlightCoordinator`1.RunAsync``1(`0,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
   RunAsync&lt;TResult&gt;(TKey, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Runs <code class="paramref">operation</code> for <code class="paramref">key</code>, or joins the operation already in flight for
 that key, then awaits and returns its result, abandoning this caller's wait when
-<code class="paramref">cancellationToken</code> is signalled.</p>
+<code class="paramref">cancellationToken</code> is signaled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -419,10 +419,10 @@ decoupled from any caller.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
-    <dd><p>Thrown when <code class="paramref">operation</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+    <dd><p>Thrown when <code class="paramref">key</code> or <code class="paramref">operation</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
-    <dd><p>Thrown when <code class="paramref">cancellationToken</code> is signalled before the shared operation completes; the shared
+    <dd><p>Thrown when <code class="paramref">cancellationToken</code> is signaled before the shared operation completes; the shared
 operation continues regardless.</p>
 </dd>
   </dl>
@@ -436,7 +436,7 @@ operation continues regardless.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_SingleFlightCoordinator_1_RunAsync__1__0_System_Func_System_Threading_Tasks_Task___0___" data-uid="Bodu.Financial.ExchangeRates.SingleFlightCoordinator`1.RunAsync``1(`0,System.Func{System.Threading.Tasks.Task{``0}})">
   RunAsync&lt;TResult&gt;(TKey, Func&lt;Task&lt;TResult&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/SingleFlightCoordinator%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -482,7 +482,7 @@ that key, then awaits and returns its result.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
-    <dd><p>Thrown when <code class="paramref">operation</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+    <dd><p>Thrown when <code class="paramref">key</code> or <code class="paramref">operation</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
   </dl>
 
@@ -517,7 +517,7 @@ that key, then awaits and returns its result.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

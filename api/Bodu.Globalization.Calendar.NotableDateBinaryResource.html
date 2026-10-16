@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_NotableDateBinaryResource" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 NotableDateBinaryResource Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ NotableDateBinaryResource Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs">NotableDateBinaryResource.PayloadReader.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs">NotableDateBinaryResource.PayloadReader.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Writes and reads the sealed notable-date binary rule-pack format (<code>.bcal</code>): a compact, integrity-checked,
@@ -163,16 +163,26 @@ reflection-free encoding of a validated <a class="xref" href="Bodu.Globalization
 
   <h2 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-A pack is written from an already-built resource, so only content that passed the canonical loader's validation is
-ever encoded, and reading a pack skips parsing and validation entirely - the trim- and AOT-friendly load path. The
-format is <em>sealed</em>: it enumerates the engine's strategy, recurrence, and duration types exhaustively with
-one-byte discriminators, carries no type names and no extension points, and the reader rejects unknown versions,
-unknown discriminators, undefined enum values, out-of-range references, truncation, and payload-digest mismatches
-with <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryFormatException.html">NotableDateBinaryFormatException</a>.
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a> runs the loader's identifier, range, enumeration, duplicate and
+cross-reference checks on the resource before it encodes anything, and refuses a resource the loader would reject
+with the <a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a> and diagnostics the loader reports, so a resource assembled
+in code is held to the rules a document is. Reading a pack skips parsing and that validation entirely - the trim-
+and AOT-friendly load path - so a pack not produced by <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a>, such as
+one edited by hand, is not revalidated. The format is <em>sealed</em>: it enumerates the engine's strategy,
+recurrence, and duration types exhaustively with one-byte discriminators, carries no type names and no extension
+points, and the reader rejects unknown versions, unknown discriminators, undefined enum values, out-of-range
+references, values a model constructor refuses, truncation, and payload-digest mismatches with
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryFormatException.html">NotableDateBinaryFormatException</a>.
 </p>
 <p>
 Writing is byte-stable: the same resource always produces the same bytes, so build systems can use pack outputs for
 up-to-date checks.
+</p>
+<p>
+A pack is written at format version 1 unless an adjustment scope names a concept's rule (<code>&lt;Rule notableDateRef="…" ruleRef="…" /&gt;</code>),
+which needs version 2. The two versions share one layout; version 2 exists so that a reader predating
+concept-qualified rule references rejects the pack instead of matching the reference against rule identifiers alone.
+The reader accepts both, and a version 1 scope's rule identifier keeps matching that rule in every concept.
 </p>
 </div>
 
@@ -186,7 +196,7 @@ up-to-date checks.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Read_System_IO_Stream_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Read(System.IO.Stream)">
   Read(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.Reader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.Reader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -218,6 +228,13 @@ up-to-date checks.
 
 
 
+  <h4 class="section" id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Read_System_IO_Stream__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Reading checks the pack's structure, enumeration values, string references and payload digest, and builds each
+value through its model constructor, but does not run the loader's identifier, range, duplicate or
+cross-reference checks, which <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a> ran before encoding. A pack not
+produced by <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a>, such as one edited by hand and given a matching
+digest, is therefore not revalidated; load the document it was compiled from to validate it.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -226,7 +243,7 @@ up-to-date checks.
 </dd>
     <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryFormatException.html">NotableDateBinaryFormatException</a></dt>
     <dd><p>The stream is not a notable-date binary rule pack, declares an unsupported format version, is truncated or
-corrupted, or carries a value outside the sealed format's tables.</p>
+corrupted, or carries a value outside the sealed format's tables or a model constructor's domain.</p>
 </dd>
   </dl>
 
@@ -239,11 +256,11 @@ corrupted, or carries a value outside the sealed format's tables.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource,System.IO.Stream)">
   Write(NotableDateResource, Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Writes a resource to a stream in the binary rule-pack format.</p>
+  <div class="markdown level1 summary"><p>Writes a resource to a stream in the binary rule-pack format, accepting only the built-in algorithm keys.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -254,7 +271,7 @@ corrupted, or carries a value outside the sealed format's tables.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
-    <dd><p>The validated resource to encode.</p>
+    <dd><p>The resource to encode.</p>
 </dd>
     <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
     <dd><p>The writable stream receiving the pack.</p>
@@ -268,11 +285,97 @@ corrupted, or carries a value outside the sealed format's tables.</p>
 
 
 
+  <h4 class="section" id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A resource the loader produced passes the checks, unless it was loaded with a custom algorithm registry; write
+such a resource with <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_">Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry?)</a>.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p><code class="paramref">resource</code> or <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The resource fails one of the loader's identifier, range, enumeration, duplicate or cross-reference checks, such
+as a concept identifier that is not an identifier, two concepts sharing one, or an algorithm key that is not
+built in; the <a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html#Bodu_Globalization_Calendar_NotableDateValidationException_Diagnostics">Diagnostics</a> are those the loader reports, and
+nothing is written.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>A rule uses a calculation strategy, recurrence strategy, or duration definition outside the sealed set the
+format enumerates, such as a custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> in a resource assembled in code; the
+message names the unsupported type.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Write*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource,System.IO.Stream,Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry)">
+  Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Writes a resource to a stream in the binary rule-pack format, accepting the algorithm keys a registry declares
+as well as the built-in ones.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Write(NotableDateResource resource, Stream stream, INotableDateAlgorithmRegistry? algorithms)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The resource to encode.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The writable stream receiving the pack.</p>
+</dd>
+    <dt><code>algorithms</code> <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a></dt>
+    <dd><p>The custom algorithm registry whose keys the resource's algorithm strategies may name, as the loader accepts
+them, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to accept only the built-in keys.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The checks are those the loader runs on the resource it assembles: each identifier, reference and territory code
+against the pattern the notable-date schema requires of it, and each number the schema bounds against its range
+(<code>BODU-CAL-SCHEMA</code>, or <code>BODU-CAL-VALUE</code> for an adjustment trigger's month), each enumeration value
+outside a strategy or recurrence against the members its type defines (<code>BODU-CAL-ENUM</code>), duplicate concept,
+rule and adjustment-policy identifiers, adjustment and strategy references that do not resolve, inverted year
+bounds, adjustment actions missing their target or handler, and algorithm keys. The registry is not recorded in
+the pack; a reader resolves an algorithm key against the registry its service is given.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">resource</code> or <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The resource fails one of the loader's identifier, range, enumeration, duplicate or cross-reference checks, such
+as a concept identifier that is not an identifier, two concepts sharing one, or an algorithm key that is neither
+built in nor declared by <code class="paramref">algorithms</code>; the
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html#Bodu_Globalization_Calendar_NotableDateValidationException_Diagnostics">Diagnostics</a> are those the loader reports, and nothing is written.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>A rule uses a calculation strategy, recurrence strategy, or duration definition outside the sealed set the
+format enumerates, such as a custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> in a resource assembled in code; the
+message names the unsupported type.</p>
 </dd>
   </dl>
 
@@ -313,7 +416,7 @@ corrupted, or carries a value outside the sealed format's tables.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

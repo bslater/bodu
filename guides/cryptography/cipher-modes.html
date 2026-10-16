@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/cryptography/cipher-modes.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/cipher-modes.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -116,11 +116,11 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 <h2 id="ctr---parallel-seekable-stream-shaped">CTR - parallel, seekable, stream-shaped</h2>
 <p><strong>Use for:</strong> random-access scenarios (disk-like), high-throughput pipelines where you want to parallelize encryption per block, or when the plaintext length isn't known up front and you don't want padding.</p>
 <p><strong>IV (counter):</strong> same length as the block. <strong>Must be unique per message under a given key.</strong> Reuse is catastrophic.</p>
-<p><strong>Padding:</strong> not required - <code>PaddingMode.None</code> is valid, because CTR turns the block cipher into a stream cipher. The ciphertext is the same length as the plaintext.</p>
+<p><strong>Padding:</strong> CTR itself needs none - it turns the block cipher into a stream cipher, and <a class="xref" href="../../api/Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> driven directly accepts any length, with the ciphertext exactly as long as the plaintext. Through a <code>SymmetricAlgorithm</code> wrapper, though, the final block still passes through the padding strategy, so <code>PaddingMode.None</code> accepts only block-aligned input there. Use PKCS7 through the wrapper for arbitrary lengths:</p>
 <pre><code class="lang-csharp">using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.CTR,
-    Padding   = PaddingMode.None,   // CTR is a stream cipher
+    Padding   = PaddingMode.PKCS7,  // through the wrapper, None needs block-aligned input
 };
 alg.GenerateKey();
 alg.GenerateIV();                    // used as the initial counter block
@@ -129,15 +129,33 @@ alg.GenerateTweak();
 byte[] ciphertext = alg.Encrypt(plaintext);
 byte[] recovered  = alg.Decrypt(ciphertext);
 </code></pre>
+<p>To keep the ciphertext the same length as the plaintext, drive the transform directly over an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>:</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] key   = RandomNumberGenerator.GetBytes(32);
+byte[] tweak = RandomNumberGenerator.GetBytes(16);
+using IBlockCipher cipher = new Threefish256Cipher(key, tweak);
+
+byte[] counter = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);   // initial counter block, unique per message
+
+byte[] ciphertext = new byte[plaintext.Length];                       // same length as plaintext
+using (var ctr = new CtrModeTransform(cipher, counter))
+    ctr.Transform(plaintext, ciphertext, encrypt: true);
+
+byte[] recovered = new byte[ciphertext.Length];
+using (var ctr = new CtrModeTransform(cipher, counter))
+    ctr.Transform(ciphertext, recovered, encrypt: false);
+</code></pre>
 <p><strong>Design note.</strong> The counter wraps after 2^(block_size) encryptions. <code>CtrModeTransform</code> detects this and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> rather than silently reusing keystream. In practice the block sizes on this library (64 to 1024 bits) are more than enough for any real workload, but this guard is your safety net.</p>
 <h2 id="cfb---self-synchronizing-stream-cipher">CFB - self-synchronizing stream cipher</h2>
 <p><strong>Use for:</strong> byte-streamed encryption where a small transmission error should self-heal within a block or two.</p>
 <p><strong>IV:</strong> same length as the block, unique per message. Unpredictability helps but is not strictly required.</p>
-<p><strong>Padding:</strong> not required if the plaintext is block-aligned, but PKCS7 works.</p>
+<p><strong>Padding:</strong> required for plaintext that is not block-aligned, as for CBC: this is full-block CFB, so the mode accepts only whole blocks. PKCS7 is the safe default; <code>PaddingMode.None</code> works only for block-aligned input.</p>
 <pre><code class="lang-csharp">using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.CFB,
-    Padding   = PaddingMode.None,
+    Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();
 alg.GenerateIV();
@@ -150,11 +168,11 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 <h2 id="ofb---synchronous-stream-cipher">OFB - synchronous stream cipher</h2>
 <p><strong>Use for:</strong> stream encryption where bit-level error propagation must not happen (a single flipped bit in the ciphertext produces a single flipped bit in the plaintext - no cascade).</p>
 <p><strong>IV:</strong> same length as the block, <strong>unique per message</strong>. IV reuse under the same key is catastrophic because the keystream becomes identical.</p>
-<p><strong>Padding:</strong> not required.</p>
+<p><strong>Padding:</strong> required for plaintext that is not block-aligned: like CFB, this OFB transform accepts only whole blocks. PKCS7 is the safe default; <code>PaddingMode.None</code> works only for block-aligned input.</p>
 <pre><code class="lang-csharp">using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.OFB,
-    Padding   = PaddingMode.None,
+    Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();
 alg.GenerateIV();
@@ -206,7 +224,7 @@ using (var cts = new CtsModeTransform(cipher, iv))
 <p><code>CTS</code> mirrors the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a>.<code>CTS</code> value, so it casts directly between the two enums. It is <em>not</em> an authenticated mode - pair it with a MAC if the ciphertext crosses a trust boundary.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p><strong>Which <code>CipherModeKind</code> values work where.</strong> <code>ECB</code>, <code>CBC</code>, <code>CFB</code>, <code>OFB</code>, and <code>CTR</code> are the only values accepted by <code>BlockMode</code> on the <code>SymmetricAlgorithm</code> facades (they are what <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> can build). <code>CTS</code> and <code>XTS</code> are available only as the direct <a class="xref" href="../../api/Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a> transforms, and <code>OCB</code>, <code>EAX</code>, and <code>SIV</code> name the AEAD transforms in the <a href="aead-modes.html">AEAD modes guide</a>. Setting <code>BlockMode</code> to any of those five throws <code>NotSupportedException</code>.</p>
+<p><strong>Which <code>CipherModeKind</code> values work where.</strong> <code>ECB</code>, <code>CBC</code>, <code>CFB</code>, <code>OFB</code>, and <code>CTR</code> are the only <code>BlockMode</code> values the <code>SymmetricAlgorithm</code> facades can encrypt with (they are what <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> can build). <code>CTS</code> and <code>XTS</code> are available only as the direct <a class="xref" href="../../api/Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a> transforms, and <code>OCB</code>, <code>EAX</code>, and <code>SIV</code> name the AEAD transforms in the <a href="aead-modes.html">AEAD modes guide</a>. <code>BlockMode</code> accepts any of those five when assigned, but <code>CreateEncryptor</code> / <code>CreateDecryptor</code> then throw <code>NotSupportedException</code>.</p>
 </div>
 <div class="NOTE">
 <h5>Note</h5>
@@ -346,7 +364,7 @@ xts.Transform(ciphertext, recovered, encrypt: false);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

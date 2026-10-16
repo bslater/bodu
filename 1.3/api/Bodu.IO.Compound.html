@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.IO.Compound Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.IO.Compound Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.IO.Compound.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.IO.Compound">
+
+
+  <h1 id="Bodu_IO_Compound" data-uid="Bodu.IO.Compound" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.IO.Compound Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Compound">Bodu.IO.Compound</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-io-compound.svg" alt="Bodu.IO.Compound"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.IO.Compound</strong> is a reader and writer for the OLE2 / Compound File Binary (CFB) container format - the structured-storage envelope used by legacy Microsoft Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) and other technologies. It opens existing containers, exposing the embedded storage hierarchy and the raw byte payload of each named stream, and it authors new ones. It carries no application-format knowledge of its own: interpreting a <code>Workbook</code> or <code>WordDocument</code> stream is the caller's job.</p>
+<p>A compound file is effectively a small file system embedded in a single file. <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> is the managed counterpart of the COM <code>StgOpenStorage</code> / <code>StgCreateStorageEx</code> entry points: navigation begins at the root storage and descends through nested storages (<code>IStorage</code>) to stream leaves (<code>IStream</code>). The narrow BIFF5 / BIFF8 <code>.xls</code> reader in <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> is the worked example of a format reader layered on top.</p>
+<p>The public surface spans three namespaces: <a class="xref" href="Bodu.IO.Compound.html">Bodu.IO.Compound</a> (the reader, the in-place writer, and the value model), <a class="xref" href="Bodu.IO.Compound.Builders.html">Bodu.IO.Compound.Builders</a> (the detached authoring object model), and <a class="xref" href="Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets</a> (the OLE property-set readers and writers).</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/io-compound/index.html">Introduction</a></strong> - the headline types, the COM analogues, and the scenarios the library covers.</li>
+<li><strong><a href="../docs/io-compound/concepts.html">Core concepts</a></strong> - container, storage, stream, sector chain, mini-stream, directory, and property set.</li>
+<li><strong><a href="../docs/io-compound/getting-started.html">Getting started</a></strong> - install and minimal samples for opening, navigating, and reading.</li>
+<li><strong><a href="../guides/io-compound/reading-compound-files.html">Reading compound files</a></strong> - the open → navigate → read recipe.</li>
+<li><strong><a href="../guides/io-compound/streaming-and-buffering.html">Buffered vs streaming access</a></strong> - the read strategy, the <code>CompoundStream</code> cursor, and bounding memory.</li>
+<li><strong><a href="../guides/io-compound/authoring-compound-files.html">Authoring compound files</a></strong> - the two write paths, nested storages, options, and writing property sets.</li>
+<li><strong><a href="../guides/io-compound/property-sets.html">Reading property sets</a></strong> - the summary-information metadata streams and the raw <code>OlePropertySet</code>.</li>
+<li><strong><a href="../guides/io-compound/office-format-nuances.html">Office format nuances</a></strong> - how legacy Office documents lay out their named streams.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Container - <code>Bodu.IO.Compound</code></strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> - the container session. Read factories <code>Open</code> / <code>OpenRead</code> (path / <code>Stream</code>, with a buffered-vs-streaming choice) and <code>IsCompoundFile</code>; write factory <code>Create</code>; instance <code>RootStorage</code>, <code>Access</code> / <code>CanRead</code> / <code>CanWrite</code> / <code>IsDirty</code>, <code>Commit</code> / <code>Revert</code> and the asynchronous <code>CommitAsync</code> / <code>FlushAsync</code>, the <code>TryGetSummaryInformation</code> / <code>TryGetDocumentSummaryInformation</code> property-set readers, and their <code>SetSummaryInformation</code> / <code>SetDocumentSummaryInformation</code> write counterparts.</li>
+<li><a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> - a storage node. Read: <code>EnumerateEntries</code> / <code>EnumerateStorages</code> / <code>EnumerateStreams</code>, <code>OpenStorage</code> / <code>OpenStream</code> and their <code>TryOpen…</code> forms, <code>TryOpenPropertySet</code>. Write (on a writable file): <code>CreateStorage</code>, <code>CreateStream</code>, <code>Delete</code>, <code>Rename</code>, <code>WritePropertySet</code>, and the settable entry metadata <code>ClassId</code> / <code>CreationTime</code> / <code>ModifiedTime</code> / <code>StateBits</code>.</li>
+<li><a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> - a stream node and seekable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> in one. <code>ReadAllBytes</code> / <code>AsMemory</code>, the standard <code>Read</code> / <code>Seek</code>, and a <code>ReadAsync</code> that is truly asynchronous over a streaming-mode cursor; <code>Write</code> / <code>SetLength</code> / <code>Flush</code> on a writable cursor (payloads capped at <code>int.MaxValue</code>).</li>
+<li><a class="xref" href="Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a> - an immutable directory-entry snapshot (<code>Name</code>, <code>EntryType</code>, <code>Length</code>, <code>ClassId</code>, timestamps). <a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a>, <a class="xref" href="Bodu.IO.Compound.CompoundEntryColor.html">CompoundEntryColor</a> - the entry kind and red-black node color.</li>
+</ul>
+<p><strong>Read options</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a> - <code>ReadStrategy</code> (<a class="xref" href="Bodu.IO.Compound.CompoundReadStrategy.html">CompoundReadStrategy</a>: <code>Buffered</code> / <code>Streaming</code> / <code>Auto</code>), <code>MaxBufferedBytes</code>, and <code>ValidationLevel</code> (<a class="xref" href="Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a>: <code>Strict</code> / <code>Compatible</code> / <code>Minimal</code>).</li>
+</ul>
+<p><strong>Authoring - <code>Bodu.IO.Compound.Builders</code></strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> - a detached, mutable authoring tree. <code>CreateRoot</code> / <code>Load</code> / <code>FromFile</code> factories; <code>AddStorage</code>, <code>AddStream</code> (in-memory, deferred, or <code>AddStreamFromFile</code>), <code>Remove</code>, <code>Rename</code>; and the serializers <code>Save(path)</code> / <code>WriteTo(Stream)</code> / <code>WriteTo(IBufferWriter&lt;byte&gt;)</code> / <code>ToArray()</code>.</li>
+<li><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a> / <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a> - the stream node (with <code>Content</code>) and its abstract base.</li>
+<li><a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a> - <code>Version</code> (<a class="xref" href="Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a>: <code>V3</code> 512-byte / <code>V4</code> 4096-byte sectors) and <code>MaxDepth</code>. <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions.html">CompoundStorageBuilderOptions</a> - <code>NameComparisonCaseSensitive</code>.</li>
+</ul>
+<p><strong>Property sets - <code>Bodu.IO.Compound.PropertySets</code></strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a> / <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a> - typed views over the <code>\x05SummaryInformation</code> / <code>\x05DocumentSummaryInformation</code> streams, with <code>Read(Stream)</code> and a <code>StreamName</code> constant.</li>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformationBuilder.html">SummaryInformationBuilder</a> / <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformationBuilder.html">DocumentSummaryInformationBuilder</a> - author a property set from typed fields; <code>ToPropertySet()</code> / <code>ToArray()</code> / <code>WriteTo(Stream)</code>.</li>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> / <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySection.html">OlePropertySection</a> / <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a> / <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a> - the underlying code-paged, sectioned property map for non-standard properties, readable and writable.</li>
+</ul>
+<p><strong>Errors</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Compound.CompoundFileException.html">CompoundFileException</a> (base), <a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> (malformed container, with a <a class="xref" href="Bodu.IO.Compound.CompoundFileError.html">CompoundFileError</a> category), <a class="xref" href="Bodu.IO.Compound.CompoundStreamNotFoundException.html">CompoundStreamNotFoundException</a> (missing entry), <a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a> (authoring failure).</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+// Read: open, navigate, and read a named stream.
+using CompoundFile file = CompoundFile.Open(File.OpenRead(&quot;book.xls&quot;));
+CompoundStream workbook = file.RootStorage.OpenStream(&quot;Workbook&quot;);
+byte[] bytes = workbook.ReadAllBytes();
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.IO.Compound.Builders;
+
+// Write: assemble a container from scratch and serialize it.
+var root = CompoundStorageBuilder.CreateRoot();
+root.AddStream(&quot;Workbook&quot;, workbookBytes);
+CompoundStorageBuilder storage = root.AddStorage(&quot;Storage 1&quot;);
+storage.AddStream(&quot;Nested&quot;, new byte[] { 1, 2, 3 });
+
+root.Save(&quot;out.xls&quot;);   // or ToArray() / WriteTo(stream)
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Two ways to read.</strong> <a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a> selects between fully <strong>buffered</strong> access (the whole source is read into memory at open time - the default, and safe to share across threads) and <strong>streaming</strong> access (sectors are read on demand from a seekable source, bounding memory for large files). The <code>Auto</code> strategy switches on <code>MaxBufferedBytes</code>.</li>
+<li><strong>Two ways to write.</strong> The detached <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> assembles a tree in memory and serializes it once (<code>Save</code> / <code>WriteTo</code> / <code>ToArray</code>) - ideal for authoring a container from scratch. The in-place <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_">Create</a> path returns a writable file whose <code>RootStorage.CreateStream</code> / <code>CreateStorage</code> mutate a staging tree that <code>Commit</code> (or the asynchronous <code>CommitAsync</code> / <code>FlushAsync</code>) persists to the destination. A writable <a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> is a true read-write <code>Stream</code> (<code>CanWrite</code> is <code>true</code>).</li>
+<li><strong>Names.</strong> Entry names are at most 31 UTF-16 code units, non-empty, and free of <code>/</code>, <code>\</code>, <code>:</code>, and <code>!</code>; comparison is case-insensitive by default (per the CFB format). An invalid name throws <a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a> at author time; a duplicate name throws it from a builder, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> from a writable <code>CompoundFile</code>'s storages.</li>
+<li><strong>Versions.</strong> <code>V3</code> (512-byte sectors) is the most compatible default; <code>V4</code> (4096-byte sectors) suits larger containers. Choose via <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a>.</li>
+<li><strong>Property sets round-trip.</strong> On a writable file, <code>CompoundFile.SetSummaryInformation</code> embeds a summary set and <code>CompoundFile.TryGetSummaryInformation</code> reads it back; <code>CompoundStorage.WritePropertySet</code> does the same for any named set. The writer emits every value shape the reader parses, including vector properties (variant vectors round-trip by value, not byte, identity).</li>
+<li><strong>See also:</strong> the <a href="../docs/io-compound/index.html">introduction</a>, <a href="../docs/io-compound/concepts.html">core concepts</a>, and <a href="../docs/io-compound/getting-started.html">getting-started</a>; the <a href="../guides/io-compound/reading-compound-files.html">reading</a>, <a href="../guides/io-compound/authoring-compound-files.html">authoring</a>, and <a href="../guides/io-compound/property-sets.html">property-set</a> guides; and the <a class="xref" href="Bodu.Formats.Excel.html">Bodu.Formats.Excel.Binary</a> reader built on this package.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="namespaces">
+Namespaces
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.Builders.html">Bodu.IO.Compound.Builders</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a></dt>
+      <dd><p>Provides an immutable snapshot of the metadata recorded for a single compound-file directory entry - a storage, a
+stream, or the root storage.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+      <dd><p>Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage
+hierarchy, the metadata of every entry, and the byte payload of each named stream for reading or editing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileException.html">CompoundFileException</a></dt>
+      <dd><p>The base class for exceptions raised by the compound-file reader, writer, and object model.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+      <dd><p>The exception thrown when a stream cannot be interpreted as a well-formed OLE2 / Compound File Binary container.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a></dt>
+      <dd><p>Specifies options that control how a <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> is opened for reading.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+      <dd><p>The exception thrown when a compound file cannot be authored or serialized - for example, when a storage contains a
+duplicate or invalid child name, the directory nesting is too deep, or a value cannot be represented in the
+container.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a></dt>
+      <dd><p>Represents a storage within a compound file - a named container of child storages and streams - and provides
+navigation over its immediate children.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a></dt>
+      <dd><p>Provides seekable access to the bytes of a single stream within a compound file.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundStreamNotFoundException.html">CompoundStreamNotFoundException</a></dt>
+      <dd><p>The exception thrown when a named stream is requested from a compound file but no matching directory entry exists.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryColor.html">CompoundEntryColor</a></dt>
+      <dd><p>Identifies the red-black tree node color recorded for a directory entry.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a></dt>
+      <dd><p>Identifies the kind of object an entry describes within a compound file's directory.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileError.html">CompoundFileError</a></dt>
+      <dd><p>Categorizes the structural failure that caused a <a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a></dt>
+      <dd><p>Specifies the compound-file format version, which determines the sector size used when writing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundReadStrategy.html">CompoundReadStrategy</a></dt>
+      <dd><p>Specifies how the compound-file reader sources the bytes of an opened container.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a></dt>
+      <dd><p>Specifies how strictly the compound-file reader validates a container's structure.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

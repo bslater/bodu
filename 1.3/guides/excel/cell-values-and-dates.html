@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Cell values and dates | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Cell values and dates | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/excel/cell-values-and-dates.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="cell-values-and-dates">Cell values and dates</h1>
+
+<p>Every populated cell is surfaced as an immutable <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a>. This guide covers reading its value by kind, handling a formula cell's cached result, detecting and converting date-formatted numbers, and converting between coordinates and A1 references.</p>
+<p>A cell carries its zero-based <code>RowIndex</code> and <code>ColumnIndex</code>, a <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellKind.html">ExcelCellKind</a>, and the value projection that matches the kind. Blank cells are never returned, so a worksheet is a sparse sequence of populated cells.</p>
+<h2 id="pattern-1---read-a-cell-by-kind">Pattern 1 - read a cell by kind</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+static object? ValueOf(ExcelCell cell) =&gt; cell.Kind switch
+{
+    ExcelCellKind.String  =&gt; cell.StringValue,
+    ExcelCellKind.Number  =&gt; cell.NumberValue,
+    ExcelCellKind.Boolean =&gt; cell.BooleanValue,
+    ExcelCellKind.Error   =&gt; cell.ErrorValue,
+    _ =&gt; null,
+};
+</code></pre>
+<p>The projection matching the <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellKind.html">ExcelCellKind</a> holds the value; the others are <code>null</code>. Read <code>StringValue</code> only on a <code>String</code> cell, <code>NumberValue</code> only on a <code>Number</code> cell, and so on. Numbers are raw <code>double</code> values with no date interpretation applied.</p>
+<h2 id="pattern-2---handle-error-cells">Pattern 2 - handle error cells</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+if (cell.Kind == ExcelCellKind.Error)
+{
+    string display = cell.ErrorValue switch
+    {
+        ExcelErrorCode.DivideByZero =&gt; &quot;#DIV/0!&quot;,
+        ExcelErrorCode.NotAvailable =&gt; &quot;#N/A&quot;,
+        ExcelErrorCode.Reference    =&gt; &quot;#REF!&quot;,
+        ExcelErrorCode.Value        =&gt; &quot;#VALUE!&quot;,
+        _ =&gt; $&quot;#ERR({(byte)cell.ErrorValue!.Value:X2})&quot;,
+    };
+}
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html">ExcelErrorCode</a> names the documented BIFF spreadsheet error codes (the same in BIFF5 and BIFF8) - there are seven, each a <code>byte</code> whose value matches the on-disk error code:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Display</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html#Bodu_Formats_Excel_ExcelErrorCode_Null">Null</a></td>
+<td><code>#NULL!</code></td>
+<td>The intersection of two ranges that do not intersect.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html#Bodu_Formats_Excel_ExcelErrorCode_DivideByZero">DivideByZero</a></td>
+<td><code>#DIV/0!</code></td>
+<td>A division by zero.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html#Bodu_Formats_Excel_ExcelErrorCode_Value">Value</a></td>
+<td><code>#VALUE!</code></td>
+<td>A value of the wrong type for an operation or function.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html#Bodu_Formats_Excel_ExcelErrorCode_Reference">Reference</a></td>
+<td><code>#REF!</code></td>
+<td>A reference to a cell that is not valid.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html#Bodu_Formats_Excel_ExcelErrorCode_Name">Name</a></td>
+<td><code>#NAME?</code></td>
+<td>An unrecognised name in a formula.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html#Bodu_Formats_Excel_ExcelErrorCode_Number">Number</a></td>
+<td><code>#NUM!</code></td>
+<td>An invalid numeric value for a function or formula.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html#Bodu_Formats_Excel_ExcelErrorCode_NotAvailable">NotAvailable</a></td>
+<td><code>#N/A</code></td>
+<td>A value that is not available to a function or formula.</td>
+</tr>
+</tbody>
+</table>
+<p>An undocumented code is surfaced as the raw byte cast to the enumeration, so compare against the named members before relying on the symbol - the fall-through arm above formats any unrecognised value as a hex byte rather than assuming it maps to a known error.</p>
+<h2 id="pattern-3---a-formula-cells-cached-result">Pattern 3 - a formula cell's cached result</h2>
+<p>The reader does not evaluate formulas. A formula cell is surfaced as whichever kind its <strong>cached result</strong> holds - the value Excel last computed and stored:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+// A formula whose cached result is a number arrives as an ExcelCellKind.Number cell;
+// one whose cached result is text arrives as an ExcelCellKind.String cell; and so on.
+while (reader.TryReadCell(out ExcelCell cell))
+    Console.WriteLine($&quot;{cell.Kind}: {ValueOf(cell)}&quot;);
+</code></pre>
+<p>There is no separate &quot;formula&quot; cell kind - a formula cell is indistinguishable from a literal cell of the same kind, by design. The cached value is exactly what Excel stored.</p>
+<h2 id="pattern-4---detect-and-convert-date-formatted-numbers">Pattern 4 - detect and convert date-formatted numbers</h2>
+<p>Excel stores dates as floating-point serial numbers, so a date cell is a <code>Number</code> cell whose <em>format</em> renders it as a date. The reader flags those cells but never reinterprets the number itself:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
+using ExcelWorksheetReader reader = workbook.OpenWorksheet(&quot;Data&quot;);
+
+while (reader.TryReadCell(out ExcelCell cell))
+{
+    if (cell.Kind != ExcelCellKind.Number)
+        continue;
+
+    if (cell.IsDateFormatted)
+    {
+        DateOnly date = ExcelSerialDate.FromSerialDate(cell.NumberValue!.Value, workbook.DateSystem);
+        Console.WriteLine($&quot;date: {date:yyyy-MM-dd}&quot;);
+    }
+    else
+    {
+        Console.WriteLine($&quot;number: {cell.NumberValue}&quot;);
+    }
+}
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> is set when the cell's number format is a date or time format (and date detection is enabled). <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html#Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_Bodu_Formats_Excel_ExcelDateSystem_">FromSerialDate(double, ExcelDateSystem)</a> converts the serial number to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, discarding any fractional time-of-day; use <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html#Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_Bodu_Formats_Excel_ExcelDateSystem_">ToDateTime(double, ExcelDateSystem)</a> when you need the time of day, which it preserves from the fractional part. Both helpers also offer single-argument overloads that assume the 1900 system, but prefer the date-system overload and always pass the workbook's <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem">DateSystem</a>: the 1900 (<code>1899-12-30</code>) and 1904 (<code>1904-01-01</code>) epochs differ by 1,462 days, so the wrong system lands a serial number four-plus years off.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>The 1900 epoch is <code>1899-12-30</code>, not <code>1900-01-01</code>. Excel deliberately keeps a historical bug that treats 1900 as a leap year, and <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html">ExcelSerialDate</a> reproduces that arithmetic (it delegates to <code>DateTime.FromOADate</code>) so values round-trip with Excel for dates from <code>1900-03-01</code> onward. A serial number outside the representable OLE Automation date range raises <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>, so guard or catch when reading untrusted workbooks whose &quot;date&quot; column might hold an out-of-range number.</p>
+</div>
+<h2 id="pattern-5---convert-with-the-workbook-shortcut">Pattern 5 - convert with the workbook shortcut</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+DateTime? when = workbook.GetDateTime(cell);   // null for non-numeric cells
+string? formatCode = workbook.GetNumberFormatCode(cell.FormatIndex);
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell_">GetDateTime(ExcelCell)</a> converts a numeric cell using the workbook's date system and returns <code>null</code> for any non-numeric cell, so it is safe to call on any cell. It applies the conversion to <em>every</em> numeric cell, not only date-formatted ones - inspect <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> first when only date-formatted cells should be treated as dates, otherwise a plain count or amount comes back as a meaningless calendar value.</p>
+<p><code>GetNumberFormatCode</code> resolves a cell's <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_FormatIndex">FormatIndex</a> to its format-code string (built-in or custom), or <code>null</code> when the index is unknown. A <code>FORMAT</code> record in the workbook decides an index's code, built-in index or not, and when the workbook defines an index more than once the last record applies; the built-in codes fill in only the indexes that no <code>FORMAT</code> record defines, and the same code decides <code>IsDateFormatted</code>. A cell whose record carries no explicit format reports <code>FormatIndex</code> <code>0</code>, the General format. The format code is the same raw string Excel stores (for example <code>&quot;0.00&quot;</code> or <code>&quot;yyyy-mm-dd&quot;</code>); this reader does not render values through it.</p>
+<h2 id="pattern-6---convert-coordinates-to-and-from-a1">Pattern 6 - convert coordinates to and from A1</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+string a1 = ExcelCellReference.ToA1(9, 27);        // &quot;AB10&quot;
+string col = ExcelCellReference.ColumnName(27);    // &quot;AB&quot;
+
+if (ExcelCellReference.TryParseA1(&quot;AB10&quot;, out int row, out int column))
+{
+    // row == 9, column == 27
+}
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellReference.html">ExcelCellReference</a> converts between zero-based coordinates and A1 references. <code>ToA1</code> and <code>ColumnName</code> produce the spreadsheet-style label; <code>TryParseA1</code> parses one back to coordinates (accepting lower-case column letters) and returns <code>false</code> for a malformed reference rather than throwing.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="worksheets-and-rows.html">Streaming vs materialized</a> - the two cell surfaces and when to use each.</li>
+<li><a href="reading-workbooks.html">Reading workbooks</a> - the open path and reader options.</li>
+<li><a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel API reference</a>.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

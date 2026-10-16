@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ICurrency Interface
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ICurrency Interface
+ | BODU ">
+      
+      <meta name="description" content="Identifies a currency at the type-system level, supplying the ISO 4217 code, minor-unit precision, and optional cash-rounding and historicity metadata used by .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Financial.Currencies.ICurrency">
+
+
+
+
+  <h1 id="Bodu_Financial_Currencies_ICurrency" data-uid="Bodu.Financial.Currencies.ICurrency" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ICurrency Interface
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_Currencies_ICurrency_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs">ICurrency.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Identifies a currency at the type-system level, supplying the ISO 4217 code, minor-unit precision, and optional
+cash-rounding and historicity metadata used by <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface ICurrency</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Financial_Currencies_ICurrency_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Implementations of <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> are tag types - they exist solely to parameterize
+<a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> and carry the currency's static metadata. They are never instantiated; the shipped
+implementations declare a private constructor and expose only static members.
+</p>
+<p>
+The interface relies on the C# 11 static-abstract-member feature, so members are accessed through the type itself (
+<code>USD.IsoCode</code>, <code>USD.MinorUnits</code>) and via <code>TCurrency.IsoCode</code> from within generic code constrained by
+<code>where TCurrency : ICurrency</code>.
+</p>
+<p>
+<a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_IsoCode">IsoCode</a> and <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_MinorUnits">MinorUnits</a> are required. The remaining members (
+<a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement">CashRoundingIncrement</a>, <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_IsHistoric">IsHistoric</a>, <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_DemonetizedOn">DemonetizedOn</a>,
+<a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_SuccessorIsoCode">SuccessorIsoCode</a>) are <code>static virtual</code> with sensible defaults so existing custom implementations
+remain source-compatible - only the shipped <code>Bodu.Financial.Currencies</code> tags override the defaults to surface
+country-specific cash rounding or historic-currency metadata.
+</p>
+<example>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+// Metadata is read statically from the tag type - no instance is ever created.
+string code = USD.IsoCode;        // "USD"
+int minorUnits = USD.MinorUnits;  // 2
+int numeric = USD.NumericCode;    // 840
+
+// The same members are reachable through a generic constraint.
+static string DescribeCurrency&lt;TCurrency&gt;() where TCurrency : ICurrency =&gt;
+    $"{TCurrency.IsoCode} ({TCurrency.MinorUnits} minor units)";</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement_" data-uid="Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement" data-uid="Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement">
+  CashRoundingIncrement
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the smallest cash denomination of the currency, expressed in the major unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static decimal CashRoundingIncrement { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The cash-rounding increment in the major unit (for example, <code>0.05m</code> for CHF's five-rappen smallest
+circulating coin, <code>0.05m</code> for AUD / CAD cash totals since smallest coins were withdrawn, or <code>1m</code> for
+SEK / NOK), or <code>0m</code> when the currency does not require special cash rounding beyond its
+<a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_MinorUnits">MinorUnits</a> precision.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The default of <code>0m</code> is interpreted by <a class="xref" href="Bodu.Financial.Money-1.html#Bodu_Financial_Money_1_RoundToCash_System_MidpointRounding_">RoundToCash(MidpointRounding)</a> as &quot;no
+special cash rounding required&quot;, so the rounding becomes a no-op. Cash-rounding rules apply only to physical
+cash totals; electronic transactions retain the full <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_MinorUnits">MinorUnits</a> precision.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Currencies_ICurrency_DemonetizedOn_" data-uid="Bodu.Financial.Currencies.ICurrency.DemonetizedOn*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Currencies_ICurrency_DemonetizedOn" data-uid="Bodu.Financial.Currencies.ICurrency.DemonetizedOn">
+  DemonetizedOn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the date the currency was withdrawn from circulation, if known.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly? DemonetizedOn { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>?</dt>
+    <dd><p>The demonetization date, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the currency is active or the date is unknown.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Currencies_ICurrency_EnglishName_" data-uid="Bodu.Financial.Currencies.ICurrency.EnglishName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Currencies_ICurrency_EnglishName" data-uid="Bodu.Financial.Currencies.ICurrency.EnglishName">
+  EnglishName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the English-language name of the currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string EnglishName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The currency's name in English, in singular form and Title Case (for example, <code>&quot;US Dollar&quot;</code>, <code>&quot;Euro&quot;</code>,
+or <code>&quot;Australian Dollar&quot;</code>), or an empty string when no name is supplied.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_ICurrency_EnglishName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The English name is used by <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> formatting in the <code>L</code> specifier path (
+<code>&quot;1,234.56 Australian Dollar&quot;</code>) and is available through <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html#Bodu_Financial_Currencies_CurrencyInfo_EnglishName">EnglishName</a> on the
+runtime-tagged registry entry. The default is the empty string so existing <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a>
+implementations remain source-compatible; when empty, the <code>L</code> specifier falls back to the ISO-substitution
+form rather than emitting a trailing space with no name.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Currencies_ICurrency_IsHistoric_" data-uid="Bodu.Financial.Currencies.ICurrency.IsHistoric*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Currencies_ICurrency_IsHistoric" data-uid="Bodu.Financial.Currencies.ICurrency.IsHistoric">
+  IsHistoric
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the currency has been demonetized and is no longer in active circulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsHistoric { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the currency is a historic predecessor (for example, the Euro-zone national
+currencies replaced in 2002, or <code>ZWL</code> since its 2024 demonetization); otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_ICurrency_IsHistoric_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Historic currencies still participate fully in arithmetic and formatting so consumers can process legacy data;
+<a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_IsHistoric">IsHistoric</a> exists for filtering and reporting only.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Currencies_ICurrency_IsoCode_" data-uid="Bodu.Financial.Currencies.ICurrency.IsoCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Currencies_ICurrency_IsoCode" data-uid="Bodu.Financial.Currencies.ICurrency.IsoCode">
+  IsoCode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the ISO 4217 three-letter alphabetic code that identifies the currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static abstract string IsoCode { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An uppercase three-letter currency code, such as <code>&quot;USD&quot;</code>, <code>&quot;EUR&quot;</code>, or <code>&quot;JPY&quot;</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Currencies_ICurrency_MinorUnits_" data-uid="Bodu.Financial.Currencies.ICurrency.MinorUnits*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Currencies_ICurrency_MinorUnits" data-uid="Bodu.Financial.Currencies.ICurrency.MinorUnits">
+  MinorUnits
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of fractional digits in the currency's minor unit - the precision
+<a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> rounds to on construction and formats by default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static abstract int MinorUnits { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The non-negative number of decimal places the currency uses; typically two (for <code>USD</code>, <code>EUR</code>, etc.),
+zero (for <code>JPY</code>, <code>KRW</code>, <code>CLP</code>), or three (for <code>BHD</code>, <code>KWD</code>, <code>OMR</code>).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Currencies_ICurrency_NumericCode_" data-uid="Bodu.Financial.Currencies.ICurrency.NumericCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Currencies_ICurrency_NumericCode" data-uid="Bodu.Financial.Currencies.ICurrency.NumericCode">
+  NumericCode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the ISO 4217 three-digit numeric code that identifies the currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int NumericCode { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The three-digit numeric code (for example, <code>840</code> for <code>USD</code>, <code>36</code> for <code>AUD</code>, <code>392</code> for
+<code>JPY</code>), or <code>0</code> when the currency is custom or the numeric code is unknown.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_ICurrency_NumericCode_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The numeric code is the second public identifier defined by ISO 4217 and is widely used by payment formats
+(SWIFT MT messages, ISO 20022). The default of <code>0</code> keeps existing custom <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a>
+implementations source-compatible; the shipped <code>Bodu.Financial.Currencies</code> tags override it with the
+canonical ISO numeric value.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Currencies_ICurrency_SuccessorIsoCode_" data-uid="Bodu.Financial.Currencies.ICurrency.SuccessorIsoCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Currencies_ICurrency_SuccessorIsoCode" data-uid="Bodu.Financial.Currencies.ICurrency.SuccessorIsoCode">
+  SuccessorIsoCode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the ISO 4217 alphabetic code of the currency that replaced this one, when applicable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string? SuccessorIsoCode { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The three-letter ISO code of the successor currency (for example, <code>&quot;EUR&quot;</code> for the Euro-zone predecessor
+currencies), or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when there is no defined successor.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

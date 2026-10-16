@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Yaml_Nodes_YamlNode" data-uid="Bodu.Text.Yaml.Nodes.YamlNode" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 YamlNode Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ YamlNode Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a>.<a class="xref" href="Bodu.Text.Yaml.Nodes.html">Nodes</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Yaml.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs">YamlNode.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs">YamlNode.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a node in a mutable YAML document object model, in the manner of
@@ -190,9 +190,18 @@ YamlNode Class
 
 
   <h2 id="Bodu_Text_Yaml_Nodes_YamlNode_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>The node tree is fully mutable: mappings (<a class="xref" href="Bodu.Text.Yaml.Nodes.YamlObject.html">YamlObject</a>), sequences (<a class="xref" href="Bodu.Text.Yaml.Nodes.YamlArray.html">YamlArray</a>), and
-scalars (<a class="xref" href="Bodu.Text.Yaml.Nodes.YamlValue.html">YamlValue</a>) can be created, edited, and re-serialized. A node may appear at most once in a
-tree.</p>
+  <div class="markdown level0 remarks"><p>
+The node tree is fully mutable: mappings (<a class="xref" href="Bodu.Text.Yaml.Nodes.YamlObject.html">YamlObject</a>), sequences (<a class="xref" href="Bodu.Text.Yaml.Nodes.YamlArray.html">YamlArray</a>), and
+scalars (<a class="xref" href="Bodu.Text.Yaml.Nodes.YamlValue.html">YamlValue</a>) can be created, edited, and re-serialized.
+</p>
+<p>
+A node may appear at most once in a tree: it belongs to at most one container, and appears in that container once.
+Adding, inserting, or assigning a node that already belongs to a container, including the container it is being
+added to, throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>; assigning a node over itself is the one exception.
+Adding a container to itself or to one of its own descendants, which would make the tree a cycle, throws an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> too. Removing or replacing a node, or clearing its container, detaches it,
+so that it can be added elsewhere.
+</p>
 </div>
 
 
@@ -205,7 +214,7 @@ tree.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Nodes_YamlNode_Item_System_Int32_" data-uid="Bodu.Text.Yaml.Nodes.YamlNode.Item(System.Int32)">
   this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -241,7 +250,8 @@ tree.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>The node is not a sequence.</p>
+    <dd><p>The node is not a sequence, or the assigned node already belongs to a container or is this node or one of its
+ancestors.</p>
 </dd>
   </dl>
 
@@ -254,7 +264,7 @@ tree.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Nodes_YamlNode_Item_System_String_" data-uid="Bodu.Text.Yaml.Nodes.YamlNode.Item(System.String)">
   this[string]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -290,7 +300,8 @@ tree.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>The node is not a mapping.</p>
+    <dd><p>The node is not a mapping, or the assigned node already belongs to a container or is this node or one of its
+ancestors.</p>
 </dd>
   </dl>
 
@@ -307,7 +318,7 @@ tree.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Nodes_YamlNode_AsArray" data-uid="Bodu.Text.Yaml.Nodes.YamlNode.AsArray">
   AsArray()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -350,7 +361,7 @@ tree.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Nodes_YamlNode_AsObject" data-uid="Bodu.Text.Yaml.Nodes.YamlNode.AsObject">
   AsObject()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -393,7 +404,7 @@ tree.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Nodes_YamlNode_AsValue" data-uid="Bodu.Text.Yaml.Nodes.YamlNode.AsValue">
   AsValue()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -436,7 +447,7 @@ tree.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Nodes_YamlNode_Parse_System_String_" data-uid="Bodu.Text.Yaml.Nodes.YamlNode.Parse(System.String)">
   Parse(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -488,7 +499,7 @@ tree.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Nodes_YamlNode_ToYamlString" data-uid="Bodu.Text.Yaml.Nodes.YamlNode.ToYamlString">
   ToYamlString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -525,7 +536,7 @@ tree.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Nodes_YamlNode_WriteTo_Bodu_Text_Yaml_Writer_Utf8YamlWriter_" data-uid="Bodu.Text.Yaml.Nodes.YamlNode.WriteTo(Bodu.Text.Yaml.Writer.Utf8YamlWriter)">
   WriteTo(Utf8YamlWriter)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Nodes/YamlNode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -584,7 +595,7 @@ tree.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

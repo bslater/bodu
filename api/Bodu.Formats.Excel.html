@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Formats.Excel.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Formats.Excel.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Formats.Excel.Binary">Bodu.Formats.Excel.Binary</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Formats.Excel.Binary">Bodu.Formats.Excel.Binary</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -102,7 +102,7 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-excel.svg" alt="Bodu.Formats.Excel.Binary"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Formats.Excel.Binary</strong> is a narrow, read-only reader for the Excel binary workbook format (<code>.xls</code>) - BIFF8 as written by Excel 97-2003 and BIFF5 as written by Excel 5.0/95. It surfaces the raw cell values of each worksheet - strings, numbers, booleans, and errors, including a formula cell's cached result - along with each cell's number format and date-format detection, the workbook date system, each sheet's declared used range, and the workbook document properties. It performs no formula evaluation, styling, or higher-level interpretation.</p>
+<p><strong>Bodu.Formats.Excel.Binary</strong> is a narrow, read-only reader for the Excel binary workbook format (<code>.xls</code>) - BIFF8 as written by Excel 97-2003, and BIFF5, the Excel 5.0/95 format, read from its documented record layouts and tested against synthesized workbooks rather than files Excel 5.0/95 wrote. It surfaces the raw cell values of each worksheet - strings, numbers, booleans, and errors, including a formula cell's cached result - along with each cell's number format and date-format detection, the workbook date system, each sheet's declared used range, and the workbook document properties. It performs no formula evaluation, styling, or higher-level interpretation.</p>
 <p>An <code>.xls</code> file is a BIFF5 or BIFF8 record stream stored inside the <code>Workbook</code> (or legacy <code>Book</code>) stream of an OLE2 compound file. This package interprets that record stream as worksheets and cells; the container around it is read by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>, and the records are framed and decoded by <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> from <a class="xref" href="Bodu.IO.Biff.html">Bodu.IO.Biff</a> - the package is built on both. The version a workbook was written in is exposed through <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_BiffVersion">BiffVersion</a>. The assembly and package keep the <code>.Binary</code> suffix, but the public namespace is flattened to <code>Bodu.Formats.Excel</code> so a future Excel-format package can share the value model.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
@@ -162,7 +162,7 @@ while (reader.TryReadCell(out ExcelCell cell))
 <ul>
 <li><strong>Read-only.</strong> The reader surfaces values; it never writes, evaluates formulas, applies styles, or interprets charts and macros. A formula cell yields its <em>cached</em> result - the value Excel last stored - surfaced as whichever kind that value holds.</li>
 <li><strong>Layered stack.</strong> The package interprets only the BIFF5 and BIFF8 records; the OLE2 container around them is read by <a class="xref" href="Bodu.IO.Compound.html">Bodu.IO.Compound</a>, and the record framing and decoding come from <a class="xref" href="Bodu.IO.Biff.html">Bodu.IO.Biff</a>. A consumer that needs only the container depends on <code>Bodu.IO.Compound</code> alone, and one that needs only the record codec depends on <code>Bodu.IO.Biff</code> alone. The Reserve Bank of Australia exchange-rate provider (<code>Bodu.Financial.ExchangeRates.Rba</code>) parses the same <code>.xls</code> shape on top of this reader.</li>
-<li><strong>Sparse surfaces.</strong> Blank cells are never returned, so both the streaming reader and the materialized worksheet are sparse. The streaming <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> bounds allocation to one cell; the materialized <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> buffers the whole sheet for random access.</li>
+<li><strong>Sparse surfaces.</strong> Blank cells are never returned, so both the streaming reader and the materialized worksheet are sparse. The streaming <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> buffers the sheet's encoded records once and decodes cells one at a time, without a cell map; the materialized <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> keeps every populated cell for random access.</li>
 <li><strong>Dates are numbers.</strong> Excel stores dates as floating-point serial numbers. The reader never reinterprets a number, but flags date-formatted cells via <a class="xref" href="Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> and offers <a class="xref" href="Bodu.Formats.Excel.ExcelSerialDate.html">ExcelSerialDate</a> for conversion against the workbook's 1900 or 1904 date system.</li>
 <li><strong>Errors.</strong> Malformed records surface through <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryFormatException.html">ExcelBinaryFormatException</a>; a missing workbook stream, a BIFF version other than BIFF5 or BIFF8, and an encrypted workbook through their dedicated exceptions. Codec failures are translated at the boundary with the <a class="xref" href="Bodu.IO.Biff.BiffFormatException.html">BiffFormatException</a> or <a class="xref" href="Bodu.IO.Biff.BiffUnsupportedVersionException.html">BiffUnsupportedVersionException</a> preserved as the inner exception.</li>
 <li><strong>See also:</strong> the <a href="../docs/excel/index.html">introduction</a>, <a href="../docs/excel/concepts.html">core concepts</a>, and <a href="../docs/excel/getting-started.html">getting-started</a>; the <a href="../docs/topics/binary-formats.html">Binary Formats &amp; I/O topic</a>; the container reader <a class="xref" href="Bodu.IO.Compound.html">Bodu.IO.Compound</a> and the record codec <a class="xref" href="Bodu.IO.Biff.html">Bodu.IO.Biff</a> beneath it.</li>
@@ -306,7 +306,7 @@ format, which are the same in BIFF5 and BIFF8.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

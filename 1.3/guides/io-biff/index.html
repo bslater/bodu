@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.IO.Biff guides | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.IO.Biff guides | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-biff/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="boduiobiff-guides">Bodu.IO.Biff guides</h1>
+
+<p>Recipe-style walk-throughs for <strong>Bodu.IO.Biff</strong>, the low-level codec for the BIFF5 and BIFF8 record streams inside legacy <code>.xls</code> workbooks. The package frames records, establishes the version and code page, decodes the common records through typed accessors, walks the shared string table across its <code>CONTINUE</code> records, and writes records back, in either version.</p>
+<p>The library has no workbook model: it knows how BIFF is encoded, not what a workbook means. The reader in <a href="../excel/index.html">Bodu.Formats.Excel.Binary</a> is built on it - the same codec/format split as <code>Bodu.IO.Pst</code> beneath <code>Bodu.Formats.Outlook.Pst</code> - and the container around the record stream is <a href="../io-compound/index.html">Bodu.IO.Compound</a>.</p>
+<p>If you are new to the library, start with the <a href="../../docs/io-biff/index.html">introduction</a>, the <a href="../../docs/io-biff/concepts.html">Core concepts</a> glossary, and the <a href="../../docs/io-biff/getting-started.html">getting-started page</a>, which cover reading a whole stream, decoding records, the shared string table, and writing single records. The guides below take each direction further.</p>
+<h2 id="how-the-library-works">How the library works</h2>
+<p>A workbook stream is a flat sequence of records - a two-byte identifier, a two-byte length, and a payload - grouped into substreams, each opened by a <code>BOF</code> record and closed by an <code>EOF</code> record: the workbook globals first, then one per sheet. <a class="xref" href="../../api/Bodu.IO.Biff.BiffReader.html">BiffReader</a> is a <code>ref struct</code> that walks the sequence forward over a span you supply, one physical record at a time, allocating nothing; the only state it keeps is the version and the code page, which it can hand to a reader over the next block. <a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html">BiffWriter</a> emits records to an <code>IBufferWriter&lt;byte&gt;</code> under one version, and leaves their order, and the offsets the globals record, to you.</p>
+<h2 id="namespace-map">Namespace map</h2>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>What lives here</th>
+<th>Guides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Biff.html">Bodu.IO.Biff</a></td>
+<td><code>BiffReader</code> with <code>BiffReaderOptions</code> and <code>BiffReaderState</code>; <code>BiffSstReader</code>; <code>BiffWriter</code> with <code>BiffWriterOptions</code>; the decoded <code>Biff*Record</code> types; <code>BiffString</code>, <code>BiffRk</code>, <code>BiffRecordHeader</code>, <code>BiffLimits</code>; the vocabulary enumerations; and the <code>BiffFormatException</code> / <code>BiffUnsupportedVersionException</code> pair.</td>
+<td><a href="authoring-records.html">Authoring a workbook stream</a> · <a href="resumable-reading.html">Reading a stream a block at a time</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="guides">Guides</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="authoring-records.html">Authoring a workbook stream</a></h3>
+  <p>Assemble a complete BIFF8 workbook stream - globals, sheet substreams, <code>BOUNDSHEET</code> offsets, and a shared string table split into <code>CONTINUE</code> records - store it in a compound file, read it back, and see what changes under BIFF5.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="resumable-reading.html">Reading a stream a block at a time</a></h3>
+  <p>Read any stream, seekable or not, one buffer at a time with <code>BiffReaderState</code> and <code>BytesConsumed</code>; keep the shared string table whole across blocks; and read one sheet with the state the globals established.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../excel/reading-workbooks.html">Reading workbooks</a></h3>
+  <p>The spreadsheet reader built on this package: sheets, cells by position, number formats, and dates, from a whole <code>.xls</code> file.</p>
+</div>
+</div>
+<h2 id="suggested-reading-path">Suggested reading path</h2>
+<ol>
+<li><strong><a href="../../docs/io-biff/getting-started.html">Getting started</a></strong> - reading, decoding, and writing single records.</li>
+<li><strong><a href="authoring-records.html">Authoring a workbook stream</a></strong> - when you produce <code>.xls</code> data rather than only read it.</li>
+<li><strong><a href="resumable-reading.html">Reading a stream a block at a time</a></strong> - when the stream is large, arrives in pieces, or cannot seek.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../samples/io-biff.html">Runnable sample</a> - the <code>BiffBasics</code> console project under <code>samples/IO.Biff/</code>.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Biff.html">Bodu.IO.Biff API reference</a> - every type and member.</li>
+<li><a href="../../docs/io-biff/records.html">Record reference</a> - every record the codec decodes and writes, by version.</li>
+<li><a href="../../docs/package-matrix.html">Package matrix</a> - where Bodu.IO.Biff sits in the suite and its dependency stack.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

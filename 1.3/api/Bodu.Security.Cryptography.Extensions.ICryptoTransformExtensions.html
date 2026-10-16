@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ICryptoTransformExtensions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ICryptoTransformExtensions Class
+ | BODU ">
+      
+      <meta name="description" content="Extends  with one-shot, span/memory-aware, stream-to-stream, and async transform helpers - sized buffers, finalization, and stream pumping rolled into single calls.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions">
+
+
+
+
+  <h1 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ICryptoTransformExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.DetachableWriteStream.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.DetachableWriteStream.cs">ICryptoTransformExtensions.DetachableWriteStream.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> with one-shot, span/memory-aware, stream-to-stream, and async transform
+helpers - sized buffers, finalization, and stream pumping rolled into single calls.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ICryptoTransformExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ICryptoTransformExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> is the contract that every block-cipher encryptor or decryptor implements, but its
+raw API forces callers to size output buffers, allocate result arrays, distinguish intermediate
+<code>TransformBlock</code> calls from the final <code>TransformFinalBlock</code>, and reset the transform between messages.
+This class wraps those operations behind two verb-led names - <code>Transform</code> for whole-input processing and
+<code>TransformFinalBlock</code> for finalization - that hide the buffering arithmetic and give the caller back a
+correctly sized result.
+</p>
+<p>
+The API surface clusters into four groups:
+</p>
+<ul><li><span class="term">One-shot in-memory</span>
+<code>Transform</code> overloads that accept a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> array, an array slice (<code>offset</code>/<code>count</code>), a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a>, or a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> and return a freshly allocated
+output array. Use these when the entire input fits in memory.
+</li><li><span class="term">Caller-supplied buffers</span>
+<code>Transform(input, destination)</code> overloads for span and memory destinations - for hot paths that want to reuse a
+pre-allocated output buffer and have <code>destination</code> written in place. The return value is the number of bytes
+written.
+</li><li><span class="term">Stream pumping</span>
+<code>Transform(sourceStream, targetStream, bufferSize)</code> and the awaitable <code>TransformAsync</code> overloads, for
+cases where the input is a stream that should not be fully buffered. The extension drives the read/transform/write
+loop with a tunable buffer.
+</li><li><span class="term">Finalization</span>
+<code>TransformFinalBlock</code> overloads that mirror the same input shapes (no-arg, byte array, slice, span, memory) for
+emitting the final, padded block.
+</li></ul>
+<p>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> instances are stateful and single-use within a message - once
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform.transformfinalblock">TransformFinalBlock(byte[], int, int)</a> has run, the transform should be disposed and
+a fresh one created for the next message. None of these helpers dispose the transform or the supplied streams; the
+caller owns the lifetime. Methods that allocate a result array always return exactly the number of bytes produced.
+Async overloads honor <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a> at every read boundary.
+</p>
+<example>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using Aes aes = Aes.Create();
+aes.Key = key;
+aes.IV = iv;
+
+// 1. One-shot encrypt of a span into a new byte[].
+using ICryptoTransform encryptor = aes.CreateEncryptor();
+byte[] ciphertext = encryptor.Transform(plaintext.AsSpan());
+
+// 2. Stream-encrypt a large file end to end with a 64 KiB buffer.
+using FileStream src = File.OpenRead("plain.bin");
+using FileStream dst = File.Create("cipher.bin");
+using ICryptoTransform e2 = aes.CreateEncryptor();
+int written = e2.Transform(src, dst, bufferSize: 64 * 1024);
+
+// 3. Cancellable async stream transform, e.g. when piping HTTP content.
+using ICryptoTransform e3 = aes.CreateEncryptor();
+await e3.TransformAsync(networkStream, output, bufferSize: 16 * 1024, cancellationToken);</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.Byte[])">
+  Transform(ICryptoTransform, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.Transform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Transforms the entire input byte array using the specified cryptographic transform.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Transform(this ICryptoTransform cryptoTransform, byte[] array)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array to transform. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the transformed output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload is equivalent to calling <code>Transform(array, 0, array.Length)</code>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.Byte[],System.Int32,System.Int32)">
+  Transform(ICryptoTransform, byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.Transform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Transforms a portion of the specified byte array using the given cryptographic transform.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Transform(this ICryptoTransform cryptoTransform, byte[] array, int offset, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array containing the data to transform. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index in <code class="paramref">array</code> at which to begin reading.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to transform.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the transformed output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var aes = Aes.Create();
+byte[] encrypted = aes.CreateEncryptor().Transform(data, 0, data.Length);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">offset</code> or <code class="paramref">count</code> is negative, or exceeds the bounds of
+<code class="paramref">array</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the sum of <code class="paramref">offset</code> and <code class="paramref">count</code> exceeds the length of
+<code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.IO.Stream,System.IO.Stream,System.Int32)">
+  Transform(ICryptoTransform, Stream, Stream, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.Transform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Applies the cryptographic transform to data read from <code class="paramref">sourceStream</code> and writes the result to
+<code class="paramref">targetStream</code> using the specified buffer size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Transform(this ICryptoTransform transform, Stream sourceStream, Stream targetStream, int bufferSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>transform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>sourceStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read untransformed data from. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>targetStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to write transformed data to. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>bufferSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The size, in bytes, of the temporary read buffer. Must be greater than zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The total number of bytes read from <code class="paramref">sourceStream</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var aes = Aes.Create();
+using var decryptor = aes.CreateDecryptor();
+long bytesRead = decryptor.Transform(encryptedStream, outputStream, 81920);</code></pre>
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The final block is written only when <code class="paramref">sourceStream</code> has been read to its end. If reading or
+transforming fails partway through, the exception propagates and <code class="paramref">targetStream</code> holds only the
+output already written; the transform is never finalized, so no padded final block is appended to the partial
+output. Treat a target that saw a failure as incomplete and discard it.
+</p>
+<p>
+Neither stream is disposed. When <code class="paramref">targetStream</code> is itself a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptostream">CryptoStream</a>, its
+final block is flushed after a successful transform, as chaining one <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptostream">CryptoStream</a> into another
+does.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">transform</code>, <code class="paramref">sourceStream</code>, or <code class="paramref">targetStream</code>
+is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bufferSize</code> is less than or equal to zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.ReadOnlyMemory{System.Byte})">
+  Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.Transform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Transforms a memory region using the specified cryptographic transform.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Transform(this ICryptoTransform cryptoTransform, ReadOnlyMemory&lt;byte&gt; input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory region of input bytes to transform.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the transformed output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload delegates to <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.ReadOnlyMemory{System.Byte},System.Memory{System.Byte})">
+  Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.Transform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Transforms the input memory region and writes the result into the destination memory region.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Transform(this ICryptoTransform transform, ReadOnlyMemory&lt;byte&gt; input, Memory&lt;byte&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>transform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory region containing the input data.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory region to receive the transformed output.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written to <code class="paramref">destination</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload delegates to <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">transform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is shorter than <code>input.Length + transform.OutputBlockSize</code>,
+even when the transformed output itself would fit.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.ReadOnlySpan{System.Byte})">
+  Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.Transform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Transforms a span of bytes using the specified cryptographic transform.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Transform(this ICryptoTransform cryptoTransform, ReadOnlySpan&lt;byte&gt; input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span of input bytes to transform.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the transformed output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+  Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.Transform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Transforms the input span and writes the result into the specified destination span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Transform(this ICryptoTransform transform, ReadOnlySpan&lt;byte&gt; input, Span&lt;byte&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>transform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input span to transform.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination span to receive the transformed output.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written to <code class="paramref">destination</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The transformed output is written into <code class="paramref">destination</code> rather than returned as a new allocation,
+making this overload suitable for scenarios where the caller manages buffer lifetimes.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">transform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is shorter than <code>input.Length + transform.OutputBlockSize</code>,
+even when the transformed output itself would fit.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the transform has been disposed or is in an invalid state.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync(System.Security.Cryptography.ICryptoTransform,System.IO.Stream,System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+  TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.DetachableWriteStream.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously applies a cryptographic transformation to data read from a source stream and writes the
+transformed output to a target stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task TransformAsync(this ICryptoTransform transform, Stream sourceStream, Stream targetStream, int bufferSize, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>transform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>sourceStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read untransformed data from. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>targetStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to write transformed data to. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>bufferSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The buffer size, in bytes, used for streaming. Must be greater than zero.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token that may be used to cancel the operation before or during processing, including prior to finalization.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a> representing the asynchronous transformation operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var aes = Aes.Create();
+using var input = File.OpenRead("input.bin");
+using var output = File.Create("encrypted.bin");
+await aes.CreateEncryptor().TransformAsync(input, output, 81920);</code></pre>
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Cancellation is checked before the final block is flushed. If cancellation is requested after the last
+successful read but before finalization, an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> is thrown and finalization
+is skipped, leaving <code class="paramref">targetStream</code> in a partial state.
+</p>
+<p>
+The final block is written only when <code class="paramref">sourceStream</code> has been read to its end. If the operation
+is canceled or fails partway through, the exception propagates and <code class="paramref">targetStream</code> holds only
+the output already written; the transform is never finalized, so no padded final block is appended to the
+partial output, and a token that is already canceled writes nothing at all. Treat a target that saw a failure as
+incomplete and discard it.
+</p>
+<p>
+Neither <code class="paramref">sourceStream</code> nor <code class="paramref">targetStream</code> is disposed by this method. When
+<code class="paramref">targetStream</code> is itself a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptostream">CryptoStream</a>, its final block is flushed after a
+successful transform, as chaining one <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptostream">CryptoStream</a> into another does.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">transform</code>, <code class="paramref">sourceStream</code>, or <code class="paramref">targetStream</code>
+is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bufferSize</code> is less than or equal to zero.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
+    <dd><p>Thrown when the operation is canceled via <code class="paramref">cancellationToken</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.taskcanceledexception">TaskCanceledException</a></dt>
+    <dd><p>Thrown when the operation is canceled via the supplied cancellation token.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync(System.Security.Cryptography.ICryptoTransform,System.ReadOnlyMemory{System.Byte},System.Memory{System.Byte},System.Threading.CancellationToken)">
+  TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.DetachableWriteStream.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously applies a cryptographic transformation to a memory region and writes the transformed result into
+a destination memory region.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;int&gt; TransformAsync(this ICryptoTransform transform, ReadOnlyMemory&lt;byte&gt; input, Memory&lt;byte&gt; destination, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>transform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory region containing the input data.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory region to receive the transformed output.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token that may be used to cancel the operation before finalization.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a> whose result is the number of bytes written to <code class="paramref">destination</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var aes = Aes.Create();
+using var encryptor = aes.CreateEncryptor();
+
+byte[] input = { 0x01, 0x02, 0x03 };
+byte[] buffer = new byte[64];
+
+int written = await encryptor.TransformAsync(input, buffer);</code></pre>
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Cancellation is checked before finalization. If cancellation is requested, an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> is thrown and the content of <code class="paramref">destination</code> is
+undefined.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">transform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is shorter than <code>input.Length + transform.OutputBlockSize</code>,
+even when the transformed output itself would fit.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
+    <dd><p>Thrown when the operation is canceled via <code class="paramref">cancellationToken</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown if the internal transformed data buffer cannot be accessed after finalization.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformBlock(System.Security.Cryptography.ICryptoTransform,System.Byte[])">
+  TransformBlock(ICryptoTransform, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.TransformBlock.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Applies the transform to the entire input buffer, writing the result back into the same array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int TransformBlock(this ICryptoTransform cryptoTransform, byte[] array)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to apply. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array to transform in-place. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written into <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte____examples">Examples</h4>
+  <pre><code class="lang-csharp">using var aes = Aes.Create();
+byte[] block = GetNextBlock(); // must be block-size aligned
+int written = aes.CreateEncryptor().TransformBlock(block);</code></pre>
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload is a convenience wrapper over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform.transformblock">TransformBlock(byte[], int, int, byte[], int)</a> that reads and writes
+to the same buffer. The input length must satisfy the block-alignment requirements of the underlying transform.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the length of <code class="paramref">array</code> is not a multiple of the transform's
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform.inputblocksize">InputBlockSize</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform)">
+  TransformFinalBlock(ICryptoTransform)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.TransformFinalBlock.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Finalizes the transformation without processing any additional input data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] TransformFinalBlock(this ICryptoTransform cryptoTransform)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to finalize. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the final block output, which may be empty or contain padding bytes depending on the
+transform.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Use this overload when the transform should be finalized without processing any remaining data.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform,System.Byte[])">
+  TransformFinalBlock(ICryptoTransform, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.TransformFinalBlock.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Finalizes the transformation of the entire specified byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] TransformFinalBlock(this ICryptoTransform cryptoTransform, byte[] array)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to finalize. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input array to transform. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the final transformed output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte____examples">Examples</h4>
+  <pre><code class="lang-csharp">using var aes = Aes.Create();
+byte[] result = aes.CreateEncryptor().TransformFinalBlock(data);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform,System.Byte[],System.Int32)">
+  TransformFinalBlock(ICryptoTransform, byte[], int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.TransformFinalBlock.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Finalizes the transformation of the specified byte array beginning at the given offset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] TransformFinalBlock(this ICryptoTransform cryptoTransform, byte[] array, int offset)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to finalize. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input array to transform. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based byte offset in <code class="paramref">array</code> at which to begin reading.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the final transformed output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">offset</code> is negative or exceeds the length of <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform,System.ReadOnlyMemory{System.Byte})">
+  TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.TransformFinalBlock.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Finalizes the transformation of the specified memory region.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] TransformFinalBlock(this ICryptoTransform cryptoTransform, ReadOnlyMemory&lt;byte&gt; input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to finalize. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input memory region to transform.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the final transformed output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload delegates to <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform,System.ReadOnlySpan{System.Byte})">
+  TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/ICryptoTransformExtensions.TransformFinalBlock.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Finalizes the transformation of the specified input span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] TransformFinalBlock(this ICryptoTransform cryptoTransform, ReadOnlySpan&lt;byte&gt; input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cryptoTransform</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></dt>
+    <dd><p>The cryptographic transform to finalize. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input span of bytes to transform.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the final transformed output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte___examples">Examples</h4>
+  <pre><code class="lang-csharp">using var aes = Aes.Create();
+byte[] result = aes.CreateEncryptor().TransformFinalBlock(data.AsSpan());</code></pre>
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload writes the input through a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptostream">CryptoStream</a> and finalizes the block. It avoids array
+copies for the input data while still producing a new byte array as output.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cryptoTransform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

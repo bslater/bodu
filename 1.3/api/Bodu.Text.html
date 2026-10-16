@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Text.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text">
+
+
+  <h1 id="Bodu_Text" data-uid="Bodu.Text" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Text Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-text.svg" alt="Bodu.Text"></p>
+<h1 id="bodutext">Bodu.Text</h1>
+<h2 id="purpose">Purpose</h2>
+<p>The <strong>Bodu.Text</strong> namespace ships inside the <strong><code>Bodu.Core</code> package</strong> - it is not a separate library. It holds allocation-conscious helpers for the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> itself: zero-ceremony <code>string</code>↔<code>byte[]</code> conversion, pooled / owned-memory surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding.</p>
+<p>It is also the namespace root that the separately packaged text libraries extend: the binary-to-text <em>radix</em> encodings in <a class="xref" href="Bodu.Text.Encoding.html">Bodu.Text.Encoding</a>, the include/exclude pattern filtering in <a class="xref" href="Bodu.Text.Filtering.html">Bodu.Text.Filtering</a>, and the line-format libraries <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a>, <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>, and <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a> (see the <a href="../docs/formats/index.html">line-formats introduction</a>). None of those types live in this namespace; only the three encoding helpers below do.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../guides/core/encoding-helpers.html">Encoding helpers and BOM detection</a></strong> - the <code>System.Text.Encoding</code> convenience surface.</li>
+<li><strong><a href="../guides/formats/index.html">Bodu.Text.Formats overview</a></strong> - the document-format codecs and their shared pipeline.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong><code>System.Text.Encoding</code> helpers</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a> - extension methods on <code>string</code> (UTF-8 fast paths, pooled / preamble-aware conversion).</li>
+<li><a class="xref" href="Bodu.Text.EncodingExtensions.html">EncodingExtensions</a> - extension methods on <code>System.Text.Encoding</code> (preamble handling, UTF / ASCII classification, fallback configuration, rented / owned / pooled buffer conversion), on <code>Encoder</code> / <code>Decoder</code> (chunked <code>EncodeChunk</code> / <code>DecodeChunk</code> transcoding), and on <code>ReadOnlySpan&lt;char&gt;</code> / <code>ReadOnlySpan&lt;byte&gt;</code> (<code>ToBytes</code>, <code>ToChars</code>, <code>DecodeToString</code>, <code>Transcode</code>, buffer-size guards).</li>
+<li><a class="xref" href="Bodu.Text.EncodingDetection.html">EncodingDetection</a> - static BOM-sniffing: <code>TryDetectByPreamble(ReadOnlySpan&lt;byte&gt;, out Encoding?)</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Text;
+
+// Sniff a byte-order mark, then decode without the preamble bytes leaking into the text.
+byte[] bytes = File.ReadAllBytes(&quot;input.txt&quot;);
+Encoding encoding = EncodingDetection.TryDetectByPreamble(bytes, out Encoding? detected)
+    ? detected
+    : Encoding.UTF8;
+string text = encoding.GetStringSkippingPreamble(bytes);
+
+// String → bytes without the Encoding ceremony.
+byte[] utf8    = &quot;héllo&quot;.ToUtf8Bytes();
+byte[] latin1  = &quot;héllo&quot;.ToBytes(Encoding.Latin1);
+int   byteCount = &quot;héllo&quot;.GetUtf8ByteCount();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>No extra package.</strong> These helpers arrive with <code>Bodu.Core</code>; the radix codecs (<code>Base16</code> … <code>Base85</code>) are the separate <code>Bodu.Text.Encoding</code> package.</li>
+<li><strong>Span-first.</strong> Every conversion has a span, <code>IBufferWriter&lt;byte&gt;</code>, or pooled-buffer overload, so the common cases avoid intermediate allocations.</li>
+<li><strong>See also:</strong> the <a href="../guides/core/encoding-helpers.html">encoding helpers guide</a>, the <a href="../docs/text/index.html">Bodu.Text introduction</a>, and the <a href="../docs/core/index.html">Bodu.Core introduction</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="namespaces">
+Namespaces
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Configuration.html">Bodu.Text.Configuration</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Encoding.html">Bodu.Text.Encoding</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Filtering.html">Bodu.Text.Filtering</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Serialization.html">Bodu.Text.Serialization</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Yaml.html">Bodu.Text.Yaml</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.EncodingDetection.html">EncodingDetection</a></dt>
+      <dd><p>Provides byte-order-mark (BOM) based heuristics for detecting which <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> was used to
+produce a byte sequence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.EncodingExtensions.html">EncodingExtensions</a></dt>
+      <dd><p>Provides span-friendly, allocation-aware, and pool-aware extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, and on
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoder">Encoder</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.decoder">Decoder</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a></dt>
+      <dd><p>Provides encoding extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that mirror the span-receiver surface in
+<a class="xref" href="Bodu.Text.EncodingExtensions.html">EncodingExtensions</a>.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

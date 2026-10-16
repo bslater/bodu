@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/calendar/caching/backends-and-options.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/caching/backends-and-options.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -173,12 +173,12 @@ if (!options.TryValidate(out string? error))
 <tr>
 <td><code>ThrowOnStorageFailure</code></td>
 <td><code>false</code></td>
-<td><code>false</code> keeps the contract's best-effort behaviour - a failed read is an empty read, a failed write is skipped and reported as <code>Failed</code>. <code>true</code> rethrows the storage exception as the store produced it (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a> or <code>UnauthorizedAccessException</code> for files; which one varies by platform). Argument validation always throws regardless.</td>
+<td><code>false</code> keeps the contract's best-effort behaviour - a failed read is an empty read, a failed write is skipped and reported as <code>Failed</code>. <code>true</code> rethrows the storage exception as the store produced it: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a> or <code>UnauthorizedAccessException</code> for files (which one varies by platform), <code>SqliteException</code> or <code>IOException</code> for SQLite, and any non-cancellation exception for the distributed cache. Argument validation always throws regardless.</td>
 </tr>
 <tr>
 <td><code>ValidateStorageOnStart</code></td>
 <td><code>false</code></td>
-<td><code>true</code> probes the backing store when the cache is constructed and throws if it is unusable, instead of discovering the fault on the first read or write. The SQLite and distributed registrations run this probe through options <code>ValidateOnStart</code>, so a misconfigured store fails host start-up.</td>
+<td><code>true</code> probes the backing store eagerly and throws if it is unusable, instead of discovering the fault on the first read or write. The file and SQLite caches probe when constructed; the SQLite and distributed registrations run the probe through options <code>ValidateOnStart</code>, so a misconfigured store fails host start-up. A distributed cache constructed directly is never probed.</td>
 </tr>
 </tbody>
 </table>
@@ -270,7 +270,7 @@ if (!options.TryValidate(out string? error))
 <tr>
 <td><code>Territories</code></td>
 <td>empty</td>
-<td>The territories to warm. Empty fails validation, so an unconfigured warm-up cannot register.</td>
+<td>The territories to warm. Empty fails options validation, so the host fails to start until territories are configured.</td>
 </tr>
 <tr>
 <td><code>YearsBehind</code></td>
@@ -368,7 +368,7 @@ Tags = []
     PRIMARY KEY (territory, year, version)
 );
 </code></pre>
-<p><code>computed_at</code> is the invariant round-trip text of the UTC instant and <code>occurrences</code> is the JSON array of occurrence rows for that year (the same row shape as the file schema, without the redundant <code>year</code>/<code>version</code> columns). A store deletes the territory's rows and re-inserts the merged set inside one transaction; a single-year read (<code>GetYear</code>) is answered from one keyed row without loading the territory. <code>Clear()</code> runs <code>DELETE FROM notable_dates</code>.</p>
+<p><code>computed_at</code> is the invariant round-trip text of the UTC instant and <code>occurrences</code> is the JSON array of occurrence rows for that year (the same row shape as the file schema; the redundant <code>year</code> and <code>version</code> fields are written as <code>0</code> and an empty string, since the table's own columns carry them). A store deletes the territory's rows and re-inserts the merged set inside one transaction; a single-year read (<code>GetYear</code>) is answered from one keyed row without loading the territory. <code>Clear()</code> runs <code>DELETE FROM notable_dates</code>.</p>
 <h2 id="the-distributed-key-format">The distributed key format</h2>
 <p><code>DistributedNotableDateCache</code> stores <strong>one blob per territory</strong> under the key <code>{KeyPrefix}notable-dates:{TERRITORY}</code> - with no prefix, <code>notable-dates:US</code>; with <code>KeyPrefix = &quot;app1:&quot;</code>, <code>app1:notable-dates:US</code>. The blob is the JSON form of the file schema above, written with an absolute expiration of <code>Ttl + EntryExpirationMargin</code> when the margin is non-<code>null</code>. <code>Clear()</code> removes the keys <em>this instance</em> has written; it cannot enumerate an <code>IDistributedCache</code>, so keys written by other processes are left to expire.</p>
 <h2 id="notabledatecachewritestatus"><code>NotableDateCacheWriteStatus</code></h2>
@@ -510,7 +510,7 @@ void Register(IServiceCollection services, IConfiguration configuration)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

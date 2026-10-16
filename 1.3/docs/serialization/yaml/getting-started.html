@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.Yaml - Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.Yaml - Getting started | BODU ">
+      
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/serialization/yaml/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="getting-started">Getting started</h1>
+
+<p>This page installs <strong>Bodu.Text.Yaml</strong>, runs a first round trip, renames members, and edits a document with the DOM. For the format specifics see the <a href="index.html">introduction</a>; for the moving parts see <a href="concepts.html">core concepts</a>.</p>
+<h2 id="install">Install</h2>
+<p>Bodu.Text.Yaml targets <code>net8.0</code> and <code>net10.0</code>. Add the package:</p>
+<pre><code class="lang-bash">dotnet add package Bodu.Text.Yaml
+</code></pre>
+<h2 id="a-first-round-trip">A first round trip</h2>
+<p><code>Serialize&lt;T&gt;</code> writes an object graph to a YAML <code>string</code>; <code>Deserialize&lt;T&gt;</code> binds the text back to a type. Note that <code>Deserialize&lt;T&gt;</code> returns <code>T?</code>, so use <code>!</code> where the document is known to be non-null:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+
+public sealed class ServerConfig
+{
+    public string Host { get; set; } = &quot;&quot;;
+    public int Port { get; set; }
+}
+
+var config = new ServerConfig { Host = &quot;localhost&quot;, Port = 8080 };
+
+string yaml = YamlSerializer.Serialize(config);
+// Host: localhost
+// Port: 8080
+
+ServerConfig back = YamlSerializer.Deserialize&lt;ServerConfig&gt;(yaml)!;
+// back.Port → 8080
+</code></pre>
+<p><code>Deserialize&lt;T&gt;</code> also accepts UTF-8 bytes directly:</p>
+<pre><code class="lang-csharp">ReadOnlySpan&lt;byte&gt; utf8 = Encoding.UTF8.GetBytes(yaml);
+ServerConfig fromBytes = YamlSerializer.Deserialize&lt;ServerConfig&gt;(utf8)!;
+</code></pre>
+<p><code>Deserialize&lt;T&gt;(Stream)</code> and <code>DeserializeAsync&lt;T&gt;(Stream)</code> read a stream to its end, and <code>Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, …)</code> / <code>SerializeAsync&lt;T&gt;(Stream, …)</code> write UTF-8 bytes. The stream overloads buffer the whole document in memory - only the stream copy is asynchronous.</p>
+<h2 id="rename-members">Rename members</h2>
+<p>A naming policy renames every member; <a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> pins a single one and always wins over the policy:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+using Bodu.Text.Yaml;
+
+public sealed class Endpoint
+{
+    [PropertyName(&quot;display-name&quot;)]
+    public string DisplayName { get; set; } = &quot;Health check&quot;;
+
+    public int MaxRetryCount { get; set; } = 5;
+}
+
+var options = new YamlSerializerOptions
+{
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+};
+
+string yaml = YamlSerializer.Serialize(new Endpoint(), options);
+// display-name: Health check
+// max_retry_count: 5
+</code></pre>
+<p>The naming policies are <code>CamelCase</code>, <code>SnakeCaseLower</code> / <code>SnakeCaseUpper</code>, and <code>KebabCaseLower</code> / <code>KebabCaseUpper</code>; the <code>YamlSerializerDefaults.Web</code> preset selects camel-case with case-insensitive matching. Member shaping beyond renaming and ignoring is covered in <a href="../../../guides/serialization/yaml/attributes.html">Mapping attributes</a>.</p>
+<h2 id="edit-a-document-without-a-model">Edit a document without a model</h2>
+<p>When you do not have a POCO, parse to the mutable <a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a> DOM, index into the tree, build new scalars with <code>YamlValue.Create(…)</code>, and write the document back with <code>ToYamlString()</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml.Nodes;
+
+string source = &quot;&quot;&quot;
+    server:
+      host: localhost
+      port: 8080
+    &quot;&quot;&quot;;
+
+YamlNode root = YamlNode.Parse(source)!;
+root[&quot;server&quot;]![&quot;port&quot;] = YamlValue.Create(9090);
+
+string updated = root.ToYamlString();
+// server:
+//   host: localhost
+//   port: 9090
+</code></pre>
+<p><code>YamlValue.Create</code> has overloads for <code>string</code>, <code>long</code>, <code>double</code>, and <code>bool</code>. To read a value back out, use <code>GetValue&lt;T&gt;()</code> on a <code>YamlValue</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../../guides/serialization/yaml/using.html">Using YAML</a></strong> - the full set of worked patterns, including both DOMs and multi-document streams.</li>
+<li><strong><a href="../../../guides/serialization/yaml/attributes.html">Mapping attributes</a></strong> - naming policies, <code>[PropertyName]</code>, <code>[Ignore]</code>, the wider attribute family, and the options flags.</li>
+<li><strong><a href="../../../guides/serialization/yaml/converters.html">Writing converters</a></strong> - custom shapes with <code>YamlConverter&lt;T&gt;</code>.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> and the <strong><a href="index.html">introduction</a></strong> - the family vocabulary and the YAML format specifics.</li>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> - the family parent.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

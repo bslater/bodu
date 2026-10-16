@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/excel/worksheets-and-rows.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/excel/worksheets-and-rows.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -111,8 +111,8 @@
 </tr>
 <tr>
 <td>Memory</td>
-<td>One cell at a time</td>
-<td>Whole sheet buffered</td>
+<td>The sheet's records, buffered once; cells decoded one at a time</td>
+<td>Every populated cell, materialized</td>
 </tr>
 <tr>
 <td>Surface</td>
@@ -182,7 +182,7 @@ notes.TryReadCell(out _);
 <p>Opening a sheet seeks to its recorded byte offset, so readers from the same workbook are independent. Address a sheet by name or by zero-based index - both <code>OpenWorksheet</code> and <code>ReadWorksheet</code> accept either; an unknown name throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> and an out-of-range index throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</p>
 <h2 id="choosing-a-surface">Choosing a surface</h2>
 <ul>
-<li><strong>Reach for the streaming reader</strong> when you scan a sheet once - aggregations, exports, row-by-row transforms over a large worksheet - and want to bound allocation to a single cell.</li>
+<li><strong>Reach for the streaming reader</strong> when you scan a sheet once - aggregations, exports, row-by-row transforms over a large worksheet - and do not need a cell map: the reader buffers the sheet's encoded records once and decodes each cell on demand.</li>
 <li><strong>Reach for the materialized worksheet</strong> when you need random access - looking up a cell by position, cross-referencing columns, or reading the same sheet more than once.</li>
 </ul>
 <h2 id="tuning-large-workbook-reads">Tuning large-workbook reads</h2>
@@ -191,14 +191,16 @@ hundreds of thousands of cells it is the difference between a bounded read and
 holding the whole sheet in memory. The levers below all bound the working set
 without changing the values you read.</p>
 <p><strong>Prefer the streaming reader.</strong> <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a>
-decodes one <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a> at a time in record order, so its
-allocation is a single cell regardless of sheet size. The materialized
-<a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> buffers every populated cell, so it
-scales with the sheet - use it only when you genuinely need random access, and
-let it fall out of scope as soon as the lookups are done.</p>
-<p><strong>Read one sheet at a time, and dispose between sheets.</strong> Each reader seeks to its
-own substream and holds decode state until disposed. Open, drain, and dispose one
-reader before opening the next rather than holding several open across a workbook:</p>
+reads the sheet's encoded records into one buffer and decodes one
+<a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a> at a time in record order, without building a
+cell map, so its memory is proportional to the sheet's size on disk. The
+materialized <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> also keeps every populated
+cell, so it grows with the cell count as well - use it only when you genuinely
+need random access, and let it fall out of scope as soon as the lookups are done.</p>
+<p><strong>Read one sheet at a time.</strong> Each reader buffers its own sheet's records, and
+<code>Dispose</code> only marks it closed: the buffer is reclaimed once the reader is no
+longer referenced. Open, drain, and drop one reader before opening the next
+rather than holding several across a workbook:</p>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;big.xls&quot;);
@@ -208,7 +210,7 @@ foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
     using ExcelWorksheetReader reader = workbook.OpenWorksheet(sheet.Index);
     while (reader.TryReadCell(out ExcelCell cell))
         Accumulate(cell);
-}   // each reader's decode state is released before the next opens
+}   // each reader goes out of scope before the next opens
 </code></pre>
 <p><strong>Skip the metadata you do not use.</strong> Pass an
 <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryReaderOptions.html">ExcelBinaryReaderOptions</a> that clears the work you do
@@ -239,7 +241,7 @@ whole sheet, because Excel writes cells in row-major order. Reach for
 </thead>
 <tbody>
 <tr>
-<td>Bound memory to one cell</td>
+<td>Avoid materializing every cell</td>
 <td><code>OpenWorksheet</code> + <code>TryReadCell</code> / <code>ReadCells</code></td>
 <td><code>ReadWorksheet</code></td>
 </tr>
@@ -255,7 +257,7 @@ whole sheet, because Excel writes cells in row-major order. Reach for
 </tr>
 <tr>
 <td>Several sheets</td>
-<td>one reader at a time, disposed between</td>
+<td>one reader at a time, dropped between</td>
 <td>holding many readers open</td>
 </tr>
 <tr>
@@ -289,7 +291,7 @@ whole sheet, because Excel writes cells in row-major order. Reach for
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/io-hashing/adler.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-hashing/adler.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -110,7 +110,7 @@
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a></td>
 <td>32 bits</td>
 <td>65536</td>
-<td>SIMD-friendly variant; faster on vector pipelines, <strong>not</strong> wire-compatible with Adler-32.</td>
+<td>Power-of-two modulus; runs the same scalar loop as Adler-32, so no faster, and <strong>not</strong> wire-compatible with Adler-32.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a></td>
@@ -137,7 +137,7 @@ adler.Append(data);
 byte[] digest = adler.GetCurrentHash();
 string hex    = Convert.ToHexString(digest);   // 4 bytes, 8 hex characters, big-endian
 </code></pre>
-<p>Swap <code>Adler32</code> for <code>Adler64</code> when you need the wider space, or for <code>Adler32C</code> when you want the SIMD-friendly modulus and don't need interoperability with zlib.</p>
+<p>Swap <code>Adler32</code> for <code>Adler64</code> when you need the wider space, or for <code>Adler32C</code> when you must match an existing system that computes Adler sums modulo 65536.</p>
 <h2 id="pattern-2---the-append--getcurrenthash--reset-lifecycle">Pattern 2 - the <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
 
@@ -184,7 +184,7 @@ outputStream.Write(trailer);
 <h2 id="picking-a-variant">Picking a variant</h2>
 <ul>
 <li><strong>Need interoperability with zlib, PNG, rsync, or any tool that speaks RFC 1950?</strong> Use <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a>. The modulus (65521) and initial state (<code>A=1, B=0</code>) are fixed by the specification.</li>
-<li><strong>Hashing large buffers in a hot loop on a SIMD-capable CPU?</strong> Use <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a>. The power-of-two modulus removes the <code>% 65521</code> reduction and lets auto-vectorization stay vectorized. The digest is <strong>not</strong> interchangeable with Adler-32.</li>
+<li><strong>Matching an existing system that uses an Adler sum modulo 65536?</strong> Use <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a>. It runs the same scalar loop as Adler-32, reducing with <code>%</code> against its modulus, so it is no faster, and it detects fewer errors. The digest is <strong>not</strong> interchangeable with Adler-32.</li>
 <li><strong>Checksumming very long streams where a 32-bit space is uncomfortable?</strong> Use <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a>. Four bytes of digest become eight.</li>
 </ul>
 <h2 id="error-detection-profile-and-the-short-input-weakness">Error-detection profile and the short-input weakness</h2>
@@ -193,15 +193,15 @@ outputStream.Write(trailer);
 <li>Each byte first lands in <code>A</code>, and <code>B</code> only accumulates the <em>running</em> <code>A</code>. For a short message <code>A</code> stays small, so <code>B</code> grows slowly and the high bits of the 32-bit digest barely move. The effective digest space is far narrower than 32 bits until the payload is a few hundred bytes long.</li>
 <li>This is the reason RFC 1950 carries Adler-32 only as a trailer over an already-substantial deflate stream, and the reason a CRC-32 is the better checksum for short frames.</li>
 </ul>
-<p>Like Fletcher, Adler catches every single-bit error and every adjacent-byte transposition, and like Fletcher it offers no per-position burst guarantee. Choose it for zlib interoperability or for long, benign payloads - not for short frames on a noisy link.</p>
+<p>Adler catches every single-bit error and every adjacent-byte transposition (as Fletcher does, except for Fletcher-16's <code>0x00</code> / <code>0xFF</code> swap), and like Fletcher it offers no per-position burst guarantee. Choose it for zlib interoperability or for long, benign payloads - not for short frames on a noisy link.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
-<p><code>Adler32C</code> trades the prime modulus for <code>2^16</code>, which removes the <code>% 65521</code> reduction and keeps an auto-vectorised loop vectorised - but the power-of-two modulus weakens error coverage further and the digest is <strong>not</strong> interchangeable with a real Adler-32. Use it only inside your own system, never on a zlib/PNG/rsync wire.</p>
+<p><code>Adler32C</code> trades the prime modulus for <code>2^16</code>. Bodu's implementation reduces it with the same <code>%</code> as Adler-32 and has no vector path, so it gains no speed, while the power-of-two modulus weakens error coverage further and the digest is <strong>not</strong> interchangeable with a real Adler-32. Use it only inside your own system, never on a zlib/PNG/rsync wire.</p>
 </div>
 <h2 id="adler-vs-fletcher-vs-crc">Adler vs Fletcher vs CRC</h2>
 <ul>
 <li><strong>Adler</strong> is position-dependent and fast; weaker than CRC on short inputs (the first few bytes leave <code>A</code> small, so <code>B</code> grows slowly).</li>
-<li><strong>Fletcher</strong> uses a similar twin-accumulator structure with word-sized rather than byte-sized updates; comparable error-detection on uncorrelated noise, slightly different distribution.</li>
+<li><strong>Fletcher</strong> uses a similar twin-accumulator structure, also one byte at a time, but with a <code>2^k − 1</code> modulus and <code>A</code> starting at 0 rather than 1; comparable error-detection on uncorrelated noise, slightly different distribution.</li>
 <li><strong>CRC</strong> is polynomial-arithmetic over GF(2); better at catching the kind of burst errors common on physical links, and it is what wire formats usually specify.</li>
 </ul>
 <p>All three are <strong>non-cryptographic</strong> - none of them resists a motivated adversary. If you need authentication, see the <a href="../cryptography/hashing.html">cryptography hashing guide</a>.</p>
@@ -230,7 +230,7 @@ outputStream.Write(trailer);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

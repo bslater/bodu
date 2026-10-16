@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Using Skipjack | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Using Skipjack | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/skipjack.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="using-skipjack">Using Skipjack</h1>
+
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Skipjack.html">Skipjack</a> is an NSA-designed block cipher declassified in 1998. It is included for <strong>legacy interoperability and research</strong> - do not use it to protect sensitive data in new applications.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Skipjack has an 80-bit key and a 64-bit block. The short key is well below modern security margins, and the 64-bit block is vulnerable to birthday-bound attacks (SWEET32) when more than a few gigabytes are encrypted under the same key. For new work, use AES (via the BCL's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.aes">Aes</a>).</p>
+</div>
+<h2 id="fixed-sizes-at-a-glance">Fixed sizes at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Size</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Block size</td>
+<td>64 bits (8 bytes)</td>
+<td>Fixed - cannot be configured.</td>
+</tr>
+<tr>
+<td>Key size</td>
+<td>80 bits (10 bytes)</td>
+<td>Fixed.</td>
+</tr>
+<tr>
+<td>IV size</td>
+<td>64 bits (8 bytes)</td>
+<td>Matches the block size.</td>
+</tr>
+<tr>
+<td>Tweak</td>
+<td>-</td>
+<td>Skipjack is not tweakable.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="encrypt-and-decrypt---cbc--pkcs7">Encrypt and decrypt - CBC + PKCS7</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Diagnostics;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] plaintext = Encoding.UTF8.GetBytes(&quot;legacy payload&quot;);
+
+byte[] key, iv, ciphertext;
+using (var alg = new Skipjack { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 })
+{
+    alg.GenerateKey();           // 10 bytes
+    alg.GenerateIV();            // 8 bytes
+
+    key = alg.Key;
+    iv  = alg.IV;
+
+    ciphertext = alg.Encrypt(plaintext);
+}
+
+byte[] recovered;
+using (var alg = new Skipjack { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7,
+                                 Key = key, IV = iv })
+{
+    recovered = alg.Decrypt(ciphertext);
+}
+
+Debug.Assert(plaintext.SequenceEqual(recovered));
+</code></pre>
+<h2 id="encrypt-and-decrypt---ctr-stream-mode">Encrypt and decrypt - CTR (stream mode)</h2>
+<p>CTR needs no padding expansion, but through the <code>Skipjack</code> wrapper <code>PaddingMode.None</code> still requires block-aligned input (a multiple of 8 bytes); for arbitrary lengths drive <a class="xref" href="../../api/Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> directly, which accepts a trailing partial block (see <a href="cipher-composition-reference.html">Modes, transforms, and factories</a>):</p>
+<pre><code class="lang-csharp">using var alg = new Skipjack
+{
+    BlockMode = CipherModeKind.CTR,
+    Padding   = PaddingMode.None,  // CTR doesn't pad - input must be block-aligned here
+};
+alg.GenerateKey();
+alg.GenerateIV();              // initial counter block - must be unique per message
+
+byte[] aligned = new byte[64]; // eight 8-byte blocks
+RandomNumberGenerator.Fill(aligned);
+
+byte[] ciphertext = alg.Encrypt(aligned);   // same length as the input
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p>Skipjack's 8-byte block is small. Encrypting more than ~2³² blocks (32 GB) under the same key in CTR mode is unsafe because of the 64-bit birthday bound (SWEET32), long before the 64-bit counter could wrap. <code>CtrModeTransform</code> throws only if the counter rolls over to zero.</p>
+<h2 id="loading-a-known-key">Loading a known key</h2>
+<p>Skipjack's key is small enough (10 bytes) that you might keep it embedded in a configuration file or a key-wrapping envelope. Either way, set it explicitly:</p>
+<pre><code class="lang-csharp">byte[] key = new byte[]
+{
+    0x00, 0x99, 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11,
+};
+
+using var alg = new Skipjack
+{
+    Key       = key,
+    BlockMode = CipherModeKind.CBC,
+    Padding   = PaddingMode.PKCS7,
+};
+alg.GenerateIV();
+byte[] ciphertext = alg.Encrypt(plaintext);
+</code></pre>
+<h2 id="when-to-use-skipjack">When to use Skipjack</h2>
+<ul>
+<li><strong>Interoperability</strong> with systems that historically used Skipjack (e.g. legacy US government protocols).</li>
+<li><strong>Educational exercises</strong> and cipher-design studies.</li>
+<li><strong>Regression fixtures</strong> where you need a deterministic pinpoint cipher whose test vectors are well-known.</li>
+</ul>
+<p>For anything else, reach for AES or Threefish.</p>
+<h2 id="two-security-limits-not-one">Two security limits, not one</h2>
+<p>Skipjack fails the modern bar on <strong>two independent axes</strong>, and both are structural - no mode or padding choice fixes them:</p>
+<ul>
+<li><strong>80-bit key.</strong> The key space is 2⁸⁰. That was defensible in 1998 but is now within reach of a well-resourced adversary; modern designs use 128-bit keys as the floor. There is no longer-key Skipjack variant.</li>
+<li><strong>64-bit block.</strong> Like Blowfish, the 8-byte block triggers the SWEET32 birthday bound: after roughly 2³² blocks (~32 GB) under one key, collisions in CBC/CTR ciphertext begin to leak plaintext relationships. <code>CtrModeTransform</code> throws if the counter actually wraps, but that guard fires long after the statistical danger zone begins.</li>
+</ul>
+<p>Treat Skipjack strictly as an interop and research cipher. For confidentiality use the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.aes">Aes</a> or <a href="threefish-256.html">Threefish</a>; for confidentiality plus integrity use an <a href="aead-modes.html">AEAD mode</a>.</p>
+<h2 id="dropping-to-the-raw-primitive">Dropping to the raw primitive</h2>
+<p><code>Skipjack</code> is the <code>SymmetricAlgorithm</code> wrapper; <code>SkipjackBlockCipher</code> is the underlying raw <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>. Use it when composing a pipeline by hand - both paths yield identical ciphertext. See <a href="composing-primitives.html">Composing primitives</a>, which uses Skipjack as its worked example.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="encryption-basics.html">Encryption basics</a> - the Key/IV lifecycle.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> - CFB, OFB, ECB also work with Skipjack.</li>
+<li><a href="padding.html">Padding</a> - which padding scheme pairs with which mode.</li>
+<li><a href="composing-primitives.html">Composing primitives</a> - <code>SkipjackBlockCipher</code> + mode + padding by hand.</li>
+<li><a href="blowfish.html">Using Blowfish</a> - another 64-bit-block cipher with a variable key size.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_NotableDateResourceLoader" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 NotableDateResourceLoader Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ NotableDateResourceLoader Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs">NotableDateResourceLoader.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs">NotableDateResourceLoader.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides the entry points for loading a notable-date document from XML or JSON into a validated
@@ -186,15 +186,22 @@ error-severity diagnostic is produced the load fails with a <a class="xref" href
 carries the full diagnostic set.
 </p>
 <p>
+Problems in the document's data are diagnostics, not exceptions: an imported resource whose content is not
+well-formed is a <code>BODU-CAL-SYNTAX</code> error naming the import, and a strategy value outside the strategy's range
+is a <code>BODU-CAL-STRATEGY</code> error. Only the loaded document's own malformed text raises a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> from the throwing overloads.
+</p>
+<p>
 The overloads without a resolver cannot satisfy imports; a document declaring <code>Imports</code> must be loaded with the
 resolver overload, whose delegate maps a resource name to that resource's XML or JSON content.
 </p>
 <p>
 <strong>When to use.</strong> Call <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html#Bodu_Globalization_Calendar_NotableDateResourceLoader_Load_System_String_Microsoft_Extensions_Logging_ILogger_">Load(string, ILogger?)</a> / <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html#Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_System_String_Microsoft_Extensions_Logging_ILogger_">LoadJson(string, ILogger?)</a>
 (or the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> overloads) for a self-contained document, and the resolver overloads when the document
-imports shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the
-data-pack factories (for example the <code>AmericasCalendarData</code> bundle), which load and wire the embedded resources
-for you.
+imports shared concepts or adjustment policies from other resources. A document whose rules name custom algorithm
+keys is loaded through the overloads that also take an <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>, in either
+format. For the bundled territory packs prefer the data-pack factories (for example the <code>AmericasCalendarData</code>
+bundle), which load and wire the embedded resources for you.
 </p>
 <p>
 <strong>Logging.</strong> Each <code>Load</code> / <code>LoadJson</code> overload accepts an optional <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a>
@@ -215,7 +222,7 @@ its error-diagnostic count (<a class="xref" href="https://learn.microsoft.com/do
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_Load_System_IO_Stream_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.Load(System.IO.Stream,Microsoft.Extensions.Logging.ILogger)">
   Load(Stream, ILogger?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -276,7 +283,7 @@ its error-diagnostic count (<a class="xref" href="https://learn.microsoft.com/do
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_Load_System_IO_Stream_System_Func_System_String_System_String__Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.Load(System.IO.Stream,System.Func{System.String,System.String},Microsoft.Extensions.Logging.ILogger)">
   Load(Stream, Func&lt;string, string?&gt;, ILogger?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -341,7 +348,7 @@ resolver.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_Load_System_String_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.Load(System.String,Microsoft.Extensions.Logging.ILogger)">
   Load(string, ILogger?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -402,7 +409,7 @@ resolver.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_Load_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.Load(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry,Microsoft.Extensions.Logging.ILogger)">
   Load(string, Func&lt;string, string?&gt;, INotableDateAlgorithmRegistry?, ILogger?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -470,7 +477,7 @@ resolver and accepting custom algorithm keys registered in the supplied registry
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_Load_System_String_System_Func_System_String_System_String__Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.Load(System.String,System.Func{System.String,System.String},Microsoft.Extensions.Logging.ILogger)">
   Load(string, Func&lt;string, string?&gt;, ILogger?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -535,7 +542,7 @@ resolver.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadBinary_System_IO_Stream_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadBinary(System.IO.Stream)">
   LoadBinary(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -569,9 +576,11 @@ resolver.</p>
 
   <h4 class="section" id="Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadBinary_System_IO_Stream__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-A binary pack is written from an already-validated resource (see <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html">NotableDateBinaryResource</a>), so
-loading skips parsing and semantic validation entirely - the trim- and AOT-friendly load path. Integrity is
-still enforced: the payload digest and every structural bound are verified.
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a> runs this loader's identifier,
+range, enumeration, duplicate and cross-reference checks before it encodes a pack, so loading skips parsing and
+semantic validation entirely - the trim- and AOT-friendly load path. Integrity is still enforced: the payload
+digest and every structural bound are verified. A pack not produced by that method, such as one edited by hand,
+is not revalidated.
 </p>
 </div>
 
@@ -595,7 +604,7 @@ corrupted, or carries a value outside the sealed format's tables.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_System_IO_Stream_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(System.IO.Stream,Microsoft.Extensions.Logging.ILogger)">
   LoadJson(Stream, ILogger?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -656,7 +665,7 @@ corrupted, or carries a value outside the sealed format's tables.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_System_String_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(System.String,Microsoft.Extensions.Logging.ILogger)">
   LoadJson(string, ILogger?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -715,9 +724,77 @@ corrupted, or carries a value outside the sealed format's tables.</p>
   <a id="Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry,Microsoft.Extensions.Logging.ILogger)">
+  LoadJson(string, Func&lt;string, string?&gt;, INotableDateAlgorithmRegistry?, ILogger?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Loads and validates a notable-date document from its JSON content, resolving imports through the supplied
+resolver and accepting custom algorithm keys registered in the supplied registry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateResource LoadJson(string json, Func&lt;string, string?&gt; resourceResolver, INotableDateAlgorithmRegistry? algorithms, ILogger? logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>json</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The notable-date document JSON content.</p>
+</dd>
+    <dt><code>resourceResolver</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A delegate mapping a resource name to its XML or JSON content, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when missing.</p>
+</dd>
+    <dt><code>algorithms</code> <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a></dt>
+    <dd><p>A registry of custom algorithm keys to accept during validation, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger that receives load diagnostics. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The loaded and validated <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">json</code> or <code class="paramref">resourceResolver</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">json</code> is empty or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p><code class="paramref">json</code> is not well-formed JSON.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The notable-date document produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_System_String_System_Func_System_String_System_String__Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(System.String,System.Func{System.String,System.String},Microsoft.Extensions.Logging.ILogger)">
   LoadJson(string, Func&lt;string, string?&gt;, ILogger?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -782,7 +859,7 @@ resolver.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoad_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoad(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry,Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)">
   TryLoad(string, Func&lt;string, string?&gt;, INotableDateAlgorithmRegistry?, out NotableDateResource?, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -810,7 +887,7 @@ collecting every diagnostic instead of throwing on validation failure.</p>
     <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
     <dd><p>The loaded resource, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the document does not validate.</p>
 </dd>
-    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
+    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
     <dd><p>Every diagnostic the parse, import resolution, and validation produced.</p>
 </dd>
   </dl>
@@ -846,7 +923,7 @@ collecting every diagnostic instead of throwing on validation failure.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoad_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoad(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)">
   TryLoad(string, Func&lt;string, string?&gt;, out NotableDateResource?, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -870,7 +947,7 @@ warnings and informational messages - instead of throwing on validation failure.
     <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
     <dd><p>The loaded resource, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the document does not validate.</p>
 </dd>
-    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
+    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
     <dd><p>Every diagnostic the parse, import resolution, and validation produced.</p>
 </dd>
   </dl>
@@ -893,7 +970,8 @@ warnings and informational messages - instead of throwing on validation failure.
   <div class="markdown level1 remarks"><p>
 Unlike the throwing <code>Load</code> overloads, malformed XML is reported as a <code>BODU-CAL-SYNTAX</code> error
 diagnostic rather than a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>, so a caller can lint arbitrary input without exception
-handling. Argument errors still throw - the <code>Try</code> contract covers data, not usage.
+handling; malformed imported content and out-of-range strategy values are diagnostics in every overload.
+Argument errors still throw - the <code>Try</code> contract covers data, not usage.
 </p>
 </div>
 
@@ -911,9 +989,78 @@ handling. Argument errors still throw - the <code>Try</code> contract covers dat
   <a id="Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoadJson_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoadJson_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry,Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)">
+  TryLoadJson(string, Func&lt;string, string?&gt;, INotableDateAlgorithmRegistry?, out NotableDateResource?, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to load and validate a notable-date document from JSON content against a custom algorithm registry,
+collecting every diagnostic instead of throwing on validation failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryLoadJson(string json, Func&lt;string, string?&gt; resourceResolver, INotableDateAlgorithmRegistry? algorithms, out NotableDateResource? resource, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt; diagnostics)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>json</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The notable-date document JSON content.</p>
+</dd>
+    <dt><code>resourceResolver</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A delegate mapping a resource name to its XML or JSON content, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when missing.</p>
+</dd>
+    <dt><code>algorithms</code> <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a></dt>
+    <dd><p>The custom algorithm registry consulted when validating <code>algorithm</code> strategy keys, or
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for built-ins only.</p>
+</dd>
+    <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The loaded resource, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the document does not validate.</p>
+</dd>
+    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
+    <dd><p>Every diagnostic the parse, import resolution, and validation produced.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the document loaded without error-severity diagnostics; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoadJson_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Malformed or empty JSON is reported as a <code>BODU-CAL-SYNTAX</code> error diagnostic rather than an exception.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">json</code> or <code class="paramref">resourceResolver</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoadJson_" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoadJson_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___" data-uid="Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)">
   TryLoadJson(string, Func&lt;string, string?&gt;, out NotableDateResource?, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResourceLoader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -937,7 +1084,7 @@ throwing on validation failure.</p>
     <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
     <dd><p>The loaded resource, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the document does not validate.</p>
 </dd>
-    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
+    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
     <dd><p>Every diagnostic the parse, import resolution, and validation produced.</p>
 </dd>
   </dl>
@@ -1007,7 +1154,7 @@ Malformed or empty JSON is reported as a <code>BODU-CAL-SYNTAX</code> error diag
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.Bencode - Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.Bencode - Getting started | BODU ">
+      
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/serialization/bencode/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="getting-started">Getting started</h1>
+
+<h2 id="install">Install</h2>
+<p>Add the package. Its one library dependency, the shared <strong>Bodu.Text.Serialization</strong> package (the attribute family, naming policies, and callback interfaces), is restored transitively - there is nothing else to add.</p>
+<pre><code class="lang-shell">dotnet add package Bodu.Text.Bencode
+</code></pre>
+<p>It targets <code>net8.0</code> and <code>net10.0</code>.</p>
+<h2 id="a-first-bencode-round-trip">A first Bencode round trip</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode;
+
+public sealed class FileEntry
+{
+    public string Name { get; set; } = &quot;&quot;;
+    public long Length { get; set; }
+}
+
+byte[] payload = BencodeSerializer.Serialize(new FileEntry { Name = &quot;ubuntu.iso&quot;, Length = 1024 });
+// d6:Lengthi1024e4:Name10:ubuntu.isoe   (dictionary keys in canonical order)
+
+FileEntry entry = BencodeSerializer.Deserialize&lt;FileEntry&gt;(payload);
+</code></pre>
+<h2 id="rename-members">Rename members</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode;
+using Bodu.Text.Serialization;
+
+var options = new BencodeSerializerOptions
+{
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+};
+
+// &quot;Name&quot; is written as &quot;name&quot;, &quot;Length&quot; as &quot;length&quot;.
+byte[] payload = BencodeSerializer.Serialize(entry, options);
+</code></pre>
+<p>Or pin a single member's name with <code>[PropertyName]</code>, which always wins over the policy.</p>
+<h2 id="edit-a-document-without-a-model">Edit a document without a model</h2>
+<p>When you need to change a value but do not want a POCO, parse to the <strong>mutable DOM</strong>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Nodes;
+
+BencodeNode node = BencodeNode.Parse(payload)!;
+node[&quot;Length&quot;] = 2048;
+byte[] back = node.ToByteArray();
+</code></pre>
+<h2 id="read-a-document-without-a-model">Read a document without a model</h2>
+<p>For inspection only, the <strong>read-only DOM</strong> is the lighter choice - a low-allocation view over the parsed buffer, walked through <code>RootElement</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Document;
+
+using BencodeDocument doc = BencodeDocument.Parse(payload);
+
+string name   = doc.RootElement.GetProperty(&quot;Name&quot;).GetString();  // &quot;ubuntu.iso&quot;
+long   length = doc.RootElement.GetProperty(&quot;Length&quot;).GetInt64(); // 1024
+</code></pre>
+<p><code>BencodeDocument</code> is disposable - wrap it in <code>using</code> and copy out any values that must outlive it, since disposal returns its pooled buffer.</p>
+<h2 id="bridge-a-model-to-a-dom-without-re-encoding">Bridge a model to a DOM without re-encoding</h2>
+<p>When you have a model but want to inspect or edit its shape before writing bytes, the serializer projects it straight into either DOM - no intermediate <code>byte[]</code> round trip - and binds back from a node tree:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode;
+using Bodu.Text.Bencode.Nodes;
+
+BencodeNode? node = BencodeSerializer.SerializeToNode(entry);   // model → mutable tree
+node![&quot;Length&quot;] = 4096;                                          // edit in place
+FileEntry edited = BencodeSerializer.Deserialize&lt;FileEntry&gt;(node!); // node → model
+</code></pre>
+<p><code>SerializeToDocument</code> produces the read-only <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> for inspection instead; like any deserialized document it is caller-owned and must be disposed.</p>
+<h2 id="round-trip-through-a-stream">Round-trip through a Stream</h2>
+<p>The serializer reads and writes <code>Stream</code> directly, with async variants, so a payload never has to materialize as a <code>byte[]</code> first:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode;
+
+await using (FileStream stream = File.Create(&quot;ubuntu.torrent&quot;))
+{
+    await BencodeSerializer.SerializeAsync(stream, torrent);
+}
+
+await using (FileStream stream = File.OpenRead(&quot;ubuntu.torrent&quot;))
+{
+    Torrent loaded = await BencodeSerializer.DeserializeAsync&lt;Torrent&gt;(stream);
+}
+</code></pre>
+<p>The synchronous <code>Serialize(Stream, …)</code> / <code>Deserialize&lt;T&gt;(Stream, …)</code> overloads have the same shape without the token.</p>
+<h2 id="when-something-goes-wrong">When something goes wrong</h2>
+<p>Failures split into two exception types, so you can tell <em>bad input</em> apart from <em>wrong type</em>:</p>
+<ul>
+<li>A <strong>malformed document</strong> - bytes the grammar rejects - raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>, which carries the byte <code>Offset</code> where parsing failed.</li>
+<li>A document that <strong>parses but cannot bind</strong> to your type - a type mismatch, a missing required member, a value the format cannot represent - raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>.</li>
+</ul>
+<pre><code class="lang-csharp">try
+{
+    FileEntry loaded = BencodeSerializer.Deserialize&lt;FileEntry&gt;(payload);
+}
+catch (BencodeFormatException ex)
+{
+    Console.Error.WriteLine($&quot;Malformed Bencode at byte {ex.Offset}: {ex.Message}&quot;);
+}
+catch (BencodeSerializationException ex)
+{
+    Console.Error.WriteLine($&quot;Document does not match FileEntry: {ex.Message}&quot;);
+}
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Text.Bencode introduction</a></strong> - what is specific to Bencode: byte strings, canonical output, the kinds it cannot represent.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the serializer, converter model, both DOMs, and the reader/writer seam.</li>
+<li><strong><a href="../../../guides/serialization/bencode/using.html">Using Bencode</a></strong> - byte strings, canonical ordering, the DOMs, and unsupported kinds.</li>
+<li><strong><a href="../../../guides/serialization/bencode/converters.html">Writing converters</a></strong> - custom shapes with <code>BencodeConverter&lt;T&gt;</code>.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> - where the serializers sit among the codecs and document formats.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

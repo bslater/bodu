@@ -94,7 +94,7 @@
 
   <h1 id="Bodu_Collections_Generic_EvictingDictionaryPolicy" data-uid="Bodu.Collections.Generic.EvictingDictionaryPolicy" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 EvictingDictionaryPolicy Enum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/EvictingDictionaryPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/EvictingDictionaryPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -103,9 +103,9 @@ EvictingDictionaryPolicy Enum
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/EvictingDictionaryPolicy.cs">EvictingDictionaryPolicy.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/EvictingDictionaryPolicy.cs">EvictingDictionaryPolicy.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Specifies the eviction strategy used by an <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> when its capacity is
@@ -218,8 +218,9 @@ Add("D")    // Triggers eviction: Dictionary must remove one entry</code></pre>
 <p>
 The item that is evicted varies depending on the selected <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a>:
 </p>
-<table><thead><tr><th class="term">Policy</th><th class="description">Item Evicted</th></tr></thead><tbody><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_FirstInFirstOut">FirstInFirstOut</a></td><td class="description"><code>"A"</code> - the first item added, regardless of access.</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_LeastRecentlyUsed">LeastRecentlyUsed</a></td><td class="description"><code>"C"</code> - the item least recently accessed (A was accessed, C was not).</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_LeastFrequentlyUsed">LeastFrequentlyUsed</a></td><td class="description"><code>"B"</code> - the first item with the lowest access count.</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_MostRecentlyUsed">MostRecentlyUsed</a></td><td class="description"><code>"A"</code> - the most recently accessed item.</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_RandomReplacement">RandomReplacement</a></td><td class="description">A randomly chosen item from <code>"A"</code>, <code>"B"</code>, or <code>"C"</code>.</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_SecondChance">SecondChance</a></td><td class="description">
-<code>"B"</code> - evicted after its reference bit is cleared; <code>"A"</code> is spared due to recent access.
+<table><thead><tr><th class="term">Policy</th><th class="description">Item Evicted</th></tr></thead><tbody><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_FirstInFirstOut">FirstInFirstOut</a></td><td class="description"><code>"A"</code> - the first item added, regardless of access.</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_LeastRecentlyUsed">LeastRecentlyUsed</a></td><td class="description"><code>"B"</code> - the item least recently accessed (A's access made it the most recent).</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_LeastFrequentlyUsed">LeastFrequentlyUsed</a></td><td class="description"><code>"B"</code> - the first item with the lowest access count.</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_MostRecentlyUsed">MostRecentlyUsed</a></td><td class="description"><code>"A"</code> - the most recently accessed item.</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_RandomReplacement">RandomReplacement</a></td><td class="description">A randomly chosen item from <code>"A"</code>, <code>"B"</code>, or <code>"C"</code>.</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html#Bodu_Collections_Generic_EvictingDictionaryPolicy_SecondChance">SecondChance</a></td><td class="description">
+<code>"B"</code> - <code>"A"</code>, the oldest, has its reference bit cleared and moves to the back; <code>"B"</code>, never
+re-referenced, is evicted.
 </td></tr></tbody></table>
 <p>
 This example highlights the behavioral differences across policies using the same input sequence. Actual eviction
@@ -253,7 +254,7 @@ order may vary depending on access patterns, dictionary configuration, and imple
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

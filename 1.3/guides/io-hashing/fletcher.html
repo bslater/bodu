@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Using Fletcher | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Using Fletcher | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-hashing/fletcher.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="using-fletcher">Using Fletcher</h1>
+
+<p>The Fletcher checksum family maintains two running accumulators, <strong>A</strong> and <strong>B</strong>, reduced modulo <code>M = 2^(N ⁄ 2) − 1</code> (255 for Fletcher-16, 65535 for Fletcher-32, 4294967295 for Fletcher-64). Each input <strong>byte</strong> updates <code>A = (A + byte) mod M</code>, then <code>B = (B + A) mod M</code>. The final output is <code>B ‖ A</code> written <strong>big-endian</strong>. Because <code>B</code> depends on the running <code>A</code>, Fletcher catches transpositions - swapping two bytes changes <code>B</code> even though the simple sum <code>A</code> is unchanged - which a plain additive checksum misses.</p>
+<p><img src="../../images/diagrams/fletcher-accumulators.svg" alt="Fletcher twin-accumulator structure"></p>
+<p><strong>Bodu.IO.Hashing</strong> provides three widths: <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a>, and <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a>. All three derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>, share the abstract <code>Fletcher</code> base, and live in the <code>Bodu.IO.Hashing.Checksums</code> namespace.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Bodu's modulus is <code>2^(N ⁄ 2) − 1</code>, not a prime. Some descriptions of Fletcher use a prime modulus; this implementation uses the original <code>2^k − 1</code> form, and reduces both accumulators with <code>%</code> once per 4096 bytes rather than after every byte, which gives the same result. All three widths consume input <strong>one byte at a time</strong> regardless of <em>N</em> - there is no word-size blocking.</p>
+</div>
+<h2 id="pattern-1---compute-a-digest-in-one-call">Pattern 1 - compute a digest in one call</h2>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing.Checksums;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+var fletcher = new Fletcher32();
+fletcher.Append(data);
+byte[] digest = fletcher.GetCurrentHash();
+string hex = Convert.ToHexString(digest);  // 4 bytes, 8 hex characters, big-endian B‖A
+</code></pre>
+<p>Swap <code>Fletcher32</code> for <code>Fletcher16</code> or <code>Fletcher64</code> depending on how much collision space you need.</p>
+<h2 id="pattern-2---the-append--getcurrenthash--reset-lifecycle">Pattern 2 - the <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
+<p>The BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> exposes three methods that Fletcher honors verbatim:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
+
+var fletcher = new Fletcher64();
+
+fletcher.Append(chunk1);                  // update A and B
+fletcher.Append(chunk2);                  // continue
+byte[] partial = fletcher.GetCurrentHash(); // snapshot, non-destructive
+fletcher.Append(chunk3);                  // still works - GetCurrentHash did not change state
+byte[] full = fletcher.GetCurrentHash();
+
+fletcher.Reset();                         // back to zeroed A and B
+</code></pre>
+<p><code>GetCurrentHash</code> finalizes on a copy of the accumulators, so calling it mid-stream is cheap and safe.</p>
+<h2 id="pattern-3---streaming-over-a-file">Pattern 3 - streaming over a file</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
+
+var fletcher = new Fletcher32();
+
+using (FileStream fs = File.OpenRead(&quot;archive.bin&quot;))
+{
+    byte[] buffer = new byte[64 * 1024];
+    int read;
+    while ((read = fs.Read(buffer, 0, buffer.Length)) &gt; 0)
+    {
+        fletcher.Append(buffer.AsSpan(0, read));
+    }
+}
+
+byte[] fingerprint = fletcher.GetCurrentHash();
+</code></pre>
+<p>All three widths consume input one byte at a time, so any chunk boundary is safe - <code>Append</code> over a 64 KB buffer and <code>Append</code> 65 536 times byte-by-byte produce the same digest. The width affects only the modulus and the output size, not how input is fed in.</p>
+<h2 id="picking-a-width">Picking a width</h2>
+<table>
+<thead>
+<tr>
+<th>Width</th>
+<th>Modulus</th>
+<th>Use when</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a></td>
+<td>255</td>
+<td>Tiny frames, embedded protocols, when 16 bits of collision space is enough.</td>
+<td>Fastest; comparable to a CRC-16 for accidental noise on short inputs.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a></td>
+<td>65535</td>
+<td>General-purpose file and buffer checksums; the most common choice.</td>
+<td>Cheaper to compute than CRC-32; weaker burst guarantee.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a></td>
+<td>4294967295</td>
+<td>Large buffers where a 32-bit space is uncomfortable.</td>
+<td>Rarely needed, but useful for very long streams.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-fletcher-catches---and-what-it-misses">What Fletcher catches - and what it misses</h2>
+<p>Fletcher detects every single-bit error and every adjacent-byte transposition (except, in Fletcher-16, a swap of <code>0x00</code> and <code>0xFF</code>, which are congruent modulo 255), at a fraction of CRC's per-byte cost. It does not match a CRC's burst guarantee, and the <code>2^k − 1</code> modulus introduces a documented blind spot:</p>
+<ul>
+<li>Because <code>0</code> and <code>M</code> are congruent under the modulus, a byte that should drive an accumulator to <code>M</code> leaves it at <code>0</code> instead. A run of bytes whose contribution is a multiple of <code>M</code> can therefore go undetected.</li>
+<li>A zero byte leaves <code>A</code> unchanged but still adds <code>A</code> to <code>B</code>, so inserting or deleting zero bytes goes undetected only while <code>A</code> is <code>0</code> modulo <code>M</code>. Since <code>A</code> starts at <code>0</code>, that includes every zero byte before the first non-zero one: <code>00 00 05 06</code> and <code>05 06</code> have the same digest.</li>
+<li>There is no per-position burst guarantee of the kind a polynomial CRC provides.</li>
+</ul>
+<p>These are acceptable when you control both endpoints and the channel is benign; they are why a wire format that must survive an arbitrary physical link specifies a CRC instead.</p>
+<h2 id="fletcher-vs-crc">Fletcher vs CRC</h2>
+<ul>
+<li><strong>CRC</strong> is defined by polynomial arithmetic over GF(2). It is better at detecting bursts of errors that align with its polynomial structure. Reach for it when you need to match a standard on the wire (zlib, PNG, Modbus, etc.).</li>
+<li><strong>Fletcher</strong> is defined by two running sums. It is cheaper to compute on a general-purpose CPU and still catches transpositions. Reach for it when you control both endpoints and want a simple, fast, position-dependent checksum.</li>
+</ul>
+<p>Both are <strong>non-cryptographic</strong> - neither resists a motivated adversary. If you need authentication, see the <a href="../cryptography/hashing.html">cryptography hashing guide</a> (SipHash, Tiger, Merkle trees).</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="crc.html">Using CRC</a> - the other checksum family in this package.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> - key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

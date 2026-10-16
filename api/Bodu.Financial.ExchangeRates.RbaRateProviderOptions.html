@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 RbaRateProviderOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,16 +102,16 @@ RbaRateProviderOptions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Rba.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Rba">Bodu.Financial.ExchangeRates.Rba</a> <span class="bodu-package-version">0.7.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Rba">Bodu.Financial.ExchangeRates.Rba</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs">RbaRateProviderOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs">RbaRateProviderOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.html">RbaRateProvider</a> downloads, caches, and interprets RBA exchange-rate data.</p>
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class RbaRateProviderOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class RbaRateProviderOptions : WebRateProviderOptions</code></pre>
   </div>
 
 
@@ -121,6 +121,7 @@ RbaRateProviderOptions Class
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a></div>
       <div><span class="xref">RbaRateProviderOptions</span></div>
     </dd>
   </dl>
@@ -131,6 +132,54 @@ RbaRateProviderOptions Class
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_Validate">WebRateProviderOptions.Validate()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_TryValidate_System_String__">WebRateProviderOptions.TryValidate(out string)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">WebRateProviderOptions.BaseAddress</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HttpTimeout">WebRateProviderOptions.HttpTimeout</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_MaxResponseContentBufferSize">WebRateProviderOptions.MaxResponseContentBufferSize</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_UserAgent">WebRateProviderOptions.UserAgent</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_AllowSynchronousNetworkAccess">WebRateProviderOptions.AllowSynchronousNetworkAccess</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DefaultLookback">WebRateProviderOptions.DefaultLookback</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval">WebRateProviderOptions.RefreshInterval</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">WebRateProviderOptions.HistoryAvailability</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_CurrencyAliases">WebRateProviderOptions.CurrencyAliases</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadStartingLogLevel">WebRateProviderOptions.DownloadStartingLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadCompletedLogLevel">WebRateProviderOptions.DownloadCompletedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadFailedLogLevel">WebRateProviderOptions.DownloadFailedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_ObservationIngestedLogLevel">WebRateProviderOptions.ObservationIngestedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_SynchronousNetworkFetchLogLevel">WebRateProviderOptions.SynchronousNetworkFetchLogLevel</a>
+    </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -179,14 +228,31 @@ RbaRateProviderOptions Class
 
   <h2 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Every member carries a working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code> and
-require no configuration for the common case. The dependency-injection package binds this type from configuration
-and a <code>configure</code> delegate.
+This type derives from <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, which supplies the endpoint base address, the HTTP
+contract (timeout, user agent and response-size cap), the synchronous-access, look-back and refresh behavior, the
+advertised history, the currency-alias map, and the per-concern log levels. The constructor points
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">BaseAddress</a> at the RBA's historical statistics path, identifies the requests
+with a Bodu user agent, and maps the RBA's <code>SDR</code> units label to the ISO code <code>XDR</code>. The members declared
+here are RBA-specific: the <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Eras">Eras</a> catalog and the on-disk cache settings, which are off by default.
 </p>
 <p>
-The <code>*LogLevel</code> members set the <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a> at which each diagnostic the provider emits is logged,
-so consumers can re-tune verbosity per concern without category-wide log filters. Set any of them to
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-none">None</a> to suppress that event entirely.
+The absolute URL of an era workbook is its <a class="xref" href="Bodu.Financial.ExchangeRates.RbaEraWorkbook.html#Bodu_Financial_ExchangeRates_RbaEraWorkbook_FileName">FileName</a> resolved against
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">BaseAddress</a>. An on-demand load reads every era the
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DefaultLookback">DefaultLookback</a> window ending on the requested date reaches, so a date early
+in an era also loads the era before it. The inherited <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval">RefreshInterval</a> governs
+the open-ended current era, in memory and in the on-disk cache: a cached copy older than the interval is downloaded
+again, and in memory the loaded current era serves for good a request that ends before the day it was downloaded, or
+on a day it returned rates for, while a request that reaches a later day downloads the era again once the interval
+has passed. A closed era is loaded once, and its cached copy never expires.
+</p>
+<p>
+The RBA names each column's currency with a units label, so <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_CurrencyAliases">CurrencyAliases</a>
+maps a label found among its keys to the ISO 4217 code its value gives while a workbook is read. The provider
+advertises the depth of its <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Eras">Eras</a> catalog while
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">HistoryAvailability</a> is left at
+<a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html#Bodu_Financial_ExchangeRates_RateHistoryAvailability_Unbounded">Unbounded</a>, and any other value set there in its place. Every member carries a
+working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code>; the dependency-injection
+registration binds this type from configuration and a <code>configure</code> delegate.
 </p>
 </div>
 
@@ -200,11 +266,13 @@ so consumers can re-tune verbosity per concern without category-wide log filters
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.#ctor">
   RbaRateProviderOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html">RbaRateProviderOptions</a> class with the RBA historical statistics
+path as its base address, a Bodu user agent, and the <code>SDR</code> to <code>XDR</code> currency alias.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -229,96 +297,12 @@ so consumers can re-tune verbosity per concern without category-wide log filters
 </h2>
 
 
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_AllowSynchronousNetworkAccess_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.AllowSynchronousNetworkAccess*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_AllowSynchronousNetworkAccess" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.AllowSynchronousNetworkAccess">
-  AllowSynchronousNetworkAccess
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether a synchronous lookup may block to download a missing era on demand.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool AllowSynchronousNetworkAccess { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to allow synchronous, blocking downloads from <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> lookups;
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to serve only already-loaded data. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, so the
-provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.</p>
-</dd>
-  </dl>
-
-
-
-
-  <h4 class="section" id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_AllowSynchronousNetworkAccess_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Blocking on network I/O from a synchronous method can deadlock in environments with a single-threaded
-synchronization context (classic ASP.NET, WPF, WinForms), so the default is snapshot-only. Leave this
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> and warm the store with <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.html#Bodu_Financial_ExchangeRates_RbaRateProvider_PreloadAsync_System_Threading_CancellationToken_">PreloadAsync(CancellationToken)</a> or
-<a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.html#Bodu_Financial_ExchangeRates_RbaRateProvider_LoadRangeAsync_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadRangeAsync(DateOnly, DateOnly, CancellationToken)</a> at startup; set it to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> only to opt in to a
-blocking on-demand fetch from the synchronous lookup path.</p>
-</div>
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_BaseUrl_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.BaseUrl*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_BaseUrl" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.BaseUrl">
-  BaseUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the base URL under which the RBA publishes its historical exchange-rate files. Should end with a
-trailing slash so era file names resolve as relative paths.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Uri BaseUrl { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
-    <dd><p>The base URL; defaults to the RBA historical statistics path.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
   <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CacheDirectory_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CacheDirectory*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CacheDirectory" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CacheDirectory">
   CacheDirectory
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -350,197 +334,12 @@ trailing slash so era file names resolve as relative paths.</p>
   </section>
 
 
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrencyAliases_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrencyAliases*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrencyAliases" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrencyAliases">
-  CurrencyAliases
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the map from RBA units labels to ISO 4217 codes, applied while resolving a column's currency.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IDictionary&lt;string, string&gt; CurrencyAliases { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
-    <dd><p>The alias map; defaults to mapping <code>SDR</code> to the ISO code <code>XDR</code>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrentEraRefreshInterval_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrentEraRefreshInterval*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrentEraRefreshInterval" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrentEraRefreshInterval">
-  CurrentEraRefreshInterval
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets how long a cached copy of the open-ended current era remains fresh before it is re-downloaded.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan CurrentEraRefreshInterval { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
-    <dd><p>The refresh interval; defaults to 12 hours. Immutable historical eras are cached indefinitely.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadCompletedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadCompletedLogLevel*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadCompletedLogLevel" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadCompletedLogLevel">
-  DownloadCompletedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the level at which a completed era download (with its observation count) is logged.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogLevel DownloadCompletedLogLevel { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadFailedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadFailedLogLevel*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadFailedLogLevel" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadFailedLogLevel">
-  DownloadFailedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the level at which a failed era download is logged.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogLevel DownloadFailedLogLevel { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-warning">Warning</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadStartingLogLevel_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadStartingLogLevel*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadStartingLogLevel" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadStartingLogLevel">
-  DownloadStartingLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the level at which the start of an era download is logged.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogLevel DownloadStartingLogLevel { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
   <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_EnableDiskCache_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.EnableDiskCache*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_EnableDiskCache" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.EnableDiskCache">
   EnableDiskCache
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -578,11 +377,11 @@ trailing slash so era file names resolve as relative paths.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Eras" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Eras">
   Eras
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets or sets the catalogue of era files to draw from.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the catalog of era files to draw from.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -597,118 +396,7 @@ trailing slash so era file names resolve as relative paths.</p>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.RbaEraWorkbook.html">RbaEraWorkbook</a>&gt;</dt>
-    <dd><p>The era catalogue; defaults to <a class="xref" href="Bodu.Financial.ExchangeRates.RbaEraWorkbook.html#Bodu_Financial_ExchangeRates_RbaEraWorkbook_Default">Default</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_HttpTimeout_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_HttpTimeout" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout">
-  HttpTimeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the HTTP request timeout applied to era downloads by the dependency-injection registration.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan HttpTimeout { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
-    <dd><p>The HTTP timeout; defaults to 30 seconds.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_ObservationIngestedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.ObservationIngestedLogLevel*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_ObservationIngestedLogLevel" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.ObservationIngestedLogLevel">
-  ObservationIngestedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the level at which each individual ingested rate observation is logged.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogLevel ObservationIngestedLogLevel { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_UserAgent_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_UserAgent" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent">
-  UserAgent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the <code>User-Agent</code> header applied to era downloads by the dependency-injection registration.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string UserAgent { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The user-agent string; defaults to a Bodu identifier.</p>
+    <dd><p>The era catalog; defaults to <a class="xref" href="Bodu.Financial.ExchangeRates.RbaEraWorkbook.html#Bodu_Financial_ExchangeRates_RbaEraWorkbook_Default">Default</a>.</p>
 </dd>
   </dl>
 
@@ -725,27 +413,27 @@ trailing slash so era file names resolve as relative paths.</p>
 </h2>
 
 
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidate_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate*"></a>
+  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidateCore_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidate_System_String__" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate(System.String@)">
-  TryValidate(out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidateCore_System_String__" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore(System.String@)">
+  TryValidateCore(out string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Attempts to validate the options without throwing, reporting the first invariant that is violated.</p>
+  <div class="markdown level1 summary"><p>Validates the RBA-specific options, ensuring the era catalog is not empty.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TryValidate(out string? error)</code></pre>
+    <pre><code class="lang-csharp hljs">protected override bool TryValidateCore(out string? error)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>error</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, a message describing the first violated invariant; otherwise
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, a message describing the violated invariant; otherwise
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
   </dl>
@@ -753,7 +441,7 @@ trailing slash so era file names resolve as relative paths.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when every invariant holds; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when every RBA-specific invariant holds; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
 </dd>
   </dl>
 
@@ -763,51 +451,7 @@ trailing slash so era file names resolve as relative paths.</p>
 
 
 
-  <h4 class="section" id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidate_System_String___remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The throwing <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Validate">Validate()</a> method is expressed in terms of this method, and the dependency-injection
-registration wires it into <code>ValidateOnStart</code> so misconfiguration fails fast at application startup.</p>
-</div>
 
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Validate_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Validate*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Validate" data-uid="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Validate">
-  Validate()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Rba/src/Financial.ExchangeRates/RbaRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Validates the options, throwing when a required value is missing or an invariant is violated.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Validate()</code></pre>
-  </div>
-
-
-
-
-
-
-
-
-
-
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_BaseUrl">BaseUrl</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Eras">Eras</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or
-empty; <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_HttpTimeout">HttpTimeout</a> or <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrentEraRefreshInterval">CurrentEraRefreshInterval</a> is not greater than zero;
-<a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrencyAliases">CurrencyAliases</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; or any <code>*LogLevel</code> is not a defined
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a>.</p>
-</dd>
-  </dl>
 
 
   </section>
@@ -840,7 +484,7 @@ empty; <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

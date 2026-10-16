@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Financial.Serialization.Json.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Financial.Serialization.Json.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.Serialization.Json">Bodu.Financial.Serialization.Json</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.Serialization.Json">Bodu.Financial.Serialization.Json</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -108,9 +108,9 @@
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
 <li><strong><a href="../docs/financial-serialization-json/index.html">Introduction</a></strong> - the six converters, the policy model, and the scenario index.</li>
-<li><strong><a href="../docs/financial-serialization-json/concepts.html">Core concepts</a></strong> - canonical object shape, compact form, scale, verbatim <code>CalculatedMoney</code>, the rate and pair shapes, keyed options, failure modes.</li>
+<li><strong><a href="../docs/financial-serialization-json/concepts.html">Core concepts</a></strong> - canonical object shape, compact form, scale, verbatim <code>CalculatedMoney</code>, the rate and pair shapes, keyed options, trimming and AOT, failure modes.</li>
 <li><strong><a href="../docs/financial-serialization-json/getting-started.html">Getting started</a></strong> - install + minimal samples for each policy, each converter, and the DI registration.</li>
-<li><strong><a href="../guides/financial/json-serialization.html">Financial JSON serialization guide</a></strong> - every converter's wire shape under every policy, scale handling, DI, and migration notes.</li>
+<li><strong><a href="../guides/financial/json-serialization.html">Financial JSON serialization guide</a></strong> - every converter's wire shape under every policy, scale handling, DI, trimming and AOT, and migration notes.</li>
 <li><strong><a href="../docs/financial/index.html">Bodu.Financial introduction</a></strong> - how the converters fit into the broader monetary surface.</li>
 <li><strong><a href="../docs/financial/getting-started.html">Bodu.Financial getting started</a></strong> - the JSON section shows how to register the policy.</li>
 </ul>
@@ -139,7 +139,7 @@
 <tr>
 <td><code>Strict</code> <em>(default)</em></td>
 <td><code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code></td>
-<td><code>{ &quot;balances&quot;: { &quot;USD&quot;: 100.00, &quot;EUR&quot;: 50.00 } }</code></td>
+<td><code>{ &quot;balances&quot;: { &quot;EUR&quot;: 50, &quot;USD&quot;: 100 } }</code></td>
 <td>Storing canonical ledger payloads. Validates currency match, rejects duplicate keys.</td>
 </tr>
 <tr>
@@ -151,7 +151,7 @@
 <tr>
 <td><code>Compact</code></td>
 <td><code>&quot;19.99 USD&quot;</code></td>
-<td><code>{ &quot;USD&quot;: 100.00, &quot;EUR&quot;: 50.00 }</code></td>
+<td><code>{ &quot;EUR&quot;: 50, &quot;USD&quot;: 100 }</code></td>
 <td>Log lines, API payloads where verbosity matters. Accepts either <code>&quot;19.99 USD&quot;</code> or <code>&quot;USD 19.99&quot;</code> on read.</td>
 </tr>
 </tbody>
@@ -166,7 +166,7 @@ using Bodu.Financial.Serialization.Json;
 var strict = new JsonSerializerOptions().AddFinancialJsonConverters();
 
 string ledger = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), strict);
-// { &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }
+// {&quot;amount&quot;:19.99,&quot;currency&quot;:&quot;USD&quot;}
 
 // Compact for log lines.
 var options = new JsonSerializerOptions()
@@ -184,8 +184,8 @@ Money&lt;USD&gt; imported = JsonSerializer.Deserialize&lt;Money&lt;USD&gt;&gt;(
 </code></pre>
 <h2 id="notes">Notes</h2>
 <ul>
-<li><strong>Registration is required.</strong> The core monetary types carry no <code>[JsonConverter]</code> attribute, so JSON support is opt-in: call <code>AddFinancialJsonConverters</code> (or add converters to <code>JsonSerializerOptions.Converters</code>) before serializing. Without registration, <code>JsonSerializer</code> silently falls back to reflection-shaped output rather than throwing.</li>
-<li><strong>Currency-mismatch on <code>Money&lt;TCurrency&gt;</code>.</strong> Strict and Lenient policies both reject payloads whose <code>&quot;currency&quot;</code> field does not match <code>TCurrency.IsoCode</code> - drift surfaces as <code>JsonException</code> rather than a silently re-interpreted amount. <code>Money</code> accepts any ISO code and rounds to the registry's <code>MinorUnits</code> for that code.</li>
+<li><strong>Registration is required.</strong> The core monetary types carry no <code>[JsonConverter]</code> attribute, so JSON support is opt-in: call <code>AddFinancialJsonConverters</code> (or add converters to <code>JsonSerializerOptions.Converters</code>) before serializing. Without registration, <code>JsonSerializer</code> silently writes reflection-shaped output and reads money back as zero or currency-less values rather than throwing; only a <code>MoneyBag</code> read throws.</li>
+<li><strong>Currency-mismatch on <code>Money&lt;TCurrency&gt;</code>.</strong> Strict and Lenient policies both reject payloads whose <code>&quot;currency&quot;</code> field does not match <code>TCurrency.IsoCode</code> - drift surfaces as <code>JsonException</code> rather than a silently re-interpreted amount. <code>Money</code> accepts any code in the shipped catalogue, rounding to the registry's <code>MinorUnits</code> for that code, and rejects any other with <code>JsonException</code>.</li>
 <li><strong>MoneyBag pruning.</strong> Zero balances are pruned on round-trip - the deserialised bag matches the canonical form, not the verbatim wire shape.</li>
 <li><strong>Strict vs. Lenient on Compact.</strong> The compact policy accepts both <code>&quot;19.99 USD&quot;</code> and <code>&quot;USD 19.99&quot;</code> regardless of <code>Strict</code> / <code>Lenient</code> because there is no ambiguity to be strict about; lenient and strict behave identically under <code>Compact</code>.</li>
 <li><strong>AddFinancialJsonConverters.</strong> Registers every converter on the same <code>JsonSerializerOptions</code> instance under a single policy. Call this once per options instance; mixing policies across types is not supported.</li>
@@ -277,7 +277,7 @@ converters.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

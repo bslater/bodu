@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ML-KEM post-quantum key encapsulation | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ML-KEM post-quantum key encapsulation | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/ml-kem.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="ml-kem-post-quantum-key-encapsulation">ML-KEM post-quantum key encapsulation</h1>
+
+<p>ML-KEM is the module-lattice key-encapsulation mechanism standardized by NIST <strong>FIPS 203</strong> - the post-quantum replacement for Diffie-Hellman-style key agreement. Its security rests on the Module-LWE problem, believed hard even for a large-scale quantum computer. This guide is for developers bootstrapping a symmetric session that must stay confidential against future quantum attack.</p>
+<p>A KEM works differently from ECDH: instead of both parties contributing a public key, the receiver publishes an <strong>encapsulation key</strong>, and any sender calls <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html#Bodu_Security_Cryptography_MLKem_Encapsulate">Encapsulate()</a> to produce a <strong>ciphertext</strong> plus a fresh 32-byte shared secret. The receiver recovers the same secret from the ciphertext with <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html#Bodu_Security_Cryptography_MLKem_Decapsulate_System_ReadOnlySpan_System_Byte__">Decapsulate(ReadOnlySpan&lt;byte&gt;)</a>.</p>
+<p><strong>Bodu.Security.Cryptography</strong> ships the three FIPS 203 parameter sets as sealed types over the shared <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html">MLKem</a> base: <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a>.</p>
+<h2 id="parameter-sets-and-sizes">Parameter sets and sizes</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>NIST category</th>
+<th>Comparable to</th>
+<th>Encapsulation key</th>
+<th>Decapsulation key</th>
+<th>Ciphertext</th>
+<th>Shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a></td>
+<td>1</td>
+<td>AES-128</td>
+<td>800 B</td>
+<td>1632 B</td>
+<td>768 B</td>
+<td>32 B</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a></td>
+<td>3</td>
+<td>AES-192</td>
+<td>1184 B</td>
+<td>2400 B</td>
+<td>1088 B</td>
+<td>32 B</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a></td>
+<td>5</td>
+<td>AES-256</td>
+<td>1568 B</td>
+<td>3168 B</td>
+<td>1568 B</td>
+<td>32 B</td>
+</tr>
+</tbody>
+</table>
+<p>The shared secret is always 32 bytes (<code>MLKem.SharedSecretSizeInBytes</code>); the private seed accepted by <code>ImportPrivateSeed</code> is always 64 bytes (<code>MLKem.PrivateSeedSizeInBytes</code>). Each instance also reports its sizes at runtime through <code>EncapsulationKeySizeInBytes</code>, <code>DecapsulationKeySizeInBytes</code>, and <code>CiphertextSizeInBytes</code>.</p>
+<h2 id="when-to-pick-which">When to pick which</h2>
+<ul>
+<li><strong>ML-KEM-768</strong> is the default. It is the parameter set most widely deployed for TLS hybrid key exchange and the right balance of margin and size for almost everyone.</li>
+<li><strong>ML-KEM-512</strong> trades margin for the smallest keys and ciphertext; choose it only when bandwidth or storage is tight and category-1 security is acceptable.</li>
+<li><strong>ML-KEM-1024</strong> is the conservative high-margin choice for the most sensitive, longest-lived secrets.</li>
+</ul>
+<h2 id="the-encapsulate--decapsulate-flow">The encapsulate / decapsulate flow</h2>
+<p>The receiver generates a key pair and publishes the encapsulation (public) key. The sender imports it, encapsulates, and transmits only the ciphertext. The receiver decapsulates to recover the matching secret.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Receiver: generate a key pair and publish the encapsulation key.
+using var receiver = MLKem768.Create();
+receiver.GenerateKey();
+byte[] encapsulationKey = receiver.ExportEncapsulationKey();   // 1184 bytes, public
+
+// Sender: import the receiver's public key and encapsulate a fresh secret.
+using var sender = MLKem768.Create();
+sender.ImportEncapsulationKey(encapsulationKey);
+(byte[] ciphertext, byte[] senderSecret) = sender.Encapsulate();
+
+// Sender transmits 'ciphertext' (1088 bytes); 'senderSecret' stays local.
+
+// Receiver: recover the same secret from the ciphertext.
+byte[] receiverSecret = receiver.Decapsulate(ciphertext);
+
+// senderSecret and receiverSecret are identical (32 bytes each).
+</code></pre>
+<p>As with ECDH, run the 32-byte shared secret through a KDF (<a href="hkdf.html">HKDF</a>, or <a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> in keyed mode) before using it as a symmetric key, binding it to an application-specific context.</p>
+<p>Both <code>Encapsulate</code> and <code>Decapsulate</code> have span overloads - <code>Encapsulate(ciphertext, sharedSecret)</code> and <code>Decapsulate(ciphertext, sharedSecret)</code> - that write into caller-supplied buffers (the ciphertext span must be exactly <code>CiphertextSizeInBytes</code>, the secret span exactly 32 bytes). Query <code>HasEncapsulationKey</code> / <code>HasDecapsulationKey</code> to see which halves an instance holds: a sender that imported only the public key has <code>HasEncapsulationKey</code> true and <code>HasDecapsulationKey</code> false, and so can encapsulate but not decapsulate.</p>
+<h2 id="persisting-and-restoring-keys">Persisting and restoring keys</h2>
+<p>Export the decapsulation (private) key, or the compact 64-byte seed, to persist a receiver across runs. Importing the seed regenerates the full key pair; importing an encapsulation key onto an instance discards any decapsulation key it held, leaving an encapsulate-only instance.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var receiver = MLKem768.Create();
+receiver.GenerateKey();
+
+byte[] decapsulationKey = receiver.ExportDecapsulationKey();   // private, store in a vault
+
+// Later, restore a receiver from the encoded decapsulation key:
+using var restored = MLKem768.Create();
+restored.ImportDecapsulationKey(decapsulationKey);
+</code></pre>
+<p><code>ImportDecapsulationKey</code> and <code>ImportEncapsulationKey</code> apply the FIPS 203 §7.3 hash-consistency and §7.2 modulus checks respectively, throwing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> on a malformed or wrong-length key.</p>
+<p>An instance keeps what FIPS 203 derives from its key on every operation - the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) - from the moment the key is generated or imported, so reuse one instance for many encapsulations or decapsulations rather than importing the key for each. Beside the encoded keys these take about 8, 15 and 24 KiB for ML-KEM-512, 768 and 1024, or 6, 12 and 20 KiB for an encapsulation key alone; the secret vector is zeroed with the decapsulation key when the instance is disposed.</p>
+<h2 id="implicit-rejection---decapsulation-does-not-throw-on-tampering">Implicit rejection - decapsulation does not throw on tampering</h2>
+<p>A tampered ciphertext of the <strong>correct length</strong> does not throw. Per FIPS 203, <code>Decapsulate</code> silently returns an unrelated key (the implicit-rejection value), so an attacker cannot use decapsulation failures as an oracle. Both parties simply end up with different secrets, and the mismatch surfaces later when the symmetric session fails to authenticate. Only a <em>wrong-length</em> ciphertext throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</p>
+<p>This means you must <strong>not</strong> treat a successful <code>Decapsulate</code> as proof the ciphertext was genuine - confirm the secret matches by using it in an authenticated channel (an AEAD or a MAC).</p>
+<h2 id="hybrid-with-x25519">Hybrid with X25519</h2>
+<p>A KEM resists quantum attack but is newer and less battle-tested than the curve algorithms. The standard mitigation is a <strong>hybrid</strong>: run both <a href="key-agreement-x25519.html">X25519</a> and ML-KEM, then derive the session key from <strong>both</strong> secrets concatenated. The result is secure as long as <em>either</em> primitive holds - quantum-safe from ML-KEM, classically conservative from X25519.</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+// Classic half: X25519 ECDH (each side already exchanged public keys).
+using var x = X25519.Create();
+x.GenerateKey();
+byte[] classicSecret = x.DeriveSharedSecret(peerX25519PublicKey);
+
+// Post-quantum half: ML-KEM encapsulation to the receiver's key.
+using var kem = MLKem768.Create();
+kem.ImportEncapsulationKey(receiverEncapsulationKey);
+(byte[] kemCiphertext, byte[] pqSecret) = kem.Encapsulate();
+
+// Combine both secrets, then derive the session key with a KDF.
+byte[] combined = new byte[classicSecret.Length + pqSecret.Length];
+classicSecret.CopyTo(combined, 0);
+pqSecret.CopyTo(combined, classicSecret.Length);
+
+byte[] sessionKey = Hkdf.DeriveKey(
+    HashAlgorithmName.SHA256,
+    inputKeyingMaterial: combined,
+    outputLength: 32,
+    salt: default,
+    info: &quot;myapp v1 hybrid session key&quot;u8);
+
+CryptographicOperations.ZeroMemory(classicSecret);
+CryptographicOperations.ZeroMemory(pqSecret);
+CryptographicOperations.ZeroMemory(combined);
+</code></pre>
+<p>The sender transmits both the X25519 public key and the ML-KEM ciphertext; the receiver performs the matching X25519 derivation and ML-KEM decapsulation and runs the identical KDF.</p>
+<p>Fix the concatenation order (here classic, then post-quantum) and keep it identical on both sides - the KDF is order-sensitive, so a swapped order yields a different, mismatched key. The same <code>info</code> label must also match. This is the pattern standardized as X25519MLKEM768 for TLS hybrid key exchange; the principle is the same here.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> - where ML-KEM sits in the family.</li>
+<li><a href="key-agreement-x25519.html">Key agreement with X25519</a> - the classic counterpart and the hybrid partner.</li>
+<li><a href="ml-dsa.html">ML-DSA post-quantum signatures</a> - the post-quantum signature companion.</li>
+<li><a href="hkdf.html">Using HKDF</a> - the KDF that binds the shared secret to a context before use.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html">MLKem</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> - API reference.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

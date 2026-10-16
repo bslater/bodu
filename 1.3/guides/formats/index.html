@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Line-format guides | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Line-format guides | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/formats/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="line-format-guides">Line-format guides</h1>
+
+<p>Recipe-style walk-throughs for the Bodu line formats - <strong><code>Bodu.Text.Delimited</code></strong>, <strong><code>Bodu.Text.DotEnv</code></strong>, and <strong><code>Bodu.Text.Ini</code></strong> (available together through the <code>Bodu.Text.Formats</code> umbrella package).</p>
+<p>If you are new to the family, start with the <a href="../../docs/formats/index.html">introduction</a>, the <a href="../../docs/formats/concepts.html">Core concepts</a> glossary, and the <a href="../../docs/formats/getting-started.html">getting-started page</a>. The guides below assume you know the quartet vocabulary (token reader/writer, serializer, mutable node DOM, read-only document DOM).</p>
+<h2 id="how-the-libraries-work">How the libraries work</h2>
+<p>Each format is a self-contained <code>System.Text.Json</code>-shaped library: a forward-only <code>Utf8*Reader</code> / <code>Utf8*Writer</code> pair over UTF-8 bytes, a <code>*Serializer</code> that binds POCOs and dictionaries with the shared attribute/naming-policy/callback layer, a mutable <code>*Node</code> DOM for authoring, and a disposable read-only <code>*Document</code> DOM for querying.</p>
+<blockquote>
+<p>The serializer infrastructure (attributes, naming policies, callbacks) is shared with the <strong>TOML</strong>, <strong>Bencode</strong>, and <strong>YAML</strong> libraries - see the <a href="../serialization/index.html">Bodu serializer guides</a>.</p>
+</blockquote>
+<h2 id="namespace-map">Namespace map</h2>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>What lives here</th>
+<th>Guides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Delimited.html">Bodu.Text.Delimited</a></td>
+<td><code>DelimitedSerializer</code>, the dialect-policy enums, and the exceptions; readers/writers and DOMs in the <code>.Reader</code> / <code>.Writer</code> / <code>.Nodes</code> / <code>.Document</code> child namespaces.</td>
+<td><a href="delimited.html">Using delimited</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a></td>
+<td><code>DotEnvSerializer</code> and companions, with the same child-namespace layout.</td>
+<td><a href="dotenv.html">Using DotEnv</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Ini.html">Bodu.Text.Ini</a></td>
+<td><code>IniSerializer</code>, the duplicate-policy enums, and companions; the two readers live in <code>Bodu.Text.Ini.Reader</code>.</td>
+<td><a href="ini.html">Using INI</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="guides">Guides</h2>
+<ul>
+<li><a href="choosing-a-format.html">Choosing a text format</a> - which format fits which job, round-trip fidelity, error recovery.</li>
+<li><a href="delimited.html">Using delimited (CSV / TSV)</a> - documents, typed records, dialect policies, CSV↔TSV conversion.</li>
+<li><a href="dotenv.html">Using DotEnv</a> - literal values, quoting, export prefixes, typed settings.</li>
+<li><a href="ini.html">Using INI</a> - global keys and sections, comment-preserving edits, duplicate policies.</li>
+<li><a href="streaming.html">Streams and token-level I/O</a> - the forward-only readers/writers and the record-streaming serializer surface.</li>
+<li><a href="error-handling.html">Errors across the line formats</a> - the <code>*FormatException</code> / <code>*SerializationException</code> pair per format, what each carries, and which reader policies tolerate dirty input.</li>
+<li><a href="source-generator.html">Reflection-free binding with the source generator</a> - emit <code>IDelimitedRecordFactory&lt;TRecord&gt;</code> / <code>IIniSectionFactory&lt;TSection&gt;</code> implementations at build time for trimming- and AOT-safe binding.</li>
+<li><a href="writer-options-and-dom-options.html">Writer options and DOM options</a> - every <code>*WriterOptions</code>, <code>*NodeOptions</code>, and <code>*DocumentOptions</code> struct across the line formats and the serializer DOMs, with the effect of each knob.</li>
+</ul>
+<h2 id="suggested-reading-path">Suggested reading path</h2>
+<ol>
+<li><a href="choosing-a-format.html">Choosing a text format</a></li>
+<li>The guide for your format</li>
+<li><a href="streaming.html">Streams and token-level I/O</a> for large inputs</li>
+<li><a href="error-handling.html">Errors across the line formats</a> before shipping a parser of untrusted files</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li>The <a href="../serialization/index.html">serializer guides</a> for the shared attribute family, naming policies, and callbacks - including <a href="../serialization/migrating-from-system-text-json.html">Migrating from System.Text.Json</a> and <a href="../serialization/options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a>, both of which cover the line formats too.</li>
+<li><code>Bodu.Text.Configuration</code> when you need EditorConfig-style layered configuration rather than raw INI.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

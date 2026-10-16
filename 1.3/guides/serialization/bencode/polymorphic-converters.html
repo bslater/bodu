@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Polymorphic converters | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Polymorphic converters | BODU ">
+      
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/serialization/bencode/polymorphic-converters.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="polymorphic-converters">Polymorphic converters</h1>
+
+<p>A converter factory dispatches over a <em>family</em> of types rather than a
+single type. Where a <a href="converters.html">hand-written converter</a> handles one
+fixed <code>T</code>, a <code>BencodeConverterFactory</code>
+(<a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a>) decides
+<em>at resolution time</em> whether it applies to a requested type and builds the
+right concrete converter for it. This is the mechanism behind two common
+shapes:</p>
+<ul>
+<li><strong>Open-generic families</strong> - every closed <code>Money&lt;TCurrency&gt;</code>, every
+<code>Stack&lt;T&gt;</code>, where one factory serves an unbounded set of closed types.</li>
+<li><strong>Tagged (discriminated) hierarchies</strong> - a base type with a <code>&quot;kind&quot;</code>
+field whose value selects which derived type to materialize.</li>
+</ul>
+<p>This guide builds on <a href="converters.html">Writing converters</a>; read that first
+for the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and
+the statelessness rules. Everything here is Bencode; the sibling <a href="../toml/index.html">TOML</a>
+and <a href="../yaml/index.html">YAML</a> serializers expose the identical factory shape
+against their own reader/writer pair.</p>
+<h2 id="how-a-factory-participates-in-resolution">How a factory participates in resolution</h2>
+<p>A factory derives from <code>BencodeConverterFactory</code> and overrides two methods:</p>
+<pre><code class="lang-csharp">public abstract bool CanConvert(Type typeToConvert);
+public abstract BencodeConverter CreateConverter(Type typeToConvert, BencodeSerializerOptions options);
+</code></pre>
+<p>The serializer treats the factory exactly like any other converter in the
+<a href="converters.html">resolution order</a>: member attribute, then type attribute,
+then <code>options.Converters</code>, then built-ins. When the candidate is a factory
+it calls <code>CanConvert(type)</code>; on <code>true</code> it calls <code>CreateConverter(type, options)</code>
+<strong>once per closed type</strong> and caches the result. The factory itself never
+reads or writes a value - <code>CreateConverter</code> returns an ordinary
+<code>BencodeConverter&lt;T&gt;</code> that does the work.</p>
+<h2 id="pattern-1---an-open-generic-family">Pattern 1 - an open-generic family</h2>
+<p>To serve every closed <code>Money&lt;TCurrency&gt;</code> from one registration, match the
+open generic in <code>CanConvert</code> and close <code>MoneyConverter&lt;&gt;</code> over the
+requested type argument in <code>CreateConverter</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Serialization;
+
+public sealed class MoneyConverterFactory : BencodeConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) =&gt;
+        typeToConvert.IsGenericType
+        &amp;&amp; typeToConvert.GetGenericTypeDefinition() == typeof(Money&lt;&gt;);
+
+    public override BencodeConverter CreateConverter(Type typeToConvert, BencodeSerializerOptions options) =&gt;
+        (BencodeConverter)Activator.CreateInstance(
+            typeof(MoneyConverter&lt;&gt;).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
+}
+</code></pre>
+<p><code>MoneyConverter&lt;T&gt;</code> is an ordinary <code>BencodeConverter&lt;Money&lt;T&gt;&gt;</code> written as in
+<a href="converters.html">Writing converters</a> Pattern 1. Register the factory once
+on the options and every closed <code>Money&lt;TCurrency&gt;</code> resolves through it:</p>
+<pre><code class="lang-csharp">var options = new BencodeSerializerOptions();
+options.Converters.Add(new MoneyConverterFactory());
+// Money&lt;Usd&gt;, Money&lt;Eur&gt;, Money&lt;Jpy&gt;, … all now use MoneyConverter&lt;&gt;.
+</code></pre>
+<p>This is the same machinery the built-in nullable, enum, collection, and
+dictionary converters use.</p>
+<h2 id="pattern-2---a-tagged-discriminated-hierarchy">Pattern 2 - a tagged (discriminated) hierarchy</h2>
+<p>The richer case is a base type whose concrete shape is chosen by a
+discriminator field. Model the family as a closed set of derived types and
+a <code>&quot;kind&quot;</code> tag. Bencode has no native floating-point kind, so the numeric
+payload below is carried as a Bencode integer:</p>
+<pre><code class="lang-csharp">public abstract class Shape
+{
+    public string Kind { get; init; } = &quot;&quot;;
+}
+
+public sealed class Circle : Shape
+{
+    public long Radius { get; init; }
+}
+
+public sealed class Rectangle : Shape
+{
+    public long Width { get; init; }
+    public long Height { get; init; }
+}
+</code></pre>
+<p>A factory matches the <em>base</em> type (and, optionally, its subclasses) and
+hands back a single converter that knows the tag-to-type mapping:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Serialization;
+
+public sealed class ShapeConverterFactory : BencodeConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) =&gt;
+        typeof(Shape).IsAssignableFrom(typeToConvert);
+
+    public override BencodeConverter CreateConverter(Type typeToConvert, BencodeSerializerOptions options) =&gt;
+        new ShapeConverter();
+}
+</code></pre>
+<p><code>CanConvert</code> returns <code>true</code> for <code>Shape</code> itself and for any <code>Circle</code> /
+<code>Rectangle</code> member declared as the base type, so a property typed
+<code>Shape Outline { get; set; }</code> routes through the factory regardless of
+which concrete value it currently holds.</p>
+<h2 id="pattern-3---reading-and-writing-the-discriminator">Pattern 3 - reading and writing the discriminator</h2>
+<p>The concrete converter is a <code>BencodeConverter&lt;Shape&gt;</code>. On entry to <code>Read</code>
+the reader is positioned on the dictionary's <code>StartDictionary</code> token; the
+converter walks the token stream - each key (a <code>PropertyName</code> byte string)
+followed by the value's token, through to the matching <code>EndDictionary</code> -
+collecting the discriminator and the payload fields, then constructs the
+matching derived type. Because the writer re-sorts dictionary keys into
+canonical order, <code>kind</code> is emitted in its bytewise position regardless of
+the order the converter writes the entries:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode;
+using Bodu.Text.Bencode.Reader;
+using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Bencode.Writer;
+
+public sealed class ShapeConverter : BencodeConverter&lt;Shape&gt;
+{
+    public override bool CanConvert(Type typeToConvert) =&gt;
+        typeof(Shape).IsAssignableFrom(typeToConvert);
+
+    public override Shape Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
+    {
+        if (reader.TokenType != BencodeTokenType.StartDictionary)
+            throw new BencodeSerializationException($&quot;Expected a dictionary but found '{reader.TokenType}'.&quot;);
+
+        string? kind = null;
+        long radius = 0, width = 0, height = 0;
+
+        // Walk PropertyName/value pairs until the matching EndDictionary.
+        while (reader.Read() &amp;&amp; reader.TokenType != BencodeTokenType.EndDictionary)
+        {
+            string name = reader.GetString();   // the PropertyName byte string
+            reader.Read();                        // advance onto the value
+
+            switch (name)
+            {
+                case &quot;kind&quot;:   kind = reader.GetString(); break;
+                case &quot;radius&quot;: radius = reader.GetInt64(); break;
+                case &quot;width&quot;:  width = reader.GetInt64(); break;
+                case &quot;height&quot;: height = reader.GetInt64(); break;
+                default:       reader.Skip(); break;   // ignore unknown members
+            }
+        }
+
+        return kind switch
+        {
+            &quot;circle&quot;    =&gt; new Circle { Kind = kind, Radius = radius },
+            &quot;rectangle&quot; =&gt; new Rectangle { Kind = kind, Width = width, Height = height },
+            null        =&gt; throw new BencodeSerializationException(&quot;Shape is missing the 'kind' discriminator.&quot;),
+            _           =&gt; throw new BencodeSerializationException($&quot;Unknown shape kind '{kind}'.&quot;),
+        };
+    }
+
+    public override void Write(Utf8BencodeWriter writer, Shape value, BencodeSerializerOptions options)
+    {
+        // Dispatch on the runtime type so the right payload - including the tag - is written.
+        switch (value)
+        {
+            case Circle c:
+                writer.WriteStartDictionary();
+                writer.WritePropertyName(&quot;kind&quot;);   writer.WriteString(&quot;circle&quot;);
+                writer.WritePropertyName(&quot;radius&quot;); writer.WriteInteger(c.Radius);
+                writer.WriteEndDictionary();
+                break;
+
+            case Rectangle r:
+                writer.WriteStartDictionary();
+                writer.WritePropertyName(&quot;kind&quot;);   writer.WriteString(&quot;rectangle&quot;);
+                writer.WritePropertyName(&quot;width&quot;);  writer.WriteInteger(r.Width);
+                writer.WritePropertyName(&quot;height&quot;); writer.WriteInteger(r.Height);
+                writer.WriteEndDictionary();
+                break;
+
+            default:
+                throw new BencodeSerializationException($&quot;Unsupported shape '{value.GetType()}'.&quot;);
+        }
+    }
+}
+</code></pre>
+<p>The key moves:</p>
+<ul>
+<li><strong>Override <code>CanConvert</code> on the converter too.</strong> After a factory creates a
+converter the serializer verifies that the <em>converter</em> accepts the
+requested type. <code>BencodeConverter&lt;Shape&gt;.CanConvert</code> defaults to an exact
+match, which would reject <code>Circle</code> (with an <code>InvalidOperationException</code>)
+when the factory is asked for a member declared as the subtype; widening
+it to <code>IsAssignableFrom</code> keeps the factory and its product in agreement.</li>
+<li><strong>Walk the token stream.</strong> A <code>StartDictionary</code> / <code>PropertyName</code> / value /
+<code>EndDictionary</code> sequence projects the dictionary onto a uniform read
+loop. Call <code>Skip()</code> to step over an unknown member's whole value,
+including nested dictionaries and lists.</li>
+<li><strong>Dispatch on the runtime type when writing.</strong> The <code>switch</code> over the
+concrete subtype emits the discriminator plus exactly that type's
+payload, so the value round-trips back through <code>Read</code>. The writer
+canonicalizes the key order when the dictionary closes.</li>
+<li><strong>Fail with the serialization exception.</strong> A missing or unknown tag is a
+<em>well-formed value that does not fit</em>, so throw
+<a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> - the same family the
+built-in converters throw - not the parse exception, which is reserved
+for syntactically invalid documents.</li>
+</ul>
+<h2 id="registration-and-resolution-order">Registration and resolution order</h2>
+<p>A factory occupies the same slots and obeys the same precedence as a
+single-type converter (see <a href="converters.html">Writing converters</a> Pattern 3),
+highest first:</p>
+<ol>
+<li>a member-level converter attribute;</li>
+<li>a type-level converter attribute;</li>
+<li>the first matching entry in <code>options.Converters</code>;</li>
+<li>the built-in converters.</li>
+</ol>
+<p>For a <em>family</em>, the natural placements are a type-level attribute on the
+base type, or a single registration on the options:</p>
+<pre><code class="lang-csharp">// Option A - annotate the base type so every Shape member uses the factory.
+[Converter(typeof(ShapeConverterFactory))]
+public abstract class Shape { /* … */ }
+
+// Option B - register once on the options.
+var options = new BencodeSerializerOptions();
+options.Converters.Add(new ShapeConverterFactory());
+</code></pre>
+<p>Three ordering consequences are worth keeping in mind:</p>
+<ul>
+<li><strong>The first match wins, and order in <code>options.Converters</code> matters.</strong> When
+more than one factory could claim a type, the earlier registration is
+asked first. Register the most specific factory ahead of any broader one
+whose <code>CanConvert</code> would also return <code>true</code>.</li>
+<li><strong><code>CreateConverter</code> runs once per closed type and is cached.</strong> A factory
+matching an open generic produces one converter per closed type
+(<code>Money&lt;Usd&gt;</code>, <code>Money&lt;Eur&gt;</code>, …), each cached independently on the
+options.</li>
+<li><strong>Register before first use.</strong> As with all converters, a
+<code>BencodeSerializerOptions</code> instance freezes the first time it is used (or via
+<code>MakeReadOnly()</code>); add factories before then, and reuse one options
+instance so the resolution and reflection work is paid once.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="converters.html">Writing converters</a> - the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and converter statelessness.</li>
+<li><a href="builtin-converters.html">Built-in converter catalog</a> - the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.</li>
+<li><a href="attributes.html">Mapping attributes</a> - <code>[Converter]</code> placement and the precedence ladder in detail.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a>, <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

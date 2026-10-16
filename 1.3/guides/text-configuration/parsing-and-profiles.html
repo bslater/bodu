@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Parsing and profiles | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Parsing and profiles | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/text-configuration/parsing-and-profiles.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="parsing-and-profiles">Parsing and profiles</h1>
+
+<p><code>Bodu.Text.Configuration</code> is a self-contained parser / view layer over its own trivia-preserving INI document model. The parser reads INI faithfully; the layer adds parse-time profiles (Bodu, EditorConfig-compatible, Strict, Relaxed), structured diagnostics, and a flattened view-projecting surface that resolves dotted paths and EditorConfig-style glob sections.</p>
+<p>This guide covers the <em>parsing</em> half - <code>ConfigurationDocument.Parse</code>, <code>ConfigurationParseOptions</code>, and the four profiles. For the <em>resolve</em> half - <code>Resolve</code> → <code>ConfigurationView</code>, key projection, typed lookup, glob matching - see <a href="views-and-resolution.html">Views and resolution</a>. For the diagnostic catalogue - every <code>ConfigurationDiagnosticCode</code> value, what triggers it - see <a href="diagnostics.html">Diagnostics</a>.</p>
+<h2 id="pattern-1---parse-a-string-with-default-options">Pattern 1 - parse a string with default options</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+string source = &quot;&quot;&quot;
+appName = MyApp
+
+[Logging]
+Level.Default = Information
+Level.Microsoft = Warning
+&quot;&quot;&quot;;
+
+ConfigurationDocument document = ConfigurationDocument.Parse(source);
+</code></pre>
+<p><code>Parse(string)</code> returns a <code>ConfigurationDocument</code> - a first-class type that inherits the library's own read-only <code>IniDocumentBase</code> document model. Use the document directly when you only need read access to sections and entries; use <a href="views-and-resolution.html"><code>Resolve</code></a> when you want path projection and typed lookup.</p>
+<p><code>Parse</code> ignores a single U+FEFF at the very start of the text - the byte order mark a decoder such as <code>Encoding.UTF8.GetString</code> leaves in place, which <code>Load</code> skips when it reads the same bytes - under every profile. A U+FEFF anywhere else is content.</p>
+<p>The default profile is <code>Bodu</code> - inline comments only after whitespace, lenient section headers, last-wins on duplicates, throw on the first error. Override the profile per call via <code>ConfigurationParseOptions</code>:</p>
+<pre><code class="lang-csharp">ConfigurationDocument doc = ConfigurationDocument.Parse(
+    source,
+    ConfigurationParseOptions.EditorConfigCompatible);
+</code></pre>
+<h2 id="pattern-2---load-from-a-file-or-stream">Pattern 2 - load from a file or stream</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationDocument fromFile   = ConfigurationDocument.Load(&quot;appsettings.ini&quot;);
+ConfigurationDocument fromStream = ConfigurationDocument.Load(stream, leaveOpen: true);
+ConfigurationDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
+</code></pre>
+<p><code>Load(string)</code> reads UTF-8 by default - set <code>DefaultEncoding</code> on the parse options when the file is not UTF-8. <code>Load(Stream)</code> does not dispose the stream when <code>leaveOpen: true</code>. <code>Load(TextReader)</code> is for callers that already control the reader's lifetime; like <code>Parse</code>, it ignores one U+FEFF that opens the reader's text.</p>
+<h2 id="pattern-3---non-throwing-parse">Pattern 3 - non-throwing parse</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+if (ConfigurationDocument.TryParse(source, out ConfigurationDocument? document))
+{
+    Configure(document);
+}
+else
+{
+    log.Warn(&quot;Failed to parse INI&quot;);
+}
+</code></pre>
+<p><code>TryParse</code> returns <code>false</code> and sets the document to <code>null</code> on the first parse error. Reach for the diagnostic-collecting variant below if you need to know <em>why</em>.</p>
+<h2 id="pattern-4---collect-diagnostics-instead-of-throwing">Pattern 4 - collect diagnostics instead of throwing</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(
+    source,
+    ConfigurationParseOptions.Relaxed);
+
+foreach (ConfigurationDiagnostic d in result.Diagnostics)
+    log.Warn(&quot;{Severity} {Code} at {Location}: {Message}&quot;,
+             d.Severity, d.Code, d.Location, d.Message);
+
+ConfigurationDocument document = result.Document;
+</code></pre>
+<p><code>ParseWithDiagnostics</code> returns a <code>ConfigurationParseResult</code> carrying the document and the diagnostic list. With the <code>Relaxed</code> profile (which sets <code>DiagnosticMode = Collect</code>), the parser keeps going past recoverable errors and reports them all at once - useful for IDE-style validation. The other profiles set <code>DiagnosticMode = Throw</code>, so the first error throws <code>ConfigurationParseException</code> instead of returning a result; the exception carries that one diagnostic, and any warnings reported before it are not attached.</p>
+<h2 id="pattern-5---write-a-document-back-out">Pattern 5 - write a document back out</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationDocument.Save(document, &quot;out.ini&quot;);
+ConfigurationDocument.Save(document, stream, leaveOpen: false);
+using (var writer = new StreamWriter(path))
+    ConfigurationDocument.Save(document, writer, writeOptions);
+</code></pre>
+<p><code>Save</code> writes the document through the library's own INI writer with configurable <code>ConfigurationWriteOptions</code>. The <code>TextWriter</code> overload neither flushes nor disposes the writer, so dispose it (as above) to commit the text. Comment trivia is preserved when the input parse retained it (<code>PreserveComments: true</code>, the default).</p>
+<h2 id="the-four-profiles">The four profiles</h2>
+<p><code>ConfigurationProfile</code> is the headline behaviour switch. Each profile is a curated set of parse <em>and</em> resolve defaults. Materialise a profile's option set with the <code>For(profile)</code> factory that each option type exposes - <code>ConfigurationParseOptions.For(profile)</code>, <code>ConfigurationResolveOptions.For(profile)</code>, <code>ConfigurationWriteOptions.For(profile)</code> - or the matching static preset. The properties are <code>init</code>-only, so a variation is a new instance that sets the profile's values from the table below and the fields that differ.</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu</code> <em>(default)</em></td>
+<td>Bodu's own convention - EditorConfig-like with safer defaults. Use for application configuration authored by your team.</td>
+</tr>
+<tr>
+<td><code>EditorConfigCompatible</code></td>
+<td>EditorConfig 0.17.2 alignment, with the differences noted below. Use when you are reading <code>.editorconfig</code> files that must round-trip through other tooling.</td>
+</tr>
+<tr>
+<td><code>Strict</code></td>
+<td>Generated-file semantics - duplicates rejected, errors thrown. Use for machine-emitted files where ambiguity is a defect.</td>
+</tr>
+<tr>
+<td><code>Relaxed</code></td>
+<td>User-authored file semantics - collect diagnostics, last-wins on duplicates. Use for end-user-facing configuration where forgiving parsing matters.</td>
+</tr>
+</tbody>
+</table>
+<p>The full per-profile table:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Bodu</th>
+<th>EditorConfigCompatible</th>
+<th>Strict</th>
+<th>Relaxed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InlineCommentMode</code></td>
+<td><code>WhitespaceIntroduced</code></td>
+<td><code>Disabled</code></td>
+<td><code>Disabled</code></td>
+<td><code>WhitespaceIntroduced</code></td>
+</tr>
+<tr>
+<td><code>DuplicateKeyMode</code></td>
+<td><code>LastWins</code></td>
+<td><code>LastWins</code></td>
+<td><code>Disallowed</code></td>
+<td><code>LastWins</code></td>
+</tr>
+<tr>
+<td><code>DuplicateSectionMode</code></td>
+<td><code>Preserve</code></td>
+<td><code>Preserve</code></td>
+<td><code>Disallowed</code></td>
+<td><code>Preserve</code></td>
+</tr>
+<tr>
+<td><code>SectionHeaderMode</code></td>
+<td><code>Lenient</code></td>
+<td><code>Strict</code></td>
+<td><code>Strict</code></td>
+<td><code>Lenient</code></td>
+</tr>
+<tr>
+<td><code>DiagnosticMode</code></td>
+<td><code>Throw</code></td>
+<td><code>Throw</code></td>
+<td><code>Throw</code></td>
+<td><code>Collect</code></td>
+</tr>
+<tr>
+<td><code>KeyOptions.Mapping</code></td>
+<td><code>DotToColon</code></td>
+<td><code>Identity</code></td>
+<td><code>DotToColon</code></td>
+<td><code>DotToColon</code></td>
+</tr>
+<tr>
+<td><code>KeyOptions.LowercaseKeys</code></td>
+<td><code>false</code></td>
+<td><code>true</code></td>
+<td><code>false</code></td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The same four profiles also drive <em>resolve</em> defaults through <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a> - <code>ApplyPreambleProperties</code>, <code>MissingPathRootMode</code>, and <code>UnsetValueMode</code>. Selecting a profile at parse time does not automatically apply its resolve defaults; pass the matching <code>ConfigurationResolveOptions</code> (or its <code>For(profile)</code> result) to <code>Resolve</code> so both halves of the pipeline agree. See <a href="views-and-resolution.html#pattern-5---resolve-options">Views and resolution</a>.</p>
+</div>
+<h2 id="configurationparseoptions-field-by-field"><code>ConfigurationParseOptions</code> field-by-field</h2>
+<p>Construct a custom option set when none of the four profiles fits. <code>ConfigurationParseOptions</code> is a sealed class with <code>init</code>-only properties, so an object initialiser builds an immutable, thread-safe instance you can cache and reuse.</p>
+<h3 id="profile-and-presets">Profile and presets</h3>
+<ul>
+<li><code>Profile</code> (<code>ConfigurationProfile</code>, default <code>Bodu</code>) - labels the option set with the profile it was created from. It is informational: the parser does not read it, and setting it in an object initialiser changes no other field, so <code>new ConfigurationParseOptions { Profile = ConfigurationProfile.Strict }</code> parses with the field defaults below, not the Strict column above. Use <code>For(profile)</code> or a preset to select a profile.</li>
+</ul>
+<h3 id="comment-handling">Comment handling</h3>
+<ul>
+<li><code>InlineCommentMode</code> (<code>ConfigurationInlineCommentMode</code>, default per profile) -
+<ul>
+<li><code>Disabled</code> - <code>#</code> / <code>;</code> in value text is literal (EditorConfig parity).</li>
+<li><code>WhitespaceIntroduced</code> - <code>#</code> / <code>;</code> starts a comment only when preceded by whitespace (the safer default).</li>
+<li><code>Always</code> - <code>#</code> / <code>;</code> always starts a comment, even mid-token.</li>
+</ul>
+</li>
+</ul>
+<h3 id="section-headers">Section headers</h3>
+<ul>
+<li><code>SectionHeaderMode</code> (<code>ConfigurationSectionHeaderMode</code>, default per profile) -
+<ul>
+<li><code>Lenient</code> - trailing content after <code>]</code> is silently accepted.</li>
+<li><code>Strict</code> - trailing non-whitespace emits a <code>TrailingContentAfterSectionHeader</code> diagnostic.</li>
+<li><code>AllowTrailingInlineComment</code> - <code>#</code> / <code>;</code> after <code>]</code> is a comment; other trailing content still errors.</li>
+</ul>
+</li>
+</ul>
+<h3 id="duplicate-handling">Duplicate handling</h3>
+<ul>
+<li><code>DuplicateKeyMode</code> (<a class="xref" href="../../api/Bodu.Text.Configuration.DuplicateKeyPolicy.html">DuplicateKeyPolicy</a>, default per profile) - <code>LastWins</code>, <code>FirstWins</code>, or <code>Disallowed</code>. See <a href="../formats/ini.html#pattern-4---duplicate-policies">INI duplicate-key policies</a>.</li>
+<li><code>DuplicateSectionMode</code> (<a class="xref" href="../../api/Bodu.Text.Configuration.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a>, default per profile) - <code>Preserve</code>, <code>Merge</code>, <code>MergeAdjacent</code>, or <code>Disallowed</code> (<code>MergeAll</code> is an alias for <code>Merge</code>).</li>
+</ul>
+<h3 id="diagnostic-handling">Diagnostic handling</h3>
+<ul>
+<li><p><code>DiagnosticMode</code> (<code>ConfigurationDiagnosticMode</code>, default per profile) -</p>
+<ul>
+<li><code>Throw</code> - first recoverable error raises <code>ConfigurationParseException</code> with a single diagnostic.</li>
+<li><code>Collect</code> - parser continues past recoverable errors; diagnostics accumulate on the <code>ConfigurationParseResult</code>.</li>
+<li><code>Ignore</code> - diagnostics dropped silently.</li>
+</ul>
+<p>Under <code>Collect</code> and <code>Ignore</code> parsing never throws <code>ConfigurationParseException</code>; an I/O error from the source propagates unchanged.</p>
+</li>
+</ul>
+<h3 id="trimming-and-limits">Trimming and limits</h3>
+<ul>
+<li><code>TrimKeysAndValues</code> (<code>bool</code>, default <code>true</code>) - trim leading / trailing whitespace from parsed keys and values.</li>
+<li><code>AllowKeyOnlyProperties</code> (<code>bool</code>, default <code>false</code>) - accept a line with no <code>=</code> as a key whose value is the empty string.</li>
+<li><code>MaxLineLength</code> (<code>int</code>, default <code>8192</code>) - line-length cap; exceeding it emits <code>LineTooLong</code>.</li>
+<li><code>MaxKeyLength</code> (<code>int</code>, default <code>1024</code>) - key-length cap; exceeding it emits <code>KeyTooLong</code>.</li>
+</ul>
+<h3 id="key-shape-and-encoding">Key shape and encoding</h3>
+<ul>
+<li><code>KeyOptions</code> (<code>ConfigurationKeyOptions</code>, default <code>Default</code>) - segment-separator characters, dotted-to-colon mapping, case sensitivity. See <a href="views-and-resolution.html#configurationkey-and-configurationkeyoptions">Views and resolution</a>.</li>
+<li><code>DefaultEncoding</code> (<code>Encoding</code>, default <code>Encoding.UTF8</code>) - encoding used by <code>Load(string)</code> and <code>Load(Stream)</code> when the source has no BOM.</li>
+</ul>
+<h2 id="static-presets">Static presets</h2>
+<pre><code class="lang-csharp">ConfigurationParseOptions.Bodu                    // cached default
+ConfigurationParseOptions.EditorConfigCompatible
+ConfigurationParseOptions.Strict
+ConfigurationParseOptions.Relaxed
+
+ConfigurationParseOptions.For(ConfigurationProfile.Strict)   // data-driven factory
+</code></pre>
+<p>The static properties are cached; reach for them rather than constructing fresh option records.</p>
+<h2 id="worked-example---editorconfig-style-parse">Worked example - EditorConfig-style parse</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+string editorConfig = &quot;&quot;&quot;
+root = true
+
+[*.cs]
+indent_size = 4
+end_of_line = crlf
+
+[*.{md,json}]
+indent_size = 2
+&quot;&quot;&quot;;
+
+ConfigurationDocument document = ConfigurationDocument.Parse(
+    editorConfig,
+    ConfigurationParseOptions.EditorConfigCompatible);
+
+Console.WriteLine(document.Sections.Count);              // 2
+Console.WriteLine(document.Sections[0].Name);            // &quot;*.cs&quot;
+Console.WriteLine(document.Sections[1][&quot;indent_size&quot;]);  // &quot;2&quot;
+</code></pre>
+<p>The <code>EditorConfigCompatible</code> profile disables inline comments so a <code>#</code> inside a glob (<code>[file_with_#_in_name.cs]</code>) is not stripped, enforces strict section-header termination, keeps keys as written, dots and colons included, and lowercases them, and leaves the preamble out of the view. Beyond that it follows the EditorConfig 0.17.2 specification, with the glob differences <a href="views-and-resolution.html">Views and resolution</a> documents, and it interprets no property: a value such as <code>indent_style = Tab</code> is reported as written, not lowercased.</p>
+<p>To go from the parsed <code>ConfigurationDocument</code> to a resolved typed view - including the EditorConfig glob behaviour where <code>[*.cs]</code> matches every <code>.cs</code> file - see <a href="views-and-resolution.html">Views and resolution</a>.</p>
+<h2 id="exceptions">Exceptions</h2>
+<ul>
+<li><strong><code>ConfigurationParseException</code></strong> (derives from <code>FormatException</code>) - raised when <code>DiagnosticMode = Throw</code> hits the first error; never raised by a parse under <code>Collect</code> or <code>Ignore</code>. The diagnostic that stopped the parse is exposed on <code>Diagnostic</code> and as the single entry of the <code>Diagnostics</code> array, and <code>Location</code> forwards to its source location (or <code>ConfigurationSourceLocation.None</code>). Resolving a document raises it as well when a section name is not a valid glob (see <a href="views-and-resolution.html">Views and resolution</a>).</li>
+<li><strong><code>ArgumentException</code></strong> / <strong><code>ArgumentNullException</code></strong> - input string null or stream not readable. Standard BCL contract.</li>
+</ul>
+<h2 id="switching-profiles-at-runtime">Switching profiles at runtime</h2>
+<p>A profile is not baked into the document - it is chosen per <code>Parse</code> call through
+the <code>ConfigurationParseOptions</code> argument. That makes profile selection an
+ordinary runtime decision: read the same source under whichever profile the
+context calls for, or re-parse an already-loaded source under a different one.</p>
+<p><strong>Per-environment selection.</strong> Pick a profile from configuration or the host
+environment, then pass the matching cached preset:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+static ConfigurationParseOptions ProfileFor(string environment) =&gt; environment switch
+{
+    &quot;Production&quot;  =&gt; ConfigurationParseOptions.Strict,    // machine-emitted; ambiguity is a defect
+    &quot;Development&quot; =&gt; ConfigurationParseOptions.Relaxed,   // hand-edited; collect diagnostics, keep going
+    _             =&gt; ConfigurationParseOptions.Bodu,      // the default convention
+};
+
+ConfigurationDocument document = ConfigurationDocument.Parse(source, ProfileFor(environment));
+</code></pre>
+<p>Reach for the static presets (<code>ConfigurationParseOptions.Strict</code>, <code>.Relaxed</code>,
+<code>.Bodu</code>, <code>.EditorConfigCompatible</code>) rather than constructing fresh records - they
+are cached, and <code>ConfigurationParseOptions.For(profile)</code> is the data-driven
+factory when the profile itself is a value rather than a literal.</p>
+<p><strong>Sniffing the content.</strong> When the source's dialect is not known up front, a
+cheap probe can choose the profile before the real parse. A <code>root = true</code>
+preamble, for instance, signals an EditorConfig file:</p>
+<pre><code class="lang-csharp">bool looksLikeEditorConfig = source
+    .AsSpan()
+    .TrimStart()
+    .StartsWith(&quot;root&quot;, StringComparison.OrdinalIgnoreCase);
+
+ConfigurationParseOptions options = looksLikeEditorConfig
+    ? ConfigurationParseOptions.EditorConfigCompatible
+    : ConfigurationParseOptions.Bodu;
+
+ConfigurationDocument document = ConfigurationDocument.Parse(source, options);
+</code></pre>
+<p><strong>Re-parsing under a stricter profile.</strong> Profiles differ in <em>what they reject</em>,
+not in the data model, so a document parsed leniently can be re-parsed strictly
+to validate it without changing how you consume it. A common shape is to ingest
+under <code>Relaxed</code> (collect every diagnostic, never throw), then re-run under
+<code>Strict</code> only when you need a hard gate:</p>
+<pre><code class="lang-csharp">ConfigurationParseResult lenient = ConfigurationDocument.ParseWithDiagnostics(
+    source, ConfigurationParseOptions.Relaxed);
+
+if (lenient.Diagnostics.Length &gt; 0 &amp;&amp; deployGate)
+{
+    // Surface the failures as a single throw under the stricter profile.
+    ConfigurationDocument.Parse(source, ConfigurationParseOptions.Strict);
+}
+
+ConfigurationDocument document = lenient.Document;
+</code></pre>
+<p><strong>Trade-offs.</strong> Re-parsing pays the parse cost twice and discards the first
+document, so reserve it for a deliberate validation step rather than the hot
+path. Switching the parse profile changes duplicate handling and section-header
+strictness, so a value that resolved one way under <code>Bodu</code> can resolve differently
+under <code>EditorConfigCompatible</code>; the resolve options are a separate object, so
+choose the matching resolve preset as well. Choose the profile once per source
+and keep the consuming code reading the same <code>ConfigurationDocument</code> surface
+regardless. For fine-grained control without swapping the whole cohort, build one
+options instance with the fields you need (see the field-by-field section above).</p>
+<h2 id="when-not-to-use-configurationdocument">When <em>not</em> to use <code>ConfigurationDocument</code></h2>
+<ul>
+<li><strong>Tabular data.</strong> Reach for <a href="../formats/delimited.html"><code>Delimited</code></a>.</li>
+<li><strong><code>.env</code> files.</strong> Reach for <a href="../formats/dotenv.html"><code>DotEnv</code></a>.</li>
+<li><strong>Strict round-trip fidelity at the byte level.</strong> The codec normalises whitespace; if you need to round-trip a file byte-for-byte, hold on to the original bytes.</li>
+<li><strong>A codec only, with no view layer.</strong> Use <a href="../formats/ini.html"><code>Bodu.Text.Ini</code></a> directly - the standalone INI library covers plain reading and writing; <code>Bodu.Text.Configuration</code> exists for profiles and the resolve / view layer.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="views-and-resolution.html">Views and resolution</a> - <code>ConfigurationView</code>, key projection, typed lookup, glob matching.</li>
+<li><a href="diagnostics.html">Diagnostics</a> - the full diagnostic-code catalogue.</li>
+<li><a class="xref" href="../../api/Bodu.Text.Configuration.html"><code>Bodu.Text.Configuration</code> API reference</a>.</li>
+<li><a href="../formats/ini.html"><code>Bodu.Text.Ini</code></a> - the standalone INI library.</li>
+<li><a href="../extensions-configuration-text/index.html"><code>Bodu.Extensions.Configuration.Text</code></a> - bridge to <code>Microsoft.Extensions.Configuration</code>.</li>
+<li><strong><a href="../topics/configuration.html">Configuration guides</a></strong> - every guide in this topic, across Bodu.Text.Configuration and Bodu.Extensions.Configuration.Text.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

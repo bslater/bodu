@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ExchangeRates_FixerRateProviderOptions" data-uid="Bodu.Financial.ExchangeRates.FixerRateProviderOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 FixerRateProviderOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ FixerRateProviderOptions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Fixer.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Fixer">Bodu.Financial.ExchangeRates.Fixer</a> <span class="bodu-package-version">0.7.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Fixer">Bodu.Financial.ExchangeRates.Fixer</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs">FixerRateProviderOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs">FixerRateProviderOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProvider.html">FixerRateProvider</a> addresses and interprets the Fixer (<code>fixer.io</code>)
@@ -156,6 +156,9 @@ foreign-exchange REST service.</p>
     </div>
     <div>
       <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DefaultLookback">WebRateProviderOptions.DefaultLookback</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval">WebRateProviderOptions.RefreshInterval</a>
     </div>
     <div>
       <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">WebRateProviderOptions.HistoryAvailability</a>
@@ -227,8 +230,8 @@ foreign-exchange REST service.</p>
   <h2 id="Bodu_Financial_ExchangeRates_FixerRateProviderOptions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 This type derives from <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, which supplies the endpoint base address, the HTTP
-contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
-The members declared here are Fixer-specific: the required <a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.html#Bodu_Financial_ExchangeRates_FixerRateProviderOptions_ApiKey">ApiKey</a> presented as the <code>access_key</code>
+contract, the synchronous-access and look-back behavior, the currency-alias map, and the per-concern log levels. The
+members declared here are Fixer-specific: the required <a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.html#Bodu_Financial_ExchangeRates_FixerRateProviderOptions_ApiKey">ApiKey</a> presented as the <code>access_key</code>
 query parameter, and the <a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.html#Bodu_Financial_ExchangeRates_FixerRateProviderOptions_TimeSeriesPath">TimeSeriesPath</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.html#Bodu_Financial_ExchangeRates_FixerRateProviderOptions_HistoricalPath">HistoricalPath</a> templates. A pair request
 spanning more than a single day is served from the time-series endpoint; a single-day request is served from the
 historical (single-date) endpoint.
@@ -252,7 +255,7 @@ binds this type from configuration and a <code>configure</code> delegate.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_FixerRateProviderOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.#ctor">
   FixerRateProviderOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -288,7 +291,7 @@ address and a history floor at the January 1999 inception of Fixer's historical 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_FixerRateProviderOptions_ApiKey" data-uid="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.ApiKey">
   ApiKey
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -325,7 +328,7 @@ address and a history floor at the January 1999 inception of Fixer's historical 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_FixerRateProviderOptions_HistoricalPath" data-uid="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.HistoricalPath">
   HistoricalPath
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -363,7 +366,7 @@ address and a history floor at the January 1999 inception of Fixer's historical 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_FixerRateProviderOptions_TimeSeriesPath" data-uid="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.TimeSeriesPath">
   TimeSeriesPath
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -404,7 +407,7 @@ address and a history floor at the January 1999 inception of Fixer's historical 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_FixerRateProviderOptions_TryValidateCore_System_String__" data-uid="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.TryValidateCore(System.String@)">
   TryValidateCore(out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Fixer/src/Financial.ExchangeRates/FixerRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -470,7 +473,7 @@ address and a history floor at the January 1999 inception of Fixer's historical 
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

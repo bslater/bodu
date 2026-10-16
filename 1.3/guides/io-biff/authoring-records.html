@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Authoring a workbook stream | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Authoring a workbook stream | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-biff/authoring-records.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="authoring-a-workbook-stream">Authoring a workbook stream</h1>
+
+<p><a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html">BiffWriter</a> serializes records; it does not decide which records a workbook needs, in what order, or where each sheet starts. This guide assembles a complete BIFF8 workbook stream from those records - the workbook globals, one substream per sheet, the sheet directory with its offsets, and a shared string table - and stores it in a compound file that <code>Bodu.Formats.Excel.Binary</code> reads back. It ends with the BIFF5 differences.</p>
+<h2 id="the-shape-of-a-workbook-stream">The shape of a workbook stream</h2>
+<p>A workbook stream is a sequence of <strong>substreams</strong>, each opened by a <code>BOF</code> record and closed by an <code>EOF</code> record:</p>
+<ol>
+<li><strong>The workbook globals</strong>, first: the code page, the date system, the shared string table, and one <code>BOUNDSHEET</code> record per sheet, which names the sheet and gives the stream offset of its <code>BOF</code> record.</li>
+<li><strong>One substream per sheet</strong>, in any order the <code>BOUNDSHEET</code> offsets describe: a <code>DIMENSIONS</code> record with the used range, then the cell records.</li>
+</ol>
+<p>The writer enforces only that each <code>EOF</code> closes a <code>BOF</code>. Everything else - the order, the offsets, the counts - is yours, and <a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html#Bodu_IO_Biff_BiffWriter_BytesCommitted">BytesCommitted</a> is how you learn where each record starts.</p>
+<h2 id="pattern-1---write-a-two-sheet-workbook">Pattern 1 - write a two-sheet workbook</h2>
+<p>A <code>BOUNDSHEET</code> record precedes the sheet it points to, so the offset it carries is not known when it is written. Write a placeholder, remember where the record starts, and patch the offset once the sheet's <code>BOF</code> has been written: the offset is the first four bytes of the record's payload, which begins after the four-byte record header.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Buffers;
+using System.Buffers.Binary;
+using Bodu.IO.Biff;
+using Bodu.IO.Compound.Builders;
+
+string[] sharedStrings = [&quot;Region&quot;, &quot;Revenue&quot;, &quot;North&quot;, &quot;South&quot;, &quot;Figures are in thousands.&quot;];
+
+var output = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new BiffWriter(output, new BiffWriterOptions { Version = BiffVersion.Biff8 });
+
+// The workbook globals: the encoding, the date system, the shared strings, and the sheet directory.
+writer.WriteBof(BiffSubstreamType.WorkbookGlobals);
+writer.WriteCodePage(1200);                        // 1200 declares UTF-16LE text, as BIFF8 writes it
+writer.WriteDateMode(is1904: false);
+writer.WriteSst(sharedStrings, totalReferenceCount: 5);
+
+long salesEntry = writer.BytesCommitted;           // where each BOUNDSHEET record starts
+writer.WriteBoundSheet(0, BiffSheetState.Visible, BiffSheetType.Worksheet, &quot;Sales&quot;);
+long notesEntry = writer.BytesCommitted;
+writer.WriteBoundSheet(0, BiffSheetState.Visible, BiffSheetType.Worksheet, &quot;Notes&quot;);
+writer.WriteEof();
+
+// The first sheet: a header row and two data rows.
+long salesOffset = writer.BytesCommitted;
+writer.WriteBof(BiffSubstreamType.Worksheet);
+writer.WriteDimensions(new BiffDimensionsRecord(0, 3, 0, 2));   // rows 0-2, columns 0-1, each end exclusive
+writer.WriteLabelSst(0, 0, 0, 0);                  // row, column, XF index, shared-string index
+writer.WriteLabelSst(0, 1, 0, 1);
+writer.WriteLabelSst(1, 0, 0, 2);
+writer.WriteNumber(1, 1, 0, 1250.75);
+writer.WriteLabelSst(2, 0, 0, 3);
+if (BiffRk.TryEncode(980, out uint rk))
+    writer.WriteRk(2, 1, 0, rk);                   // the compact form, when the value has one
+else
+    writer.WriteNumber(2, 1, 0, 980);
+writer.WriteEof();
+
+// The second sheet: one note.
+long notesOffset = writer.BytesCommitted;
+writer.WriteBof(BiffSubstreamType.Worksheet);
+writer.WriteDimensions(new BiffDimensionsRecord(0, 1, 0, 1));
+writer.WriteLabelSst(0, 0, 0, 4);
+writer.WriteEof();
+
+// Patch each BOUNDSHEET record's offset now that the sheets' positions are known.
+byte[] workbook = output.WrittenSpan.ToArray();
+BinaryPrimitives.WriteUInt32LittleEndian(workbook.AsSpan((int)salesEntry + BiffLimits.RecordHeaderSize), (uint)salesOffset);
+BinaryPrimitives.WriteUInt32LittleEndian(workbook.AsSpan((int)notesEntry + BiffLimits.RecordHeaderSize), (uint)notesOffset);
+
+// Store the stream in a compound file, under the name a BIFF8 workbook uses.
+CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+root.AddStream(&quot;Workbook&quot;, workbook);
+root.Save(&quot;report.xls&quot;);
+</code></pre>
+<p>Three things in it are easy to get wrong:</p>
+<ul>
+<li><strong>The patch position.</strong> <code>BytesCommitted</code> before <code>WriteBoundSheet</code> is the offset of the record's header; the stream offset field starts <code>BiffLimits.RecordHeaderSize</code> (4) bytes later. Writing the placeholder costs nothing, because the record's length does not depend on the value.</li>
+<li><strong>The <code>DIMENSIONS</code> ends.</strong> <a class="xref" href="../../api/Bodu.IO.Biff.BiffDimensionsRecord.html">BiffDimensionsRecord</a> takes the first row and column and one past the last, as the format stores them.</li>
+<li><strong>The XF index.</strong> Every cell record names an extended format (<code>XF</code>) record by index. This workbook writes none, so the cells name index 0; see <a href="#what-this-workbook-leaves-out">What this workbook leaves out</a>.</li>
+</ul>
+<p>If you would rather not patch, size the globals first: every record in them except the <code>BOUNDSHEET</code> offsets is known before the sheets are written, so writing the globals once to a scratch <code>ArrayBufferWriter&lt;byte&gt;</code> gives their length, and the first sheet starts there.</p>
+<h2 id="pattern-2---read-it-back">Pattern 2 - read it back</h2>
+<p><code>Bodu.Formats.Excel.Binary</code> opens the result, follows the <code>BOUNDSHEET</code> offsets, and resolves the shared strings:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;report.xls&quot;);
+foreach (ExcelWorksheetInfo info in workbook.Worksheets)
+{
+    ExcelWorksheet sheet = workbook.ReadWorksheet(info.Index);
+    foreach (ExcelCell cell in sheet.Cells)
+        Console.WriteLine($&quot;{info.Name}!R{cell.RowIndex}C{cell.ColumnIndex}: {cell.StringValue ?? cell.NumberValue?.ToString()}&quot;);
+}
+</code></pre>
+<p>It prints the five text cells and the two numbers, the RK cell among them as <code>980</code>.</p>
+<h2 id="the-shared-string-table-and-continue-records">The shared string table and <code>CONTINUE</code> records</h2>
+<p>A BIFF8 record holds at most 8,224 bytes of payload (<code>BiffLimits.Biff8MaxPayloadLength</code>), and a shared string table often holds more. The format continues it in <code>CONTINUE</code> records with rules of its own: a string's header (its length and flags) is never split, its characters may be split only between characters, and each continued run of characters starts with a fresh flags byte, so one part of a string can be stored one byte per character and the next two. <code>WriteSst</code> applies those rules; you pass the strings, and it writes as many <code>CONTINUE</code> records as the table needs.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.IO.Biff;
+
+string[] strings = Enumerable.Range(0, 1000).Select(i =&gt; $&quot;Customer reference {i:D5}&quot;).ToArray();
+
+var output = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new BiffWriter(output, BiffVersion.Biff8);
+writer.WriteSst(strings);
+
+int continuations = 0;
+var reader = new BiffReader(output.WrittenSpan, new BiffReaderOptions { Version = BiffVersion.Biff8 });
+while (reader.Read())
+{
+    if (reader.RecordType == BiffRecordType.Continue)
+        continuations++;
+}
+
+Console.WriteLine($&quot;{output.WrittenCount} bytes: one SST record and {continuations} CONTINUE records&quot;);
+</code></pre>
+<p>Do not write a string table with <code>WriteContinuedRecord</code>. It splits a payload at the maximum record length whatever lies there, which is right for structures the format lets continue at any byte, but would cut a string's header in two or leave a continued run without its flags byte. The <code>WriteSst</code> overload without a reference count records the number of strings as the number of references; pass <code>totalReferenceCount</code> when you know how many <code>LABELSST</code> cells use the table, as Pattern 1 does.</p>
+<h2 id="writing-biff5">Writing BIFF5</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Biff.BiffWriterOptions.html">BiffWriterOptions</a> selects the version and, for BIFF5, the code page text is encoded in:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.IO.Biff;
+
+var output = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new BiffWriter(output, new BiffWriterOptions { Version = BiffVersion.Biff5, CodePage = 1252 });
+
+writer.WriteBof(BiffSubstreamType.Worksheet);
+writer.WriteDimensions(new BiffDimensionsRecord(0, 1, 0, 2));
+writer.WriteLabel(0, 0, 0, &quot;Café&quot;);                // inline text, encoded in Windows-1252
+writer.WriteNumber(0, 1, 0, 3.5);
+writer.WriteEof();
+
+Console.WriteLine($&quot;{writer.Version}, code page {writer.CodePage}, records of at most {writer.MaxPayloadLength} bytes&quot;);
+</code></pre>
+<p>The differences from BIFF8 follow from the format:</p>
+<ul>
+<li><strong>No shared string table.</strong> <code>WriteSst</code> and <code>WriteLabelSst</code> throw <code>InvalidOperationException</code> under BIFF5; cells carry their text inline, through <code>WriteLabel</code>.</li>
+<li><strong>Text in a code page.</strong> Text is written in the options' code page (Windows-1252 when it is zero), and the globals should declare the same page in a <code>CODEPAGE</code> record so a reader decodes it the same way.</li>
+<li><strong>Shorter records.</strong> A BIFF5 record holds at most 2,080 bytes of payload, and every writer checks its record against the limit of the version it writes.</li>
+<li><strong>A different stream name.</strong> A BIFF5 workbook is stored in a stream named <code>Book</code>, not <code>Workbook</code>.</li>
+</ul>
+<h2 id="what-this-workbook-leaves-out">What this workbook leaves out</h2>
+<p>The workbook above is the minimum <code>Bodu.Formats.Excel.Binary</code> reads. Applications that display or edit workbooks expect a fuller globals substream - fonts, cell formats (<code>XF</code> records), number formats, and window settings among them - and a stream meant for them needs those records too. The writer emits <code>FONT</code>, <code>FORMAT</code>, and <code>XF</code> records through <code>WriteFont</code>, <code>WriteFormat</code>, and <code>WriteXf</code>, and any other record from its identifier and payload through <code>WriteRecord</code>; [MS-XLS] specifies which records each substream requires and in what order.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="resumable-reading.html">Reading a stream a block at a time</a></strong> - the reading side, for streams you do not want in memory whole.</li>
+<li><strong><a href="../../docs/io-biff/records.html">Record reference</a></strong> - every record the writer emits, with its layout in each version.</li>
+<li><strong><a href="../io-compound/authoring-compound-files.html">Authoring compound files</a></strong> - the container side: the builder, deferred streams, and in-place editing.</li>
+<li><strong><a href="../excel/reading-workbooks.html">Reading workbooks</a></strong> - the reader that opened the result.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

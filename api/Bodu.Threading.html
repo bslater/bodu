@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Threading.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Threading.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.1</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -102,7 +102,7 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-core.svg" alt="Bodu.Threading"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Threading</strong> is a set of asynchronous coordination primitives for <code>async</code>/<code>await</code> code - the awaitable counterparts of the BCL synchronous gates in <a class="xref" href="https://learn.microsoft.com/dotnet/api/system">System.Threading</a>. Each type lets a caller wait on a condition without blocking a thread: a held lock can span an <code>await</code>, a signal can be awaited, and a burst of triggers can be coalesced or rate-limited. The primitives own no operating-system handles (those that need explicit teardown implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> only to fault still-queued waiters at shutdown).</p>
+<p><strong>Bodu.Threading</strong> is a set of asynchronous coordination primitives for <code>async</code>/<code>await</code> code - the awaitable counterparts of the BCL synchronous gates in <a class="xref" href="https://learn.microsoft.com/dotnet/api/system">System.Threading</a>. Each type lets a caller wait on a condition without blocking a thread: a held lock can span an <code>await</code>, a signal can be awaited, and a burst of triggers can be coalesced or rate-limited. The primitives own no operating-system handles. The few that implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> do so for shutdown: the two locks to fault still-queued waiters, and <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> to release its timer and cancel in-flight callbacks.</p>
 <p>The whole namespace follows two shared conventions. First, acquisition is exposed through a <code>ValueTask</code> that <strong>must be awaited exactly once</strong>, and a contention-free acquisition completes synchronously with no allocation. Second, <strong>success wins over cancellation</strong>: an acquisition that can be granted immediately is granted even when the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a> is already canceled - the token only cancels an acquisition that must queue, and cancellation removes only the calling waiter. Waiters that do queue are released in strict FIFO order, with continuations scheduled asynchronously so a releasing thread is never hijacked to run a waiter inline.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
@@ -167,7 +167,7 @@ public async Task DownloadAsync(Uri uri)
 <li><strong>FIFO ordering.</strong> <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a>, <a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a>, and <a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a> release queued waiters in strict first-in, first-out order. <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a> is writer-preferring: queued writers go FIFO and readers are admitted in a batch when no writer is queued.</li>
 <li><strong>Not reentrant.</strong> <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a> and <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a> deadlock if the same flow re-acquires access it already holds; the reader/writer lock also has no upgradeable mode.</li>
 <li><strong>Releasers dispose once.</strong> A <a class="xref" href="Bodu.Threading.AsyncLock.Releaser.html">AsyncLock.Releaser</a> or <a class="xref" href="Bodu.Threading.AsyncSemaphore.Releaser.html">AsyncSemaphore.Releaser</a> should be disposed exactly once; the <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.Releaser.html">AsyncReaderWriterLock.Releaser</a> is idempotent and tolerates repeat disposal.</li>
-<li><strong>Disposal is for shutdown.</strong> Disposing <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a>, <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a>, or <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> faults any still-queued waiter with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>; dispose only when no further acquisitions are expected. The event types and <a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a> own no handle and are not <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>.</li>
+<li><strong>Disposal is for shutdown.</strong> Disposing <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a> or <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a> faults any still-queued waiter with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>; dispose only when no further acquisitions are expected. Disposing <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> faults nothing: it discards the pending run, releases its timer, and cancels the token of any in-flight callback, after which <code>DrainAsync</code> returns at once and <code>Invoke</code>, <code>FlushAsync</code>, and <code>Cancel</code> throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>. The event types and <a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a> own no handle and are not <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>.</li>
 <li><strong>Testable timing.</strong> <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> and <a class="xref" href="Bodu.Threading.RateGate.html">RateGate</a> schedule through a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a> (defaulting to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider.system">System</a>), so timing-dependent behavior can be driven deterministically in tests.</li>
 <li><strong>See also:</strong> the <a href="../guides/core/async-primitives.html">async coordination primitives guide</a> and the <a href="../docs/core/index.html">Bodu.Core introduction</a>.</li>
 </ul>
@@ -277,7 +277,7 @@ invocation is still in flight.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

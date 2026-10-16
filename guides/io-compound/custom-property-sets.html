@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/io-compound/custom-property-sets.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-compound/custom-property-sets.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -88,7 +88,7 @@
 <h1 id="authoring-custom-property-sets">Authoring custom property sets</h1>
 
 <p><a href="property-sets.html">Reading property sets</a> covers the two standard metadata streams and their typed views. This guide is the write side, and the part the typed builders do not reach: the raw <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> model, user-defined named properties in a document's second section, and property-set streams of your own on any storage.</p>
-<p>An OLE property set (MS-OLEPS) is the serialized form of the COM <code>IPropertyStorage</code> interface. It begins with a header declaring a class identifier and one or two <strong>sections</strong>; each section is identified by a format identifier (FMTID), carries a code page, and maps integer property identifiers (PIDs) to typed values. The first section holds the well-known properties; an optional second section - the <em>user-defined</em> section, FMTID <code>D5CDD505-2E9C-101B-9397-08002B2CF9AE</code> - holds custom properties whose human-readable names live in the section's dictionary. Office shows those names on the <em>Custom</em> tab of a document's properties.</p>
+<p>An OLE property set (MS-OLEPS) is the serialized form of the COM <code>IPropertyStorage</code> interface. It begins with a header declaring a class identifier and one or two <strong>sections</strong>; each section is identified by a format identifier (FMTID), carries a code page, and maps property identifiers (PIDs) to typed values. A PID is an unsigned 32-bit value, keyed by its <code>int</code> value: one at or above <code>0x80000000</code>, such as the <code>PID_LOCALE</code> (<code>0x80000000</code>) Office writes in a user-defined section, is <code>unchecked((int)0x80000000)</code>. The first section holds the well-known properties; an optional second section - the <em>user-defined</em> section, FMTID <code>D5CDD505-2E9C-101B-9397-08002B2CF9AE</code> - holds custom properties whose human-readable names live in the section's dictionary. Office shows those names on the <em>Custom</em> tab of a document's properties.</p>
 <p>The samples run against <code>sample1.doc</code> from the <a href="../../samples/io-compound.html">runnable compound-file sample</a>, a Word 2000 document copied as <code>report.doc</code>; the quoted output is what they print.</p>
 <h2 id="the-model">The model</h2>
 <table>
@@ -311,7 +311,7 @@ if (storage.TryOpenPropertySet(&quot;BoduPipeline&quot;, out OlePropertySet? rea
 // Pipeline = nightly-ingest
 // Sequence = 42
 </code></pre>
-<p>A name dictionary is legal in any section, not just the user-defined one, so <code>GetNamedProperties()</code> works here too. Code page 65001 makes <code>AnsiString</code> values UTF-8 on the wire; <code>UnicodeString</code> is the alternative that never depends on the section code page. The writer encodes code pages 1200, 1201, and 65001 exactly and every other value - 1252 included - as Latin-1, so for text outside ASCII use one of those three or <code>UnicodeString</code>.</p>
+<p>A name dictionary is legal in any section, not just the user-defined one, so <code>GetNamedProperties()</code> works here too. Code page 65001 makes <code>AnsiString</code> values UTF-8 on the wire; <code>UnicodeString</code> is the alternative that never depends on the section code page. Code pages 1200 and 1201 make them UTF-16, and every other code page - 1252, Shift-JIS (932) and the rest - reads and writes <code>AnsiString</code> values with the encoding the shared framework's <code>CodePagesEncodingProvider</code> serves for it (queried directly, never registered process-wide); a code page it does not serve, and code page 0, fall back to Latin-1. A character the section's code page cannot represent is written as a best-fit or <code>?</code> replacement, so for text outside the code page use 65001 or <code>UnicodeString</code>.</p>
 <h2 id="bytes-in-and-out-without-a-container">Bytes in and out without a container</h2>
 <p>The set serializes independently of any file - useful for the builder authoring path, for tests, and for property sets that travel outside a compound file:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound.Builders;
@@ -452,7 +452,7 @@ Console.WriteLine(root.ToArray().Length);
 </tr>
 </tbody>
 </table>
-<p>A <strong>vector</strong> (<code>VT_VECTOR</code>) is an <code>OlePropertyValue</code> with <code>IsVector = true</code> and an <code>object?[]</code> of element values; the writer rejects an empty-typed or null-typed vector, and any type outside the table above, with <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a>:</p>
+<p>A <strong>vector</strong> (<code>VT_VECTOR</code>) is an <code>OlePropertyValue</code> with <code>IsVector = true</code> and an <code>object?[]</code> of element values; the writer rejects an empty-typed or null-typed vector, and any type outside the table above, with <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a>. As [MS-OLEPS] 2.15 lays a vector out, its strings, blobs and variants are each padded to a multiple of four bytes, while its elements of a fixed size, the 1- and 2-byte values among them, are packed one after another, with padding only after the last; the reader and the writer both use that layout:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using Bodu.IO.Compound.PropertySets;
 
@@ -510,7 +510,7 @@ catch (CompoundFileSerializationException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

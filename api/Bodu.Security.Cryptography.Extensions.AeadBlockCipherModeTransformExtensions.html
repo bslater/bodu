@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 AeadBlockCipherModeTransformExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ AeadBlockCipherModeTransformExtensions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs">AeadBlockCipherModeTransformExtensions.Detached.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs">AeadBlockCipherModeTransformExtensions.Detached.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Extends <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> with one-shot encrypt/decrypt overloads that handle the
@@ -206,15 +206,19 @@ byte[] nonce = RandomNumberGenerator.GetBytes(12);
 byte[] header = Encoding.UTF8.GetBytes("v=1;msg=42");
 
 // 1. Encrypt with associated data; receive ciphertext + tag in a single buffer.
-using IAeadBlockCipherModeTransform enc = new GcmModeTransform(key, nonce);
+using var aes = new AesBlockCipher(key);
+using IAeadBlockCipherModeTransform enc = new GcmModeTransform(aes, nonce);
 byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header);
 
 // 2. Decrypt and verify in one call. A tampered tag or header throws CryptographicException.
-using IAeadBlockCipherModeTransform dec = new GcmModeTransform(key, nonce);
+using IAeadBlockCipherModeTransform dec = new GcmModeTransform(aes, nonce);
 byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 
 // 3. Same shape with a different mode - Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
-using IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce);
+//    Ascon-AEAD128 takes its own 16-byte key and 16-byte nonce.
+byte[] asconKey = RandomNumberGenerator.GetBytes(16);
+byte[] asconNonce = RandomNumberGenerator.GetBytes(16);
+using IAeadBlockCipherModeTransform enc2 = new AsconAead128(asconKey, asconNonce);
 byte[] sealedAscon = enc2.Encrypt(plaintext);</code></pre>
 </example>
 </div>
@@ -229,7 +233,7 @@ byte[] sealedAscon = enc2.Encrypt(plaintext);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte})">
   Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -289,7 +293,7 @@ AEAD transforms are single-use per message - construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -357,7 +361,7 @@ AEAD transforms are single-use per message - construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_DecryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__Bodu_Security_Cryptography_AuthenticationTag_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.DecryptDetached(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},Bodu.Security.Cryptography.AuthenticationTag,System.ReadOnlySpan{System.Byte})">
   DecryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, AuthenticationTag, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -426,7 +430,7 @@ AEAD transforms are single-use per message - construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte})">
   Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -483,7 +487,7 @@ construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -543,7 +547,7 @@ ciphertext followed by the <a class="xref" href="Bodu.Security.Cryptography.IAea
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_EncryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.EncryptDetached(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   EncryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -630,7 +634,7 @@ construct a fresh instance.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

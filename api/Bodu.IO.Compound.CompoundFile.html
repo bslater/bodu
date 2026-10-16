@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Compound_CompoundFile" data-uid="Bodu.IO.Compound.CompoundFile" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CompoundFile Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ CompoundFile Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.IO.Compound.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Compound">Bodu.IO.Compound</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Compound">Bodu.IO.Compound</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs">CompoundFile.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs">CompoundFile.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage
@@ -224,6 +224,11 @@ an existing file for editing. Edits are staged in memory and written to the dest
 <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> (which rewrites the whole container); <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a> discards them. Mutating an
 existing file requires read access - write-only access is supported only for creating modes.
 </p>
+<p>
+Disposing the file ends the session for everything it handed out: the members of a <a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a>
+that open a child or stage an edit, and the members of a writable <a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> that change its
+bytes, throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>, so an edit that could never be committed is never accepted.
+</p>
 </div>
 
 
@@ -236,7 +241,7 @@ existing file requires read access - write-only access is supported only for cre
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Access" data-uid="Bodu.IO.Compound.CompoundFile.Access">
   Access
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -273,7 +278,7 @@ existing file requires read access - write-only access is supported only for cre
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_CanRead" data-uid="Bodu.IO.Compound.CompoundFile.CanRead">
   CanRead
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -310,7 +315,7 @@ existing file requires read access - write-only access is supported only for cre
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_CanWrite" data-uid="Bodu.IO.Compound.CompoundFile.CanWrite">
   CanWrite
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -347,7 +352,7 @@ existing file requires read access - write-only access is supported only for cre
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_IsDirty" data-uid="Bodu.IO.Compound.CompoundFile.IsDirty">
   IsDirty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -384,7 +389,7 @@ existing file requires read access - write-only access is supported only for cre
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_RootStorage" data-uid="Bodu.IO.Compound.CompoundFile.RootStorage">
   RootStorage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -425,7 +430,7 @@ existing file requires read access - write-only access is supported only for cre
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Commit" data-uid="Bodu.IO.Compound.CompoundFile.Commit">
   Commit()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -447,7 +452,10 @@ existing file requires read access - write-only access is supported only for cre
 
   <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Commit_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>The destination is truncated and the whole container is rewritten from the staging tree. When the destination is
-not seekable, the committed bytes are appended at the current position.</p>
+not seekable, the committed bytes are appended at the current position. The container is planned before the
+destination is touched, so a staging tree that cannot be represented leaves the destination as it was. A failure
+while the bytes are written, such as a deferred source shorter than it declared, leaves the destination
+partially written and the file dirty.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
@@ -472,7 +480,7 @@ not seekable, the committed bytes are appended at the current position.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundFile.CommitAsync(System.Threading.CancellationToken)">
   CommitAsync(CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -505,10 +513,12 @@ not seekable, the committed bytes are appended at the current position.</p>
 
 
   <h4 class="section" id="Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The asynchronous counterpart of <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>, sharing the same layout computation. Cancellation is
-observed before any destination mutation and again during the write; a cancellation or failure mid-write leaves
-the destination partially written and the file dirty - the same surface a synchronous <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>
-fault presents - so call <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_">CommitAsync(CancellationToken)</a> (or <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>) again, or <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a>.</p>
+  <div class="markdown level1 remarks"><p>The asynchronous counterpart of <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>, sharing the same layout computation. The container is
+planned before the destination is touched, so a staging tree that cannot be represented leaves the destination
+as it was. Cancellation is observed before any destination mutation and again during the write; a cancellation
+or failure mid-write leaves the destination partially written and the file dirty - the same surface a
+synchronous <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> fault presents - so call <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_">CommitAsync(CancellationToken)</a> (or <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>)
+again, or <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a>.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
@@ -536,7 +546,7 @@ fault presents - so call <a class="xref" href="Bodu.IO.Compound.CompoundFile.htm
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.CompoundFile.Create(System.IO.Stream,System.Boolean,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
   Create(Stream, bool, CompoundBuildOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -594,6 +604,10 @@ discards the staged edits.</p>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html#Bodu_IO_Compound_Builders_CompoundBuildOptions_Version">Version</a> of <code class="paramref">options</code> is neither the
+default nor a defined <a class="xref" href="Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a>.</p>
+</dd>
   </dl>
 
 
@@ -605,7 +619,7 @@ discards the staged edits.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Create_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.CompoundFile.Create(System.String,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
   Create(string, CompoundBuildOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -651,6 +665,10 @@ by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_Com
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>Thrown when <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html#Bodu_IO_Compound_Builders_CompoundBuildOptions_Version">Version</a> of <code class="paramref">options</code> is neither the
+default nor a defined <a class="xref" href="Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a>; the file is not created.</p>
+</dd>
   </dl>
 
 
@@ -662,7 +680,7 @@ by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_Com
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Dispose" data-uid="Bodu.IO.Compound.CompoundFile.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -693,7 +711,7 @@ by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_Com
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Flush" data-uid="Bodu.IO.Compound.CompoundFile.Flush">
   Flush()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -739,7 +757,7 @@ by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_Com
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundFile.FlushAsync(System.Threading.CancellationToken)">
   FlushAsync(CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -797,7 +815,7 @@ by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_Com
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_IO_Stream_" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile(System.IO.Stream)">
   IsCompoundFile(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -859,7 +877,7 @@ if (CompoundFile.IsCompoundFile(source))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile(System.ReadOnlySpan{System.Byte})">
   IsCompoundFile(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -903,7 +921,7 @@ if (CompoundFile.IsCompoundFile(source))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_Bodu_IO_Compound_CompoundFileOptions_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,Bodu.IO.Compound.CompoundFileOptions,System.Boolean)">
   Open(Stream, CompoundFileOptions, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -948,6 +966,10 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>Thrown when <code class="paramref">stream</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the read strategy of <code class="paramref">options</code> resolves to reading on demand and
+<code class="paramref">stream</code> is not seekable.</p>
+</dd>
     <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
     <dd><p>Thrown when the stream content is not a well-formed compound file.</p>
 </dd>
@@ -962,7 +984,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,System.Boolean,System.Boolean)">
   Open(Stream, bool, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1033,7 +1055,7 @@ seekable.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_IO_FileMode_System_IO_FileAccess_System_Boolean_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,System.IO.FileMode,System.IO.FileAccess,System.Boolean,System.Boolean)">
   Open(Stream, FileMode, FileAccess, bool, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1100,6 +1122,10 @@ are written back to <code class="paramref">stream</code> - which must be writabl
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
     <dd><p>Thrown when the combination of <code class="paramref">mode</code> and <code class="paramref">access</code> is not supported.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> is not seekable and the file is opened for reading with
+<code class="paramref">buffered</code> set to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, or loads existing content for editing.</p>
+</dd>
     <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
     <dd><p>Thrown when the stream content is not a well-formed compound file.</p>
 </dd>
@@ -1114,7 +1140,7 @@ are written back to <code class="paramref">stream</code> - which must be writabl
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Open_System_String_System_IO_FileMode_System_IO_FileAccess_System_IO_FileShare_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
   Open(string, FileMode, FileAccess, FileShare)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1188,7 +1214,7 @@ without committing leaves the file unchanged.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead(System.String)">
   OpenRead(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1252,7 +1278,7 @@ foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_Bodu_IO_Compound_CompoundFileOptions_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead(System.String,Bodu.IO.Compound.CompoundFileOptions)">
   OpenRead(string, CompoundFileOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1314,7 +1340,7 @@ foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_Revert" data-uid="Bodu.IO.Compound.CompoundFile.Revert">
   Revert()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1358,7 +1384,7 @@ restores the empty root storage.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_SetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetDocumentSummaryInformation(Bodu.IO.Compound.PropertySets.DocumentSummaryInformation)">
   SetDocumentSummaryInformation(DocumentSummaryInformation)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1413,7 +1439,7 @@ record's underlying <a class="xref" href="Bodu.IO.Compound.PropertySets.Document
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_SetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetSummaryInformation(Bodu.IO.Compound.PropertySets.SummaryInformation)">
   SetSummaryInformation(SummaryInformation)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1467,7 +1493,7 @@ and persisted when <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_TryGetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__" data-uid="Bodu.IO.Compound.CompoundFile.TryGetDocumentSummaryInformation(Bodu.IO.Compound.PropertySets.DocumentSummaryInformation@)">
   TryGetDocumentSummaryInformation(out DocumentSummaryInformation)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1521,7 +1547,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_CompoundFile_TryGetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation__" data-uid="Bodu.IO.Compound.CompoundFile.TryGetSummaryInformation(Bodu.IO.Compound.PropertySets.SummaryInformation@)">
   TryGetSummaryInformation(out SummaryInformation)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1597,7 +1623,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

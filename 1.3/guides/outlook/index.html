@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Formats.Outlook guides | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Formats.Outlook guides | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/outlook/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="boduformatsoutlook-guides">Bodu.Formats.Outlook guides</h1>
+
+<p>Recipe-style walk-throughs for the Outlook format readers: <strong>Bodu.Formats.Outlook</strong>, the shared MAPI value model; <strong>Bodu.Formats.Outlook.Msg</strong>, the read-only reader for the Outlook message format (<code>.msg</code> / MS-OXMSG); and <strong>Bodu.Formats.Outlook.Pst</strong>, the read-only reader for the Outlook personal-folders format (<code>.pst</code> / MS-PST). A message is opened as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies. A mail store is opened as a disposable session exposing the store properties, the folder hierarchy, and every message in it with the same surface, embedded messages and store-wide named-property resolution included.</p>
+<p>A <code>.msg</code> file <em>is</em> an OLE2 compound file: the message's properties live in a <code>__properties_version1.0</code> stream of fixed 16-byte records, variable-length values live in <code>__substg1.0_</code> streams named by their property tag, and recipients and attachments are indexed child storages. The container is read by <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>, on which the reader is built. A <code>.pst</code> file is a node database: each folder, message, and attachment is a node whose properties live in a property context and whose children are listed in table contexts. The container is read by <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a>, on which the mail-store reader is built.</p>
+<h2 id="how-the-library-works">How the library works</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a> opens the container and eagerly decodes the root property stream, so the property surface is available without further I/O. Recipients, attachments, and the named-property mapping are materialized lazily on first access. Attachment payloads stream directly from the container, and an attached message opens recursively as a nested session sharing the root's container.</p>
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> opens the container and parses only its header. Folder and message enumerations stream table rows, each store, folder, message, and attachment decodes its properties once on first access, attachment payloads stream from the container, and an embedded message opens as a view bound to the same session.</p>
+<p>The three packages share the flattened <code>Bodu.Formats.Outlook</code> namespace: the value model - <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a>, <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiProperty.html">MapiProperty</a>, the tag-addressed <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a>, and <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a> - carries no container knowledge, so the <code>.msg</code> reader and the <code>.pst</code> mail-store reader (over <code>Bodu.IO.Pst</code>; see the <a href="../../docs/io-pst/index.html">Bodu.IO.Pst introduction</a>) share it unchanged.</p>
+<blockquote>
+<p>These guides cover the read path only - the readers never write <code>.msg</code> or <code>.pst</code> files, emulate a MAPI session, or de-encapsulate RTF into HTML.</p>
+</blockquote>
+<h2 id="namespace-map">Namespace map</h2>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>What lives here</th>
+<th>Guides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a></td>
+<td>The <code>OutlookMessage</code> and <code>OutlookMailStore</code> sessions with their folder/recipient/attachment/body surfaces, the two reader-options types, the shared MAPI value model, and the <code>OutlookFormatException</code> family.</td>
+<td><a href="reading-msg-files.html">Reading .msg files</a> · <a href="reading-pst-mail-stores.html">Reading .pst mail stores</a> · <a href="properties-and-named-properties.html">Properties and named properties</a> · <a href="reader-options-and-limits.html">Reader options and resource limits</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="guides">Guides</h2>
+<ul>
+<li><strong><a href="reading-msg-files.html">Reading .msg files</a></strong> - opening a message from a path or stream, the scalar and body conveniences, recipients, attachments, and nested messages.</li>
+<li><strong><a href="reading-pst-mail-stores.html">Reading .pst mail stores</a></strong> - opening a mail store, walking the folder hierarchy, message conveniences and bodies, recipients, attachments and embedded messages, store-wide named properties, and the two exception families.</li>
+<li><strong><a href="properties-and-named-properties.html">Properties and named properties</a></strong> - the raw property surface, typed accessors, tags and wire types, and resolving named properties.</li>
+<li><strong><a href="reader-options-and-limits.html">Reader options and resource limits</a></strong> - every option on both readers, what <code>Strict</code> changes, and what surfaces when a limit trips.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

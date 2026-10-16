@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Text.Encoding.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Text.Encoding.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -118,7 +118,7 @@
 <li><a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a> - hexadecimal; 4 bits per symbol; flexible formatting (case, <code>0x</code> prefix, line breaks, byte spacing); lenient parsing.</li>
 <li><a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a> - 5 bits per symbol; four variants via <a class="xref" href="Bodu.Text.Encoding.Base32Variant.html">Base32Variant</a>: Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32; padding control.</li>
 <li><a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a> - 6 bits per symbol; three variants via <a class="xref" href="Bodu.Text.Encoding.Base64Variant.html">Base64Variant</a>: Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap). Delegates inner conversion to the BCL for SIMD speed.</li>
-<li><a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a> - non-power-of-two radix using big-integer divmod; two variants via <a class="xref" href="Bodu.Text.Encoding.Base58Variant.html">Base58Variant</a>: BitcoinFlickr (default), Ripple. Preserves leading zeros.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a> - non-power-of-two radix using big-integer divmod; three variants via <a class="xref" href="Bodu.Text.Encoding.Base58Variant.html">Base58Variant</a>: BitcoinFlickr (default; the Bitcoin alphabet), Ripple, Flickr. Preserves leading zeros.</li>
 <li><a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a> - 4-byte block → 5 chars; three variants via <a class="xref" href="Bodu.Text.Encoding.Base85Variant.html">Base85Variant</a>: Ascii85 (Adobe, with <code>z</code> shortcut), Z85 (RFC 32 ZeroMQ; 4-byte alignment), GitCompact (Git <code>base85.c</code> alphabet; compact self-delimiting tail plus the <code>EncodeGitPadded</code> / <code>DecodeGitPadded</code> line primitive).</li>
 </ul>
 <p><strong>Special-purpose encodings</strong></p>
@@ -169,8 +169,8 @@ byte[] headerBytes = Base64.Decode(
 byte[] secret  = RandomNumberGenerator.GetBytes(20);
 string display = Base32.Encode(secret, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
 
-// --- Base58 BitcoinFlickr: decode a mainnet P2PKH address -------------------
-byte[] payload = Base58.Decode(&quot;1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L&quot;);
+// --- Base58 (Bitcoin alphabet): decode a mainnet P2PKH address -------------
+byte[] payload = Base58.Decode(&quot;1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa&quot;);
 
 // --- Base85 Ascii85 with the z shortcut -------------------------------------
 string ascii85 = Base85.Encode(new byte[] { 0, 0, 0, 0 }, Base85Variant.Ascii85);
@@ -219,9 +219,9 @@ OperationStatus status = Base16.DecodeFromUtf8(
 </code></pre>
 <h2 id="notes">Notes</h2>
 <ul>
-<li><strong>ASCII alphabets / UTF-8 byte path.</strong> Every variant's alphabet is pure ASCII, so the UTF-8 byte form is bit-identical to the character form. The <code>EncodeToUtf8</code> / <code>DecodeFromUtf8</code> overloads are the natural choice when bytes come from a network or file pipeline - they avoid the allocation of an intermediate <code>string</code> or <code>char[]</code>.</li>
+<li><strong>ASCII alphabets / UTF-8 byte path.</strong> Every variant's alphabet is pure ASCII, so for the five core encodings (Base16, Base32, Base58, Base64, Base85), which have one, the UTF-8 byte form is bit-identical to the character form, the MIME variant's line breaks included. The <code>EncodeToUtf8</code> / <code>DecodeFromUtf8</code> overloads are the natural choice when bytes come from a network or file pipeline - they avoid the allocation of an intermediate <code>string</code> or <code>char[]</code>.</li>
 <li><strong><code>OperationStatus</code> and streaming.</strong> Base16, Base32, and Base64 expose the <code>System.Buffers</code>-style <code>OperationStatus</code> return convention used by <code>System.Buffers.Text.Base64</code>: <code>Done</code>, <code>DestinationTooSmall</code>, <code>InvalidData</code>, and (streaming only, <code>isFinalBlock: false</code>) <code>NeedMoreData</code>. This makes them safe to drop into chunked stream pipelines without buffering the entire input.</li>
-<li><strong>Base58 and Base85 are not streamable.</strong> Base58 needs the entire input for its big-integer divmod; Base85 needs fixed-size block packing. Both surfaces accept <code>isFinalBlock</code> for API consistency but ignore the flag - pass the entire input as a single span.</li>
+<li><strong>Base58 and Base85 are not streamable.</strong> Base58 needs the entire input for its big-integer divmod; Base85 needs fixed-size block packing. Their <code>DecodeFromUtf8</code> overloads have no <code>isFinalBlock</code> parameter and always treat the input as complete - pass the entire input as a single span.</li>
 <li><strong>The special-purpose encodings are single-shot.</strong> Base45, Base62, and Bech32 each require the whole input at once (Base45 packs in two/three-character groups, Base62 uses big-integer divmod, Bech32 must compute a checksum over the entire data part), so they expose no <code>OperationStatus</code> streaming path. They throw <code>FormatException</code> on invalid input and offer <code>Try*</code> variants that report failure as <code>false</code>.</li>
 <li><strong>Bech32 is HRP-aware and checksum-verified.</strong> <a class="xref" href="Bodu.Text.Encoding.Bech32.html">Bech32</a> encodes and decodes the <em>whole</em> string - human-readable part, <code>1</code> separator, data, and checksum - rather than a flat byte buffer, which is why it sits outside <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a>. Decode reports which scheme (Bech32 vs Bech32m) validated the checksum through an out parameter; the BIP 173 90-character limit is enforced on decode, and <code>ConvertBits</code> converts between 8-bit bytes and 5-bit groups. <a class="xref" href="Bodu.Text.Encoding.Base58Check.html">Base58Check</a> likewise verifies its appended four-byte double-SHA-256 checksum on decode and throws on a corrupted string.</li>
 <li><strong>Stateless encodings.</strong> Every encoding type is a <code>static class</code> with no instance state. There is no lookup-table cache to share across instances (encodings are stateless), no thread-affinity, and no global configuration. The runtime-selection types in <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a> are pre-configured singletons over the same static APIs.</li>
@@ -258,7 +258,7 @@ to carry binary payloads inside a QR code's Alphanumeric mode.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a></dt>
-      <dd><p>Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.</p>
+      <dd><p>Provides Base58 encoding and decoding of binary data using the Bitcoin, Ripple, or Flickr alphabets.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -423,7 +423,7 @@ form-encoding rules to apply.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

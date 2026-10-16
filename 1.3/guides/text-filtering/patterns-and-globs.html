@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Patterns and globs | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Patterns and globs | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/text-filtering/patterns-and-globs.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="patterns-and-globs">Patterns and globs</h1>
+
+<p>A <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPattern.html"><code>TextFilterPattern</code></a> is one immutable rule: pattern
+text, an include/exclude action, a wildcard/regex kind, and an optional case override. This guide
+covers the wildcard grammar in detail and when to reach for a regex instead.</p>
+<h2 id="quick-reference">Quick reference</h2>
+<table>
+<thead>
+<tr>
+<th>Syntax</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*</code></td>
+<td>zero or more characters</td>
+<td><code>error*</code> matches <code>error: disk full</code></td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>exactly one character</td>
+<td><code>job-?</code> matches <code>job-7</code>, not <code>job-42</code></td>
+</tr>
+<tr>
+<td><code>[abc]</code>, <code>[a-z]</code></td>
+<td>one character from a set / range</td>
+<td><code>job-[0-9][0-9]</code> matches <code>job-42</code></td>
+</tr>
+<tr>
+<td><code>[!abc]</code>, <code>[^abc]</code></td>
+<td>one character not in the set</td>
+<td><code>[!x]y</code> matches <code>ay</code>, not <code>xy</code></td>
+</tr>
+<tr>
+<td><code>{a,b}</code></td>
+<td>alternation, expanded at build time</td>
+<td><code>{error,warn}*</code></td>
+</tr>
+<tr>
+<td><code>\x</code></td>
+<td>literal <code>x</code></td>
+<td><code>a\*b</code> matches only the text <code>a*b</code></td>
+</tr>
+</tbody>
+</table>
+<p>Globs match the <strong>whole value</strong> - there are no path semantics, and <code>*</code> crosses every character
+equally. Use <code>*abc*</code> for contains-style matching.</p>
+<h2 id="case-sensitivity">Case sensitivity</h2>
+<p>Matching is ordinal and case-insensitive by default. Set
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterOptions.html"><code>TextFilterOptions.IgnoreCase</code></a> to <code>false</code> for the
+whole filter, or override per pattern via the <code>ignoreCase</code> argument - a pattern-level setting wins
+in both directions. Comparison is always ordinal; culture-sensitive comparison is deliberately not
+supported, because the optimized matchers operate on raw character values.</p>
+<h2 id="character-classes">Character classes</h2>
+<p>Classes support single members, <code>lo-hi</code> ranges, and negation with a leading <code>!</code> (or <code>^</code>). A <code>-</code>
+that is the first or last member is a literal; a <code>]</code> can only be a member when escaped (<code>[\]]</code>).
+An empty class (<code>[]</code>) and an unterminated class are build-time errors - grammar problems surface
+from <code>TextFilter.Build</code>, never per value.</p>
+<h2 id="brace-alternation">Brace alternation</h2>
+<p><code>{a,b}</code> expands <strong>at build time</strong> into one compiled matcher per alternative, so
+<code>{error,warn,fatal}*</code> costs the same at evaluation time as three separate prefix patterns.
+Alternatives may be empty (<code>a{b,}</code> matches <code>ab</code> and <code>a</code>), groups nest, and expansion is capped
+(nesting depth 32, at most 10 000 alternatives per pattern) so a hostile pattern cannot demand
+unbounded build work. All expanded alternatives report as their single declared pattern in results
+and statistics. A pattern itself, glob or regex, may be at most 4096 characters long: a longer one
+throws <code>ArgumentOutOfRangeException</code> when it is declared, or when <code>TextFilter.Parse</code> /
+<code>TextFilterBuilder.AddParsed</code> reads it from a line.</p>
+<h2 id="escapes">Escapes</h2>
+<p><code>\</code> makes the next character literal - <code>\*</code>, <code>\?</code>, <code>\[</code>, <code>\{</code>, <code>\\</code>. A trailing <code>\</code> is a
+build-time error. In lines parsed by <code>TextFilter.Parse</code>, <code>\!</code> and <code>\#</code> additionally escape a
+leading <code>!</code> or <code>#</code> that would otherwise negate or comment the line.</p>
+<h2 id="when-to-use-a-regex-instead">When to use a regex instead</h2>
+<p>Anything the glob grammar cannot express - anchored alternation inside a value, repetition counts,
+digit classes - is a <code>TextFilterPatternKind.Regex</code> pattern:</p>
+<pre><code class="lang-csharp">TextFilterPattern.Include(@&quot;^metric\.[a-z]+\.p\d{2}$&quot;, TextFilterPatternKind.Regex)
+</code></pre>
+<p>Regexes always sit in the most expensive cost tier, compile preferring the linear-time
+<code>NonBacktracking</code> engine, and carry a match timeout
+(<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterOptions.html"><code>TextFilterOptions.RegexMatchTimeout</code></a>, default
+100 ms) as the ReDoS guard for patterns that fall back to the backtracking engine (backreferences
+and lookarounds). See <a href="telemetry-and-tuning.html">Telemetry and tuning</a> for the timeout fail-safe
+rule.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="evaluation-modes.html">Evaluation modes</a></strong> - how patterns combine into a decision.</li>
+<li><strong><a href="telemetry-and-tuning.html">Telemetry and tuning</a></strong> - cost tiers and observability.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPattern.html">API reference</a></strong> - the pattern type.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

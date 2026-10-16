@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/calendar/binary-rule-packs.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/binary-rule-packs.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -87,12 +87,12 @@
         <article data-uid="">
 <h1 id="binary-rule-packs">Binary rule packs</h1>
 
-<p>A binary rule pack (<code>.bcal</code>) is the compiled form of a notable-date document: a compact, integrity-checked, sealed encoding of a <strong>validated</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>. Packs are written at build/authoring time and loaded at run time without parsing or semantic validation - the trim- and AOT-friendly load path for calendar data.</p>
+<p>A binary rule pack (<code>.bcal</code>) is the compiled form of a notable-date document: a compact, integrity-checked, sealed encoding of a <strong>validated</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>. Packs are written at build/authoring time, where the writer runs the loader's checks, and loaded at run time without parsing or semantic validation - the trim- and AOT-friendly load path for calendar data.</p>
 <h2 id="when-to-use-a-pack">When to use a pack</h2>
 <ul>
 <li><strong>Trimmed / native-AOT deployments.</strong> Loading a pack touches no XML/JSON machinery and no reflection; every strategy is reconstructed through a closed table of one-byte discriminators. This is the data-driven alternative the plugin loader's <code>[RequiresUnreferencedCode]</code> annotations point at.</li>
 <li><strong>Startup cost.</strong> A pack skips the parse → import-resolution → validation pipeline entirely; only bounds checks and an integrity digest run at load.</li>
-<li><strong>Sealed deployment artifacts.</strong> A pack cannot carry anything the shipped engine does not already implement, and any corruption or tampering fails the payload digest.</li>
+<li><strong>Sealed deployment artifacts.</strong> A pack cannot carry anything the shipped engine does not already implement, and corruption or truncation fails the payload digest. The digest is an unkeyed SHA-256 kept in the pack's own header, not a signature: someone who edits a pack can recompute it, and a pack is not revalidated as a document is when it loads. Load packs only from your own build or deployment, as the <a href="../../docs/topics/untrusted-input.html">untrusted input topic</a> explains.</li>
 </ul>
 <h2 id="producing-and-loading-packs">Producing and loading packs</h2>
 <!-- compile -->
@@ -110,7 +110,7 @@ using FileStream stream = File.OpenRead(&quot;corp-holidays.bcal&quot;);
 NotableDateResource resource = NotableDateResourceLoader.LoadBinary(stream);
 INotableDateService service = new NotableDateService(resource);
 </code></pre>
-<p>The symmetric low-level surface is <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateBinaryResource.html">NotableDateBinaryResource</a> - <code>Write(resource, stream)</code> / <code>Read(stream)</code> - usable with any already-built resource, including the bundled catalogues.</p>
+<p>The symmetric low-level surface is <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateBinaryResource.html">NotableDateBinaryResource</a> - <code>Write(resource, stream)</code> / <code>Read(stream)</code> - usable with any already-built resource, including the bundled catalogues. <code>Write</code> runs the loader's identifier, range, enumeration, duplicate and cross-reference checks on the resource before it encodes anything, and refuses one the loader would reject with <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a>, carrying the diagnostics the loader reports (such as <code>BODU-CAL-SCHEMA</code> for a concept id of <code>New-Year</code>, or <code>BODU-CAL-DUP-ND</code> for two concepts sharing an id), so a resource assembled in code is held to the rules a document is. A resource whose algorithm strategies name keys from a custom registry is written with <code>Write(resource, stream, algorithms)</code>, as it was loaded with that registry.</p>
 <p>A pack is <strong>compiled output, not an authoring source</strong>: <code>NotableDateDocumentBuilder.Load</code> rejects <code>.bcal</code> paths with <code>NotSupportedException</code>. Keep the XML/JSON document as the editable source of truth and recompile.</p>
 <h2 id="guarantees">Guarantees</h2>
 <table>
@@ -123,7 +123,7 @@ INotableDateService service = new NotableDateService(resource);
 <tbody>
 <tr>
 <td><strong>Pre-validated content</strong></td>
-<td>The writer only accepts a built <code>NotableDateResource</code>; <code>SaveBinary</code> runs <code>Build()</code> (the canonical loader) first, so an invalid document can never reach a pack.</td>
+<td><code>Write</code> runs the loader's identifier, range, enumeration, duplicate and cross-reference checks on the resource before encoding anything, and <code>SaveBinary</code> runs <code>Build()</code> (the canonical loader) first, so neither an invalid document nor a resource the loader would reject can reach a pack. Reading does not revalidate: a pack not produced by <code>Write</code>, such as one edited by hand and given a matching digest, is checked only as the <strong>Sealed</strong> row describes.</td>
 </tr>
 <tr>
 <td><strong>Byte stability</strong></td>
@@ -143,7 +143,8 @@ INotableDateService service = new NotableDateService(resource);
 </tr>
 </tbody>
 </table>
-<h2 id="format-layout-version-1">Format layout (version 1)</h2>
+<h2 id="format-layout-versions-1-2-and-3">Format layout (versions 1, 2 and 3)</h2>
+<p>Versions 1, 2 and 3 share one layout, and a pack is written at the lowest version whose meaning it needs. A pack is written at version 1 unless an adjustment scope names a concept's rule (<code>&lt;Rule notableDateRef=&quot;…&quot; ruleRef=&quot;…&quot; /&gt;</code>): such a scope stores the reference as <code>notableDateRef/ruleRef</code>, and the pack is written at version 2 so that a reader from before qualified references rejects it instead of matching the reference against rule identifiers alone. A pack whose <code>spanCollisionPolicy</code> is not <code>KeepAll</code>, or whose <code>observedDateRangePolicy</code> is not <code>ObservedOccurrenceControlsInclusion</code>, is written at version 3, whatever its scopes hold, so that a reader from before those policies were applied rejects it instead of resolving it as though they were their defaults. The <code>duplicatePolicy</code> needs no version of its own: a pack is written from a loaded resource, whose duplicates the policy has already settled. Version 1 packs scope by rule identifier alone, which matches that rule in every concept; the reader accepts all three versions and keeps that meaning for a version 1 pack.</p>
 <p>Multi-byte integers are little-endian. <code>varuint</code> is the 7-bit variable-length encoding; signed values use ZigZag over <code>varuint</code>. Strings are referenced by 1-based index into a deduplicating table (index <code>0</code> = null); dates are day numbers.</p>
 <pre><code class="lang-text">header   := &quot;BCAL&quot; version:u16 flags:u16 payload-sha256:32B
 payload  := string-table body
@@ -165,11 +166,8 @@ bodu-calendar info holidays.bcal
 </code></pre>
 <p><code>lint</code> reports every diagnostic in collect mode, <code>compile</code> refuses to write a pack from a document that fails validation, and <code>info</code> prints a compiled pack's header, counts, and integrity digest.</p>
 <h2 id="compiling-packs-during-build">Compiling packs during build</h2>
-<p>The <code>Bodu.Globalization.Calendar.Build</code> package adds MSBuild integration - a development dependency that compiles <code>NotableDatePack</code> items to <code>.bcal</code> incrementally on every build via the bundled <code>bodu-calendar</code> tool, with no runtime reference added to the consuming project:</p>
-<p>It is <a href="../../docs/package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a>, so reference the project from a clone:</p>
-<pre><code class="lang-xml">&lt;ProjectReference Include=&quot;../Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj&quot;
-                  ReferenceOutputAssembly=&quot;false&quot; OutputItemType=&quot;Analyzer&quot; /&gt;
-</code></pre>
+<p>The <code>Bodu.Globalization.Calendar.Build</code> package adds MSBuild integration - a development dependency that compiles <code>NotableDatePack</code> items to <code>.bcal</code> incrementally on every build via the bundled <code>bodu-calendar</code> tool, with no runtime reference added to the consuming project.</p>
+<p>It is <a href="../../docs/package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a>, so pack it from a clone into a local feed and reference the package, or import its <code>.targets</code> from the clone; <a href="tooling/msbuild-integration.html">Compiling packs in MSBuild</a> shows both. A <code>ProjectReference</code> to the Build project alone compiles nothing, because it does not import the <code>.targets</code>. Either way, the project declares its documents as <code>NotableDatePack</code> items:</p>
 <pre><code class="lang-xml">&lt;ItemGroup&gt;
   &lt;NotableDatePack Include=&quot;rules\holidays.xml&quot; /&gt;
   &lt;NotableDatePack Include=&quot;rules\corporate.json&quot; ResolverDir=&quot;rules\shared&quot; /&gt;
@@ -201,7 +199,7 @@ bodu-calendar info holidays.bcal
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

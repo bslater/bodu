@@ -415,7 +415,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.Extensions.IDictionaryExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.Extensions.IDictionaryExtensions.yml\" sourcestartlinenumber=\"1\">Provides retrieval-and-mutation helpers for <xref href=\"System.Collections.Generic.IDictionary%602\" data-throw-if-not-resolved=\"false\"></xref> - get-or-add and add-or-update\noperations modelled on the <xref href=\"System.Collections.Concurrent.ConcurrentDictionary%602\" data-throw-if-not-resolved=\"false\"></xref> surface\nbut available on any dictionary implementation.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.Extensions.IDictionaryExtensions.yml\" sourcestartlinenumber=\"1\">Provides retrieval-and-mutation helpers for <xref href=\"System.Collections.Generic.IDictionary%602\" data-throw-if-not-resolved=\"false\"></xref> - get-or-add and add-or-update\noperations modeled on the <xref href=\"System.Collections.Concurrent.ConcurrentDictionary%602\" data-throw-if-not-resolved=\"false\"></xref> surface\nbut available on any dictionary implementation.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -849,7 +849,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.NavigableDictionary<TKey, TValue>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.NavigableDictionary-2.yml\" sourcestartlinenumber=\"1\">Represents a key-sorted dictionary augmented with order statistics - an <xref href=\"System.Collections.Generic.IDictionary%602\" data-throw-if-not-resolved=\"false\"></xref>\nthat keeps its entries in key comparer order and answers nearest-neighbour ( <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetFloorEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetCeilingEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetHigherEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetLowerEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref>), rank/select\n( <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.IndexOfKey(%600)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.GetAt(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>), and range-counting queries in O(log n).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.NavigableDictionary-2.yml\" sourcestartlinenumber=\"1\">Represents a key-sorted dictionary augmented with order statistics - an <xref href=\"System.Collections.Generic.IDictionary%602\" data-throw-if-not-resolved=\"false\"></xref>\nthat keeps its entries in key comparer order and answers nearest-neighbor ( <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetFloorEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetCeilingEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetHigherEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetLowerEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref>), rank/select\n( <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.IndexOfKey(%600)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.GetAt(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>), and range-counting queries in O(log n).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -877,7 +877,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.NavigableSet<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.NavigableSet-1.yml\" sourcestartlinenumber=\"1\">Represents a sorted set augmented with order statistics - an <xref href=\"System.Collections.Generic.ISet%601\" data-throw-if-not-resolved=\"false\"></xref> that keeps its elements in\ncomparer order and answers nearest-neighbour (<xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetFloor(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetCeiling(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetHigher(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetLower(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref>), rank/select (<xref href=\"Bodu.Collections.Generic.NavigableSet%601.IndexOf(%600)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableSet%601.GetAt(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>), and range-counting queries in O(log n).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.NavigableSet-1.yml\" sourcestartlinenumber=\"1\">Represents a sorted set augmented with order statistics - an <xref href=\"System.Collections.Generic.ISet%601\" data-throw-if-not-resolved=\"false\"></xref> that keeps its elements in\ncomparer order and answers nearest-neighbor (<xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetFloor(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetCeiling(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetHigher(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetLower(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref>), rank/select (<xref href=\"Bodu.Collections.Generic.NavigableSet%601.IndexOf(%600)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableSet%601.GetAt(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>), and range-counting queries in O(log n).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1455,6 +1455,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.DayOfMonthSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.DayOfMonthSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.DayOfMonthSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.DayOfMonthSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the days a <xref href=\"Bodu.DayOfMonthSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.DayOfMonthSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.DayOfMonthSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.DayOfMonthSet",
+      "Summary": "<p sourcefile=\"api/Bodu.DayOfMonthSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of days of the month, 1 to 31.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.DayOfWeekSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.DayOfWeekSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.DayOfWeekSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.DayOfWeekSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the days a <xref href=\"Bodu.DayOfWeekSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in <xref href=\"System.DayOfWeek\" data-throw-if-not-resolved=\"false\"></xref> order, Sunday first,\nwithout allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.DayOfWeekSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.DayOfWeekSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.DayOfWeekSet",
+      "Summary": "<p sourcefile=\"api/Bodu.DayOfWeekSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of days of the week.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Extensions.ArrayExtensions.yml",
       "output": {
         ".html": {
@@ -1465,7 +1521,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.ArrayExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.ArrayExtensions.yml\" sourcestartlinenumber=\"1\">Provides allocation-aware operations over <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> instances - clearing, copying, slicing, and\nreversing - that either match the missing primitives on <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> or supply more ergonomic counterparts\nto the BCL helpers.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.ArrayExtensions.yml\" sourcestartlinenumber=\"1\">Provides allocation-aware operations over <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> instances - clearing, copying, slicing, padding, and\nreversing - that either match the missing primitives on <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> or supply more ergonomic counterparts\nto the BCL helpers.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1759,7 +1815,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.EnumExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.EnumExtensions.yml\" sourcestartlinenumber=\"1\">Provides non-boxing bitwise helpers for flag-style enumerations - membership tests and add, remove, and toggle\noperations that work uniformly across every enum underlying type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.EnumExtensions.yml\" sourcestartlinenumber=\"1\">Provides non-boxing bitwise helpers for flag-style enumerations - membership tests and add, remove, and toggle\noperations that work uniformly across every enum underlying type - and description and display-name lookups for\nenumeration values.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1843,7 +1899,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.IWeekendDefinitionProviderExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.yml\" sourcestartlinenumber=\"1\">Provides conversions from <xref href=\"Bodu.Extensions.IWeekendDefinitionProvider\" data-throw-if-not-resolved=\"false\"></xref> to the canonical <xref href=\"Bodu.WeekPattern\" data-throw-if-not-resolved=\"false\"></xref>\nvalue type used by the working-week APIs.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.yml\" sourcestartlinenumber=\"1\">Provides conversions from <xref href=\"Bodu.Extensions.IWeekendDefinitionProvider\" data-throw-if-not-resolved=\"false\"></xref> to the canonical <xref href=\"Bodu.DayOfWeekSet\" data-throw-if-not-resolved=\"false\"></xref>\nvalue type used by the working-week APIs.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1941,7 +1997,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.NumericExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.NumericExtensions.yml\" sourcestartlinenumber=\"1\">Provides bit-level and byte-level transformations over the integral primitive types - endian conversion, byte and\nword swaps, bit reversal and rotation, and unchecked arithmetic helpers - for hashing, serialization, and protocol\ncode.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.NumericExtensions.yml\" sourcestartlinenumber=\"1\">Provides bit-level and byte-level transformations over the integral primitive types - endian conversion, byte and\nword swaps, bit reversal and rotation - for hashing, serialization, and protocol code, together with decimal-digit\nand number-theory helpers.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1955,7 +2011,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.SentenceCaseOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.SentenceCaseOptions.yml\" sourcestartlinenumber=\"1\">Tunes the behaviour of <xref href=\"Bodu.Extensions.StringExtensions.ToSentenceCase(System.String%2cBodu.Extensions.SentenceCaseOptions)\" data-throw-if-not-resolved=\"false\"></xref> beyond the plain\ncapitalise-first-letter-of-each-sentence default.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.SentenceCaseOptions.yml\" sourcestartlinenumber=\"1\">Tunes the behavior of <xref href=\"Bodu.Extensions.StringExtensions.ToSentenceCase(System.String%2cBodu.Extensions.SentenceCaseOptions)\" data-throw-if-not-resolved=\"false\"></xref> beyond the plain\ncapitalize-first-letter-of-each-sentence default.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2011,7 +2067,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.StringExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.StringExtensions.yml\" sourcestartlinenumber=\"1\">Provides ergonomic, allocation-aware extension methods on <xref href=\"System.String\" data-throw-if-not-resolved=\"false\"></xref> that fill gaps in the BCL -\npositive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalisation, affix management,\nsubstring windowing, case conversion, identifier sanitisation, and generic parsing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.StringExtensions.yml\" sourcestartlinenumber=\"1\">Provides ergonomic, allocation-aware extension methods on <xref href=\"System.String\" data-throw-if-not-resolved=\"false\"></xref> that fill gaps in the BCL -\npositive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalization, affix management,\nsubstring windowing, case conversion, identifier sanitization, and generic parsing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2025,7 +2081,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.TitleCaseOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.TitleCaseOptions.yml\" sourcestartlinenumber=\"1\">Tunes the behaviour of <xref href=\"Bodu.Extensions.StringExtensions.ToTitleCase(System.String%2cBodu.Extensions.TitleCaseOptions)\" data-throw-if-not-resolved=\"false\"></xref> beyond the plain\ncapitalise-each-word default.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.TitleCaseOptions.yml\" sourcestartlinenumber=\"1\">Tunes the behavior of <xref href=\"Bodu.Extensions.StringExtensions.ToTitleCase(System.String%2cBodu.Extensions.TitleCaseOptions)\" data-throw-if-not-resolved=\"false\"></xref> beyond the plain\ncapitalize-each-word default.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2067,7 +2123,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.WorkingDaysOfWeekExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.WorkingDaysOfWeekExtensions.yml\" sourcestartlinenumber=\"1\">Provides bidirectional conversion between the <xref href=\"Bodu.WorkingDaysOfWeek\" data-throw-if-not-resolved=\"false\"></xref> enum sugar and the\n<xref href=\"Bodu.WeekPattern\" data-throw-if-not-resolved=\"false\"></xref> value type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.WorkingDaysOfWeekExtensions.yml\" sourcestartlinenumber=\"1\">Provides bidirectional conversion between the <xref href=\"Bodu.WorkingDaysOfWeek\" data-throw-if-not-resolved=\"false\"></xref> enum sugar and the\n<xref href=\"Bodu.DayOfWeekSet\" data-throw-if-not-resolved=\"false\"></xref> value type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2095,7 +2151,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.AllocationPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.AllocationPolicy.yml\" sourcestartlinenumber=\"1\">Specifies the algorithm a <xref href=\"Bodu.Financial.MonetaryContext\" data-throw-if-not-resolved=\"false\"></xref> uses to distribute residual minor units when allocating a\nmonetary amount across shares.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.AllocationPolicy.yml\" sourcestartlinenumber=\"1\">Specifies the algorithm for distributing residual minor units when allocating a monetary amount across shares.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2137,7 +2193,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ConversionRoundingPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ConversionRoundingPolicy.yml\" sourcestartlinenumber=\"1\">Specifies when a <xref href=\"Bodu.Financial.MonetaryContext\" data-throw-if-not-resolved=\"false\"></xref> rounds the result of a currency conversion.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ConversionRoundingPolicy.yml\" sourcestartlinenumber=\"1\">Specifies when the result of a currency conversion is rounded.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2739,7 +2795,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.Currencies.CurrencyLookupService",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.CurrencyLookupService.yml\" sourcestartlinenumber=\"1\">Default <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> backed by <xref href=\"Bodu.Financial.Currencies.CurrencyRegistry\" data-throw-if-not-resolved=\"false\"></xref>. Reverse indexes for numeric code,\nsymbol, and region are built lazily from a snapshot of the registry taken on first use.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.CurrencyLookupService.yml\" sourcestartlinenumber=\"1\">Default <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> backed by <xref href=\"Bodu.Financial.Currencies.CurrencyRegistry\" data-throw-if-not-resolved=\"false\"></xref>. Reverse indexes for numeric code,\nsymbol, and region are built lazily from the registry on first use.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2753,7 +2809,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.Currencies.CurrencyRegistry",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.CurrencyRegistry.yml\" sourcestartlinenumber=\"1\">Read-only catalogue of <xref href=\"Bodu.Financial.Currencies.CurrencyInfo\" data-throw-if-not-resolved=\"false\"></xref> entries keyed by ISO 4217 alphabetic code. Supports lookup by\ncode and enumeration of every shipped currency.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.CurrencyRegistry.yml\" sourcestartlinenumber=\"1\">Read-only catalog of <xref href=\"Bodu.Financial.Currencies.CurrencyInfo\" data-throw-if-not-resolved=\"false\"></xref> entries keyed by ISO 4217 alphabetic code. Supports lookup by code\nand enumeration of every shipped currency.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2767,7 +2823,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.Currencies.CurrencyResolution",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.CurrencyResolution.yml\" sourcestartlinenumber=\"1\">Supplies the ambient <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> that the runtime-tagged <xref href=\"Bodu.Financial.Money\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Bodu.Financial.CalculatedMoney\" data-throw-if-not-resolved=\"false\"></xref> consult when they resolve a currency by ISO code. The seam lets a host or test\nsubstitute a custom currency catalogue without threading a lookup dependency through every value-type construction,\nwhile leaving the default behaviour identical to a direct <xref href=\"Bodu.Financial.Currencies.CurrencyRegistry\" data-throw-if-not-resolved=\"false\"></xref> lookup.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.CurrencyResolution.yml\" sourcestartlinenumber=\"1\">Supplies the ambient <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> that the runtime-tagged <xref href=\"Bodu.Financial.Money\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Bodu.Financial.CalculatedMoney\" data-throw-if-not-resolved=\"false\"></xref> consult when they resolve a currency by ISO code. The seam lets a host or test\nsubstitute a custom currency catalog without threading a lookup dependency through every value-type construction,\nwhile leaving the default behavior identical to a direct <xref href=\"Bodu.Financial.Currencies.CurrencyRegistry\" data-throw-if-not-resolved=\"false\"></xref> lookup.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3243,7 +3299,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.Currencies.ICurrencyLookup",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.ICurrencyLookup.yml\" sourcestartlinenumber=\"1\">Resolves <xref href=\"Bodu.Financial.Currencies.CurrencyInfo\" data-throw-if-not-resolved=\"false\"></xref> metadata by ISO code, numeric code, symbol, region, or culture, providing\nNodaMoney-style lookup ergonomics over the runtime currency catalogue without moving currency identity into culture.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.ICurrencyLookup.yml\" sourcestartlinenumber=\"1\">Resolves <xref href=\"Bodu.Financial.Currencies.CurrencyInfo\" data-throw-if-not-resolved=\"false\"></xref> metadata by ISO code, numeric code, symbol, region, or culture, providing\nNodaMoney-style lookup ergonomics over the runtime currency catalog without moving currency identity into culture.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -4885,20 +4941,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.BoeEndpointOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.yml\" sourcestartlinenumber=\"1\">Configures the provider's connection to the Bank of England Interactive Statistical Database (IADB): where the CSV\nquery endpoint lives and how the HTTP requests that drive it are shaped.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.BoeFinancialServiceBuilderExtensions.yml",
       "output": {
         ".html": {
@@ -5035,7 +5077,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.Caching.CachingRateOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.yml\" sourcestartlinenumber=\"1\">Configures a <xref href=\"Bodu.Financial.ExchangeRates.Caching.CachingRateProvider\" data-throw-if-not-resolved=\"false\"></xref>: the on-disk cache location, the default time a cached rate stays\nfresh, and per-provider overrides of that default.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.yml\" sourcestartlinenumber=\"1\">Configures a <xref href=\"Bodu.Financial.ExchangeRates.Caching.CachingRateProvider\" data-throw-if-not-resolved=\"false\"></xref>: the default time a cached rate stays fresh, per-provider overrides\nof that default, and the on-disk location of the default cache the dependency-injection registration builds.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5571,20 +5613,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.EcbEndpointOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.yml\" sourcestartlinenumber=\"1\">Configures the provider's connection to the European Central Bank's <code>eurofxref</code> endpoints: where the feed files\nare published and how the HTTP requests that fetch them are shaped.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.EcbFinancialServiceBuilderExtensions.yml",
       "output": {
         ".html": {
@@ -5735,7 +5763,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.yml\" sourcestartlinenumber=\"1\">Serves exchangerate.host exchange rates as <xref href=\"Bodu.Financial.ExchangeRates.ExchangeRate\" data-throw-if-not-resolved=\"false\"></xref> values, implementing the Bodu.Financial\nprovider contracts over the exchangerate.host time-series and historical JSON REST endpoints.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.yml\" sourcestartlinenumber=\"1\">Serves exchangerate.host exchange rates as <xref href=\"Bodu.Financial.ExchangeRates.ExchangeRate\" data-throw-if-not-resolved=\"false\"></xref> values, implementing the Bodu.Financial\nprovider contracts over the exchangerate.host <code>timeframe</code> and <code>historical</code> JSON REST endpoints.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5781,20 +5809,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.IByteCache%601\" data-throw-if-not-resolved=\"false\"></xref> that persists downloaded IADB range responses as files in a cache directory,\nkeyed by the inclusive date range that produced them.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.yml",
       "output": {
         ".html": {
@@ -5809,20 +5823,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.IByteCache%601\" data-throw-if-not-resolved=\"false\"></xref> that persists downloaded ECB feeds as files in a cache directory, keyed by the\nfeed that produced them.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemImfReportCache.yml",
       "output": {
         ".html": {
@@ -5834,20 +5834,6 @@
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.FileSystemImfReportCache",
       "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.FileSystemImfReportCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.IImfReportCache\" data-throw-if-not-resolved=\"false\"></xref> that persists downloaded IMF monthly reports as files in a cache directory.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.IByteCache%601\" data-throw-if-not-resolved=\"false\"></xref> that persists downloaded RBA workbooks as files in a cache directory, keyed by\nthe era workbook that produced them.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -6589,7 +6575,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.RateSeries",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.RateSeries.yml\" sourcestartlinenumber=\"1\">Stores the ordered set of dated exchange-rate observations for a single provider and currency pair, optimised for\nread-heavy lookup with allocation-free <code>O(log n)</code> resolution under any <xref href=\"Bodu.Financial.ExchangeRates.RateDateResolution\" data-throw-if-not-resolved=\"false\"></xref>\npolicy.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.RateSeries.yml\" sourcestartlinenumber=\"1\">Stores the ordered set of dated exchange-rate observations for a single provider and currency pair, optimized for\nread-heavy lookup with allocation-free <code>O(log n)</code> resolution under any <xref href=\"Bodu.Financial.ExchangeRates.RateDateResolution\" data-throw-if-not-resolved=\"false\"></xref>\npolicy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -6799,7 +6785,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.WebRateProviderOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.yml\" sourcestartlinenumber=\"1\">Provides the configuration common to every pair-based web exchange-rate source: the endpoint base address, the HTTP\ncontract (user agent and timeout), the synchronous-access and look-back behaviour, the currency-alias map, and the\nper-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and\nvalidation.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.yml\" sourcestartlinenumber=\"1\">Provides the configuration common to every web exchange-rate source, the pair-based sources and the Bank of England,\nECB, RBA and IMF feeds alike: the endpoint base address, the HTTP contract (user agent, timeout and response-size\ncap), the synchronous-access, look-back and refresh behavior, the advertised history, the currency-alias map, and\nthe per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and\nvalidation.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7177,7 +7163,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.MonetaryContext",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.MonetaryContext.yml\" sourcestartlinenumber=\"1\">Carries the rounding and scaling policy applied at a monetary operation boundary - multiplication, division,\nconversion, allocation, and the conversion of a high-precision calculation back to a settlement value.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.MonetaryContext.yml\" sourcestartlinenumber=\"1\">Carries the rounding and scaling policy applied at the monetary operations that accept one - typed multiplication,\nruntime conversion through an <xref href=\"Bodu.Financial.ExchangeRates.ExchangeRate\" data-throw-if-not-resolved=\"false\"></xref>, and the conversion of a high-precision\ncalculation back to a settlement value.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7555,7 +7541,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ServiceProviderExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ServiceProviderExtensions.yml\" sourcestartlinenumber=\"1\">Provides the connector that promotes the container-registered <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> to the ambient\n<xref href=\"Bodu.Financial.Currencies.CurrencyResolution\" data-throw-if-not-resolved=\"false\"></xref> default, so the runtime-tagged <xref href=\"Bodu.Financial.Money\" data-throw-if-not-resolved=\"false\"></xref> resolves currencies through\nthe application's configured catalogue.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ServiceProviderExtensions.yml\" sourcestartlinenumber=\"1\">Provides the connector that promotes the container-registered <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> to the ambient\n<xref href=\"Bodu.Financial.Currencies.CurrencyResolution\" data-throw-if-not-resolved=\"false\"></xref> default, so the runtime-tagged <xref href=\"Bodu.Financial.Money\" data-throw-if-not-resolved=\"false\"></xref> reads currency metadata\nthrough the application's configured catalog.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8119,6 +8105,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.Formats.Outlook.OutlookOmittedValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.Formats.Outlook.OutlookOmittedValue.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.Formats.Outlook.OutlookOmittedValue",
+      "Summary": "<p sourcefile=\"api/Bodu.Formats.Outlook.OutlookOmittedValue.yml\" sourcestartlinenumber=\"1\">Describes a property value the mail-store reader omitted from an object it decoded, as reported to\n<xref href=\"Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.Formats.Outlook.OutlookOmittedValueReason.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.Formats.Outlook.OutlookOmittedValueReason.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.Formats.Outlook.OutlookOmittedValueReason",
+      "Summary": "<p sourcefile=\"api/Bodu.Formats.Outlook.OutlookOmittedValueReason.yml\" sourcestartlinenumber=\"1\">Specifies why the mail-store reader omitted a property value from an object it decoded.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Formats.Outlook.OutlookPstFormatException.yml",
       "output": {
         ".html": {
@@ -8129,7 +8143,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Formats.Outlook.OutlookPstFormatException",
-      "Summary": "<p sourcefile=\"api/Bodu.Formats.Outlook.OutlookPstFormatException.yml\" sourcestartlinenumber=\"1\">Represents a violation of the Outlook personal-folders messaging conventions (MS-PST) while reading a mail store.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Formats.Outlook.OutlookPstFormatException.yml\" sourcestartlinenumber=\"1\">Represents an error raised when a mail store (a <code>.pst</code> file) is structurally invalid or violates the Outlook\npersonal-folders messaging conventions (MS-PST).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8577,7 +8591,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.yml\" sourcestartlinenumber=\"1\">Computes the date of a notable date for a Gregorian year from a closed-form or tabular algorithm. Implementations\nare registered under a key and dispatched by the <xref href=\"Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy\" data-throw-if-not-resolved=\"false\"></xref> when a rule references that\nkey, allowing the algorithm catalogue to be extended beyond the built-in computations.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.yml\" sourcestartlinenumber=\"1\">Computes the date of a notable date for a Gregorian year from a closed-form or tabular algorithm. Implementations\nare registered under a key and dispatched by the <xref href=\"Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy\" data-throw-if-not-resolved=\"false\"></xref> when a rule references that\nkey, allowing the algorithm catalog to be extended beyond the built-in computations.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8591,7 +8605,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.yml\" sourcestartlinenumber=\"1\">Provides lookup of custom <xref href=\"Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> implementations by key, supplementing the engine's\nbuilt-in algorithm catalogue.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.yml\" sourcestartlinenumber=\"1\">Provides lookup of custom <xref href=\"Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> implementations by key, supplementing the engine's\nbuilt-in algorithm catalog.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8829,7 +8843,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.AmericasCalendarData",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.AmericasCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Americas notable-date resource pack (Canada and the United States), built on the\nnotable-date schema.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.AmericasCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Americas notable-date resource pack (Argentina, Brazil, Canada, Chile, Colombia,\nMexico, Peru, and the United States; see <xref href=\"Bodu.Globalization.Calendar.AmericasCalendarData.SupportedCountries\" data-throw-if-not-resolved=\"false\"></xref>), built on the notable-date schema.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8843,7 +8857,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.AsiaPacificCalendarData",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.AsiaPacificCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Asia-Pacific notable-date resource pack (Australia, China, Japan, New Zealand),\nbuilt on the notable-date schema.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.AsiaPacificCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Asia-Pacific notable-date resource pack (14 countries and territories, among them\nAustralia, China, India, Japan, and New Zealand; see <xref href=\"Bodu.Globalization.Calendar.AsiaPacificCalendarData.SupportedCountries\" data-throw-if-not-resolved=\"false\"></xref>), built on the notable-date\nschema.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9137,7 +9151,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.yml\" sourcestartlinenumber=\"1\">Represents one cached unit of notable-date resolution: every occurrence emitted within a single civil year for a\nsingle territory under a single resource version, together with the UTC instant the year was computed, which drives\nexpiry.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.yml\" sourcestartlinenumber=\"1\">Represents one cached unit of notable-date resolution: every occurrence in effect during a single civil year for a\nsingle territory under a single resource version, together with the UTC instant the year was computed, which drives\nexpiry.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9347,7 +9361,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.CommonNotableDateCatalog",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.CommonNotableDateCatalog.yml\" sourcestartlinenumber=\"1\">Enumerates the shared, reusable notable-date catalogues bundled with the library, providing a strongly-typed name\nfor each so callers can resolve a catalogue through\n<xref href=\"Bodu.Globalization.Calendar.CommonNotableDateResources.Resolve(Bodu.Globalization.Calendar.CommonNotableDateCatalog)\" data-throw-if-not-resolved=\"false\"></xref> without spelling its raw resource name.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.CommonNotableDateCatalog.yml\" sourcestartlinenumber=\"1\">Enumerates the shared, reusable notable-date catalogs bundled with the library, providing a strongly-typed name for\neach so callers can resolve a catalog through\n<xref href=\"Bodu.Globalization.Calendar.CommonNotableDateResources.Resolve(Bodu.Globalization.Calendar.CommonNotableDateCatalog)\" data-throw-if-not-resolved=\"false\"></xref> without spelling its raw resource name.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9361,7 +9375,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.CommonNotableDateResources",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.CommonNotableDateResources.yml\" sourcestartlinenumber=\"1\">Provides the shared, reusable notable-date resources bundled with the library - the civil, Christian, and other\nthematic catalogues that define common observances (New Year's Day, Easter, Christmas, and the like) once for\nterritory packs to import rather than redefine.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.CommonNotableDateResources.yml\" sourcestartlinenumber=\"1\">Provides the shared, reusable notable-date resources bundled with the library - the civil, Christian, and other\nthematic catalogs that define common observances (New Year's Day, Easter, Christmas, and the like) once for\nterritory packs to import rather than redefine.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9431,7 +9445,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.EuropeCalendarData",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.EuropeCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Europe notable-date resource pack (United Kingdom, France, Germany), built on the\nnotable-date schema.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.EuropeCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Europe notable-date resource pack (the 27 EU member states and the United Kingdom;\nsee <xref href=\"Bodu.Globalization.Calendar.EuropeCalendarData.SupportedCountries\" data-throw-if-not-resolved=\"false\"></xref>), built on the notable-date schema.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9907,7 +9921,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.NotableDateValidationException",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.NotableDateValidationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a notable-date document resource fails to load because one or more error-severity\nvalidation diagnostics were produced. This class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.NotableDateValidationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a notable-date document resource fails to load, or a resource is refused by\n<xref href=\"Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource%2cSystem.IO.Stream)\" data-throw-if-not-resolved=\"false\"></xref>, because one or more error-severity\nvalidation diagnostics were produced. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10201,7 +10215,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.yml\" sourcestartlinenumber=\"1\">Determines how the resolver treats multiple distinct notable dates that resolve to the same day or overlapping span.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.yml\" sourcestartlinenumber=\"1\">Determines how the resolver treats multiple distinct notable dates that resolve to the same day.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10215,7 +10229,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.yml\" sourcestartlinenumber=\"1\">Determines how the loader treats two rules that resolve to the same full identity within a resource graph.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.yml\" sourcestartlinenumber=\"1\">Specifies how the loader treats two concepts, or two rules of one concept, that a document declares with the same\nidentifier.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10243,7 +10257,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.yml\" sourcestartlinenumber=\"1\">Resolves a set of notable-date occurrences that share the same emitted date, used when the resource's same-day\ncollision policy is <xref href=\"Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.Custom\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.yml\" sourcestartlinenumber=\"1\">Resolves a group of colliding notable-date occurrences, used when the resource's same-day or span collision policy\nis <xref href=\"Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.Custom\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10257,7 +10271,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.yml\" sourcestartlinenumber=\"1\">Determines which emitted occurrence controls whether a resolved notable date is included by a date-range query.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.yml\" sourcestartlinenumber=\"1\">Specifies which span of a resolved occurrence decides whether a date-range query includes it: the emitted span, the\nactual span, or either.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10271,7 +10285,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.PriorityDirection",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.yml\" sourcestartlinenumber=\"1\">Determines whether a higher or lower numeric priority value takes precedence during selection.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.yml\" sourcestartlinenumber=\"1\">Determines whether a higher or lower numeric priority value wins a same-day collision.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10285,7 +10299,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.yml\" sourcestartlinenumber=\"1\">Captures the resource-level policies that govern duplicate handling, collision handling, priority direction, and\nobserved-date range inclusion.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.yml\" sourcestartlinenumber=\"1\">Captures the resource-level policies that govern duplicate declarations, same-day and span collisions, priority\ndirection, category precedence, range inclusion, and the working week.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10580,6 +10594,48 @@
       "IsMRef": true,
       "Title": null,
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.HourSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.HourSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.HourSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.HourSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the hours an <xref href=\"Bodu.HourSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.HourSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.HourSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.HourSet",
+      "Summary": "<p sourcefile=\"api/Bodu.HourSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of hours of the day, 0 to 23.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.ICalendarValueSet-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.ICalendarValueSet-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.ICalendarValueSet<TSelf, TValue>",
+      "Summary": "<p sourcefile=\"api/Bodu.ICalendarValueSet-2.yml\" sourcestartlinenumber=\"1\">Defines an immutable set of values drawn from a fixed calendar domain of at most 64 values, such as the days of the\nweek or the minutes of an hour.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12105,7 +12161,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.Adler32C",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.Adler32C.yml\" sourcestartlinenumber=\"1\">Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 for SIMD-friendly alignment. This class\ncannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.Adler32C.yml\" sourcestartlinenumber=\"1\">Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 instead of the prime 65521. This class\ncannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12147,7 +12203,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.Crc",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.Crc.yml\" sourcestartlinenumber=\"1\">General-purpose CRC (Cyclic Redundancy Check) engine driven by a <xref href=\"Bodu.IO.Hashing.Checksums.Crc.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref> parameter set - supports\nany catalogue width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with\nadditional input.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.Crc.yml\" sourcestartlinenumber=\"1\">General-purpose CRC (Cyclic Redundancy Check) engine driven by a <xref href=\"Bodu.IO.Hashing.Checksums.Crc.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref> parameter set - supports\nany catalog width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with\nadditional input.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12189,7 +12245,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.CrcStandard",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcStandard.yml\" sourcestartlinenumber=\"1\">Immutable parameter bundle that fully describes a CRC variant - width, polynomial, initial value, input/output bit\nreflection, and final XOR - and serves as the lookup key into the RevEng catalogue used by <xref href=\"Bodu.IO.Hashing.Checksums.Crc\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcStandard.yml\" sourcestartlinenumber=\"1\">Immutable parameter bundle that fully describes a CRC variant - width, polynomial, initial value, input/output bit\nreflection, and final XOR - and serves as the lookup key into the RevEng catalog used by <xref href=\"Bodu.IO.Hashing.Checksums.Crc\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12203,7 +12259,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.CrcStandards",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcStandards.yml\" sourcestartlinenumber=\"1\">Identifies a CRC parameter set defined in the <a href=\"https://reveng.sourceforge.io/crc-catalogue/all.htm\">CRC RevEng catalogue</a>.\nPass to <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard.Get(Bodu.IO.Hashing.Checksums.CrcStandards)\" data-throw-if-not-resolved=\"false\"></xref> to materialise the corresponding <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref> on demand.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcStandards.yml\" sourcestartlinenumber=\"1\">Identifies a CRC parameter set defined in the <a href=\"https://reveng.sourceforge.io/crc-catalogue/all.htm\">CRC RevEng catalog</a>.\nPass to <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard.Get(Bodu.IO.Hashing.Checksums.CrcStandards)\" data-throw-if-not-resolved=\"false\"></xref> to materialize the corresponding <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref> on demand.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12357,7 +12413,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.yml\" sourcestartlinenumber=\"1\">Extends <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> with one-shot hashing, streaming and async input, and\nconstant-time hash verification - the high-level surface that <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> itself\nomits.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.yml\" sourcestartlinenumber=\"1\">Extends <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> with one-shot hashing, streaming and async input, and hash\nverification - the high-level surface that <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> itself omits.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12861,7 +12917,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Pst.PstUnsupportedFormatException",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstUnsupportedFormatException.yml\" sourcestartlinenumber=\"1\">Represents an error raised when a PST file is recognized but uses a format variant or content encoding the library\ndoes not read (the 4\u00A0KiB-page OST variant or Windows Information Protection encryption).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstUnsupportedFormatException.yml\" sourcestartlinenumber=\"1\">Represents an error raised when a PST file is recognized but uses a format variant or content encoding the library\ndoes not read (an OST file of any version, the 4\u00A0KiB-page variant among them, or a content encoding other than\nnone, permute, or cyclic, such as Windows Information Protection encryption).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12918,6 +12974,62 @@
       "IsMRef": true,
       "Title": "Bodu.IRandomGenerator",
       "Summary": "<p sourcefile=\"api/Bodu.IRandomGenerator.yml\" sourcestartlinenumber=\"1\">Defines the minimal contract for a pluggable, non-cryptographic random-integer source used by shuffle, sampling, and\nrandomized-collection helpers throughout the library.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.MinuteSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.MinuteSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.MinuteSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.MinuteSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the minutes a <xref href=\"Bodu.MinuteSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.MinuteSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.MinuteSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.MinuteSet",
+      "Summary": "<p sourcefile=\"api/Bodu.MinuteSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of minutes of the hour, 0 to 59.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.MonthSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.MonthSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.MonthSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.MonthSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the months a <xref href=\"Bodu.MonthSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.MonthSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.MonthSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.MonthSet",
+      "Summary": "<p sourcefile=\"api/Bodu.MonthSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of months of the year, 1 (January) to 12 (December).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13383,6 +13495,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.SecondSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.SecondSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.SecondSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.SecondSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the seconds a <xref href=\"Bodu.SecondSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.SecondSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.SecondSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.SecondSet",
+      "Summary": "<p sourcefile=\"api/Bodu.SecondSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of seconds of the minute, 0 to 59.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Security.Cryptography.AesBlockCipher.yml",
       "output": {
         ".html": {
@@ -13393,7 +13533,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.AesBlockCipher",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AesBlockCipher.yml\" sourcestartlinenumber=\"1\">Exposes the BCL <xref href=\"System.Security.Cryptography.Aes\" data-throw-if-not-resolved=\"false\"></xref> algorithm as an <xref href=\"Bodu.Security.Cryptography.IBlockCipher\" data-throw-if-not-resolved=\"false\"></xref>, providing the single-block primitive\nthat the authenticated-mode transforms (<xref href=\"Bodu.Security.Cryptography.GcmModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.CcmModeTransform\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Bodu.Security.Cryptography.OcbModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.SivModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.GcmSivModeTransform\" data-throw-if-not-resolved=\"false\"></xref>) require.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AesBlockCipher.yml\" sourcestartlinenumber=\"1\">Exposes the BCL <xref href=\"System.Security.Cryptography.Aes\" data-throw-if-not-resolved=\"false\"></xref> algorithm as an <xref href=\"Bodu.Security.Cryptography.IBlockCipher\" data-throw-if-not-resolved=\"false\"></xref>, providing the single-block primitive\nthat the mode transforms build on - the authenticated modes (<xref href=\"Bodu.Security.Cryptography.GcmModeTransform\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Bodu.Security.Cryptography.CcmModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.OcbModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.EaxModeTransform\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Bodu.Security.Cryptography.SivModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.GcmSivModeTransform\" data-throw-if-not-resolved=\"false\"></xref>) among them.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13505,7 +13645,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.AsconCxof128",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AsconCxof128.yml\" sourcestartlinenumber=\"1\">Computes a variable-length output using the <code>Ascon-CXOF128</code> customizable extendable output function (CXOF) as\ndefined in NIST SP 800-232. Supports an optional customization string that domain-separates outputs from\n<xref href=\"Bodu.Security.Cryptography.AsconXof128\" data-throw-if-not-resolved=\"false\"></xref>. This class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AsconCxof128.yml\" sourcestartlinenumber=\"1\">Computes a variable-length output using the <code>Ascon-CXOF128</code> customizable extendable output function (CXOF) as\ndefined in NIST SP 800-232. Absorbs a customization string that domain-separates its outputs from one another and\nfrom <xref href=\"Bodu.Security.Cryptography.AsconXof128\" data-throw-if-not-resolved=\"false\"></xref>. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13547,7 +13687,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.AsconHashA256",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AsconHashA256.yml\" sourcestartlinenumber=\"1\">Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm as defined in NIST SP 800-232. Produces\na 256-bit (32-byte) digest using a reduced-round Ascon-p permutation during absorption over a 320-bit sponge state.\nThis class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AsconHashA256.yml\" sourcestartlinenumber=\"1\">Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm, the round-reduced Hasha variant of the\nAscon v1.2 submission. Produces a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation over a 320-bit\nsponge state. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13939,7 +14079,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.yml\" sourcestartlinenumber=\"1\">Serves as the base class for the library's <xref href=\"System.Security.Cryptography.SymmetricAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> implementations that support the\nextended cipher-mode and padding catalogues (<xref href=\"Bodu.Security.Cryptography.CipherModeKind\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Security.Cryptography.PaddingModeKind\" data-throw-if-not-resolved=\"false\"></xref>) beyond\nthe framework <xref href=\"System.Security.Cryptography.CipherMode\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"System.Security.Cryptography.PaddingMode\" data-throw-if-not-resolved=\"false\"></xref> enumerations.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.yml\" sourcestartlinenumber=\"1\">Serves as the base class for the library's <xref href=\"System.Security.Cryptography.SymmetricAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> implementations that support the\nextended cipher-mode and padding catalogs (<xref href=\"Bodu.Security.Cryptography.CipherModeKind\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Security.Cryptography.PaddingModeKind\" data-throw-if-not-resolved=\"false\"></xref>) beyond\nthe framework <xref href=\"System.Security.Cryptography.CipherMode\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"System.Security.Cryptography.PaddingMode\" data-throw-if-not-resolved=\"false\"></xref> enumerations.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15213,7 +15353,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Snefru",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Snefru.yml\" sourcestartlinenumber=\"1\">Base class for the <code>Snefru</code> family of unkeyed hash functions designed by Ralph Merkle, implementing the core\ncompression routine using S-box substitutions and word rotations over 512-bit blocks.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Snefru.yml\" sourcestartlinenumber=\"1\">Base class for the <code>Snefru</code> family of unkeyed hash functions designed by Ralph Merkle, implementing the core\ncompression routine using S-box substitutions and word rotations over a 512-bit buffer: the running hash followed by\na 48-byte (Snefru-128) or 32-byte (Snefru-256) message block.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15297,7 +15437,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Threefish1024Cipher",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish1024Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish1024Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The sixteen 64-bit state words are split\nacross two <xref href=\"System.Runtime.Intrinsics.Vector512%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>loVec</code> holds the eight even-position words\n<code>(x0, x2, x4, x6, x8, x10, x12, x14)</code> and <code>hiVec</code> the eight odd-position words\n<code>(x1, x3, x5, x7, x9, x11, x13, x15)</code>. Each round performs a vector add, a per-lane variable rotate (\n<code>VPROLVQ</code>), an XOR, and a pair of single-source <code>VPERMQ</code> shuffles that realign the registers for the next\nround's MIX pairing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish1024Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorized implementation of <xref href=\"Bodu.Security.Cryptography.Threefish1024Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The sixteen 64-bit state words are split\nacross two <xref href=\"System.Runtime.Intrinsics.Vector512%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>loVec</code> holds the eight even-position words\n<code>(x0, x2, x4, x6, x8, x10, x12, x14)</code> and <code>hiVec</code> the eight odd-position words\n<code>(x1, x3, x5, x7, x9, x11, x13, x15)</code>. Each round performs a vector add, a per-lane variable rotate (\n<code>VPROLVQ</code>), an XOR, and a pair of single-source <code>VPERMQ</code> shuffles that realign the registers for the next\nround's MIX pairing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15325,7 +15465,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Threefish256Cipher",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish256Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish256Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The four 64-bit state words are split across\ntwo <xref href=\"System.Runtime.Intrinsics.Vector128%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>\nthe odd-position words <code>(b1, b3)</code>. Each round performs a vector add, a per-lane variable rotate (<code>VPROLVQ</code>\n), an XOR, and a single 64-bit lane swap on <code>hi</code> that realigns it for the next round's MIX pairing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish256Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorized implementation of <xref href=\"Bodu.Security.Cryptography.Threefish256Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The four 64-bit state words are split across\ntwo <xref href=\"System.Runtime.Intrinsics.Vector128%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>\nthe odd-position words <code>(b1, b3)</code>. Each round performs a vector add, a per-lane variable rotate (<code>VPROLVQ</code>\n), an XOR, and a single 64-bit lane swap on <code>hi</code> that realigns it for the next round's MIX pairing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15353,7 +15493,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Threefish512Cipher",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish512Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish512Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The eight 64-bit state words are split\nacross two <xref href=\"System.Runtime.Intrinsics.Vector256%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>lo</code> holds the even-position words <code>(x0, x2, x4, x6)</code>\nand <code>hi</code> the odd-position words <code>(x1, x3, x5, x7)</code> - and each round applies a vector add, a per-lane\nvariable rotate (<code>VPROLVQ</code>), an XOR, and a pair of lane shuffles that realign the registers for the next\nround's MIX pairing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish512Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorized implementation of <xref href=\"Bodu.Security.Cryptography.Threefish512Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The eight 64-bit state words are split\nacross two <xref href=\"System.Runtime.Intrinsics.Vector256%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>lo</code> holds the even-position words <code>(x0, x2, x4, x6)</code>\nand <code>hi</code> the odd-position words <code>(x1, x3, x5, x7)</code> - and each round applies a vector add, a per-lane\nvariable rotate (<code>VPROLVQ</code>), an XOR, and a pair of lane shuffles that realign the registers for the next\nround's MIX pairing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15633,7 +15773,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Sequences.SequenceGenerator",
-      "Summary": "<p sourcefile=\"api/Bodu.Sequences.SequenceGenerator.yml\" sourcestartlinenumber=\"1\">Provides static factory methods that produce lazily evaluated <xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> sequences without\nmaterializing the underlying collection - both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,\n<code>Factory</code>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and\nThue-Morse).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Sequences.SequenceGenerator.yml\" sourcestartlinenumber=\"1\">Provides static factory methods that produce lazily evaluated <xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> sequences without\nmaterializing the underlying collection - both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,\n<code>Factory</code>) and a catalog of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and\nThue-Morse).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16193,7 +16333,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationDocument",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationDocument.yml\" sourcestartlinenumber=\"1\">Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,\nloading, and saving such documents. It inherits the read-only INI model from <xref href=\"Bodu.Text.Configuration.IniDocumentBase\" data-throw-if-not-resolved=\"false\"></xref> (global\nsection, named sections, lookup) and adds Bodu-specific behaviour - profile presets, inline-comment-mode handling,\ndiagnostic routing, and round-trip support - on top of the shared INI infrastructure.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationDocument.yml\" sourcestartlinenumber=\"1\">Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,\nloading, and saving such documents. It inherits the read-only INI model from <xref href=\"Bodu.Text.Configuration.IniDocumentBase\" data-throw-if-not-resolved=\"false\"></xref> (global\nsection, named sections, lookup) and adds Bodu-specific behavior - profile presets, inline-comment-mode handling,\ndiagnostic routing, and round-trip support - on top of the shared INI infrastructure.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16207,7 +16347,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods that layer Bodu Text Configuration behaviour (path-aware resolution and dotted-to-colon key\nmapping) onto the underlying <xref href=\"Bodu.Text.Configuration.IniDocumentBase\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Bodu.Text.Configuration.IniEntry\" data-throw-if-not-resolved=\"false\"></xref> primitives.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods that layer Bodu Text Configuration behavior (path-aware resolution and dotted-to-colon key\nmapping) onto the underlying <xref href=\"Bodu.Text.Configuration.IniDocumentBase\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Bodu.Text.Configuration.IniEntry\" data-throw-if-not-resolved=\"false\"></xref> primitives.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16235,7 +16375,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationKey",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKey.yml\" sourcestartlinenumber=\"1\">Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the\nresolved view and by <code>Microsoft.Extensions.Configuration</code>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKey.yml\" sourcestartlinenumber=\"1\">Represents a configuration key in both its raw, file-level form and the logical form used by the resolved view,\nwhich is colon-delimited, as <code>Microsoft.Extensions.Configuration</code> expects, under every mapping but\n<xref href=\"Bodu.Text.Configuration.ConfigurationKeyMapping.Identity\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16249,7 +16389,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationKeyMapping",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKeyMapping.yml\" sourcestartlinenumber=\"1\">Selects how raw configuration keys are mapped to the colon-delimited logical keys used by the resolved view and by\n<code>Microsoft.Extensions.Configuration</code>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKeyMapping.yml\" sourcestartlinenumber=\"1\">Selects how raw configuration keys are mapped to the logical keys used by the resolved view: colon-delimited, as\n<code>Microsoft.Extensions.Configuration</code> expects, or, under <xref href=\"Bodu.Text.Configuration.ConfigurationKeyMapping.Identity\" data-throw-if-not-resolved=\"false\"></xref>, kept as written.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16263,7 +16403,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationKeyOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKeyOptions.yml\" sourcestartlinenumber=\"1\">Controls how raw configuration keys are split into segments and mapped to the colon-delimited logical key shape used\nby the resolved view and the Microsoft.Extensions.Configuration bridge.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKeyOptions.yml\" sourcestartlinenumber=\"1\">Controls how raw configuration keys are split into segments and mapped to the logical keys used by the resolved view\nand the Microsoft.Extensions.Configuration bridge.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16277,7 +16417,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationMissingPathRootMode",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationMissingPathRootMode.yml\" sourcestartlinenumber=\"1\">Selects how <xref href=\"Bodu.Text.Configuration.ConfigurationExtensions.Resolve(Bodu.Text.Configuration.IniDocumentBase%2cSystem.String%2cBodu.Text.Configuration.ConfigurationResolveOptions)\" data-throw-if-not-resolved=\"false\"></xref>\nreacts when the document was parsed from a string and no <xref href=\"Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot\" data-throw-if-not-resolved=\"false\"></xref> was\nsupplied.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationMissingPathRootMode.yml\" sourcestartlinenumber=\"1\">Selects what <xref href=\"Bodu.Text.Configuration.ConfigurationExtensions.Resolve(Bodu.Text.Configuration.IniDocumentBase%2cSystem.String%2cBodu.Text.Configuration.ConfigurationResolveOptions)\" data-throw-if-not-resolved=\"false\"></xref>\ndoes when it receives no target path and no root is known: no <xref href=\"Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot\" data-throw-if-not-resolved=\"false\"></xref>\nwas supplied and the document was not loaded from a file.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16291,7 +16431,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationParseException",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationParseException.yml\" sourcestartlinenumber=\"1\">The exception raised when a configuration document cannot be parsed. Exposes the originating diagnostic (\n<xref href=\"Bodu.Text.Configuration.ConfigurationParseException.Diagnostic\" data-throw-if-not-resolved=\"false\"></xref>) together with any additional diagnostics gathered before the failure.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationParseException.yml\" sourcestartlinenumber=\"1\">The exception raised when a configuration document cannot be parsed or resolved. Exposes the diagnostic that stopped\nthe operation as <xref href=\"Bodu.Text.Configuration.ConfigurationParseException.Diagnostic\" data-throw-if-not-resolved=\"false\"></xref>; the library raises it with that diagnostic alone.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16347,7 +16487,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationProfile",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationProfile.yml\" sourcestartlinenumber=\"1\">Selects one of the predefined behaviour profiles that govern how a configuration document is parsed, resolved, and\nre-emitted.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationProfile.yml\" sourcestartlinenumber=\"1\">Selects one of the predefined behavior profiles that govern how a configuration document is parsed, resolved, and\nre-emitted.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16613,7 +16753,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Delimited.DelimitedMalformedRecordBehavior",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.DelimitedMalformedRecordBehavior.yml\" sourcestartlinenumber=\"1\">Specifies how a delimited reader responds to a record that violates the configured field-count policy.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.DelimitedMalformedRecordBehavior.yml\" sourcestartlinenumber=\"1\">Specifies how a delimited reader responds to a malformed record: one whose field count violates the configured\nfield-count policy, or one in which text follows a closing quote.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16683,7 +16823,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Delimited.DelimitedSerializerOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.DelimitedSerializerOptions.yml\" sourcestartlinenumber=\"1\">Provides configuration for <xref href=\"Bodu.Text.Delimited.DelimitedSerializer\" data-throw-if-not-resolved=\"false\"></xref>, controlling column naming, case sensitivity, field\ninclusion, and the output delimiter, quote, and header behaviour.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.DelimitedSerializerOptions.yml\" sourcestartlinenumber=\"1\">Provides configuration for <xref href=\"Bodu.Text.Delimited.DelimitedSerializer\" data-throw-if-not-resolved=\"false\"></xref>, controlling column naming, case sensitivity, field\ninclusion, and the delimiter, quote, comment character, and header behavior.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16935,7 +17075,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Delimited.Writer.DelimitedWriterOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.Writer.DelimitedWriterOptions.yml\" sourcestartlinenumber=\"1\">Provides configuration for a <xref href=\"Bodu.Text.Delimited.Writer.Utf8DelimitedWriter\" data-throw-if-not-resolved=\"false\"></xref>, controlling the delimiter, quote character, and\nwhether a header row is emitted for object records.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.Writer.DelimitedWriterOptions.yml\" sourcestartlinenumber=\"1\">Provides configuration for a <xref href=\"Bodu.Text.Delimited.Writer.Utf8DelimitedWriter\" data-throw-if-not-resolved=\"false\"></xref>, controlling the delimiter, quote character, the\ncomment character the writer guards, and whether a header row is emitted for object records.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17229,7 +17369,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.DotEnv.Reader.Utf8DotEnvReader",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.yml\" sourcestartlinenumber=\"1\">Provides a high-performance, forward-only, allocation-light reader for DotEnv bytes. The reader is a\n<code>ref struct</code>, so it lives on the stack and cannot be boxed or captured; pass it by\n<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref\">ref</a> to thread it through a converter.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.yml\" sourcestartlinenumber=\"1\">Provides a high-performance, forward-only, allocation-light reader for DotEnv bytes. The reader is a\n<code>ref struct</code>, so it lives on the stack and cannot be boxed or captured; pass it by\n<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref\">ref</a> to share its position with a helper method.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17383,7 +17523,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Encoding.Base58",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Base58.yml\" sourcestartlinenumber=\"1\">Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Base58.yml\" sourcestartlinenumber=\"1\">Provides Base58 encoding and decoding of binary data using the Bitcoin, Ripple, or Flickr alphabets.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -18083,7 +18223,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Ini.IniSerializationException",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Ini.IniSerializationException.yml\" sourcestartlinenumber=\"1\">Represents an error that occurs while mapping a .NET object to or from INI with <xref href=\"Bodu.Text.Ini.IniSerializer\" data-throw-if-not-resolved=\"false\"></xref>, such\nas an unsupported root type, a member nested beyond INI's two levels, a missing required key, or a value that cannot\nbe converted to the target type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Ini.IniSerializationException.yml\" sourcestartlinenumber=\"1\">Represents an error that occurs while mapping a .NET object to or from INI with <xref href=\"Bodu.Text.Ini.IniSerializer\" data-throw-if-not-resolved=\"false\"></xref>, such\nas an unsupported root type, a member nested beyond INI's two levels, a missing required key, a value that cannot be\nconverted to the target type, or a key, section name or value that INI cannot represent.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -19977,34 +20117,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.WeekPattern.Enumerator.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.WeekPattern.Enumerator.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.WeekPattern.Enumerator",
-      "Summary": "<p sourcefile=\"api/Bodu.WeekPattern.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the selected days of a <xref href=\"Bodu.WeekPattern\" data-throw-if-not-resolved=\"false\"></xref> in Sunday-first order without allocating.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.WeekPattern.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.WeekPattern.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.WeekPattern",
-      "Summary": "<p sourcefile=\"api/Bodu.WeekPattern.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of selected days in a standard seven-day week.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.WorkingDaysOfWeek.yml",
       "output": {
         ".html": {
@@ -20891,6 +21003,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "docs/release-notes.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/release-notes.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "docs/serialization/bencode/concepts.md",
       "output": {
         ".html": {
@@ -21174,6 +21296,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "docs/topics/conformance.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/conformance.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "docs/topics/core-foundations-concepts.md",
       "output": {
         ".html": {
@@ -21188,6 +21320,16 @@
       "output": {
         ".html": {
           "relative_path": "docs/topics/core-foundations.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/topics/errors-and-exceptions.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/errors-and-exceptions.html"
         }
       },
       "version": ""
@@ -21234,6 +21376,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "docs/topics/hosting.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/hosting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "docs/topics/numerics-and-financial-concepts.md",
       "output": {
         ".html": {
@@ -21268,6 +21420,46 @@
       "output": {
         ".html": {
           "relative_path": "docs/topics/text-and-serialization.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/topics/thread-safety.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/thread-safety.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/topics/trimming-and-native-aot.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/trimming-and-native-aot.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/topics/untrusted-input.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/untrusted-input.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/versioning-and-support.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/versioning-and-support.html"
         }
       },
       "version": ""
@@ -21704,6 +21896,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "guides/core/calendar-value-sets.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/core/calendar-value-sets.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "guides/core/choosing-a-collection.md",
       "output": {
         ".html": {
@@ -21744,10 +21946,30 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "guides/core/day-of-week-set.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/core/day-of-week-set.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "guides/core/deque.md",
       "output": {
         ".html": {
           "relative_path": "guides/core/deque.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/core/encoding-helpers.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/core/encoding-helpers.html"
         }
       },
       "version": ""
@@ -22018,16 +22240,6 @@
       "output": {
         ".html": {
           "relative_path": "guides/core/trie.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "guides/core/week-pattern.md",
-      "output": {
-        ".html": {
-          "relative_path": "guides/core/week-pattern.html"
         }
       },
       "version": ""
@@ -22808,6 +23020,36 @@
       "output": {
         ".html": {
           "relative_path": "guides/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/io-biff/authoring-records.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/io-biff/authoring-records.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/io-biff/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/io-biff/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/io-biff/resumable-reading.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/io-biff/resumable-reading.html"
         }
       },
       "version": ""
@@ -23644,16 +23886,6 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "guides/text-encoding/encoding-helpers.md",
-      "output": {
-        ".html": {
-          "relative_path": "guides/text-encoding/encoding-helpers.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
       "source_relative_path": "guides/text-encoding/index.md",
       "output": {
         ".html": {
@@ -23997,6 +24229,16 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "images/diagrams/day-of-week-set.svg",
+      "output": {
+        "resource": {
+          "relative_path": "images/diagrams/day-of-week-set.svg"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "images/diagrams/deque.svg",
       "output": {
         "resource": {
@@ -24271,16 +24513,6 @@
       "output": {
         "resource": {
           "relative_path": "images/diagrams/toml-value-model.svg"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Resource",
-      "source_relative_path": "images/diagrams/week-pattern.svg",
-      "output": {
-        "resource": {
-          "relative_path": "images/diagrams/week-pattern.svg"
         }
       },
       "version": ""

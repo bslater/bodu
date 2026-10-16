@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>CtsModeTransform Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CtsModeTransform Class
+ | BODU ">
+      
+      <meta name="description" content="Applies Ciphertext Stealing (CTS) over CBC mode to an underlying , allowing encryption of inputs whose length is not a multiple of the block size without requiring padding.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Security.Cryptography.CtsModeTransform">
+
+
+
+
+  <h1 id="Bodu_Security_Cryptography_CtsModeTransform" data-uid="Bodu.Security.Cryptography.CtsModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+CtsModeTransform Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_CtsModeTransform_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs">CtsModeTransform.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Applies Ciphertext Stealing (CTS) over CBC mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, allowing encryption of
+inputs whose length is not a multiple of the block size without requiring padding.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CtsModeTransform : IBlockCipherModeTransform, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CtsModeTransform</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Security_Cryptography_CtsModeTransform_examples">Examples</h2>
+  <pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+// CTS is available only as this direct transform; the SymmetricAlgorithm wrappers' BlockMode cannot build it.
+using IBlockCipher cipher = new AesBlockCipher(key);
+byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
+IBlockCipherModeTransform cts = new CtsModeTransform(cipher, iv);
+
+// CTS preserves length: plaintext.Length == ciphertext.Length, no padding required.
+byte[] ciphertext = new byte[plaintext.Length];
+int written = cts.Transform(plaintext, ciphertext, encrypt: true);</code></pre>
+
+
+  <h2 id="Bodu_Security_Cryptography_CtsModeTransform_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+CTS produces ciphertext of exactly the same length as the plaintext by "stealing" bytes from the penultimate
+ciphertext block to complete the final partial block. For block-aligned inputs (where the total length is a multiple
+of the block size), CTS behaves identically to CBC with no stealing.
+</p>
+<p>
+The CTS steal algorithm (the CS2 variant of the NIST SP 800-38A Addendum), applied when the final block is partial:
+<ul><li>All complete blocks except the last two are processed normally in CBC mode.</li><li>
+Encrypt: the penultimate block is CBC-encrypted to E; the final partial block P_n is zero-padded and CBC-chained
+against E (that is, <code>(P_n || 0) XOR E</code> is encrypted) to produce C_n (full block); C_{n-1} = E[0:m]. Output: C_n
+then C_{n-1}.
+</li><li>
+Decrypt: C_n is decrypted to recover <code>(P_n XOR E[0:m]) || E[m:]</code>; E is reconstructed from the truncated C_{n-1}
+and the recovered high bytes; P_n is obtained by XORing off E[0:m]; then the full E is CBC-decrypted to P_{n-1}.
+</li></ul>
+
+<p>
+The input to <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html#Bodu_Security_Cryptography_CtsModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a> must be at least one full block long. For inputs of exactly one block, the
+result is identical to standard CBC encryption or decryption.
+</p>
+<p>
+<strong>When to use CTS.</strong> Pick CTS when ciphertext length must equal plaintext length and the input is not
+block-aligned - typical in fixed-size record formats, network frames with strict size budgets, and on-disk layouts
+where adding padding bytes is impossible. CTS shares CBC's lack of authentication and its sequential nature; for new
+general-purpose encryption an AEAD mode (<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>) is
+preferable. The variant implemented here is CS2 of the NIST SP 800-38A Addendum: the final two ciphertext blocks are
+swapped only when the final block is partial, so block-aligned input is plain CBC. CS3 swaps them for every input of
+two or more blocks, so for block-aligned input its output differs from this transform's.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_CtsModeTransform__ctor_" data-uid="Bodu.Security.Cryptography.CtsModeTransform.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_CtsModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.CtsModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
+  CtsModeTransform(IBlockCipher, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CtsModeTransform(IBlockCipher cipher, byte[] iv)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cipher</code> <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></dt>
+    <dd><p>The underlying block cipher.</p>
+</dd>
+    <dt><code>iv</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The initialization vector for the CBC chain. Must equal the cipher block size. A defensive copy is taken; the
+caller's array is not modified.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">cipher</code> or <code class="paramref">iv</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">iv</code> length does not equal the cipher block size.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_CtsModeTransform_Dispose_" data-uid="Bodu.Security.Cryptography.CtsModeTransform.Dispose*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_CtsModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.CtsModeTransform.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Releases the resources used by this instance and zeroes the seed and running CBC chaining vector so that
+key-equivalent state does not linger in memory after disposal. The underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> is not
+disposed by this type - ownership remains with the caller.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_CtsModeTransform_Dispose_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Idempotent.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_CtsModeTransform_Transform_" data-uid="Bodu.Security.Cryptography.CtsModeTransform.Transform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_CtsModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.CtsModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
+  Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Transforms <code class="paramref">input</code> under the mode's chaining strategy and writes the result to
+<code class="paramref">output</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Transform(ReadOnlySpan&lt;byte&gt; input, Span&lt;byte&gt; output, bool encrypt)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input data to transform.</p>
+</dd>
+    <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination span. Its length must be greater than or equal to the length of <code class="paramref">input</code>.</p>
+</dd>
+    <dt><code>encrypt</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to encrypt the input; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to decrypt.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written to <code class="paramref">output</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_CtsModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The length rule depends on the mode: ECB, CBC, CFB, OFB, and XTS accept a whole number of blocks, zero included;
+<a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> accepts any length; <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> accepts any length of at
+least one block.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">output</code> is shorter than <code class="paramref">input</code>, or, for
+<a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>, when <code class="paramref">input</code> is shorter than one block.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>Thrown when the mode accepts only whole blocks and the length of <code class="paramref">input</code> is not a multiple of
+the block size, or when <code class="paramref">input</code> and <code class="paramref">output</code> partially overlap.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the transform has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

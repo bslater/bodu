@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Core - Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Core - Getting started | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/core/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="boducore---getting-started">Bodu.Core - Getting started</h1>
+
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Core
+</code></pre>
+<p>Targets <code>net8.0</code> and <code>net10.0</code>. No external runtime dependencies. <code>Bodu.Core</code> covers the buffers, extensions, threading, and functional surfaces; the specialized collection catalogue ships in the companion <a href="../collections/getting-started.html"><code>Bodu.Collections</code></a> package (namespaces unchanged; it depends on <code>Bodu.Core</code>), and the thread-safe collections in <a href="../collections-concurrent/getting-started.html"><code>Bodu.Collections.Concurrent</code></a>:</p>
+<pre><code class="lang-bash">dotnet add package Bodu.Collections             # collection catalogue
+dotnet add package Bodu.Collections.Concurrent  # thread-safe variants
+</code></pre>
+<h2 id="minimal-samples">Minimal samples</h2>
+<p>Every sample below needs only <code>Bodu.Core</code>. For collection samples (<code>CircularBuffer&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey, TValue&gt;</code>, <code>Deque&lt;T&gt;</code>, and the rest of the catalogue), see the <a href="../collections/getting-started.html">Bodu.Collections getting-started page</a>.</p>
+<h3 id="calendar-value-sets-dayofweekset-monthset-hourset-">Calendar value sets (<code>DayOfWeekSet</code>, <code>MonthSet</code>, <code>HourSet</code>, ...)</h3>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+DayOfWeekSet weekdays = DayOfWeekSet.Parse(&quot;_MTWTF_&quot;);
+DayOfWeekSet weekend  = DayOfWeekSet.Parse(&quot;S_____S&quot;);
+DayOfWeekSet allDays  = weekdays | weekend;
+
+bool monday = weekdays.Contains(DayOfWeek.Monday); // true
+
+MonthSet quarterEnds = MonthSet.Parse(&quot;3,6,9,12&quot;);
+HourSet  openHours   = HourSet.Parse(&quot;9-17&quot;);
+bool open = openHours.Contains(new DateTime(2025, 3, 31, 10, 0, 0).Hour); // true
+</code></pre>
+<p>Each set is an immutable <code>readonly struct</code>, so <code>With</code> / <code>Without</code> and the <code>|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code> operators each return a new value. Presets <code>DayOfWeekSet.Empty</code>, <code>DayOfWeekSet.Weekdays</code>, and <code>DayOfWeekSet.Weekend</code> cover the common cases; the numeric sets read and write a list of values and ranges (<code>&quot;9-17&quot;</code>) by default, and also a list without ranges (<code>L</code>), binary (<code>B</code>), and for months a mask of initials (<code>J</code>). <code>DayOfWeekSet</code> and the five numeric sets all implement <code>ICalendarValueSet&lt;TSelf, TValue&gt;</code>, so one generic method can take any of them. See the <a href="../../guides/core/day-of-week-set.html">DayOfWeekSet</a> and <a href="../../guides/core/calendar-value-sets.html">calendar value sets</a> guides.</p>
+<h3 id="railway-outcomes-optiont--resultt">Railway outcomes (<code>Option&lt;T&gt;</code> / <code>Result&lt;T&gt;</code>)</h3>
+<p>Model &quot;might be absent&quot; and &quot;might fail&quot; as values, and chain the happy path through combinators:</p>
+<pre><code class="lang-csharp">using Bodu.Functional;
+
+Option&lt;string&gt; setting = LookupSetting(&quot;timeout&quot;);
+
+int timeoutMs = setting
+    .Map(int.Parse)
+    .Filter(ms =&gt; ms &gt; 0)
+    .Match(onSome: ms =&gt; ms, onNone: () =&gt; 30_000);   // default when absent or invalid
+
+Result&lt;Order&gt; order = ParseOrder(json)
+    .Bind(Validate)                                // runs only on the success track
+    .Map(Normalize);
+
+if (!order.IsSuccess)
+    logger.LogWarning(&quot;Rejected: {Message}&quot;, order.Error.Message);
+</code></pre>
+<p><code>default(Option&lt;T&gt;)</code> is <code>None</code> and <code>default(Result&lt;T&gt;)</code> is a failure with an empty error - an unassigned field is well-formed, never a phantom success.</p>
+<h3 id="pooled-buffer-pooledbufferbuildert">Pooled buffer (<code>PooledBufferBuilder&lt;T&gt;</code>)</h3>
+<p>An <code>ArrayPool&lt;T&gt;</code>-backed <code>IBufferWriter&lt;T&gt;</code> for assembling a span without per-append allocation:</p>
+<pre><code class="lang-csharp">using Bodu.Buffers;
+
+using var builder = new PooledBufferBuilder&lt;byte&gt;(initialCapacity: 256);
+builder.Append((byte)'{');
+builder.AppendRange(&quot;\&quot;ok\&quot;:true&quot;u8);
+builder.Append((byte)'}');
+
+byte[] json = builder.ToArrayAndDispose();   // snapshot, then return the rental
+</code></pre>
+<h3 id="async-coordination-asynclock">Async coordination (<code>AsyncLock</code>)</h3>
+<p>The awaitable peer of <code>lock</code> - waiting yields the thread instead of blocking it:</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+private readonly AsyncLock _gate = new();
+
+public async Task WriteAsync(Entry entry, CancellationToken cancellationToken)
+{
+    using (await _gate.LockAsync(cancellationToken))
+    {
+        await AppendToJournalAsync(entry, cancellationToken);
+    }
+}   // releaser disposes → lock released, next waiter resumes
+</code></pre>
+<p><code>AsyncSemaphore</code>, <code>AsyncReaderWriterLock</code>, the async reset/countdown events, <code>AsyncLazy&lt;T&gt;</code>, and <code>AsyncDebouncer</code> follow the same awaitable, cancellation-aware shape; <code>RateGate</code> is a synchronous gate whose <code>TryInvoke</code> admits at most one call per interval.</p>
+<h3 id="date-arithmetic-datetimeextensions">Date arithmetic (<code>DateTimeExtensions</code>)</h3>
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+DateTime today = DateTime.Today;
+
+DateTime startOfWeek  = today.FirstDateOfWeek();                 // culture's first day of the current week
+DateTime nextFriday   = today.NextDateOfWeek(DayOfWeek.Friday);  // strictly after today
+DateTime endOfQuarter = today.LastDateOfQuarter();              // calendar Q-end
+int isoWeek           = today.IsoWeekOfYear;                    // ISO 8601 week number (C# 14 extension property)
+</code></pre>
+<p><code>IsoWeekOfYear</code> is read without parentheses; consuming the C# 14 extension properties needs <code>&lt;LangVersion&gt;14&lt;/LangVersion&gt;</code> (or <code>latest</code> on the .NET 10 SDK) - see the <a href="../../guides/core/date-extensions.html">date and time extensions guide</a>. <code>FirstDateOfWeek</code> has overloads taking a <code>CultureInfo</code> or a <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset; <code>LastDateOfQuarter</code> accepts a <a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> (e.g. <code>AprilToMarch</code>, <code>April6ToApril5</code> for the UK tax year) so the same call covers fiscal calendars. The <code>DateOnly</code> equivalents, <code>Age</code> included, live on <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a>.</p>
+<h3 id="centralized-argument-validation-throwhelper">Centralized argument validation (<code>ThrowHelper</code>)</h3>
+<pre><code class="lang-csharp">using Bodu;
+
+public static double Average(IReadOnlyList&lt;int&gt; values)
+{
+    ThrowHelper.ThrowIfNull(values);
+    ThrowHelper.ThrowIfZero(values.Count);
+    return values.Average();
+}
+</code></pre>
+<p><code>ThrowHelper.ThrowIf…</code> uses <code>[CallerArgumentExpression]</code> so the parameter name is captured automatically.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Core introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../../guides/core/index.html">Core Foundations guides</a></strong> - recipe-style walk-throughs for the headline types.</li>
+<li><strong><a href="../collections/getting-started.html">Bodu.Collections getting started</a></strong> - the collection catalogue's install and samples.</li>
+<li><strong><a href="../collections-concurrent/getting-started.html">Bodu.Collections.Concurrent getting started</a></strong> - the thread-safe collections.</li>
+<li><strong><a href="../introduction.html">Project introduction</a></strong> - the per-library map, if you also need hashing, cryptography, calendar, or text utilities.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

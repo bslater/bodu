@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>CachingNotableDateService Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CachingNotableDateService Class
+ | BODU ">
+      
+      <meta name="description" content="An  decorator that serves notable-date resolutions from an , recomputing and caching a whole civil year on a miss and refreshing on a time-to-live or a resource-version change.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService">
+
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+CachingNotableDateService Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.Caching.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Caching">Bodu.Globalization.Calendar.Caching</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs">CachingNotableDateService.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>An <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> decorator that serves notable-date resolutions from an
+<a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>, recomputing and caching a whole civil year on a miss and refreshing on a
+time-to-live or a resource-version change.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CachingNotableDateService : INotableDateService, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CachingNotableDateService</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Every query is answered per civil year: a range is decomposed into the years it spans, each year is served from the
+cache when a fresh, version-matching entry exists or otherwise recomputed for the whole year and written back, and
+the assembled occurrences are clipped to the requested window as the wrapped service selects them: by default an
+occurrence is kept when any day from its emitted date to its last day falls within the window, and under the
+resource's <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> its actual span, or either span, decides instead. Because the
+notable-date engine resolves per Gregorian year, a whole-year entry is the reusable unit: a later single-day or
+sub-range query for the same year is served without recomputing, and a query for exactly one whole civil year is
+served as the cached list itself with no copying.
+</p>
+<p>
+A civil year's entry holds every occurrence the wrapped service includes in the year, by default every occurrence
+whose span overlaps it, so a multi-day occurrence that starts in one year and runs into the next is held by both
+years' entries. A range spanning several years therefore takes such an occurrence from the entry of the year its
+controlling span starts in (the emitted span by default, the actual span or the earlier of the two under the
+resource's <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a>), or from the first year's entry when that span starts before the
+range's first year, and never returns it twice.
+</p>
+<p>
+The decorator learns the observed-date range policy from the resource provider it observes, or else from the
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> or <a class="xref" href="Bodu.Globalization.Calendar.ReloadableNotableDateService.html">ReloadableNotableDateService</a> it wraps. Around any other
+<a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a>, with no provider, it clips by the emitted span.
+</p>
+<p>
+Output ordering relies on the <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> ordering contract - cached occurrences round-trip in
+the order supplied, which is the wrapped service's date-then-identity ordering, and the occurrences taken from one
+civil year's entry always precede those taken from the next year's - so assembled results are ordered without
+re-sorting. As a safeguard, the assembled result is verified with a linear scan, and only a non-conforming cache
+backend pays a full sort.
+</p>
+<p>
+The filtered overloads apply the filter after assembling the unfiltered result, exactly as the wrapped service does,
+so a <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a> never participates in the cache key. The discovery methods delegate straight
+to the wrapped service.
+</p>
+<p>
+When constructed with an <a class="xref" href="Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a>, the decorator observes the resource currently
+in effect and derives a version token from its identity and a reload generation, so a
+<a class="xref" href="Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html#Bodu_Globalization_Calendar_MutableNotableDateResourceProvider_Reload_Bodu_Globalization_Calendar_NotableDateResource_">Reload(NotableDateResource)</a> invalidates every cached year on the
+next query. Without a provider, a fixed version token from the options is used.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService__ctor_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService__ctor_Bodu_Globalization_Calendar_INotableDateService_Bodu_Globalization_Calendar_Caching_INotableDateCache_Bodu_Globalization_Calendar_Caching_NotableDateCachingOptions_Bodu_Globalization_Calendar_INotableDateResourceProvider_System_TimeProvider_Microsoft_Extensions_Logging_ILoggerFactory_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.#ctor(Bodu.Globalization.Calendar.INotableDateService,Bodu.Globalization.Calendar.Caching.INotableDateCache,Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions,Bodu.Globalization.Calendar.INotableDateResourceProvider,System.TimeProvider,Microsoft.Extensions.Logging.ILoggerFactory,System.Boolean)">
+  CachingNotableDateService(INotableDateService, INotableDateCache, NotableDateCachingOptions, INotableDateResourceProvider?, TimeProvider?, ILoggerFactory?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CachingNotableDateService(INotableDateService inner, INotableDateCache cache, NotableDateCachingOptions options, INotableDateResourceProvider? versionSource = null, TimeProvider? timeProvider = null, ILoggerFactory? loggerFactory = null, bool ownsCache = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inner</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service that computes a year on a cache miss.</p>
+</dd>
+    <dt><code>cache</code> <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a></dt>
+    <dd><p>The cache computed years are served from and written to.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions.html">NotableDateCachingOptions</a></dt>
+    <dd><p>The caching options.</p>
+</dd>
+    <dt><code>versionSource</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a></dt>
+    <dd><p>The resource provider to observe for reloads, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use a fixed version token from
+<code class="paramref">options</code>.</p>
+</dd>
+    <dt><code>timeProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a></dt>
+    <dd><p>The clock the computed and lookup instants are measured against, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider.system">System</a>.</p>
+</dd>
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd><p>The factory used to create the diagnostics logger, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to disable logging.</p>
+</dd>
+    <dt><code>ownsCache</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether this service disposes <code class="paramref">cache</code> when it is disposed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">inner</code>, <code class="paramref">cache</code>, or <code class="paramref">options</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> fails validation.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Dispose_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Dispose*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Dispose" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_GetSupportedCalendars_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.GetSupportedCalendars*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_GetSupportedCalendars" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.GetSupportedCalendars">
+  GetSupportedCalendars()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the distinct calendar systems any rule in the resource is expressed in.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;CalendarSystem&gt; GetSupportedCalendars()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/CalendarSystem.cs">CalendarSystem</a>&gt;</dt>
+    <dd><p>The calendar systems in use, in ascending order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_GetSupportedTerritories_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.GetSupportedTerritories*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_GetSupportedTerritories" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.GetSupportedTerritories">
+  GetSupportedTerritories()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the distinct territories any rule in the resource is scoped to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; GetSupportedTerritories()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The scoped territory codes in case-insensitive ascending order; empty when every rule is global (unscoped).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_Bodu_Globalization_Calendar_DateRange_System_String_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve(Bodu.Globalization.Calendar.DateRange,System.String)">
+  Resolve(DateRange, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves the notable-date occurrences emitted within an inclusive date range for the requested territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NotableDate&gt; Resolve(DateRange range, string territory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>range</code> <a class="xref" href="Bodu.Globalization.Calendar.DateRange.html">DateRange</a></dt>
+    <dd><p>The inclusive range of days to resolve.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The occurrences whose emitted span intersects the range, ordered by date then identity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_Bodu_Globalization_Calendar_DateRange_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve(Bodu.Globalization.Calendar.DateRange,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  Resolve(DateRange, string, NotableDateFilter)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves the notable-date occurrences emitted within an inclusive date range for the requested territory,
+restricted to those matching the supplied filter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NotableDate&gt; Resolve(DateRange range, string territory, NotableDateFilter filter)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>range</code> <a class="xref" href="Bodu.Globalization.Calendar.DateRange.html">DateRange</a></dt>
+    <dd><p>The inclusive range of days to resolve.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>The filter that emitted occurrences must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The matching occurrences, ordered by date then identity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_System_DateOnly_System_String_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve(System.DateOnly,System.String)">
+  Resolve(DateOnly, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves the notable-date occurrences emitted on a single day for the requested territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NotableDate&gt; Resolve(DateOnly date, string territory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The day to resolve.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The occurrences whose emitted span covers <code class="paramref">date</code>; empty when there are none.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_System_DateOnly_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve(System.DateOnly,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  Resolve(DateOnly, string, NotableDateFilter)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves the notable-date occurrences emitted on a single day for the requested territory, restricted to those
+matching the supplied filter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NotableDate&gt; Resolve(DateOnly date, string territory, NotableDateFilter filter)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The day to resolve.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>The filter that emitted occurrences must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The matching occurrences; empty when there are none.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Warm_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Warm*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Warm_System_Collections_Generic_IEnumerable_System_String__System_Int32_System_Int32_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Warm(System.Collections.Generic.IEnumerable{System.String},System.Int32,System.Int32)">
+  Warm(IEnumerable&lt;string&gt;, int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/CachingNotableDateService.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Warms the cache for a set of territories over an inclusive span of civil years, resolving each territory's whole
+span through the normal read-through path so cold years are computed and cached while already cached years cost
+only a cache read.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Warm(IEnumerable&lt;string&gt; territories, int firstYear, int lastYear)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>territories</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The territory codes to warm.</p>
+</dd>
+    <dt><code>firstYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The inclusive first civil year of the span to warm.</p>
+</dd>
+    <dt><code>lastYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The inclusive last civil year of the span to warm.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of territories warmed successfully.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Warm_System_Collections_Generic_IEnumerable_System_String__System_Int32_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Territories are warmed sequentially - year resolution is a synchronous, CPU-bound computation with no I/O to
+overlap. A territory whose resolution fails is logged at
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-warning">Warning</a> and skipped - the remaining territories still
+warm - and is excluded from the returned count. Later queries for any warmed year are cache hits until the
+time-to-live or a resource-version change expires them.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">territories</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">firstYear</code> or <code class="paramref">lastYear</code> is outside the range representable by
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">lastYear</code> precedes <code class="paramref">firstYear</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

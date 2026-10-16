@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/cryptography/cipher-composition-reference.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/cipher-composition-reference.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -201,8 +201,17 @@
 <td><em>(no member)</em></td>
 <td>-</td>
 <td>-</td>
-<td><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> (AEAD)</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> (AEAD)</td>
 <td>12-byte nonce</td>
+<td>any</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><em>(no member)</em></td>
+<td>-</td>
+<td>-</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> (AEAD)</td>
+<td>16-byte IV, first 12 used</td>
 <td>any</td>
 <td>n/a</td>
 </tr>
@@ -214,7 +223,7 @@
 <li>The wrapper never produces an unaligned stream-mode ciphertext. Its <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> pads on <code>TransformFinalBlock</code>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.NoPadding.html">NoPadding</a> throws <code>ArgumentException</code> for input that is not a block multiple. For CTR over an arbitrary length, use the raw <code>CtrModeTransform</code> (Pattern 3) or accept PKCS7 padding.</li>
 </ul>
 <h3 id="blockmode-and-the-inherited-mode"><code>BlockMode</code> and the inherited <code>Mode</code></h3>
-<p><a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a> keeps <code>BlockMode</code> and the BCL <code>Mode</code> in sync where a value exists in both enums (<code>CBC</code>, <code>ECB</code>, <code>OFB</code>, <code>CFB</code>, <code>CTS</code>). Values with no <code>CipherMode</code> equivalent leave <code>Mode</code> untouched, so after <code>BlockMode = CipherModeKind.CTR</code> the inherited property still reports the previous value. Read <code>BlockMode</code>, not <code>Mode</code>, to know what a Bodu wrapper will do. The tweakable wrappers (<a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish256.html">Threefish256</a> and siblings, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256.html">Serpent256</a> and siblings) declare their own <code>BlockMode</code> on <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>-derived bases and do not mirror it into <code>Mode</code> at all.</p>
+<p>On <a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a>, assigning <code>BlockMode</code> updates the BCL <code>Mode</code> wherever a value exists in both enums (<code>CBC</code>, <code>ECB</code>, <code>OFB</code>, <code>CFB</code>, <code>CTS</code>), so after <code>BlockMode = CipherModeKind.OFB</code> the inherited property reports <code>OFB</code>. The other direction is narrower: the BCL <code>Mode</code> setter accepts only <code>CBC</code>, <code>ECB</code>, and <code>CFB</code> and throws <code>CryptographicException</code> for any other value, <code>OFB</code> and <code>CTS</code> included, so select OFB and CTR through <code>BlockMode</code>. Values with no <code>CipherMode</code> equivalent leave <code>Mode</code> untouched, so after <code>BlockMode = CipherModeKind.CTR</code> the inherited property still reports the previous value. Read <code>BlockMode</code>, not <code>Mode</code>, to know what a Bodu wrapper will do. The tweakable wrappers (<a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish256.html">Threefish256</a> and siblings, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256.html">Serpent256</a> and siblings) declare their own <code>BlockMode</code> on <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>-derived bases and do not mirror it into <code>Mode</code> at all.</p>
 <h2 id="pattern-1---the-five-wrapper-modes">Pattern 1 - the five wrapper modes</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Security.Cryptography;
@@ -294,7 +303,7 @@ byte[] key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;)
 byte[] iv  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
 byte[] plaintext = &quot;composition reference: 37 bytes long!!&quot;u8.ToArray();
 
-// CTS (CS3 / IEEE 1619 order): no padding, ciphertext length == plaintext length, input &gt;= one block.
+// CTS (CS2 order): no padding, ciphertext length == plaintext length, input &gt;= one block.
 using IBlockCipher cipher = new AesBlockCipher(key);
 using var cts = new CtsModeTransform(cipher, iv);
 byte[] ciphertext = new byte[plaintext.Length];
@@ -524,7 +533,7 @@ byte[] ciphertext = encryptor.Transform(&quot;composition reference: 37 bytes lo
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

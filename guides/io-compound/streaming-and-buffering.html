@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/io-compound/streaming-and-buffering.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-compound/streaming-and-buffering.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -145,10 +145,10 @@ var options = new CompoundFileOptions
 using FileStream source = File.OpenRead(path);
 using CompoundFile file = CompoundFile.Open(source, options, leaveOpen: true);
 </code></pre>
-<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html#Bodu_IO_Compound_CompoundReadStrategy_Auto">Auto</a> compares a seekable source's length against <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html#Bodu_IO_Compound_CompoundFileOptions_MaxBufferedBytes">MaxBufferedBytes</a> (64 MiB by default): small files are buffered, large ones streamed. A non-seekable source can only be buffered, so <code>Auto</code> and <code>Buffered</code> both read it whole, while <code>Streaming</code> over a non-seekable source throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</p>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html#Bodu_IO_Compound_CompoundReadStrategy_Auto">Auto</a> compares the length of the container in a seekable source, from the source's position to its end, against <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html#Bodu_IO_Compound_CompoundFileOptions_MaxBufferedBytes">MaxBufferedBytes</a> (64 MiB by default): small files are buffered, large ones streamed. A non-seekable source can only be buffered, so <code>Auto</code> and <code>Buffered</code> both read it whole, while <code>Streaming</code> over a non-seekable source throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>Even under a streaming file, a stream whose size is below the <strong>mini-stream cutoff</strong> (typically 4096 bytes) is materialised whole rather than walked sector by sector - its bytes live in the in-memory mini-stream that the reader builds at open time. Streaming bounds memory for the <em>large</em> streams; the small ones are already resident.</p>
+<p>Even under a streaming file, a stream whose size is below the <strong>mini-stream cutoff</strong> (4096 bytes) is materialised whole rather than walked sector by sector - its bytes live in the in-memory mini-stream that the reader builds at open time. Streaming bounds memory for the <em>large</em> streams; the small ones are already resident.</p>
 </div>
 <h2 id="the-compoundstream-cursor">The CompoundStream cursor</h2>
 <p><code>CompoundStorage.OpenStream</code> returns a <code>CompoundStream</code>, a standard read-only, seekable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> - <code>CanRead</code> and <code>CanSeek</code> are <code>true</code>, <code>CanWrite</code> is <code>false</code>. Because it is a <code>Stream</code>, it composes with the BCL surfaces that consume one:</p>
@@ -207,11 +207,11 @@ finally
 <li>Dispose the <code>CompoundFile</code> when finished; it releases the source according to the <code>leaveOpen</code> contract.</li>
 <li>Under streaming, keep the source stream open and do not seek or write it yourself until the <code>CompoundFile</code> is disposed.</li>
 <li>Dispose each <code>CompoundStream</code> cursor when done with it.</li>
-<li>Reading from a <code>CompoundStream</code> after its owning <code>CompoundFile</code> is disposed throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</li>
+<li>A cursor that reads on demand (a stream of 4,096 bytes or more, opened from a streaming file) throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> once its owning <code>CompoundFile</code> is disposed; a buffered or writable cursor holds its own bytes and keeps serving reads. A writable cursor's <code>Write</code>, <code>SetLength</code> and <code>Flush</code> throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> once the file is disposed, as do the storage members that open a child or stage an edit, because nothing staged after the dispose could be committed.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="reading-compound-files.html">Reading compound files</a> - opening, navigating, and the <code>Open</code> vs <code>ReadAllBytes</code> choice.</li>
+<li><a href="reading-compound-files.html">Reading compound files</a> - opening, navigating, and the cursor vs <code>ReadAllBytes</code> choice.</li>
 <li><a href="property-sets.html">Reading property sets</a> - the metadata streams.</li>
 <li><a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound API reference</a>.</li>
 </ul>
@@ -233,7 +233,7 @@ finally
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

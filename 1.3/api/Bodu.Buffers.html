@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Buffers Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Buffers Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Buffers.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Buffers">
+
+
+  <h1 id="Bodu_Buffers" data-uid="Bodu.Buffers" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Buffers Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Buffers</strong> ships the pooled buffer infrastructure used by the rest of the Bodu solution and exposed for consumer use. Reach for this namespace when you need to assemble a byte or character span without allocating an array per resize step.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> - <code>ArrayPool&lt;T&gt;</code>-backed builder for assembling spans without allocation. Returns the rented array to the pool on <code>Dispose</code>. Writes go through <code>Append(T)</code>, <code>AppendRange(ReadOnlySpan&lt;T&gt;)</code> (with <code>ReadOnlyMemory&lt;T&gt;</code> / <code>IEnumerable&lt;T&gt;</code> overloads), <code>AddMany</code>, or the <code>IBufferWriter&lt;T&gt;</code> pair <code>GetSpan(sizeHint)</code> / <code>GetMemory(sizeHint)</code> + <code>Advance(count)</code>; reads go through <code>WrittenSpan</code> / <code>WrittenMemory</code>, <code>CopyTo</code> / <code>TryCopyTo</code>, or <code>ToArrayAndDispose()</code>, which hands back a right-sized array and returns the rental in one step.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Buffers.Binary;
+using Bodu.Buffers;
+
+using var builder = new PooledBufferBuilder&lt;byte&gt;(initialCapacity: 256);
+builder.Append(0xDE);
+builder.Append(0xAD);
+ReadOnlySpan&lt;byte&gt; tail = stackalloc byte[] { 0xBE, 0xEF };
+builder.AppendRange(tail);
+
+// IBufferWriter&lt;T&gt; style: reserve, fill, commit.
+Span&lt;byte&gt; slot = builder.GetSpan(4);
+BinaryPrimitives.WriteUInt32LittleEndian(slot, 42);
+builder.Advance(4);
+
+ReadOnlySpan&lt;byte&gt; written = builder.WrittenSpan;
+// builder rents from ArrayPool&lt;byte&gt;.Shared; Dispose returns the buffer.
+// Alternatively, builder.ToArrayAndDispose() copies out the written bytes and disposes in one call.
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Disposable.</strong> The builder rents from <code>ArrayPool&lt;T&gt;.Shared</code>. Dispose at the end of use; <code>using</code> is the idiomatic pattern.</li>
+<li><strong>Single owner.</strong> The builder is not thread-safe - pool-backed buffers are owned by a single writer.</li>
+<li><strong>See also:</strong> the <a href="../docs/core/index.html">Bodu.Core introduction</a>, <a class="xref" href="Bodu.Collections.Generic.SegmentedBuffer-1.html">SegmentedBuffer&lt;T&gt;</a> for streaming buffers where the total length is not known up front.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a></dt>
+      <dd><p>Provides an efficient way to accumulate elements into a pooled buffer, with automatic resizing and fast-path
+optimizations for collection-based and span-based sources.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

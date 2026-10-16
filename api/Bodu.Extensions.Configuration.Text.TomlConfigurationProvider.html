@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 TomlConfigurationProvider Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ TomlConfigurationProvider Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a>.<span class="xref">Configuration</span>.<a class="xref" href="Bodu.Extensions.Configuration.Text.html">Text</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Extensions.Configuration.Text.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Extensions.Configuration.Text">Bodu.Extensions.Configuration.Text</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Extensions.Configuration.Text">Bodu.Extensions.Configuration.Text</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs">TomlConfigurationProvider.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs">TomlConfigurationProvider.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>A read-only <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationprovider">IConfigurationProvider</a> that consumes TOML through the <code>Bodu.Text.Toml</code> read-only
@@ -213,7 +213,7 @@ var level = configuration["logging:level"];</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider__ctor_Bodu_Extensions_Configuration_Text_TomlConfigurationSource_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.#ctor(Bodu.Extensions.Configuration.Text.TomlConfigurationSource)">
   TomlConfigurationProvider(TomlConfigurationSource)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -239,6 +239,12 @@ var level = configuration["logging:level"];</code></pre>
 
 
 
+  <h4 class="section" id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider__ctor_Bodu_Extensions_Configuration_Text_TomlConfigurationSource__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A provider constructed directly reads a file-backed source's <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationSource.html#Bodu_Extensions_Configuration_Text_TomlConfigurationSource_Path">Path</a> through
+the file system, relative to the current directory. The provider that
+<a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationSource.html#Bodu_Extensions_Configuration_Text_TomlConfigurationSource_Build_Microsoft_Extensions_Configuration_IConfigurationBuilder_">Build(IConfigurationBuilder)</a> creates reads it through the configuration
+builder's file provider instead, as <code>AddJsonFile</code> does.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -260,7 +266,7 @@ var level = configuration["logging:level"];</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetChildKeys_System_Collections_Generic_IEnumerable_System_String__System_String_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetChildKeys(System.Collections.Generic.IEnumerable{System.String},System.String)">
   GetChildKeys(IEnumerable&lt;string&gt;, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -286,7 +292,8 @@ var level = configuration["logging:level"];</code></pre>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
-    <dd><p>The distinct child key segments in configuration order.</p>
+    <dd><p>The child key segments of this provider and <code class="paramref">earlierKeys</code>, sorted with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.configurationkeycomparer">ConfigurationKeyComparer</a>; duplicates are not removed.</p>
 </dd>
   </dl>
 
@@ -307,7 +314,7 @@ var level = configuration["logging:level"];</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetReloadToken" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetReloadToken">
   GetReloadToken()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -344,7 +351,7 @@ var level = configuration["logging:level"];</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Load" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Load">
   Load()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -370,6 +377,9 @@ var level = configuration["logging:level"];</code></pre>
     <dt><a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a></dt>
     <dd><p>Thrown when the source is not a valid TOML document.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when two keys collide after case-insensitive flattening.</p>
+</dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
     <dd><p>Thrown when the configured file is absent and the source is not optional.</p>
 </dd>
@@ -384,7 +394,7 @@ var level = configuration["logging:level"];</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Set_System_String_System_String_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Set(System.String,System.String)">
   Set(string, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -430,7 +440,7 @@ var level = configuration["logging:level"];</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_TryGet_System_String_System_String__" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.TryGet(System.String,System.String@)">
   TryGet(string, out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -498,7 +508,7 @@ var level = configuration["logging:level"];</code></pre>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

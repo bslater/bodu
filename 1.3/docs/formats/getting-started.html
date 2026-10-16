@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Line formats - Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Line formats - Getting started | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/formats/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="line-formats---getting-started">Line formats - Getting started</h1>
+
+<p>First steps with <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, and <code>Bodu.Text.Ini</code>.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-shell">dotnet add package Bodu.Text.Formats      # umbrella: all three formats
+dotnet add package Bodu.Text.Delimited    # or a single format:
+dotnet add package Bodu.Text.DotEnv
+dotnet add package Bodu.Text.Ini
+</code></pre>
+<p>All packages target <code>net8.0</code> and <code>net10.0</code>.</p>
+<h2 id="read-and-write-delimited-csv--tsv">Read and write delimited (CSV / TSV)</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Document;
+
+byte[] csv = File.ReadAllBytes(&quot;trades.csv&quot;);
+using DelimitedDocument document = DelimitedDocument.Parse(csv);
+
+string firstSymbol = document.RootElement[0].GetProperty(&quot;symbol&quot;).GetString();
+</code></pre>
+<p>Typed records go through the serializer:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+
+sealed class Trade
+{
+    public string? Symbol { get; set; }
+    public int Quantity { get; set; }
+    public decimal Price { get; set; }
+}
+
+var options = new DelimitedSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+List&lt;Trade&gt; trades = DelimitedSerializer.Deserialize&lt;Trade&gt;(File.ReadAllText(&quot;trades.csv&quot;), options);
+string back = DelimitedSerializer.Serialize(trades, options);
+</code></pre>
+<h2 id="parse-a-env-file">Parse a <code>.env</code> file</h2>
+<pre><code class="lang-csharp">using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Document;
+
+using DotEnvDocument env = DotEnvDocument.Parse(File.ReadAllBytes(&quot;.env&quot;));
+string connection = env.RootElement.GetProperty(&quot;DATABASE_URL&quot;).GetString();
+</code></pre>
+<p>Or bind it straight onto a settings class with the SCREAMING_SNAKE_CASE preset:</p>
+<pre><code class="lang-csharp">sealed class Settings
+{
+    public string? AppEnv { get; set; }   // binds APP_ENV
+    public int AppPort { get; set; }      // binds APP_PORT
+}
+
+Settings settings = DotEnvSerializer.Deserialize&lt;Settings&gt;(
+    File.ReadAllText(&quot;.env&quot;),
+    new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web));
+</code></pre>
+<h2 id="round-trip-an-ini-document-preserving-comments">Round-trip an INI document, preserving comments</h2>
+<p>The mutable INI DOM keeps comment lines on the nodes they precede (a comment before a duplicate key that the duplicate-key policy discards is lost with it), and writes them with the writer's comment prefix, <code>;</code> by default:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Nodes;
+
+IniObject root = IniNode.Parse(File.ReadAllBytes(&quot;app.ini&quot;));
+
+root[&quot;server&quot;].AsObject()[&quot;port&quot;].AsValue().Value = &quot;9090&quot;;
+
+var metrics = new IniObject();
+metrics[&quot;enabled&quot;] = new IniValue(&quot;true&quot;);
+root[&quot;metrics&quot;] = metrics;
+
+File.WriteAllBytes(&quot;app.ini&quot;, root.ToUtf8Bytes());   // comments kept, each written with ';'
+</code></pre>
+<h2 id="read-typed-ini-values">Read typed INI values</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Serialization;
+
+sealed class AppConfig
+{
+    public string? Environment { get; set; }              // global key
+    public Dictionary&lt;string, string&gt;? Logging { get; set; } // [logging] section
+}
+
+AppConfig config = IniSerializer.Deserialize&lt;AppConfig&gt;(
+    File.ReadAllText(&quot;app.ini&quot;),
+    new IniSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower });
+</code></pre>
+<h2 id="handle-malformed-input">Handle malformed input</h2>
+<p>Malformed input throws the format's <code>*FormatException</code> with the source position; lenient dialect knobs live on the reader options:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Delimited.Reader;
+
+var lenient = new DelimitedReaderOptions
+{
+    FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,
+    MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord,
+};
+using DelimitedDocument dirty = DelimitedDocument.Parse(bytes, lenient);
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="concepts.html">Core concepts</a> - the quartet vocabulary.</li>
+<li><a href="parser-policies.html">Parser policies</a> - every strictness knob.</li>
+<li>The <a href="../../guides/formats/index.html">format guides</a> - deeper recipes per format.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

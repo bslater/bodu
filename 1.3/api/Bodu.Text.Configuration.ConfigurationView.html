@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ConfigurationView Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ConfigurationView Class
+ | BODU ">
+      
+      <meta name="description" content="Represents the resolved snapshot of a configuration document for a specific target path: a flattened dictionary of configuration keys to their effective values, computed by layering preamble and matching sections in source order.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text.Configuration.ConfigurationView">
+
+
+
+
+  <h1 id="Bodu_Text_Configuration_ConfigurationView" data-uid="Bodu.Text.Configuration.ConfigurationView" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ConfigurationView Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationView_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs">ConfigurationView.Getters.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents the resolved snapshot of a configuration document for a specific target path: a flattened dictionary of
+configuration keys to their effective values, computed by layering preamble and matching sections in source order.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ConfigurationView : IReadOnlyDictionary&lt;string, string?&gt;, IReadOnlyCollection&lt;KeyValuePair&lt;string, string?&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string?&gt;&gt;, IEnumerable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ConfigurationView</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationView_examples">Examples</h2>
+  <pre><code class="lang-csharp">ConfigurationDocument doc  = ConfigurationDocument.Parse(text);
+ConfigurationView     view = doc.Resolve("src/Foo.cs");
+
+// Indexer lookup - colon and dotted forms are equivalent.
+string? level = view["logging:level:default"];
+string? alt   = view["logging.level.default"]; // same value
+
+// Typed convenience accessors on the view.
+int indent = view.GetInt32("format:indent:size", fallback: 4);
+
+// Enumeration yields canonical colon-delimited keys.
+foreach (KeyValuePair&lt;string, string?&gt; kv in view)
+    Console.WriteLine($"{kv.Key} = {kv.Value}");</code></pre>
+
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationView_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Use <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a> to obtain
+a view for a target path. The view is a one-shot snapshot - subsequent mutation of the originating document does not
+retroactively update the view.
+</p>
+<p>
+Values are <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/reference-types">string</a>? to match <code>Microsoft.Extensions.Configuration</code>'s
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary&lt;TKey, TValue&gt;</a> shape. A key that resolves to the
+EditorConfig sentinel <code>unset</code> under <a class="xref" href="Bodu.Text.Configuration.ConfigurationUnsetValueMode.html#Bodu_Text_Configuration_ConfigurationUnsetValueMode_RemoveEffectiveValue">RemoveEffectiveValue</a> is omitted
+entirely.
+</p>
+<p>
+A lookup key is canonicalized with the view's key options before the backing dictionary is consulted, so under the
+default <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_DotToColon">DotToColon</a> mapping the colon-delimited form (
+<code>logging:level:default</code>) and the dotted form (<code>logging.level.default</code>) resolve to the same value.
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_Identity">Identity</a>, the mapping of the
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html#Bodu_Text_Configuration_ConfigurationProfile_EditorConfigCompatible">EditorConfigCompatible</a> profile, keeps every key as written, so a dotted key and
+a colon-delimited one are two keys there, each found under the name it was written with; that profile also
+lowercases keys (<a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html#Bodu_Text_Configuration_ConfigurationKeyOptions_LowercaseKeys">LowercaseKeys</a>). Enumeration yields keys in the form the key
+mapping gives them: colon-delimited under the default mapping, and as written under
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_Identity">Identity</a>.
+</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_Count_" data-uid="Bodu.Text.Configuration.ConfigurationView.Count*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_Count" data-uid="Bodu.Text.Configuration.ConfigurationView.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of resolved keys.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The count of keys present in the resolved view.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_Entries_" data-uid="Bodu.Text.Configuration.ConfigurationView.Entries*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_Entries" data-uid="Bodu.Text.Configuration.ConfigurationView.Entries">
+  Entries
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the resolved-entry origin metadata for every key in the view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;ConfigurationResolvedEntry&gt; Entries { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a>&gt;</dt>
+    <dd><p>Origin metadata per resolved key.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_Item_" data-uid="Bodu.Text.Configuration.ConfigurationView.Item*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_Item_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.Item(System.String)">
+  this[string]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the effective value for <code class="paramref">key</code>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if the key is absent from the
+resolved view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? this[string key] { get; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation: under the default mapping the colon-delimited form
+(e.g. <code>logging:level:default</code>) and the dotted form (<code>logging.level.default</code>) produce the same lookup,
+and under <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_Identity">Identity</a> a key is looked up as written.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationView_Item_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This indexer deliberately returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for an absent key rather than throwing
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2.item">this[TKey]</a> normally would,
+matching <code>Microsoft.Extensions.Configuration</code>'s null-on-absent convention. Use <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html#Bodu_Text_Configuration_ConfigurationView_ContainsKey_System_String_">ContainsKey(string)</a>
+to distinguish an absent key from one whose value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_Keys_" data-uid="Bodu.Text.Configuration.ConfigurationView.Keys*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_Keys" data-uid="Bodu.Text.Configuration.ConfigurationView.Keys">
+  Keys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the configuration keys present in the resolved view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;string&gt; Keys { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>An enumerable of configuration keys.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_Values_" data-uid="Bodu.Text.Configuration.ConfigurationView.Values*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_Values" data-uid="Bodu.Text.Configuration.ConfigurationView.Values">
+  Values
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the underlying resolved dictionary as a read-only view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;string, string?&gt; Values { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The resolved values keyed by configuration key.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_ContainsKey_" data-uid="Bodu.Text.Configuration.ConfigurationView.ContainsKey*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_ContainsKey_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.ContainsKey(System.String)">
+  ContainsKey(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the resolved view contains <code class="paramref">key</code>, accepting the key in any equivalent
+separator notation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsKey(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the key is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetBoolean_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetBoolean*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetBoolean_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetBoolean(System.String)">
+  GetBoolean(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the boolean value for <code class="paramref">key</code> using EditorConfig conventions (<code>true</code> or <code>false</code>,
+case-insensitive).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool GetBoolean(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>The parsed boolean value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationView_GetBoolean_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Accepted: <code>true</code>, <code>True</code>, <code>TRUE</code>, <code>false</code>, <code>False</code>, <code>FALSE</code> and any other case
+variation. Surrounding whitespace is tolerated by the underlying <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean.tryparse#system-boolean-tryparse(system-string-system-boolean@)">TryParse(string, out bool)</a>.</p>
+<p>
+Rejected: <code>yes</code>, <code>no</code>, <code>on</code>, <code>off</code>, <code>1</code>, <code>0</code>. EditorConfig 0.17.2 uses only the
+<code>true</code>/<code>false</code> literals; broadening the set would conflict with the spec. Callers who want a relaxed
+parser should write their own using <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html#Bodu_Text_Configuration_ConfigurationView_GetString_System_String_">GetString(string)</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The key is absent.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The value cannot be parsed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetBoolean_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetBoolean*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetBoolean_System_String_System_Boolean_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetBoolean(System.String,System.Boolean)">
+  GetBoolean(string, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the boolean value for <code class="paramref">key</code>, returning <code class="paramref">fallback</code> on missing keys.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool GetBoolean(string key, bool fallback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>fallback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>The value to return when the key is absent.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>The parsed value or <code class="paramref">fallback</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetEntry_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEntry*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetEntry_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEntry(System.String)">
+  GetEntry(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the origin metadata for <code class="paramref">key</code>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the key is absent from the
+resolved view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationResolvedEntry? GetEntry(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a></dt>
+    <dd><p>The resolved entry, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetEnum_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetEnum__1_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum``1(System.String)">
+  GetEnum&lt;TEnum&gt;(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the value for <code class="paramref">key</code> as an enum of type <code class="typeparamref">TEnum</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TEnum GetEnum&lt;TEnum&gt;(string key) where TEnum : struct, Enum</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TEnum</span></dt>
+    <dd><p>The parsed enum value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEnum</code></dt>
+    <dd><p>The enum type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationView_GetEnum__1_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Enum names are parsed case-insensitively. Numeric values are accepted only when they correspond to a declared
+enum member - undefined integers (e.g. <code>severity = 99</code> for a three-member enum) are rejected with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> rather than producing a synthetic value.</p>
+<p>
+Combined values for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.flagsattribute">FlagsAttribute</a>-decorated enums are also rejected unless the combined value
+itself is a declared member - the underlying <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.enum.isdefined#system-enum-isdefined(system-type-system-object)">IsDefined(Type, object)</a> guard treats
+<code>Read, Write</code> as undefined when only the individual flags are declared. Callers who need combined-flag
+parsing should call <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.enum.parse#system-enum-parse(system-type-system-string-system-boolean)">Parse(Type, string, bool)</a> against
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html#Bodu_Text_Configuration_ConfigurationView_GetString_System_String_">GetString(string)</a> instead.
+</p>
+<example>
+<pre><code class="lang-csharp">ConfigurationView view = ConfigurationDocument.Parse(text).Resolve("src/Foo.cs");
+
+// Names parse case-insensitively; undefined integers are rejected.
+LogLevel level = view.GetEnum&lt;LogLevel&gt;("logging:level");
+
+// Fall back when the key is absent (a malformed value still throws).
+LogLevel effective = view.GetEnum("logging:level", LogLevel.Information);</code></pre>
+</example>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The key is absent.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The value cannot be parsed as the enum.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetEnum_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetEnum__1_System_String___0_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum``1(System.String,``0)">
+  GetEnum&lt;TEnum&gt;(string, TEnum)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the value for <code class="paramref">key</code> as an enum of type <code class="typeparamref">TEnum</code>, returning
+<code class="paramref">fallback</code> when the key is absent. Present-but-malformed values still throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TEnum GetEnum&lt;TEnum&gt;(string key, TEnum fallback) where TEnum : struct, Enum</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>fallback</code> <span class="xref">TEnum</span></dt>
+    <dd><p>The value to return when the key is absent.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TEnum</span></dt>
+    <dd><p>The parsed enum value, or <code class="paramref">fallback</code> when the key is absent.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEnum</code></dt>
+    <dd><p>The enum type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The value is present but cannot be parsed as <code class="typeparamref">TEnum</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetEnumerator_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetEnumerator" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;KeyValuePair&lt;string, string?&gt;&gt; GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetInt32_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetInt32*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetInt32_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetInt32(System.String)">
+  GetInt32(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the 32-bit integer value for <code class="paramref">key</code>, throwing on missing or malformed values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetInt32(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The parsed integer value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The key is absent.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The value cannot be parsed as an integer.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetInt32_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetInt32*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetInt32_System_String_System_Int32_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetInt32(System.String,System.Int32)">
+  GetInt32(string, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the 32-bit integer value for <code class="paramref">key</code>, returning <code class="paramref">fallback</code> on missing
+keys. Present-but-malformed values still throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetInt32(string key, int fallback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>fallback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The value to return when the key is absent.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The parsed value or <code class="paramref">fallback</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetInt64_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetInt64*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetInt64_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetInt64(System.String)">
+  GetInt64(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the 64-bit integer value for <code class="paramref">key</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long GetInt64(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The parsed value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The key is absent.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The value cannot be parsed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetInt64_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetInt64*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetInt64_System_String_System_Int64_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetInt64(System.String,System.Int64)">
+  GetInt64(string, long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the 64-bit integer value for <code class="paramref">key</code>, returning <code class="paramref">fallback</code> on missing
+keys. Present-but-malformed values still throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long GetInt64(string key, long fallback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>fallback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The value to return when the key is absent.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The parsed value or <code class="paramref">fallback</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetString_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetString_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetString(System.String)">
+  GetString(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the raw string value for <code class="paramref">key</code>, throwing if the key is missing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string GetString(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The value as authored.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The key is absent from the resolved view.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetString_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetString_System_String_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetString(System.String,System.String)">
+  GetString(string, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the string value for <code class="paramref">key</code>, returning <code class="paramref">fallback</code> when absent.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? GetString(string key, string? fallback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation.</p>
+</dd>
+    <dt><code>fallback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The value to return when the key is absent.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The resolved value or <code class="paramref">fallback</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetValue_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetValue__1_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetValue``1(System.String)">
+  GetValue&lt;T&gt;(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the value for <code class="paramref">key</code> parsed as <code class="typeparamref">T</code> using
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a>. Mirrors <code>IniSection.GetValue&lt;T&gt;(key)</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T GetValue&lt;T&gt;(string key) where T : ISpanParsable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The parsed value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The target type. Must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationView_GetValue__1_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">ConfigurationView view = ConfigurationDocument.Parse(text).Resolve("src/Foo.cs");
+
+// Parse any ISpanParsable&lt;T&gt; directly from the resolved view.
+int     port    = view.GetValue&lt;int&gt;("server:port");
+double  ratio   = view.GetValue&lt;double&gt;("cache:fill:ratio");
+Guid    tenant  = view.GetValue&lt;Guid&gt;("tenant:id");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The key is absent from the resolved view.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The value cannot be parsed as <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_GetValue_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_GetValue__1_System_String___0_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetValue``1(System.String,``0)">
+  GetValue&lt;T&gt;(string, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the value for <code class="paramref">key</code> parsed as <code class="typeparamref">T</code>, returning
+<code class="paramref">fallback</code> when the key is absent. Present-but-malformed values still throw.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T GetValue&lt;T&gt;(string key, T fallback) where T : ISpanParsable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation.</p>
+</dd>
+    <dt><code>fallback</code> <span class="xref">T</span></dt>
+    <dd><p>The value to return when the key is absent.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The parsed value, or <code class="paramref">fallback</code> when the key is absent.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The target type. Must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The value is present but cannot be parsed as <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_TryGetBoolean_" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetBoolean*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_TryGetBoolean_System_String_System_Boolean__" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetBoolean(System.String,System.Boolean@)">
+  TryGetBoolean(string, out bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to parse the value for <code class="paramref">key</code> as a boolean.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetBoolean(string key, out bool value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When this method returns, contains the parsed value; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the value was present and parseable.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_TryGetEnum_" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetEnum*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_TryGetEnum__1_System_String___0__" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetEnum``1(System.String,``0@)">
+  TryGetEnum&lt;TEnum&gt;(string, out TEnum)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to parse the value for <code class="paramref">key</code> as an enum of type <code class="typeparamref">TEnum</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetEnum&lt;TEnum&gt;(string key, out TEnum value) where TEnum : struct, Enum</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">TEnum</span></dt>
+    <dd><p>When this method returns, contains the parsed value; otherwise, the default.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the value was present and parsed to a declared member; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEnum</code></dt>
+    <dd><p>The enum type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_TryGetInt32_" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetInt32*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_TryGetInt32_System_String_System_Int32__" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetInt32(System.String,System.Int32@)">
+  TryGetInt32(string, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to parse the value for <code class="paramref">key</code> as a 32-bit integer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetInt32(string key, out int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the parsed value; otherwise, zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the value was present and parseable; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_TryGetInt64_" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetInt64*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_TryGetInt64_System_String_System_Int64__" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetInt64(System.String,System.Int64@)">
+  TryGetInt64(string, out long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to parse the value for <code class="paramref">key</code> as a 64-bit integer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetInt64(string key, out long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>When this method returns, contains the parsed value; otherwise, zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the value was present and parseable; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_TryGetString_" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_TryGetString_System_String_System_String__" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetString(System.String,System.String@)">
+  TryGetString(string, out string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to get the string value for <code class="paramref">key</code> without throwing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetString(string key, out string? value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns, contains the value if found; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the key was present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_TryGetValue_" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_TryGetValue__1_System_String___0__" data-uid="Bodu.Text.Configuration.ConfigurationView.TryGetValue``1(System.String,``0@)">
+  TryGetValue&lt;T&gt;(string, out T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.Getters.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to get the value for <code class="paramref">key</code> parsed as <code class="typeparamref">T</code>, returning
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> on missing or malformed values. Never throws on a parse failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetValue&lt;T&gt;(string key, out T value) where T : ISpanParsable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the parsed value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the value was present and parseable; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The target type. Must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="eii">Explicit Interface Implementations
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__TryGetValue_" data-uid="Bodu.Text.Configuration.ConfigurationView.System#Collections#Generic#IReadOnlyDictionary{System#String,System#String}#TryGetValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__TryGetValue_System_String_System_String__" data-uid="Bodu.Text.Configuration.ConfigurationView.System#Collections#Generic#IReadOnlyDictionary{System#String,System#String}#TryGetValue(System.String,System.String@)">
+  IReadOnlyDictionary&lt;string, string&gt;.TryGetValue(string, out string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to get the value for <code class="paramref">key</code> without throwing, taking the key in any accepted separator
+notation. Satisfies <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2.trygetvalue">TryGetValue(TKey, out TValue)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool IReadOnlyDictionary&lt;string, string&gt;.TryGetValue(string key, out string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key, in any accepted separator notation.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the resolved value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the key is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__Values_" data-uid="Bodu.Text.Configuration.ConfigurationView.System#Collections#Generic#IReadOnlyDictionary{System#String,System#String}#Values*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__Values" data-uid="Bodu.Text.Configuration.ConfigurationView.System#Collections#Generic#IReadOnlyDictionary{System#String,System#String}#Values">
+  IReadOnlyDictionary&lt;string, string&gt;.Values
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the values present in the resolved view. Satisfies <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2.values">Values</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;string?&gt; IReadOnlyDictionary&lt;string, string&gt;.Values { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>An enumerable of the resolved values.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationView_System_Collections_IEnumerable_GetEnumerator_" data-uid="Bodu.Text.Configuration.ConfigurationView.System#Collections#IEnumerable#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationView_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Text.Configuration.ConfigurationView.System#Collections#IEnumerable#GetEnumerator">
+  IEnumerable.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationView.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through a collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator IEnumerable.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a> object that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

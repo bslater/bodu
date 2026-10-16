@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Deque&lt;T&gt; Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Deque&lt;T&gt; Class
+ | BODU ">
+      
+      <meta name="description" content="Represents a double-ended queue (deque) backed by a contiguous circular array. Elements may be added or removed from either end in amortized O(1) time. The  property selects between growable and fixed-capacity behavior at runtime.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Collections.Generic.Deque`1">
+
+
+
+
+  <h1 id="Bodu_Collections_Generic_Deque_1" data-uid="Bodu.Collections.Generic.Deque`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Deque&lt;T&gt; Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Collections_Generic_Deque_1_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs">Deque{T}.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a double-ended queue (deque) backed by a contiguous circular array. Elements may be added or removed from
+either end in amortized O(1) time. The <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> property selects between growable and fixed-capacity
+behavior at runtime.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Deque&lt;T&gt; : RingBackedCollection&lt;T&gt;, ICollection, IReadOnlyCollection&lt;T&gt;, IEnumerable&lt;T&gt;, IEnumerable</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>Specifies the type of elements stored in the deque.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection</a>&lt;T&gt;</div>
+      <div><span class="xref">Deque&lt;T&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;T&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;T&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Clear">RingBackedCollection&lt;T&gt;.Clear()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Contains__0_">RingBackedCollection&lt;T&gt;.Contains(T)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_CopyTo__0___System_Int32_">RingBackedCollection&lt;T&gt;.CopyTo(T[], int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_ToArray">RingBackedCollection&lt;T&gt;.ToArray()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_TrimExcess">RingBackedCollection&lt;T&gt;.TrimExcess()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_GetEnumerator">RingBackedCollection&lt;T&gt;.GetEnumerator()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Capacity">RingBackedCollection&lt;T&gt;.Capacity</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_IsEmpty">RingBackedCollection&lt;T&gt;.IsEmpty</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_IsFull">RingBackedCollection&lt;T&gt;.IsFull</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Item_System_Int32_">RingBackedCollection&lt;T&gt;.this[int]</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Count">RingBackedCollection&lt;T&gt;.Count</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Collections_Generic_Deque_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Growable double-ended queue (the default).
+var deque = new Deque&lt;int&gt;();
+deque.AddLast(2);
+deque.AddFirst(1);
+deque.AddLast(3);                  // contents: 1, 2, 3
+int head = deque.RemoveFirst();    // 1
+
+// Fixed-capacity queue: rejects adds when full.
+var bounded = new Deque&lt;int&gt;(capacity: 8, allowGrow: false);
+for (int i = 0; i &lt; 8; i++) bounded.AddLast(i);
+bool added = bounded.TryAddLast(8); // false - bounded is full</code></pre>
+
+
+  <h2 id="Bodu_Collections_Generic_Deque_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> stores its elements in a single backing array using head and tail indices that wrap around
+modulo the capacity. This gives O(1) amortized cost for adds and removes at either end, plus O(1) random read access
+through the indexer in head-to-tail logical order.
+</p>
+<p>
+The growth policy is controlled by the mutable <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> property:
+</p>
+<ul><li>
+<code>AllowGrow = true</code> (the default) - the backing array doubles automatically whenever <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddFirst__0_">AddFirst(T)</a>
+or <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddLast__0_">AddLast(T)</a> would otherwise overflow, capped at <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.maxlength">MaxLength</a>.
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddFirst__0_">TryAddFirst(T)</a> and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddLast__0_">TryAddLast(T)</a> always return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.
+</li><li>
+<code>AllowGrow = false</code> - the deque is fixed at its current capacity and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> selects the
+behavior of adds on a full deque. Under <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a> (the default),
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddFirst__0_">AddFirst(T)</a> and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddLast__0_">AddLast(T)</a> throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> when full
+while <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddFirst__0_">TryAddFirst(T)</a> and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddLast__0_">TryAddLast(T)</a> return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> without
+modifying state. Under <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a>, adds silently discard the element at the
+opposite end to make room - the Python <code>deque(maxlen=N)</code> semantics, analogous to
+<a class="xref" href="Bodu.Collections.Generic.CircularBuffer-1.html#Bodu_Collections_Generic_CircularBuffer_1_AllowOverwrite">AllowOverwrite</a> - raising <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_ItemEvicting">ItemEvicting</a> before and
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_ItemEvicted">ItemEvicted</a> after each eviction.
+</li></ul>
+<p>
+Key operations:
+</p>
+<ul><li>
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddFirst__0_">AddFirst(T)</a> / <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddLast__0_">AddLast(T)</a> - push at either end (with <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddFirst__0_">TryAddFirst(T)</a> /
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddLast__0_">TryAddLast(T)</a> non-throwing variants).
+</li><li>
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_RemoveFirst">RemoveFirst()</a> / <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_RemoveLast">RemoveLast()</a> - pop and return the head or tail element.
+</li><li>
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_PeekFirst">PeekFirst()</a> / <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_PeekLast">PeekLast()</a> - read the head or tail element without removing it.
+</li><li>
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_EnsureCapacity_System_Int32_">EnsureCapacity(int)</a> - pre-grow the backing array even when <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.
+</li><li>
+Inherited <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_TrimExcess">TrimExcess()</a> - shrink the backing array to <code>Count</code> after a burst
+of removes.
+</li></ul>
+<p>
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> can be toggled at runtime to switch the deque between modes. Switching from
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> does not shrink the existing capacity - call
+<a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_TrimExcess">TrimExcess()</a> afterwards if a smaller footprint is wanted.
+</p>
+<p>
+For a single-ended FIFO buffer with eviction-on-full semantics, see <a class="xref" href="Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a>. For
+thread-safe concurrent FIFO access, see <code>ConcurrentCircularBuffer&lt;T&gt;</code> in the Bodu.Collections.Concurrent
+package. <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> itself is not thread-safe; concurrent reads and writes require external
+synchronization.
+</p>
+<p>
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> accepts <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> values for reference types and allows duplicate elements.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1__ctor_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1__ctor" data-uid="Bodu.Collections.Generic.Deque`1.#ctor">
+  Deque()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> class with the default initial capacity and auto-grow
+enabled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Deque()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1__ctor_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1__ctor_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Deque`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+  Deque(IEnumerable&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> class containing elements copied from
+<code class="paramref">collection</code>, sized to fit them, with auto-grow enabled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Deque(IEnumerable&lt;T&gt; collection)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;T&gt;</dt>
+    <dd><p>The collection from which elements are copied. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">collection</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1__ctor_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1__ctor_System_Collections_Generic_IEnumerable__0__System_Int32_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Int32)">
+  Deque(IEnumerable&lt;T&gt;, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> class containing elements copied from
+<code class="paramref">collection</code>, with the specified capacity. Auto-grow is enabled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Deque(IEnumerable&lt;T&gt; collection, int capacity)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;T&gt;</dt>
+    <dd><p>The collection from which elements are copied. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>capacity</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The requested initial backing-array capacity. Must be greater than zero.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1__ctor_System_Collections_Generic_IEnumerable__0__System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When <code class="paramref">collection</code> holds more elements than <code class="paramref">capacity</code>, the deque is created
+with a capacity equal to the number of elements instead, so every element is kept; otherwise its capacity is
+<code class="paramref">capacity</code>. For example, <code>new Deque&lt;int&gt;(Enumerable.Range(0, 10), 4).Capacity</code> is
+10.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">collection</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">capacity</code> is less than 1 or greater than <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.maxlength">MaxLength</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1__ctor_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1__ctor_System_Collections_Generic_IEnumerable__0__System_Int32_System_Boolean_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Int32,System.Boolean)">
+  Deque(IEnumerable&lt;T&gt;, int, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> class containing elements copied from
+<code class="paramref">collection</code>, with the specified capacity and growth policy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Deque(IEnumerable&lt;T&gt; collection, int capacity, bool allowGrow)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;T&gt;</dt>
+    <dd><p>The collection from which elements are copied. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>capacity</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The initial backing-array capacity. Must be greater than zero, and at least <code>collection.Count</code> when
+<code class="paramref">allowGrow</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>allowGrow</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to allow the deque to expand its backing array when full; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for
+fixed-capacity behavior.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1__ctor_System_Collections_Generic_IEnumerable__0__System_Int32_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When <code class="paramref">allowGrow</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> and <code class="paramref">collection</code> holds more
+elements than <code class="paramref">capacity</code>, the deque is created with a capacity equal to the number of elements
+instead, so every element is kept; otherwise its capacity is <code class="paramref">capacity</code>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">collection</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">capacity</code> is less than 1 or greater than <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.maxlength">MaxLength</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><code class="paramref">allowGrow</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> and <code class="paramref">collection</code> contains more
+elements than <code class="paramref">capacity</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1__ctor_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1__ctor_System_Int32_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor(System.Int32)">
+  Deque(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> class with the specified initial capacity and
+auto-grow enabled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Deque(int capacity)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>capacity</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The initial capacity (or capacity hint when <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>). Must be
+greater than zero.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">capacity</code> is less than 1 or greater than <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.maxlength">MaxLength</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1__ctor_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1__ctor_System_Int32_System_Boolean_" data-uid="Bodu.Collections.Generic.Deque`1.#ctor(System.Int32,System.Boolean)">
+  Deque(int, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> class with the specified capacity and growth policy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Deque(int capacity, bool allowGrow)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>capacity</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The initial backing-array capacity. Must be greater than zero.</p>
+</dd>
+    <dt><code>allowGrow</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to allow the deque to expand its backing array when full; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to
+throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> from <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddFirst__0_">AddFirst(T)</a> and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddLast__0_">AddLast(T)</a>
+(and return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> from their <code>Try*</code> variants) when full.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">capacity</code> is less than 1 or greater than <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.maxlength">MaxLength</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_AllowGrow_" data-uid="Bodu.Collections.Generic.Deque`1.AllowGrow*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_AllowGrow" data-uid="Bodu.Collections.Generic.Deque`1.AllowGrow">
+  AllowGrow
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the deque expands its backing array when an add operation would overflow
+the current capacity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowGrow { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to grow on demand; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to apply <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> once
+full - by default rejecting the add (throw from <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddFirst__0_">AddFirst(T)</a> and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddLast__0_">AddLast(T)</a>,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> from their <code>Try*</code> variants).</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_AllowGrow_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This property may be toggled at runtime to switch the deque between fixed and growable modes. Switching from
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> does not shrink the existing backing array; call
+<a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_TrimExcess">TrimExcess()</a> if a smaller footprint is desired.
+</p>
+<p>
+While this property is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, growth always wins and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is never
+consulted - no element is evicted regardless of the configured policy.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_OverflowPolicy_" data-uid="Bodu.Collections.Generic.Deque`1.OverflowPolicy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_OverflowPolicy" data-uid="Bodu.Collections.Generic.Deque`1.OverflowPolicy">
+  OverflowPolicy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the policy applied when an add operation targets a full, fixed-capacity deque.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DequeOverflowPolicy OverflowPolicy { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a></dt>
+    <dd><p>One of the <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a> values. The default is <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a>,
+which preserves the historical throw / return-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> behavior.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_OverflowPolicy_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The policy is consulted only when <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> and the deque is full.
+When <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> the backing array grows instead - growth always wins,
+rendering the policy irrelevant on a growable deque.
+</p>
+<p>
+Under <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a>, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddFirst__0_">AddFirst(T)</a> discards the tail element and
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddLast__0_">AddLast(T)</a> discards the head element before storing the new item, keeping
+<a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Count">Count</a> at <a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Capacity">Capacity</a> - the Python
+<code>deque(maxlen=N)</code> semantics. Each eviction raises <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_ItemEvicting">ItemEvicting</a> beforehand and
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_ItemEvicted">ItemEvicted</a> afterwards.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The assigned value is not a defined <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a> member.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_AddFirst_" data-uid="Bodu.Collections.Generic.Deque`1.AddFirst*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_AddFirst__0_" data-uid="Bodu.Collections.Generic.Deque`1.AddFirst(`0)">
+  AddFirst(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds <code class="paramref">item</code> to the head of the deque.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddFirst(T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>The element to add. May be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for reference types.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_AddFirst__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>On a full, fixed-capacity deque with <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> set to
+<a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a>, the tail element is silently discarded (raising
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_ItemEvicting">ItemEvicting</a> and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_ItemEvicted">ItemEvicted</a>) and the new item is stored at the head, leaving
+<a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Count">Count</a> unchanged.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is
+<a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a>, and the deque is already at capacity.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_AddLast_" data-uid="Bodu.Collections.Generic.Deque`1.AddLast*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_AddLast__0_" data-uid="Bodu.Collections.Generic.Deque`1.AddLast(`0)">
+  AddLast(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds <code class="paramref">item</code> to the tail of the deque.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddLast(T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>The element to add. May be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for reference types.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_AddLast__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>On a full, fixed-capacity deque with <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> set to
+<a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a>, the head element is silently discarded (raising
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_ItemEvicting">ItemEvicting</a> and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_ItemEvicted">ItemEvicted</a>) and the new item is stored at the tail, leaving
+<a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html#Bodu_Collections_Generic_RingBackedCollection_1_Count">Count</a> unchanged.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is
+<a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a>, and the deque is already at capacity.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_EnsureCapacity_" data-uid="Bodu.Collections.Generic.Deque`1.EnsureCapacity*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_EnsureCapacity_System_Int32_" data-uid="Bodu.Collections.Generic.Deque`1.EnsureCapacity(System.Int32)">
+  EnsureCapacity(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Ensures that the deque can hold at least <code class="paramref">capacity</code> elements without further growth, expanding
+the backing array if necessary. Available regardless of <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int EnsureCapacity(int capacity)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>capacity</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The minimum capacity required. Must be non-negative.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The new capacity of the backing array (which may exceed <code class="paramref">capacity</code>).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_EnsureCapacity_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method ignores <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> - it is the explicit pre-grow hatch even on fixed-capacity deques.
+Use it to reserve space ahead of a known burst of inserts.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">capacity</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><code class="paramref">capacity</code> exceeds <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.maxlength">MaxLength</a> and therefore cannot be satisfied.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_PeekFirst_" data-uid="Bodu.Collections.Generic.Deque`1.PeekFirst*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_PeekFirst" data-uid="Bodu.Collections.Generic.Deque`1.PeekFirst">
+  PeekFirst()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the head element without removing it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T PeekFirst()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The current head element.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The deque is empty.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_PeekLast_" data-uid="Bodu.Collections.Generic.Deque`1.PeekLast*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_PeekLast" data-uid="Bodu.Collections.Generic.Deque`1.PeekLast">
+  PeekLast()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the tail element without removing it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T PeekLast()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The current tail element.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The deque is empty.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_RemoveFirst_" data-uid="Bodu.Collections.Generic.Deque`1.RemoveFirst*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_RemoveFirst" data-uid="Bodu.Collections.Generic.Deque`1.RemoveFirst">
+  RemoveFirst()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes and returns the head element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T RemoveFirst()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The element that was at the head.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The deque is empty.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_RemoveLast_" data-uid="Bodu.Collections.Generic.Deque`1.RemoveLast*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_RemoveLast" data-uid="Bodu.Collections.Generic.Deque`1.RemoveLast">
+  RemoveLast()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes and returns the tail element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T RemoveLast()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The element that was at the tail.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The deque is empty.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_TryAddFirst_" data-uid="Bodu.Collections.Generic.Deque`1.TryAddFirst*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_TryAddFirst__0_" data-uid="Bodu.Collections.Generic.Deque`1.TryAddFirst(`0)">
+  TryAddFirst(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to add <code class="paramref">item</code> to the head of the deque without throwing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryAddFirst(T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>The element to add. May be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for reference types.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the item was added (including after growing or evicting the tail element);
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if the deque was fixed-capacity, full, and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is
+<a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_TryAddFirst__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> after auto-growing when <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and
+after evicting the tail element when <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is
+<a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a> on a full, fixed-capacity deque. Returns
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> without modifying state only when the deque is full, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a>.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_TryAddLast_" data-uid="Bodu.Collections.Generic.Deque`1.TryAddLast*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_TryAddLast__0_" data-uid="Bodu.Collections.Generic.Deque`1.TryAddLast(`0)">
+  TryAddLast(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to add <code class="paramref">item</code> to the tail of the deque without throwing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryAddLast(T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>The element to add. May be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for reference types.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the item was added (including after growing or evicting the head element);
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if the deque was fixed-capacity, full, and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is
+<a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_TryAddLast__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> after auto-growing when <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and
+after evicting the head element when <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is
+<a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a> on a full, fixed-capacity deque. Returns
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> without modifying state only when the deque is full, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a>.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_TryPeekFirst_" data-uid="Bodu.Collections.Generic.Deque`1.TryPeekFirst*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_TryPeekFirst__0__" data-uid="Bodu.Collections.Generic.Deque`1.TryPeekFirst(`0@)">
+  TryPeekFirst(out T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to read the head element without throwing when empty.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryPeekFirst(out T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>When this method returns, contains the head element if available.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the head was read; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_TryPeekLast_" data-uid="Bodu.Collections.Generic.Deque`1.TryPeekLast*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_TryPeekLast__0__" data-uid="Bodu.Collections.Generic.Deque`1.TryPeekLast(`0@)">
+  TryPeekLast(out T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to read the tail element without throwing when empty.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryPeekLast(out T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>When this method returns, contains the tail element if available.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the tail was read; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_TryRemoveFirst_" data-uid="Bodu.Collections.Generic.Deque`1.TryRemoveFirst*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_TryRemoveFirst__0__" data-uid="Bodu.Collections.Generic.Deque`1.TryRemoveFirst(`0@)">
+  TryRemoveFirst(out T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to remove and return the head element without throwing when empty.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryRemoveFirst(out T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>When this method returns, contains the removed element if successful.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if an element was removed; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Deque_1_TryRemoveLast_" data-uid="Bodu.Collections.Generic.Deque`1.TryRemoveLast*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_TryRemoveLast__0__" data-uid="Bodu.Collections.Generic.Deque`1.TryRemoveLast(`0@)">
+  TryRemoveLast(out T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to remove and return the tail element without throwing when empty.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryRemoveLast(out T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>When this method returns, contains the removed element if successful.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if an element was removed; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_ItemEvicted" data-uid="Bodu.Collections.Generic.Deque`1.ItemEvicted">
+  ItemEvicted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Occurs immediately <b>after</b> an item has been evicted from the opposite end of the <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> to
+make room for a new element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event Action&lt;T&gt;? ItemEvicted</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_ItemEvicted_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This event is raised only when the deque is full, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, and
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a>.
+</p>
+<p>
+<b>Important:</b> Exceptions thrown by event handlers are not caught and will propagate to the caller of
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddFirst__0_">AddFirst(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddLast__0_">AddLast(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddFirst__0_">TryAddFirst(T)</a>, or
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddLast__0_">TryAddLast(T)</a>. Consumers should ensure event handlers are exception-safe.
+</p>
+</div>
+
+
+
+  </section>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Deque_1_ItemEvicting" data-uid="Bodu.Collections.Generic.Deque`1.ItemEvicting">
+  ItemEvicting
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Deque%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Occurs immediately <b>before</b> an item is evicted from the opposite end of the <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> to make
+room for a new element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event Action&lt;T&gt;? ItemEvicting</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Deque_1_ItemEvicting_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This event is raised only when the deque is full, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AllowGrow">AllowGrow</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, and
+<a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_OverflowPolicy">OverflowPolicy</a> is <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a>.
+</p>
+<p>
+<b>Important:</b> Any exception thrown from a handler vetoes the eviction in place - the opposite-end element is
+not removed, the new element is not stored, the count, head, and tail indices are unchanged, and the exception
+propagates to the caller of <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddFirst__0_">AddFirst(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_AddLast__0_">AddLast(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddFirst__0_">TryAddFirst(T)</a>,
+or <a class="xref" href="Bodu.Collections.Generic.Deque-1.html#Bodu_Collections_Generic_Deque_1_TryAddLast__0_">TryAddLast(T)</a>. Event handlers should therefore avoid throwing unless the veto is intentional.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

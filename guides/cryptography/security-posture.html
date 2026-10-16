@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/cryptography/security-posture.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/security-posture.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -171,7 +171,7 @@
 </table>
 <p>What is <strong>not</strong> covered: arrays you allocate and hand to the library (<code>byte[] key = …</code>) are copied, not adopted; clear your own copies with <code>CryptographicOperations.ZeroMemory</code>. Managed memory can still be copied by the GC before <code>Dispose</code> runs; only <code>SecretBytes</code> pins.</p>
 <h2 id="simd-determinism-and-the-disablesimd-switch">SIMD determinism and the <code>DisableSimd</code> switch</h2>
-<p>BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Serpent-128, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; BLAKE2, BLAKE3, ChaCha20, Salsa20, Serpent-128, Argon2, and scrypt also carry AVX2, SSSE3 or SSE2, and ARM64 AdvSimd kernels; GHASH and POLYVAL in GCM / GCM-SIV have PCLMULQDQ and PMULL paths. All of them produce <strong>bit-identical output</strong> to their scalar reference - the switch exists for reproducibility and audit, not safety. The feature switch <code>Bodu.Security.Cryptography.DisableSimd</code> forces the scalar path for the whole process:</p>
+<p>BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Serpent-128, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; BLAKE2, BLAKE3, ChaCha20, Salsa20, Serpent-128, CubeHash, Argon2, and scrypt also carry AVX2, SSSE3 or SSE2, and ARM64 AdvSimd kernels; ML-KEM and ML-DSA carry AVX2 kernels for their transforms, products, and four-way SHAKE sampling; GHASH and POLYVAL in GCM / GCM-SIV have PCLMULQDQ and PMULL paths. All of them produce <strong>bit-identical output</strong> to their scalar reference - the switch exists for reproducibility and audit, not safety. The feature switch <code>Bodu.Security.Cryptography.DisableSimd</code> forces the scalar path for the whole process:</p>
 <pre><code class="lang-xml">&lt;ItemGroup&gt;
   &lt;RuntimeHostConfigurationOption Include=&quot;Bodu.Security.Cryptography.DisableSimd&quot; Value=&quot;true&quot; Trim=&quot;false&quot; /&gt;
 &lt;/ItemGroup&gt;
@@ -228,11 +228,12 @@ byte[] digest = blake.ComputeHash(&quot;abc&quot;u8.ToArray());     // BA80A53F9
 <tr>
 <td>Text that is not hex</td>
 <td><code>FormatException</code></td>
-<td><code>HashValue.ParseHex(&quot;zz&quot;)</code>; PHC-string parsing in <code>Argon2.Verify</code> / <code>Scrypt.Verify</code></td>
+<td><code>HashValue.ParseHex(&quot;zz&quot;)</code>; a malformed PHC string in <code>Argon2.Verify</code> / <code>Scrypt.Verify</code> (a well-formed string whose costs or tag length are out of range throws <code>ArgumentOutOfRangeException</code>, and an Argon2 version other than 0x10 or 0x13 <code>ArgumentException</code>)</td>
 </tr>
 </tbody>
 </table>
 <p>Two rules follow. First, <strong>a failed authentication is <code>CryptographicException</code></strong> everywhere - AEAD tags, Poly1305, signature verification does <em>not</em> throw but returns <code>false</code> (<code>Ed25519.VerifyData</code>, <code>MLDsa.VerifyData</code>, <code>Hotp.VerifyCode</code> return <code>false</code> for a wrong or wrongly sized input). Second, the <em>same</em> mistake surfaces differently by layer: a bad key length is <code>ArgumentException</code> on an engine and <code>CryptographicException</code> on its wrapper, because the wrapper follows the BCL <code>SymmetricAlgorithm</code> convention. Catch <code>CryptographicException</code> on the wrapper path and <code>ArgumentException</code> when you compose engines yourself.</p>
+<p>An exception from a stream encryption or decryption (<code>Encrypt</code> / <code>Decrypt</code> / <code>EncryptAsync</code> / <code>DecryptAsync</code> over streams, and <code>Transform</code> / <code>TransformAsync</code> over an <code>ICryptoTransform</code>), whether a cancellation or a failing source, leaves the target holding only the output already written. The transform is never finalized, so no padded final block is appended that could make a partial ciphertext pass for a complete one; discard any target that saw an exception. See <a href="streaming-and-async.html">Streams and async</a>.</p>
 <h2 id="single-use-rules">Single-use rules</h2>
 <table>
 <thead>
@@ -306,7 +307,7 @@ byte[] digest = blake.ComputeHash(&quot;abc&quot;u8.ToArray());     // BA80A53F9
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

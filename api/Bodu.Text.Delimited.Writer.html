@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Text.Delimited.Writer.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Text.Delimited.Writer.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Delimited">Bodu.Text.Delimited</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Delimited">Bodu.Text.Delimited</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -106,7 +106,7 @@
 <h2 id="key-types">Key types</h2>
 <ul>
 <li><a class="xref" href="Bodu.Text.Delimited.Writer.Utf8DelimitedWriter.html">Utf8DelimitedWriter</a> - the <code>ref struct</code> writer: <code>WriteStartArray</code> / <code>WriteEndArray</code> around the record set, <code>WriteStartObject</code> / <code>WritePropertyName</code> / <code>WriteString</code> / <code>WriteEndObject</code> for header-keyed records (or a nested array of <code>WriteString</code> for positional rows), plus <code>Flush</code>, <code>Dispose</code>, <code>BytesCommitted</code>, and <code>BytesPending</code>.</li>
-<li><a class="xref" href="Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html">DelimitedWriterOptions</a> - <code>Delimiter</code>, <code>Quote</code>, and <code>NoHeader</code>.</li>
+<li><a class="xref" href="Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html">DelimitedWriterOptions</a> - <code>Delimiter</code>, <code>Quote</code>, <code>CommentChar</code>, and <code>NoHeader</code>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using System.Buffers;
@@ -123,13 +123,14 @@ writer.WritePropertyName(&quot;qty&quot;);
 writer.WriteString(&quot;10&quot;);
 writer.WriteEndObject();
 writer.WriteEndArray();
-writer.Flush();   // &quot;symbol\tqty\nAAPL\t10\n&quot;
+writer.Flush();   // &quot;symbol\tqty\r\nAAPL\t10\r\n&quot;
 </code></pre>
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Header from the first record.</strong> The property names of the first object record become the header row; subsequent records contribute value rows only.</li>
-<li><strong>Minimal quoting.</strong> A field is quoted only when it contains the delimiter, the quote character, or a line break, with internal quotes doubled, so output round-trips through the reader.</li>
-<li><strong>Flush to commit.</strong> Bytes are staged until <code>Flush</code> (or <code>Dispose</code>); check <code>BytesPending</code> to see what is still buffered.</li>
+<li><strong>Minimal quoting.</strong> A field is quoted, with internal quotes doubled, only when the reader would otherwise read it back differently: when it contains the delimiter, the quote character, or a line break; when it begins or ends with a space or a tab; when it is a record's first field and begins with <code>CommentChar</code>; when it is the first field the writer writes and begins with U+FEFF, which the reader would skip as a byte order mark; or when it is the only field of its record and is empty. Output therefore round-trips through the reader.</li>
+<li><strong>CRLF line endings.</strong> Every row, the header row included, ends with a carriage return and a line feed, as RFC 4180 requires, whatever the platform.</li>
+<li><strong>Flush to commit in stream mode.</strong> Over a <code>Stream</code>, bytes are staged until <code>Flush</code> (or <code>Dispose</code>), and <code>BytesPending</code> shows what is still buffered; over an <code>IBufferWriter&lt;byte&gt;</code>, as in the example, they go straight to the buffer and <code>Flush</code> does nothing.</li>
 <li><strong>See also:</strong> the <a href="../docs/formats/index.html">line-formats introduction</a> and the <a href="../guides/formats/delimited.html">delimited guide</a>.</li>
 </ul>
 </div>
@@ -140,8 +141,8 @@ Structs
 </h3>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html">DelimitedWriterOptions</a></dt>
-      <dd><p>Provides configuration for a <a class="xref" href="Bodu.Text.Delimited.Writer.Utf8DelimitedWriter.html">Utf8DelimitedWriter</a>, controlling the delimiter, quote character, and
-whether a header row is emitted for object records.</p>
+      <dd><p>Provides configuration for a <a class="xref" href="Bodu.Text.Delimited.Writer.Utf8DelimitedWriter.html">Utf8DelimitedWriter</a>, controlling the delimiter, quote character, the
+comment character the writer guards, and whether a header row is emitted for object records.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -168,7 +169,7 @@ whether a header row is emitted for object records.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.Yaml.Writer Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.Yaml.Writer Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Text.Yaml.Writer.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text.Yaml.Writer">
+
+
+  <h1 id="Bodu_Text_Yaml_Writer" data-uid="Bodu.Text.Yaml.Writer" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Text.Yaml.Writer Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-yaml.svg" alt="Bodu.Text.Yaml.Writer"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Yaml.Writer</strong> is the emitting counterpart of <a class="xref" href="Bodu.Text.Yaml.Reader.html">Bodu.Text.Yaml.Reader</a> in <a class="xref" href="Bodu.Text.Yaml.html">Bodu.Text.Yaml</a>: a forward-only writer that produces a block-style YAML document into an <code>IBufferWriter&lt;byte&gt;</code>, in the manner of <code>Utf8JsonWriter</code>. The <a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a> and both DOMs (<code>WriteTo</code>) emit through it, and a custom <a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a> writes its value through it.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a> - the <code>ref struct</code> writer: <code>WriteStartMapping</code> / <code>WriteEndMapping</code>, <code>WriteStartSequence</code> / <code>WriteEndSequence</code>, <code>WritePropertyName</code>, and the scalar writers <code>WriteString</code>, <code>WriteInteger</code>, <code>WriteDouble</code>, <code>WriteBoolean</code>, <code>WriteNull</code>.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Writer.YamlWriterOptions.html">YamlWriterOptions</a> - <code>IndentSize</code>, <code>MaxDepth</code>, and <code>NewLine</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Buffers;
+using System.Text;
+using Bodu.Text.Yaml.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8YamlWriter(buffer);
+
+writer.WriteStartMapping();
+writer.WritePropertyName(&quot;host&quot;);
+writer.WriteString(&quot;localhost&quot;);
+writer.WritePropertyName(&quot;port&quot;);
+writer.WriteInteger(8080);
+writer.WriteEndMapping();
+
+string yaml = Encoding.UTF8.GetString(buffer.WrittenSpan);   // &quot;host: localhost\nport: 8080\n&quot;
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Safe scalar presentation.</strong> Each string is written plain when unambiguous and double-quoted otherwise, so a value such as <code>&quot;yes&quot;</code> or <code>&quot;8080&quot;</code> reads back as a string; empty collections are emitted as <code>{}</code> / <code>[]</code> so they round-trip as empty rather than null.</li>
+<li><strong>Block style only.</strong> The writer emits block mappings and sequences with configurable indentation; anchors, aliases, tags, and comments are not written.</li>
+<li><strong>Shared state.</strong> The writer is a <code>ref struct</code> whose state lives behind one shared reference, so a copy passed by value continues the same document.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/yaml/index.html">Bodu.Text.Yaml introduction</a> and the <a href="../guides/serialization/yaml/using.html">Using YAML</a> guide (Pattern 9 - Drive the low-level reader and writer).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a></dt>
+      <dd><p>Provides a forward-only writer that emits a YAML document in block style to a UTF-8 buffer, in the manner of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.utf8jsonwriter">Utf8JsonWriter</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Yaml.Writer.YamlWriterOptions.html">YamlWriterOptions</a></dt>
+      <dd><p>Provides options that configure how <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a> emits YAML.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/collections/concepts.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/collections/concepts.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -240,7 +240,7 @@
 <h2 id="multi-value-and-multi-set-semantics">Multi-value and multi-set semantics</h2>
 <p>A <strong>multi-</strong> prefix in this library means <em>duplicate-aware</em>:</p>
 <ul>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a> - sometimes called a multimap. A single key maps to zero or more values; values for the same key are retained in insertion order. <code>Count</code> is the total number of key-value entries; <code>KeyCount</code> is the number of distinct keys. The indexer returns a live read-only view that reflects later mutations to the same key, and an empty list (not <code>null</code>) when the key is absent.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a> - sometimes called a multimap. A single key maps to zero or more values; values for the same key are retained in insertion order. <code>Count</code> is the total number of key-value entries; <code>KeyCount</code> is the number of distinct keys. For a present key the indexer returns a live read-only view that reflects later mutations to that key until the key is removed; for an absent key it returns an empty list (not <code>null</code>) that never reflects later adds.</li>
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a> - a set that tracks the <em>multiplicity</em> of each element. <code>Count</code> includes multiplicity (<code>{a, a, b}</code> has count 3); <code>DistinctCount</code> does not. Set-theoretic operations (<code>Union</code>, <code>Intersect</code>, <code>Except</code>, <code>Sum</code>) return new multisets and follow multiset algebra - <code>Union</code> is element-wise <code>max(a, b)</code>, <code>Intersect</code> is <code>min(a, b)</code>, <code>Except</code> is <code>max(0, a − b)</code>, and <code>Sum</code> is <code>a + b</code>.</li>
 </ul>
 <p>Both types are not thread-safe and require external synchronisation under concurrent mutation.</p>
@@ -272,7 +272,7 @@
 <h2 id="index-aware-collections">Index-aware collections</h2>
 <p>An <strong>index-aware</strong> collection exposes positional access alongside its primary semantic. Two types in <code>Bodu.Collections.Generic</code> carry the prefix:</p>
 <ul>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a> - an insertion-ordered set that implements the full <code>IList&lt;T&gt;</code> contract. Duplicates are rejected on add (<code>Add</code> returns <code>false</code>), positional mutation works through <code>Insert</code>, <code>RemoveAt</code>, <code>Move</code>, and the indexer setter. Backed by a contiguous element array plus an open-addressing hash table, giving O(1) <code>Contains</code>, <code>IndexOf</code>, and indexed read. <a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a> is the conceptually-a-set sibling that shares the same engine but exposes indices only as a read-only view.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a> - an insertion-ordered set that implements the full <code>IList&lt;T&gt;</code> contract. Duplicates are rejected on add (<code>Add</code> returns <code>false</code>), positional mutation works through <code>Insert</code>, <code>RemoveAt</code>, <code>Move</code>, and the indexer setter. Backed by a contiguous element array plus a chained hash table, giving O(1) <code>Contains</code>, <code>IndexOf</code>, and indexed read. <a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a> is the conceptually-a-set sibling that shares the same engine but exposes indices only as a read-only view.</li>
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a> - a binary min-heap that maintains an element-to-slot map alongside the heap. The map turns <code>Contains</code>, <code>TryGetPriority</code>, <code>Update</code>, <code>Remove</code>, and <code>EnqueueOrUpdate</code> into O(1) lookup plus O(log n) heap repair - the operations Dijkstra's algorithm, Prim's algorithm, and A* require. Elements are unique; <code>Enqueue</code> of an existing element throws.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
@@ -303,7 +303,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

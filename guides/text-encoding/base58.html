@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/text-encoding/base58.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/text-encoding/base58.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -92,27 +92,30 @@ the bit-stream technique that Base16, Base32, and Base64 share. Instead the impl
 big-integer and repeatedly divides by 58 to extract digits.</p>
 <p>Base58's defining feature is that its alphabet excludes the four visually ambiguous characters <code>0</code>, <code>O</code>, <code>I</code>, and
 <code>l</code>. This makes it suitable for any context where a user might transcribe the encoded form by hand - Bitcoin
-addresses, IPFS CIDs, Solana / Stellar identifiers, Flickr short URLs.</p>
-<pre><code>input bytes        : 00 EB 15 23 1D FC EB 60 92 58 86 B6 7D 06 52 99 92 59 15 AE B1 72 C0 66 47
+addresses, IPFS CIDs, Solana identifiers, Flickr short URLs.</p>
+<pre><code>input bytes        : 00 62 E9 07 B1 5C BF 27 D5 42 53 99 EB F6 F0 FB 50 EB B8 8F 18 C2 9B 7D 93
                                                                                 (Bitcoin payload)
                      ┌── leading 0x00 → leading '1' character ──┐
                      │  remaining 24 bytes → big-integer encode │
-encoded text       : 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L          (Bitcoin/Flickr)
+encoded text       : 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa          (Bitcoin alphabet)
 </code></pre>
 <h2 id="quick-reference">Quick reference</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Encoding;
 
-byte[] payload = Convert.FromHexString(&quot;00EB15231DFCEB60925886B67D065299925915AEB172C06647&quot;);
+byte[] payload = Convert.FromHexString(&quot;0062E907B15CBF27D5425399EBF6F0FB50EBB88F18C29B7D93&quot;);
 
-// Bitcoin/Flickr alphabet (default)
+// Bitcoin alphabet (default)
 string address = Base58.Encode(payload);
-// &quot;1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L&quot;
+// &quot;1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa&quot; - the genesis block's address
 
 // Decode back
 byte[] back = Base58.Decode(address);
 
 // Ripple alphabet (XRP ledger)
 string rippled = Base58.Encode(payload, Base58Variant.Ripple);
+
+// Flickr alphabet (lower-case letters before upper-case)
+string flickr = Base58.Encode(payload, Base58Variant.Flickr);
 </code></pre>
 <h2 id="variant-comparison">Variant comparison</h2>
 <table>
@@ -126,18 +129,23 @@ string rippled = Base58.Encode(payload, Base58Variant.Ripple);
 <tbody>
 <tr>
 <td><code>BitcoinFlickr</code> (default)</td>
-<td>Digits ascending, then upper-case letters (minus <code>O</code>, <code>I</code>), then lower-case letters (minus <code>l</code>)</td>
-<td>Bitcoin, IPFS, Solana, NEAR, Stellar, Flickr</td>
+<td>Digits ascending, then upper-case letters (minus <code>O</code>, <code>I</code>), then lower-case letters (minus <code>l</code>) - the Bitcoin alphabet, despite the member's name</td>
+<td>Bitcoin, IPFS, Solana, NEAR</td>
 </tr>
 <tr>
 <td><code>Ripple</code></td>
 <td>Permuted ordering specific to the XRP ledger</td>
 <td>Ripple / XRP</td>
 </tr>
+<tr>
+<td><code>Flickr</code></td>
+<td>Digits ascending, then lower-case letters (minus <code>l</code>), then upper-case letters (minus <code>O</code>, <code>I</code>)</td>
+<td>Flickr short photo URLs</td>
+</tr>
 </tbody>
 </table>
-<p>Both variants use the same 58 characters - only the <em>order</em> differs, so a string encoded under one variant
-decodes to different bytes under the other.</p>
+<p>All three variants use the same 58 characters - only the <em>order</em> differs, so a string encoded under one variant
+decodes to different bytes under another. <code>BinaryEncodings.Get(&quot;base58-flickr&quot;)</code> returns the <code>Flickr</code> variant.</p>
 <h2 id="leading-zeros">Leading zeros</h2>
 <p>Because Base58 uses big-integer arithmetic, leading zero bytes would normally be lost. The Bitcoin convention
 preserves them as <strong>leading <code>1</code> characters</strong> in the encoded form (where <code>1</code> is <code>alphabet[0]</code>):</p>
@@ -172,7 +180,7 @@ always start with <code>1</code> in their encoded form.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">// Round trip preserves leading zero bytes exactly:
 byte[] withZeros = new byte[] { 0x00, 0x00, 0xDE, 0xAD };
-string encoded = Base58.Encode(withZeros);  // &quot;115Q&quot;
+string encoded = Base58.Encode(withZeros);  // &quot;11Hwr&quot;
 byte[] back = Base58.Decode(encoded);       // back.SequenceEqual(withZeros)
 </code></pre>
 <h2 id="excluded-characters">Excluded characters</h2>
@@ -182,8 +190,8 @@ Base58.Decode(&quot;OAjdvzr&quot;);  // FormatException - 'O' (capital O) exclud
 Base58.Decode(&quot;IAjdvzr&quot;);  // FormatException - 'I' (capital I) excluded
 Base58.Decode(&quot;lAjdvzr&quot;);  // FormatException - 'l' (lower L) excluded
 </code></pre>
-<p>This is intentional - a user transcribing <code>1NS17</code> might write <code>lNS17</code> or <code>INS17</code>, and the decoder rejecting those
-inputs catches the typo at the input boundary rather than silently producing different bytes.</p>
+<p>This is intentional - a user transcribing <code>1A1zP</code> might type <code>l</code> or <code>I</code> for its leading <code>1</code>, and the decoder rejecting
+those inputs catches the typo at the input boundary rather than silently producing different bytes.</p>
 <h2 id="lenient-parsing">Lenient parsing</h2>
 <table>
 <thead>
@@ -209,7 +217,7 @@ inputs catches the typo at the input boundary rather than silently producing dif
 </table>
 <pre><code class="lang-csharp">// User-pasted address with stray spaces - strip and decode
 byte[] payload = Base58.Decode(
-    &quot;  1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L  &quot;,
+    &quot;  1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa  &quot;,
     Base58Variant.BitcoinFlickr,
     BaseFormatStyles.IgnoreWhitespace);
 </code></pre>
@@ -221,21 +229,25 @@ char[] buffer = new char[maxChars];
 int written = Base58.Encode(payload, buffer);
 ReadOnlySpan&lt;char&gt; result = buffer.AsSpan(0, written);
 </code></pre>
-<p>Base58 uses big-integer arithmetic, so there is no <code>OperationStatus</code> streaming path: each operation requires the
-entire input to be available. The <code>EncodeToUtf8</code> / <code>DecodeFromUtf8</code> methods exist for API consistency with the
-other encodings but behave as a single-shot transform.</p>
+<p>Base58 uses big-integer arithmetic, so there is no streaming decode: each operation requires the entire input to be
+available. The <code>EncodeToUtf8</code> / <code>DecodeFromUtf8</code> methods exist for API consistency with the other encodings, but
+<code>DecodeFromUtf8</code> takes no <code>isFinalBlock</code> parameter and treats its input as complete. To bound that quadratic cost on
+untrusted input, <code>Decode</code> rejects input longer than 65536 characters with <code>FormatException</code> (<code>TryDecode</code> and
+<code>IsValid</code> return <code>false</code> for it).</p>
 <h2 id="validation-and-sizing">Validation and sizing</h2>
-<pre><code class="lang-csharp">Base58.IsValid(&quot;1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L&quot;);  // true
-Base58.IsValid(&quot;0NS17iag&quot;);                            // false ('0' excluded)
+<pre><code class="lang-csharp">Base58.IsValid(&quot;1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa&quot;);  // true
+Base58.IsValid(&quot;0A1zP1eP&quot;);                            // false ('0' excluded)
 Base58.IsBase58Digit('1');                              // true
 Base58.IsBase58Digit('0');                              // false
 
 Base58.GetMaxEncodedLength(25);  // ≈ 35 (upper bound)
-Base58.GetMaxDecodedLength(34);  // ≈ 25 (upper bound)
+Base58.GetMaxDecodedLength(34);  // 34 (upper bound: one byte per character)
 </code></pre>
 <p>Exact encoded length depends on the actual data (specifically the leading-zero count and the magnitude of the
 non-zero portion), so the library only exposes <code>GetMaxEncodedLength</code> / <code>GetMaxDecodedLength</code>. Code that needs the
-exact length can call <code>Encode</code> / <code>Decode</code> and use the result's length.</p>
+exact length can call <code>Encode</code> / <code>Decode</code> and use the result's length. <code>GetMaxDecodedLength</code> returns the character
+count itself, because each leading <code>1</code> decodes to a whole zero byte: <code>&quot;1111&quot;</code> decodes to four bytes, so no smaller
+bound holds for every input. <code>Base58Check.GetMaxDecodedLength</code> subtracts the four checksum bytes from it.</p>
 <h2 id="common-patterns">Common patterns</h2>
 <h3 id="bitcoin-p2pkh-address-payload-extraction">Bitcoin P2PKH address payload extraction</h3>
 <pre><code class="lang-csharp">// payload = [version byte][20-byte HASH160][4-byte checksum]
@@ -307,7 +319,7 @@ if (Base58Check.TryDecode(encoded, destination, out int written))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

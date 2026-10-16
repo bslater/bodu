@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Utf8YamlWriter Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ Utf8YamlWriter Struct
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a>.<a class="xref" href="Bodu.Text.Yaml.Writer.html">Writer</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Yaml.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs">Utf8YamlWriter.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs">Utf8YamlWriter.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a forward-only writer that emits a YAML document in block style to a UTF-8 buffer, in the manner of
@@ -154,8 +154,13 @@ Utf8YamlWriter Struct
   <h2 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The writer emits block mappings and sequences with configurable indentation, choosing the most compact safe scalar
-presentation for each value (plain when unambiguous, otherwise double-quoted). Empty mappings and sequences are
-emitted in the flow forms <code>{}</code> and <code>[]</code> so they round-trip as empty collections rather than null.
+presentation for each value (plain when unambiguous, otherwise double-quoted). A string is written plain only when
+neither a YAML 1.2 nor a YAML 1.1 reader would read it as another value: a number, a boolean, null, a YAML 1.1
+sexagesimal number such as <code>1:30</code>, or the merge key <code>&lt;&lt;</code>. Empty mappings and sequences are emitted
+in the flow forms <code>{}</code> and <code>[]</code> so they round-trip as empty collections rather than null. A mapping key is
+written as an implicit key (<code>key: value</code>) unless its written form is longer than the 1024 characters an
+implicit key may hold, in which case it is written as an explicit key (<code>? key</code>), with the value indicator on
+the next line.
 </p>
 <p>
 The writer is a <code>ref struct</code> and cannot be boxed, stored on the heap, or captured by a lambda. Its
@@ -174,7 +179,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.#ctor(System.Buffers.IBufferWriter{System.Byte})">
   Utf8YamlWriter(IBufferWriter&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -217,7 +222,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Yaml_Writer_YamlWriterOptions_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Yaml.Writer.YamlWriterOptions)">
   Utf8YamlWriter(IBufferWriter&lt;byte&gt;, YamlWriterOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -273,7 +278,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteBoolean_System_Boolean_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteBoolean(System.Boolean)">
   WriteBoolean(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -300,6 +305,12 @@ in-progress document rather than an independent copy.
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document root has already been written, or the current container is a mapping with no pending key.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -310,7 +321,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteDouble_System_Double_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteDouble(System.Double)">
   WriteDouble(double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -337,6 +348,12 @@ in-progress document rather than an independent copy.
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document root has already been written, or the current container is a mapping with no pending key.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -347,7 +364,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteEndMapping" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteEndMapping">
   WriteEndMapping()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -371,7 +388,7 @@ in-progress document rather than an independent copy.
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>There is no open mapping to close.</p>
+    <dd><p>There is no open container, the innermost open container is a sequence, or a key is awaiting its value.</p>
 </dd>
   </dl>
 
@@ -384,7 +401,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteEndSequence" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteEndSequence">
   WriteEndSequence()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -408,7 +425,7 @@ in-progress document rather than an independent copy.
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>There is no open sequence to close.</p>
+    <dd><p>There is no open container, or the innermost open container is a mapping.</p>
 </dd>
   </dl>
 
@@ -421,7 +438,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteInteger_System_Int64_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteInteger(System.Int64)">
   WriteInteger(long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -448,6 +465,12 @@ in-progress document rather than an independent copy.
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document root has already been written, or the current container is a mapping with no pending key.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -458,7 +481,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteNull" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteNull">
   WriteNull()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -479,6 +502,12 @@ in-progress document rather than an independent copy.
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document root has already been written, or the current container is a mapping with no pending key.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -489,7 +518,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WritePropertyName_System_String_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WritePropertyName(System.String)">
   WritePropertyName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -515,11 +544,19 @@ in-progress document rather than an independent copy.
 
 
 
+  <h4 class="section" id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WritePropertyName_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A key whose written form, quotes included, is longer than the 1024 characters an implicit key may hold is
+written as an explicit key (<code>? key</code>), with the value indicator on the next line, so that the document stays
+readable.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p><code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">name</code> contains an unpaired surrogate.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The current container is not a mapping, or a key is already pending.</p>
@@ -535,7 +572,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteStartMapping" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteStartMapping">
   WriteStartMapping()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -556,6 +593,17 @@ in-progress document rather than an independent copy.
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document root has already been written, the current container is a mapping with no pending key, or the
+container would be nested deeper than the maximum depth.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The container would be nested deeper than the maximum depth while the writer is driven by
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>, which reports the failure with the path to the value.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -566,7 +614,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteStartSequence" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteStartSequence">
   WriteStartSequence()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -587,6 +635,17 @@ in-progress document rather than an independent copy.
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document root has already been written, the current container is a mapping with no pending key, or the
+container would be nested deeper than the maximum depth.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The container would be nested deeper than the maximum depth while the writer is driven by
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>, which reports the failure with the path to the value.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -597,7 +656,7 @@ in-progress document rather than an independent copy.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteString_System_String_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteString(System.String)">
   WriteString(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml.Writer/Utf8YamlWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -628,6 +687,12 @@ in-progress document rather than an independent copy.
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p><code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">value</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document root has already been written, or the current container is a mapping with no pending key.</p>
 </dd>
   </dl>
 
@@ -662,7 +727,7 @@ in-progress document rather than an independent copy.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

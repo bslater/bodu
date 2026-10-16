@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 TextConfigurationExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ TextConfigurationExtensions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a>.<span class="xref">Configuration</span>.<a class="xref" href="Bodu.Extensions.Configuration.Text.html">Text</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Extensions.Configuration.Text.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Extensions.Configuration.Text">Bodu.Extensions.Configuration.Text</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Extensions.Configuration.Text">Bodu.Extensions.Configuration.Text</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs">TextConfigurationExtensions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs">TextConfigurationExtensions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides convenience extension methods for adding a Bodu Text Configuration source to an
@@ -180,14 +180,12 @@ builder.Configuration.AddTextConfigurationFile(source =&gt;
     source.Optional       = false;
     source.ReloadOnChange = true;
     source.ParseOptions   = ConfigurationParseOptions.Strict;
-    source.ResolveOptions = new ConfigurationResolveOptions
-    {
-        Profile = ConfigurationProfile.Bodu,
-    };
+    source.ResolveOptions = ConfigurationResolveOptions.Bodu;
 });
 
-// 4. In-memory stream - handy in unit tests.
-using var ms = new MemoryStream(Encoding.UTF8.GetBytes("[*]\nLogging:Level=Debug\n"));
+// 4. In-memory stream - handy in unit tests. With no target path only the preamble applies, so the key sits
+//    before any section.
+using var ms = new MemoryStream(Encoding.UTF8.GetBytes("Logging:Level=Debug\n"));
 builder.Configuration.AddTextConfigurationStream(ms);
 
 // 5. Pre-parsed document - share one parse across multiple builders.
@@ -212,10 +210,11 @@ machinery; ideal for tests and synthetic configuration.
 </li></ul>
 
 <p>
-File-backed registrations honour the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.fileconfigurationsource">FileConfigurationSource</a> behaviours (reload-on-change,
-optional-file, exception wrapping) and resolve <code>path</code>-relative paths through the supplied or builder-default
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>. The convention overload uses the builder's default <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>; note
-that <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a> implementations such as
+File-backed registrations honor the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.fileconfigurationsource">FileConfigurationSource</a> behaviors (reload-on-change,
+optional-file, exception wrapping), resolve a relative <code>path</code> through the supplied or builder-default
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>, and, when no provider is supplied, read a rooted <code>path</code> from the file system, as
+<code>AddJsonFile</code> does. The convention overload uses the builder's default <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>; note that
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a> implementations such as
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.physicalfileprovider">PhysicalFileProvider</a> filter out dot-prefixed files by default -
 see the remarks on <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Boolean_System_Boolean_">AddTextConfiguration(IConfigurationBuilder, bool, bool)</a> for the workaround
 required to surface <code>.boduconfig</code>.
@@ -232,7 +231,7 @@ required to surface <code>.boduconfig</code>.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Boolean,System.Boolean)">
   AddTextConfiguration(IConfigurationBuilder, bool, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -299,7 +298,7 @@ is resolved by the default exclusion filters without further configuration.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationDocument_Microsoft_Extensions_Configuration_IConfigurationBuilder_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationDocument(Microsoft.Extensions.Configuration.IConfigurationBuilder,Bodu.Text.Configuration.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationResolveOptions)">
   AddTextConfigurationDocument(IConfigurationBuilder, IniDocumentBase, string?, ConfigurationResolveOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -347,7 +346,7 @@ is added via
   <h4 class="section" id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationDocument_Microsoft_Extensions_Configuration_IConfigurationBuilder_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>This overload takes a <b>one-shot snapshot</b> of <code class="paramref">document</code> as it stands when called: the
 document is resolved immediately and the flattened values are added in-memory. Unlike the file-based overloads,
-it has <b>no reload-on-change</b> behaviour - subsequent edits to the document or its backing file are not
+it has <b>no reload-on-change</b> behavior - subsequent edits to the document or its backing file are not
 reflected in the built configuration.</p>
 </div>
 
@@ -367,7 +366,7 @@ reflected in the built configuration.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_Microsoft_Extensions_FileProviders_IFileProvider_System_String_System_String_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,Microsoft.Extensions.FileProviders.IFileProvider,System.String,System.String,System.Boolean,System.Boolean)">
   AddTextConfigurationFile(IConfigurationBuilder, IFileProvider?, string, string?, bool, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -391,7 +390,8 @@ reflected in the built configuration.</p>
 default file provider.</p>
 </dd>
     <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The configuration file path, relative to <code class="paramref">provider</code>.</p>
+    <dd><p>The configuration file path, relative to <code class="paramref">provider</code>, or, when no provider is supplied, rooted
+or relative to the builder's file provider.</p>
 </dd>
     <dt><code>targetPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The optional target path used for glob-anchored resolution.</p>
@@ -417,6 +417,10 @@ default file provider.</p>
 
 
 
+  <h4 class="section" id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_Microsoft_Extensions_FileProviders_IFileProvider_System_String_System_String_System_Boolean_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>With <code class="paramref">provider</code> set to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the file is located as <code>AddJsonFile</code>
+locates it: a rooted path is read from the file system, and any other path through the builder's file provider.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -437,7 +441,7 @@ default file provider.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextConfigurationSource__" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Action{Bodu.Extensions.Configuration.Text.TextConfigurationSource})">
   AddTextConfigurationFile(IConfigurationBuilder, Action&lt;TextConfigurationSource&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -472,6 +476,10 @@ default file provider.</p>
 
 
 
+  <h4 class="section" id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextConfigurationSource___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The source locates the file as <code>AddJsonFile</code> does, a rooted path included; see
+<a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationSource.html#Bodu_Extensions_Configuration_Text_TextConfigurationSource_Build_Microsoft_Extensions_Configuration_IConfigurationBuilder_">Build(IConfigurationBuilder)</a>.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -489,7 +497,7 @@ default file provider.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_String_System_String_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String,System.String,System.Boolean,System.Boolean)">
   AddTextConfigurationFile(IConfigurationBuilder, string, string?, bool, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -507,7 +515,7 @@ default file provider.</p>
     <dd><p>The configuration builder.</p>
 </dd>
     <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The configuration file path, relative to the builder's file provider.</p>
+    <dd><p>The configuration file path, rooted or relative to the builder's file provider.</p>
 </dd>
     <dt><code>targetPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The optional target path used for glob-anchored resolution.</p>
@@ -533,6 +541,11 @@ default file provider.</p>
 
 
 
+  <h4 class="section" id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_String_System_String_System_Boolean_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The file is located as <code>AddJsonFile</code> locates it: a rooted path is read from the file system, and any other
+path through the builder's file provider, which is the provider <code>SetFileProvider</code> sets, the base path
+<code>SetBasePath</code> sets, or by default the application's base directory.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -553,7 +566,7 @@ default file provider.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextStreamConfigurationSource__" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Action{Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource})">
   AddTextConfigurationStream(IConfigurationBuilder, Action&lt;TextStreamConfigurationSource&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -605,7 +618,7 @@ default file provider.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_IO_Stream_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationResolveOptions_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.IO.Stream,System.String,Bodu.Text.Configuration.ConfigurationParseOptions,Bodu.Text.Configuration.ConfigurationResolveOptions)">
   AddTextConfigurationStream(IConfigurationBuilder, Stream, string?, ConfigurationParseOptions?, ConfigurationResolveOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -690,7 +703,7 @@ the configuration is built; no reload-on-change machinery is attached. Mirrors
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

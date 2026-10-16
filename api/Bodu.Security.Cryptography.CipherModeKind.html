@@ -94,7 +94,7 @@
 
   <h1 id="Bodu_Security_Cryptography_CipherModeKind" data-uid="Bodu.Security.Cryptography.CipherModeKind" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CipherModeKind Enum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/CipherModeKind.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/CipherModeKind.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -103,9 +103,9 @@ CipherModeKind Enum
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/CipherModeKind.cs">CipherModeKind.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/CipherModeKind.cs">CipherModeKind.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Specifies a block-cipher mode for encrypting or decrypting multi-block messages. Mirrors the standard framework
@@ -193,7 +193,7 @@ message.
   <dd><p>Electronic Codebook (ECB) mode. Each block is encrypted independently with no feedback. Mirrors
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-ecb">ECB</a>.</p>
 <p>
-ECB is trivially parallelisable but leaks structural information: identical plaintext blocks always produce
+ECB is trivially parallelizable but leaks structural information: identical plaintext blocks always produce
 identical ciphertext blocks. It is insecure for virtually all real-world messages and should only be used as a
 primitive inside a higher-level construction.
 </p>
@@ -246,7 +246,7 @@ provide integrity protection.
   <dd><p>Counter (CTR) mode. Encrypts successive counter values to produce a keystream that is XORed with plaintext or
 ciphertext. This mode extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
 <p>
-CTR transforms a block cipher into a parallelisable stream cipher with random access. It requires a nonce, or
+CTR transforms a block cipher into a parallelizable stream cipher with random access. It requires a nonce, or
 initial counter value, equal in length to the cipher block size.
 </p>
 <p>
@@ -282,9 +282,9 @@ OCB derives a sequence of offsets from a nonce and pre-computed multiples of E(0
 <p>where Δ_i = Δ_{i−1} ⊕ L[ntz(i)] and ntz(i) is the number of trailing zeros of i.</p>
 
 <p>
-The <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> implementation provides the encryption/decryption transform component. Full
-AEAD authentication, including associated data processing and tag generation/verification, requires the
-<code>IAeadBlockCipherModeTransform</code> interface extension.
+This value names <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, an <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> that performs
+the full AEAD operation, including associated data and tag generation and verification. It is not accepted by
+<a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> or by a wrapper's <code>BlockMode</code>; construct the transform directly.
 </p>
 </dd>
   
@@ -297,9 +297,10 @@ EAX encryption applies CTR mode using OMAC(nonce) as the counter start:
 <ul><li>Keystream_i = E(counter_i), where counter increments each block.</li><li>Both encrypt and decrypt XOR the input with the keystream (CTR property).</li></ul>
 
 <p>
-The <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> implementation provides the CTR encryption component using the nonce
-directly as the initial counter. Full AEAD authentication, including OMAC nonce processing, OMAC ciphertext tag,
-and associated data, requires the <code>IAeadBlockCipherModeTransform</code> interface extension.
+This value names <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>, an <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> that performs
+the full AEAD operation: it seeds CTR with the OMAC of the nonce and authenticates the nonce, the associated
+data, and the ciphertext. It is not accepted by <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> or by a wrapper's
+<code>BlockMode</code>; construct the transform directly.
 </p>
 </dd>
   
@@ -317,9 +318,10 @@ The CTR counter is initialized from the SIV with bits 31 and 63 cleared to preve
 and decrypt use only the cipher's encryption primitive (CTR property).
 </p>
 <p>
-The <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> implementation accepts the pre-computed SIV directly as the IV. Full AEAD
-authentication, including S2V computation from plaintext and associated data, requires the
-<code>IAeadBlockCipherModeTransform</code> interface extension.
+This value names <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>, an <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> that performs
+the full AEAD operation and derives the synthetic IV itself through S2V over the associated data and plaintext;
+the IV passed to its constructor is not used. It is not accepted by <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> or by
+a wrapper's <code>BlockMode</code>; construct the transform directly.
 </p>
 </dd>
   
@@ -352,8 +354,11 @@ authentication logic. The five panels above show the classic, non-authenticated 
 
 <p>
 Modes differ in security properties, parallelism, whether they require an initialization vector or nonce, and
-whether they provide authentication. Use <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html#Bodu_Security_Cryptography_BlockCipherModeFactory_Create_Bodu_Security_Cryptography_CipherModeKind_Bodu_Security_Cryptography_IBlockCipher_System_Byte___">Create(CipherModeKind, IBlockCipher, byte[]?)</a> to obtain an
-<a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a> for a given value.
+whether they provide authentication. For ECB, CBC, CFB, OFB, and CTR, use
+<a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html#Bodu_Security_Cryptography_BlockCipherModeFactory_Create_Bodu_Security_Cryptography_CipherModeKind_Bodu_Security_Cryptography_IBlockCipher_System_Byte___">Create(CipherModeKind, IBlockCipher, byte[]?)</a> (or a block-cipher wrapper's <code>BlockMode</code>) to obtain an
+<a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>. CTS and XTS are constructed directly as <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>
+and <a class="xref" href="Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a>, and OCB, EAX, and SIV name the AEAD transforms, which the factory and
+<code>BlockMode</code> reject.
 </p>
 </div>
 
@@ -392,7 +397,7 @@ whether they provide authentication. Use <a class="xref" href="Bodu.Security.Cry
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

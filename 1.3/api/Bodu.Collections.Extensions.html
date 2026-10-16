@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Collections.Extensions Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Collections.Extensions Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Collections.Extensions.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Collections.Extensions">
+
+
+  <h1 id="Bodu_Collections_Extensions" data-uid="Bodu.Collections.Extensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Collections.Extensions Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Collections.Extensions</strong> holds the non-generic / shape-agnostic enumeration helpers that complement <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>. Reach for this namespace when you want recursive-descent helpers or count helpers that work against <code>IEnumerable</code> rather than <code>IEnumerable&lt;T&gt;</code>.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a> - <code>CountOrDefault</code>, <code>RecursiveSelect</code> for non-generic shapes.</li>
+<li><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a> - <code>[Flags]</code> value returned by a recursion-control callback to decide, per element, whether to yield it, descend into its children, and whether to stop: the primitive flags <code>None</code>, <code>Yield</code>, <code>Recurse</code>, <code>Skip</code>, <code>Break</code>, <code>Exit</code>, and the named combinations <code>YieldOnly</code>, <code>RecurseOnly</code>, <code>YieldAndRecurse</code>, <code>SkipOnly</code>, <code>SkipAndRecurse</code>, <code>YieldAndBreak</code>, <code>SkipAndBreak</code>, <code>YieldAndExit</code>, <code>SkipAndExit</code>. Shared with the typed <code>RecursiveSelect</code> overloads in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Extensions;
+
+// Counts a non-generic IEnumerable - O(1) when the source is an ICollection, otherwise it enumerates.
+int n = source.CountOrDefault();
+
+// Recursive-select over a non-generic IEnumerable: the child selector and the result are untyped.
+IEnumerable flattened = root.RecursiveSelect(node =&gt; ((Node)node).Children);
+
+// Fine-grained descent control on the non-generic surface: yield visible nodes and descend into
+// them, skip invisible subtrees, and stop the whole walk at the first node flagged as terminal.
+IEnumerable visible = root.RecursiveSelect(
+    node =&gt; ((Node)node).Children,
+    (node, index, depth) =&gt; node,
+    node =&gt; ((Node)node).IsTerminal ? RecursiveSelectControl.YieldAndExit
+          : ((Node)node).IsVisible  ? RecursiveSelectControl.YieldAndRecurse
+                                    : RecursiveSelectControl.SkipOnly);
+</code></pre>
+<p>When the source is already an <code>IEnumerable&lt;T&gt;</code>, prefer the typed overloads in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> - the same <code>RecursiveSelectControl</code> vocabulary with strongly typed selectors and an <code>IEnumerable&lt;TResult&gt;</code> result.</p>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Counterpart to the generic surface.</strong> Sequence helpers parameterised on <code>T</code> live in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>; this namespace covers the cases where the source is shape-agnostic.</li>
+<li><strong>Packaging.</strong> This extension namespace ships in the <code>Bodu.Core</code> package; the concrete collection types in the sibling <code>Bodu.Collections.*</code> namespaces ship in the <code>Bodu.Collections</code> package, except the thread-safe <code>Bodu.Collections.Generic.Concurrent</code> variants, which ship in <code>Bodu.Collections.Concurrent</code>.</li>
+<li><strong>See also:</strong> the <a href="../docs/core/index.html">Bodu.Core introduction</a>, the companion <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> namespace.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a></dt>
+      <dd><p>Provides operations over the non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> surface - counting without
+enumerating where the source is already a collection, and walking heterogeneous tree structures recursively - for
+code that has to deal with reflection-shaped or legacy sequences.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a></dt>
+      <dd><p>Represents composable control flags for how an element is processed during recursive selection.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

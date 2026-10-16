@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/text-configuration/concepts.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/text-configuration/concepts.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -93,11 +93,12 @@
 <p>For the high-level shape of the library and the pipeline diagram, start with the <a href="index.html">introduction</a>.</p>
 <h2 id="document-and-view">Document and view</h2>
 <p>A <strong>document</strong> is the parsed-but-not-yet-resolved representation of the source text.
-<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is a <code>sealed</code> type that <em>inherits</em> the read-only
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is a <code>sealed</code> type that <em>inherits</em> the
 <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> model - the library's own trivia-preserving INI structure, which the reader
 produces - with a preamble (the <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>) and zero or more named
 <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_Sections">Sections</a> in source order. The document preserves comments, ordering, and
-duplicate-policy decisions, so it can be re-emitted byte-for-byte.</p>
+duplicate-policy decisions, so it can be re-emitted with the same meaning; the writer canonicalizes the layout (see
+Saving, below).</p>
 <p>Because it derives from <code>IniDocumentBase</code>, every read member of the INI model is available directly on the document:
 <code>doc.GlobalSection[&quot;root&quot;]</code>, <code>doc.Sections[0].Name</code>, <code>section.Entries</code>, <code>section[&quot;indent_size&quot;]</code>, and the typed
 <code>section.TryGetValue&lt;T&gt;(...)</code> accessors all work without first resolving a view. The document-level surface is
@@ -125,11 +126,11 @@ ConfigurationView ──► .GetXxx(key) ──────────► typed
 <tbody>
 <tr>
 <td><code>Bodu</code> (default)</td>
-<td>Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve.</td>
+<td>Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve (its <code>root</code> pair excepted).</td>
 </tr>
 <tr>
 <td><code>EditorConfigCompatible</code></td>
-<td>Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, and preamble properties dropped from resolve (<code>root</code> is consumed by the reader).</td>
+<td>Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, identity key mapping (keys keep their dots), keys lowercased, and the whole preamble, <code>root</code> included, dropped from resolve.</td>
 </tr>
 <tr>
 <td><code>Strict</code></td>
@@ -169,7 +170,7 @@ exposes <code>Bodu</code>, <code>EditorConfigCompatible</code>, and <code>Normal
 <tbody>
 <tr>
 <td><code>Profile</code></td>
-<td>The profile this bag represents. Default <code>Bodu</code>.</td>
+<td>The profile the option set was created from. Informational: the reader does not read it. Default <code>Bodu</code>.</td>
 </tr>
 <tr>
 <td><code>InlineCommentMode</code></td>
@@ -193,7 +194,7 @@ exposes <code>Bodu</code>, <code>EditorConfigCompatible</code>, and <code>Normal
 </tr>
 <tr>
 <td><code>MaxLineLength</code> / <code>MaxKeyLength</code></td>
-<td>DoS-resistant caps; defaults 8192 / 1024 characters. Over-length input emits <code>LineTooLong</code> / <code>KeyTooLong</code>.</td>
+<td>The longest line and key accepted; defaults 8192 / 1024 characters. Over-length input emits <code>LineTooLong</code> / <code>KeyTooLong</code>. Each line is read whole before it is measured, so these limits do not bound memory: limit the input itself first, as <a href="../topics/untrusted-input.html">reading untrusted input</a> explains.</td>
 </tr>
 <tr>
 <td><code>TrimKeysAndValues</code></td>
@@ -232,11 +233,11 @@ handling are free to diverge from the raw-INI dialect.</p>
 <tbody>
 <tr>
 <td><code>Profile</code></td>
-<td>The profile this bag represents. Default <code>Bodu</code>.</td>
+<td>The profile the option set was created from. Informational: the resolver does not read it. Default <code>Bodu</code>.</td>
 </tr>
 <tr>
 <td><code>PathRoot</code></td>
-<td>The directory anchor that anchored globs are rebased against. When <code>null</code>, the document's load path is used; when neither is available, <code>MissingPathRootMode</code> decides.</td>
+<td>The directory a target path is rebased against before globs are matched; an explicit value always wins. When <code>null</code>, a document loaded with <code>Load(path)</code> uses the directory of its file; when neither is available, the target is matched as given, and <code>MissingPathRootMode</code> decides what a path-less resolve does.</td>
 </tr>
 <tr>
 <td><code>MissingPathRootMode</code></td>
@@ -256,7 +257,7 @@ handling are free to diverge from the raw-INI dialect.</p>
 </tr>
 <tr>
 <td><code>KeyOptions</code></td>
-<td>The key options applied when expanding raw keys into colon-delimited form.</td>
+<td>The key options applied when expanding raw keys into the view's keys: colon-delimited under the default mapping, as written under the <code>Identity</code> mapping of the <code>EditorConfigCompatible</code> profile.</td>
 </tr>
 </tbody>
 </table>
@@ -265,8 +266,9 @@ handling are free to diverge from the raw-INI dialect.</p>
 <p><code>MissingPathRootMode</code> only changes behaviour when <strong>no target path is supplied to <code>Resolve</code> at all</strong>. The <code>Throw</code>
 mode raises <code>InvalidOperationException</code> when <code>PathRoot</code> is <code>null</code>, the document carries no load path, and <code>targetPath</code>
 is <code>null</code> - the <code>EditorConfigCompatible</code> and <code>Strict</code> resolve profiles select it so a path-less resolve fails loudly
-rather than silently returning a preamble-only view. When a target path <em>is</em> supplied, an absent <code>PathRoot</code> simply
-means anchored globs are matched against the bare target path (the empty-root behaviour).</p>
+rather than silently returning a preamble-only view. When a target path <em>is</em> supplied and no root is known (no
+<code>PathRoot</code>, and a document parsed rather than loaded from a file), anchored globs are matched against the bare target
+path (the empty-root behaviour).</p>
 </div>
 <p><strong><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></strong> controls <code>Save</code>: encoding, newline style, blank-line
 policy, property layout. Use the static <code>Bodu</code> / <code>EditorConfigCompatible</code> / <code>Normalized</code> presets (or <code>For(profile)</code>), or supply a
@@ -290,20 +292,22 @@ custom bag.</p>
 <tr>
 <td><strong>Segments</strong></td>
 <td><code>[&quot;logging&quot;, &quot;level&quot;, &quot;default&quot;]</code></td>
-<td>Split on the configured separators.</td>
+<td>Split on the configured separators, each trimmed of the whitespace around it; under <code>Identity</code>, the whole key, its ends trimmed, is the one segment.</td>
 </tr>
 <tr>
 <td><strong>Path</strong></td>
 <td><code>logging:level:default</code></td>
-<td>The canonical colon-delimited form stored in the view.</td>
+<td>The canonical form stored in the view: colon-delimited, or the key as written under <code>Identity</code>.</td>
 </tr>
 </tbody>
 </table>
 <p><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> is the read-only struct that holds all three.
 <code>ConfigurationKey.Parse(rawKey)</code> is the entry point; <code>TryParse</code> is the non-throwing variant.</p>
-<p>Lookups on a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> accept either the dotted or the colon-delimited form -
-<code>view[&quot;logging.level.default&quot;]</code> and <code>view[&quot;logging:level:default&quot;]</code> return the same value. The view stores keys in
-the colon-delimited form to interoperate with <code>Microsoft.Extensions.Configuration</code>.</p>
+<p>Under the default mapping, lookups on a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> accept either the dotted or the
+colon-delimited form - <code>view[&quot;logging.level.default&quot;]</code> and <code>view[&quot;logging:level:default&quot;]</code> return the same value - and
+the view stores keys in the colon-delimited form to interoperate with <code>Microsoft.Extensions.Configuration</code>. Under the
+<code>Identity</code> mapping, which the <code>EditorConfigCompatible</code> profile uses, a key is stored and looked up as written, so
+<code>logging.level.default</code> and <code>logging:level:default</code> are two keys.</p>
 <h2 id="key-mapping">Key mapping</h2>
 <p><code>ConfigurationKey</code> uses a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a> to govern splitting and
 mapping:</p>
@@ -325,18 +329,23 @@ mapping:</p>
 </tr>
 <tr>
 <td><code>Identity</code></td>
-<td>Split on the configured separators; rejoin with the <em>first</em> configured separator (preserves the original delimiter).</td>
+<td>Keep the key as written, apart from the whitespace at its ends and the lowercasing <code>LowercaseKeys</code> asks for; the key is not split, so its dots and colons, and the whitespace inside it, stay as they are.</td>
 </tr>
 </tbody>
 </table>
-<p>Splitting always uses the full <code>SegmentSeparators</code> set; <code>Mapping</code> only decides the join character. <code>DotToColon</code> and
-<code>Colon</code> therefore produce identical <code>Path</code> output under the default separator set - the distinction is naming intent,
-not behaviour. <code>Identity</code> is the one mapping that round-trips the original delimiter (joining on <code>'.'</code> by default).</p>
+<p><code>DotToColon</code> and <code>Colon</code> split on the full <code>SegmentSeparators</code> set and join with <code>:</code>, so they produce identical <code>Path</code>
+output - the distinction is naming intent, not behaviour. <code>Identity</code> does not split a key at all: <code>a:b</code>, <code>a.b</code> and
+<code>a.b:c</code> keep their form, so a dotted key and a colon-delimited one are two keys, and neither <code>SegmentSeparators</code> nor
+<code>AllowEmptySegments</code> applies to it.</p>
 <p><code>SegmentSeparators</code> defaults to <code>{ '.', ':' }</code>. <code>CaseSensitive</code> defaults to <code>false</code>, matching
 <code>Microsoft.Extensions.Configuration</code>, and is surfaced as a ready-made comparer via
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyOptions.html#Bodu_Text_Configuration_ConfigurationKeyOptions_KeyComparer">KeyComparer</a> (<code>StringComparer.Ordinal</code> or
-<code>StringComparer.OrdinalIgnoreCase</code>). <code>AllowEmptySegments</code> defaults to <code>false</code> - <code>a..b</code> is rejected with
-<code>ArgumentException</code> unless the property is set explicitly. Keys are constructed through the
+<code>StringComparer.OrdinalIgnoreCase</code>). <code>LowercaseKeys</code> defaults to <code>false</code>; when set, as the <code>EditorConfigCompatible</code>
+profile sets it, the segments and the path are lowercased with the invariant culture, as EditorConfig lowercases every
+key after parsing, while the raw key keeps its case. Whitespace around each segment is trimmed, so <code>a . b</code> and <code>a.b</code> are
+the same key, and a segment of whitespace alone, as in <code>a. .b</code>, counts as empty. <code>AllowEmptySegments</code> defaults to
+<code>false</code> - <code>a..b</code> is rejected with <code>ArgumentException</code> unless the property is set explicitly or the mapping is
+<code>Identity</code>, which trims only the ends of a key. Keys are constructed through the
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html#Bodu_Text_Configuration_ConfigurationKey_Parse_System_String_">Parse(string)</a> / <code>TryParse</code> factories or the equivalent
 constructor; control characters in a raw key are rejected at construction time. Equality compares the <em>segment
 sequence</em> under the configured comparer, so the raw form is informational only - <code>Logging.Level</code> and
@@ -362,15 +371,15 @@ language follows EditorConfig:</p>
 </tr>
 <tr>
 <td><code>?</code></td>
-<td>Any single character.</td>
+<td>Any single character except <code>/</code>.</td>
 </tr>
 <tr>
 <td><code>[abc]</code> / <code>[!abc]</code></td>
-<td>Character class / negated character class.</td>
+<td>Character class / negated character class; a bracket expression that holds a <code>/</code> is literal text.</td>
 </tr>
 <tr>
 <td><code>{a,b,c}</code></td>
-<td>Alternation.</td>
+<td>Alternation; a group without a comma, such as <code>{single}</code> or <code>{}</code>, is literal text.</td>
 </tr>
 <tr>
 <td><code>[*.cs]</code></td>
@@ -378,24 +387,29 @@ language follows EditorConfig:</p>
 </tr>
 <tr>
 <td><code>[src/**/*.cs]</code></td>
-<td>All <code>.cs</code> files under <code>src/</code> (anchored to <code>PathRoot</code>).</td>
+<td>All <code>.cs</code> files under <code>src/</code> (anchored at the root: <code>PathRoot</code>, or the directory of a file loaded by path).</td>
 </tr>
 </tbody>
 </table>
 <p>The <strong>target path</strong> is the value passed to <code>document.Resolve(targetPath)</code>. Before matching, the resolver normalises the
-path to forward slashes and rebases it relative to <code>PathRoot</code>: if the path begins with <code>PathRoot + &quot;/&quot;</code> that prefix is
-stripped; if it equals <code>PathRoot</code> exactly, only the filename survives; otherwise the path is matched as-is. Anchored
-patterns (those that contain <code>/</code>) are then tested against the whole relative path; unanchored patterns (no <code>/</code>) match at
-any directory depth.</p>
+path to forward slashes and rebases it relative to the root, which is <code>PathRoot</code>, or when that is unset the directory of
+the file a document was loaded from with <code>Load(path)</code>: if the path begins with the root plus <code>/</code> that prefix is
+stripped; if it equals the root exactly, only the filename survives; otherwise, or when no root is known, the path is
+matched as-is. Anchored patterns (those that contain <code>/</code>) are then tested against the whole relative path; unanchored
+patterns (no <code>/</code>) match at any directory depth.</p>
+<p>A pattern that starts with <code>/</code> is anchored at the root as well, and a relative target matches it as if the target
+began with <code>/</code>: <code>[/src/*.cs]</code> applies to <code>src/Foo.cs</code>, to <code>/src/Foo.cs</code>, and to <code>/repo/src/Foo.cs</code> rebased under
+<code>PathRoot = &quot;/repo&quot;</code>, but not to <code>lib/src/Foo.cs</code>, nor to <code>/elsewhere/src/Foo.cs</code>, which lies outside that root.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
 <p>Section matching requires a target path. When <code>Resolve</code> is called with no target path (or <code>null</code>), the normalised
 target is empty and <strong>every named section is skipped</strong> - only the preamble (when <code>ApplyPreambleProperties</code> is <code>true</code>)
 contributes to the view. A path-less resolve is therefore a preamble-only projection, not an &quot;all sections&quot; merge.</p>
 </div>
-<p>When <code>PathRoot</code> is unset, <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationMissingPathRootMode.html">ConfigurationMissingPathRootMode</a> decides what a <em>path-less</em>
-resolve does: <code>UseEmptyRoot</code> returns the preamble-only view described above, while <code>Throw</code> raises
-<code>InvalidOperationException</code>. The mode has no effect once a non-null target path is supplied.</p>
+<p>When no root is known, because <code>PathRoot</code> is unset and the document was not loaded from a file,
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationMissingPathRootMode.html">ConfigurationMissingPathRootMode</a> decides what a <em>path-less</em> resolve does: <code>UseEmptyRoot</code>
+returns the preamble-only view described above, while <code>Throw</code> raises <code>InvalidOperationException</code>. The mode has no effect
+once a non-null target path is supplied.</p>
 <p>The pattern compiler is <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationPattern.html">ConfigurationPattern</a> - the same engine the resolver uses,
 exposed for callers who want to test pattern matching directly without instantiating a document. <code>Compile</code> memoises
 results in a bounded process-wide cache keyed on <code>(pattern, comparison)</code>, and each compiled pattern carries a bounded
@@ -404,9 +418,12 @@ match timeout so an untrusted section-name glob cannot become a ReDoS vector.</p
 <p>The <strong>preamble</strong> is the EditorConfig name for the file's global section - properties that appear before any <code>[...]</code>
 section header. Bodu exposes it as <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>.</p>
 <p>Under the default <code>Bodu</code> profile, the resolver layers the preamble first and then each matching section in source
-order, so preamble properties act as defaults that any matching section can override. Under
-<code>EditorConfigCompatible</code>, <code>ApplyPreambleProperties</code> is <code>false</code>, so the preamble is dropped from resolve entirely - its
-well-known <code>root</code> directive is consumed by the reader rather than surfaced as a resolved key.</p>
+order, so preamble properties act as defaults that any matching section can override. The preamble's <code>root</code> pair is
+the exception under every profile: it marks the file as the root of its directory tree rather than configuring
+anything, so the resolver never projects it into a view. Under
+<code>EditorConfigCompatible</code>, <code>ApplyPreambleProperties</code> is <code>false</code>, so the preamble is dropped from resolve entirely, its
+well-known <code>root</code> pair included. The pair stays in the global section: resolution reads one document and searches no
+parent directory, so acting on <code>root = true</code> (no further <code>.editorconfig</code> files up the tree) is left to the caller.</p>
 <h2 id="resolution-layering">Resolution layering</h2>
 <p><img src="../../images/diagrams/text-configuration-layering.svg" alt="Resolution layering - preamble plus matching sections in source order"></p>
 <p>The resolver walks the document once:</p>
@@ -559,18 +576,21 @@ if (entry is not null)
     Console.WriteLine($&quot;{entry.Key} = {entry.Value} (from {entry.SectionPattern ?? &quot;&lt;preamble&gt;&quot;})&quot;);
 </code></pre>
 <p>Only the <code>SourceLocation.LineNumber</code> is reliably populated; line position and length are approximate, and
-<code>SourceLocation.Path</code> is propagated only when the document was loaded from a file rather than parsed from a string.</p>
+<code>SourceLocation.Path</code> is the full path of the file when the document was loaded from one with <code>Load(path)</code>, and <code>null</code>
+when it was parsed from a string or loaded from a stream or a text reader.</p>
 <h2 id="saving-round-trip">Saving (round-trip)</h2>
 <p><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_">Save(IniDocumentBase, string, ConfigurationWriteOptions?)</a>
 emits the document back to text. The writer preserves comment lines, section ordering, and the original property
 ordering within each section, so a parse-then-save round-trip is byte-stable for any document the library produced.
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a> controls encoding (default UTF-8 <em>without</em> BOM), newline style
-(<code>NewLine</code>, default <code>\n</code>), the key/value separator (<code>KeyValueSeparator</code>, default <code>&quot; = &quot;</code>), comment prefix
-(<code>CommentPrefix</code>, default <code>#</code>), and three booleans - <code>PreserveComments</code>, <code>WriteInlineComments</code>, and
-<code>InsertBlankLineBetweenSections</code>. The <code>EditorConfigCompatible</code> preset suppresses inline comments; the <code>Normalized</code>
+(<code>NewLine</code>, default <code>\n</code>), the key/value separator (<code>KeyValueSeparator</code>, default <code>&quot; = &quot;</code>), and three booleans -
+<code>PreserveComments</code>, <code>WriteInlineComments</code>, and <code>InsertBlankLineBetweenSections</code>. <code>CommentPrefix</code> has no effect: every
+comment is written with the prefix it was read or created with. The <code>EditorConfigCompatible</code> preset suppresses inline comments; the <code>Normalized</code>
 preset (which is <code>For(ConfigurationProfile.Strict)</code>) additionally drops preserved comments for deterministic output.</p>
 <p>For documents the library <em>did not</em> produce - hand-authored INI files with idiosyncratic whitespace - the writer
-emits canonical formatting, so the round-trip is semantically stable but may rearrange incidental whitespace.</p>
+emits canonical formatting, so the round-trip is semantically stable but may rearrange incidental whitespace. Comment
+lines after the last entry of a file are read as leading comments of the section that holds that entry, so they are
+written above that section's header.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><strong><a href="getting-started.html">Getting started</a></strong> - install + runnable minimal samples.</li>
@@ -597,7 +617,7 @@ emits canonical formatting, so the round-trip is semantically stable but may rea
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

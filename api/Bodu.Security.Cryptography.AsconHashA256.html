@@ -8,7 +8,7 @@
       <meta name="title" content="AsconHashA256 Class
  | BODU ">
       
-      <meta name="description" content="Computes a hash using the ASCON-HASHA256 cryptographic hash algorithm as defined in NIST SP 800-232. Produces a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation during absorption over a 320-bit sponge state. This class cannot be inherited.">
+      <meta name="description" content="Computes a hash using the ASCON-HASHA256 cryptographic hash algorithm, the round-reduced Hasha variant of the Ascon v1.2 submission. Produces a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation over a 320-bit sponge state. This class cannot be inherited.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_AsconHashA256" data-uid="Bodu.Security.Cryptography.AsconHashA256" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 AsconHashA256 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/AsconHashA256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/AsconHashA256.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,14 +102,14 @@ AsconHashA256 Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/AsconHashA256.cs">AsconHashA256.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/AsconHashA256.cs">AsconHashA256.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm as defined in NIST SP 800-232. Produces
-a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation during absorption over a 320-bit sponge state.
-This class cannot be inherited.</p>
+  <div class="markdown summary"><p>Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm, the round-reduced Hasha variant of the
+Ascon v1.2 submission. Produces a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation over a 320-bit
+sponge state. This class cannot be inherited.</p>
 </div>
 
   <div class="codewrapper">
@@ -382,15 +382,21 @@ though still substantial - security margin.
 For the highest security margin, use <a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, which applies Ascon-p12 at every phase.
 </p>
 <p>
+<strong>Standard status.</strong> NIST SP 800-232 standardizes ASCON-HASH256, not this variant: ASCON-HASHA256 comes
+from the Ascon v1.2 lightweight-cryptography submission, which SP 800-232 did not adopt. Its initial state and
+digests match the ascon-c reference implementation. Where a standardized algorithm is required, use
+<a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>.
+</p>
+<p>
 <strong>Parameters at a glance.</strong>
 </p>
 <ul><li>Output size: 256 bits (32 bytes), fixed.</li><li>State: 320 bits sponge; rate: 64 bits (8 bytes).</li><li>
 Permutation: Ascon-p12 for initialization and the first squeeze; Ascon-p8 for absorption and subsequent squeezes.
-</li><li>Specification: NIST SP 800-232 (ASCON family).</li></ul>
+</li><li>Specification: the Ascon v1.2 submission (Hasha); not part of NIST SP 800-232.</li></ul>
 <p>
-<strong>When to choose ASCON-HASHA256.</strong> Pick this when ASCON-family interop is required and message
-throughput matters more than the extra round-count margin of <a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a> - typical for IoT gateways
-and lightweight protocols that hash sustained streams of telemetry. For maximum margin use
+<strong>When to choose ASCON-HASHA256.</strong> Pick this when interop with the Ascon v1.2 Hasha variant is required
+and message throughput matters more than the extra round-count margin of <a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a> - typical for
+IoT gateways and lightweight protocols that hash sustained streams of telemetry. For maximum margin use
 <a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>; for non-ASCON throughput-sensitive hashing on commodity hardware <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a>
 is faster still.
 </p>
@@ -406,7 +412,7 @@ is faster still.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_AsconHashA256__ctor" data-uid="Bodu.Security.Cryptography.AsconHashA256.#ctor">
   AsconHashA256()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/AsconHashA256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/AsconHashA256.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -445,7 +451,6 @@ is faster still.
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a></div>
-      <div><span><a href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</a></span></div>
   </div>
 
 </article>
@@ -464,7 +469,7 @@ is faster still.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

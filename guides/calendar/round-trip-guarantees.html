@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/calendar/round-trip-guarantees.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/round-trip-guarantees.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -135,8 +135,13 @@
 </tr>
 <tr>
 <td><code>Save(path)</code> → <code>Load(path)</code></td>
-<td><strong>Disk round-trip.</strong> Saving and re-loading a document (<code>.xml</code> or <code>.json</code>, format inferred from the extension) resolves identically.</td>
+<td><strong>Disk round-trip.</strong> Saving and re-loading a document (<code>.xml</code> or <code>.json</code>, format inferred from the extension) resolves identically. A <code>.bcal</code> save writes a binary rule pack, which <code>Load</code> rejects with <code>NotSupportedException</code>.</td>
 <td><code>…SaveLoad.SaveLoad_WhenXmlFile_ShouldRoundTripThroughDisk</code>, <code>…SaveLoad_WhenJsonFile_ShouldRoundTripThroughDisk</code></td>
+</tr>
+<tr>
+<td><code>SaveBinary(stream)</code> → <code>NotableDateResourceLoader.LoadBinary</code></td>
+<td><strong>Same resolved occurrences.</strong> A document compiled to a binary rule pack loads back as a resource that resolves the same dates as <code>Build()</code>. The pack holds only content the loader accepts: <code>SaveBinary</code> builds through the canonical loader, and <code>NotableDateBinaryResource.Write</code> runs the loader's identifier, range, enumeration, duplicate and cross-reference checks again before encoding.</td>
+<td><code>…SaveBinary.SaveBinary_WhenWrittenToStream_ShouldLoadWithResolutionParity</code></td>
 </tr>
 <tr>
 <td><code>Clone()</code></td>
@@ -147,12 +152,13 @@
 </table>
 <h2 id="xml-is-the-full-fidelity-format">XML is the full-fidelity format</h2>
 <p>Every document the builder can express serializes to XML, and builder-canonical XML round-trips byte-for-byte. The byte-identity guarantee applies to <strong>builder-emitted</strong> XML: parse the output of <code>ToXml()</code> (or a file written by <code>Save</code>) and re-serialize it, and you get the same bytes back.</p>
-<p>Hand-authored XML is normalized, not preserved: the builder parses into its object model and re-emits its canonical form, so insignificant whitespace, attribute ordering, XML comments, and alternative lexical forms from a hand-written file are replaced by the canonical rendering. What <em>is</em> guaranteed for any accepted XML - hand-authored or generated - is semantic equivalence: the re-emitted document builds a resource that resolves the same occurrences, which is the guarantee the bundled-catalogue sweep pins across every shipped catalogue.</p>
+<p>Hand-authored XML is normalized, not preserved: the builder parses into its object model and re-emits its canonical form, so insignificant whitespace, attribute ordering, XML comments, and alternative lexical forms from a hand-written file are replaced by the canonical rendering. What <em>is</em> guaranteed for any XML the loader accepts - hand-authored or generated - is semantic equivalence: the re-emitted document builds a resource that resolves the same occurrences, which is the guarantee the bundled-catalogue sweep pins across every shipped catalogue.</p>
+<p>Parsing is not validation, but <code>FromXml</code>, <code>FromJson</code>, and <code>Load</code> read every value with the loader's rules: an enumeration value must name a member (ignoring case; a number is not a name), <code>workingDays</code> must be the seven-character, Sunday-first binary pattern, an integer must be a 32-bit integer, a Boolean must be <code>true</code>, <code>false</code>, <code>1</code> or <code>0</code>, and a trigger <code>month</code> must be a month name or a number from 1 to 12. <code>FromJson</code> holds a JSON document to the values the XSD requires and the ranges it allows, as <code>LoadJson</code> does: a missing or <code>null</code> required property (the root's <code>schemaVersion</code> among them, for which <code>FromJson</code> supplies no default), an empty <code>rules</code> or <code>days</code> list, or an integer outside the XSD's range throws <code>FormatException</code> with the message of the loader's <code>BODU-CAL-SCHEMA</code> diagnostic rather than reading a default (pinned by <code>…FromJson.FromJson_WhenSchemaRequiredPropertyIsAbsent_ShouldThrowLoadersMessage</code> and <code>…FromJson_WhenIntegerIsOutsideSchemaRange_ShouldThrowLoadersMessage</code>). It holds each identifier, reference and territory code to the pattern the XSD requires of it, as <code>LoadJson</code> does, so <code>&quot;id&quot;: &quot;New-Year&quot;</code> throws <code>FormatException</code> with the message of the loader's <code>BODU-CAL-SCHEMA</code> diagnostic rather than reading and failing only at <code>Build</code> (pinned by <code>…FromJson.FromJson_WhenIdentifierBreaksSchemaPattern_ShouldThrowLoadersMessage</code>). It holds the attribute values of a strategy, a recurrence and an end strategy to the same rules as other values, and a strategy's month to the loader's month rules for the rule's calendar (pinned by <code>…FromJson.FromJson_WhenStrategyAttributeValueIsMalformed_ShouldThrowFormatException</code> and <code>…FromJson_WhenStrategyAttributeValueIsLoaderForm_ShouldBuildWhatLoadJsonLoads</code>). Any other value throws <code>FormatException</code> with the message of the loader's <code>BODU-CAL-ENUM</code>, <code>BODU-CAL-WORKING-DAYS</code>, <code>BODU-CAL-MONTH</code> or <code>BODU-CAL-VALUE</code> diagnostic, so a misspelled value is never read as a default, and a value the loader accepts (a JSON number in quotes, for example) reads as the loader reads it. The readers do not otherwise validate: a document the loader would reject for another reason, such as a dangling reference, can still parse, so the equivalence above holds only for input the loader accepts. Validate untrusted input with <code>Validate()</code> / <code>TryBuild(...)</code> or by loading it with <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>. <code>FromJson</code> reads text as the loader reads it too: a string verbatim, a number by its digits and a Boolean as <code>true</code> or <code>false</code> (so <code>&quot;displayName&quot;: 5</code> reads as the text <code>5</code>), and an item of a list of identifiers, territory codes or tags that is not a string throws <code>FormatException</code> with the message of the loader's <code>BODU-CAL-VALUE</code> diagnostic. The metadata, an adjustment policy's description and a rule's comment, which the loader does not read, accept the same scalars; an object or an array there throws <code>NotSupportedException</code>, since the builder holds those fields only as text. In any other field that holds a value, an object or an array throws <code>FormatException</code> with the message of the <code>BODU-CAL-VALUE</code> diagnostic the loader reports for it, as does a value of another kind in a property that holds an object or a list (<code>&quot;applicability&quot;: 5</code>, <code>&quot;tags&quot;: &quot;civic&quot;</code>), an object or an array in a list of names or years, or anything but an object in a list of concepts, rules, adjustment policies, imports, uses or overrides (pinned by <code>…FromJson.FromJson_WhenObjectListHoldsNonObjectItem_ShouldThrowFormatException</code>), while the JSON literal <code>null</code> reads as absent in both. Both readers name such a value or item by its JSON kind rather than quoting it, so the messages match however the document is spaced (pinned by <code>…FromJson.FromJson_WhenScalarValueHoldsSpacedObjectOrArray_ShouldThrowLoadersMessage</code> and <code>…FromJson_WhenListItemIsSpacedObjectOrArray_ShouldThrowLoadersMessage</code>). <code>FromJson</code> matches property names ignoring case, as the loader does, so <code>&quot;Strategy&quot;</code> and <code>&quot;Month&quot;</code> read as <code>&quot;strategy&quot;</code> and <code>&quot;month&quot;</code>, writes each strategy and recurrence attribute under its schema name, and ignores a property the loader does not read, such as a note in a strategy (pinned by <code>…FromJson.FromJson_WhenPropertyNameDiffersInCase_ShouldBuildWhatLoadJsonLoads</code> and <code>…FromJson_WhenOccurrenceSourceHoldsPropertyTheLoaderIgnores_ShouldBuildWhatLoadJsonLoads</code>). A rule's <code>strategy</code> and <code>recurrence</code>, and a <code>PatchRule</code> override's when it carries either, must name exactly one recognized kind between them, matched ignoring case as the loader matches it, and an <code>untilDate</code> must declare an end strategy that names exactly one, or <code>FromJson</code> throws <code>FormatException</code> with the message of the loader's <code>BODU-CAL-RULE-SOURCE</code>, <code>BODU-CAL-DURATION-NOEND</code> or <code>BODU-CAL-DURATION-CONFLICT</code> diagnostic, rather than building the rule, the patch or the span without the source or with the first kind alone. An override's <code>operation</code> is matched ignoring case, as the loader matches it; one that is absent or names no operation throws <code>FormatException</code> with the message of the loader's <code>BODU-CAL-ENUM</code> diagnostic rather than being read as a <code>PatchRule</code>, and an <code>AddRule</code> override without a <code>rule</code> throws with the message of its <code>BODU-CAL-SCHEMA</code> diagnostic rather than adding a rule with an empty identifier (pinned by <code>…FromJson.FromJson_WhenOverrideOperationIsUnrecognized_ShouldThrowFormatException</code> and <code>…FromJson_WhenAddRuleHasNoRule_ShouldThrowFormatException</code>).</p>
 <h2 id="json-is-a-subset---the-lossiness-runs-one-way">JSON is a subset - the lossiness runs one way</h2>
 <p><code>ToJson()</code> emits the narrower JSON-subset form. The subset is closed under round-trip in both directions <strong>once a document is inside it</strong>:</p>
 <ul>
 <li><strong>JSON → builder → JSON</strong> is identity.</li>
-<li><strong>JSON → builder → XML</strong> always succeeds, normalizing JSON lexical forms into the canonical XML rendering (a numeric month becomes its English name, Boolean flags become lowercase literals, <code>null</code> attributes become empty attributes - pinned by <code>…JsonSubset.FromJson_WhenStrategyAttributeVaries_ShouldNormalizeInXml</code>).</li>
+<li><strong>JSON → builder → XML</strong> succeeds for any document <code>FromJson</code> accepts, normalizing JSON lexical forms into the canonical XML rendering (a numeric month becomes its English name, except a fixed month on a rule in a calendar other than the Gregorian, which keeps its number; Boolean flags become lowercase literals; a weekday, ordinal or direction named in another case becomes the member's name; and an attribute named in another case takes its schema name - pinned by <code>…JsonSubset.FromJson_WhenStrategyAttributeVaries_ShouldNormalizeInXml</code>; a <code>null</code> attribute is left out, as the loader reads it as absent - pinned by <code>…JsonSubset.FromJson_WhenStrategyAttributeIsNull_ShouldOmitItFromXml</code>).</li>
 <li><strong>XML → builder → JSON</strong> is the lossy direction. A document using a feature outside the subset throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> from <code>ToJson()</code> / <code>ToJsonObject()</code> / <code>Save(*.json)</code> naming the offending feature - it never silently drops it.</li>
 </ul>
 <p>Features outside the JSON subset (each rejection pinned by <code>…JsonSubset.ToJson_WhenDocumentUsesUnsupportedJsonFeature_ShouldThrowNotSupportedException</code> and the <code>…Serialization</code> import/calendar cases):</p>
@@ -185,22 +191,51 @@
 <td>Adjustment policies</td>
 </tr>
 <tr>
-<td>Scope year bounds (<code>FromYear</code> / <code>ToYear</code> / <code>OnlyYears</code> / <code>ExceptYears</code>) and notable-date / rule scope references</td>
+<td>Scope year bounds (<code>FromYear</code> / <code>ToYear</code> / <code>OnlyYear</code> / <code>ExceptYear</code>) and notable-date / rule scope references</td>
 <td>Adjustment scopes</td>
 </tr>
 <tr>
-<td>Override patches carrying applicability, strategy, tag, or adjustment changes</td>
+<td>Override patches carrying applicability, strategy, recurrence, duration-end, tag, or adjustment changes</td>
 <td>Overrides</td>
 </tr>
 </tbody>
 </table>
 <p>Serialize such documents as XML. Scopes confined to territories, calendars, and categories - and lunisolar strategy flags - are inside the subset and round-trip through JSON unchanged.</p>
+<p>The subset limits only what <code>ToJson()</code> writes. <code>FromJson</code> reads every field <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a> reads from JSON, the features above included, so <code>FromJson(json).Build()</code> produces the same resource as <code>NotableDateResourceLoader.LoadJson(json)</code> for any document both accept (pinned by <code>…FromJson.FromJson_WhenDocumentDeclaresField_ShouldBuildWhatLoadJsonLoads</code>, which compares the two as binary rule packs). A few JSON fields have no counterpart in the builder's document model, whose full form is the XML schema, and <code>FromJson</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> for them rather than dropping them:</p>
+<table>
+<thead>
+<tr>
+<th>JSON field the builder cannot hold</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An empty <code>tags</code> or <code>adjustments</code> list on a <code>PatchRule</code> override</td>
+<td>The loader reads an empty list as &quot;clear the rule's list&quot;; the schema has no empty <code>&lt;Tags&gt;</code> or <code>&lt;Adjustments&gt;</code> element.</td>
+</tr>
+<tr>
+<td>An empty <code>adjustments</code> list on an import <code>use</code></td>
+<td>The same, for the imported concept's rules.</td>
+</tr>
+<tr>
+<td>A scope <code>ruleRefs</code> item that is a bare rule identifier, which names no <code>notableDateRef</code></td>
+<td>The schema's scope <code>&lt;Rule&gt;</code> element requires both references. An object without either throws <code>FormatException</code> with the loader's <code>BODU-CAL-SCHEMA</code> message.</td>
+</tr>
+<tr>
+<td>A handler parameter whose value is an object or an array</td>
+<td>The loader keeps it as its original JSON text, which a parsed document no longer carries.</td>
+</tr>
+</tbody>
+</table>
+<p>Load such documents with <code>NotableDateResourceLoader.LoadJson</code> instead.</p>
 <h2 id="build-parity-what-you-serialize-is-what-the-runtime-loads">Build parity: what you serialize is what the runtime loads</h2>
 <p><code>Build()</code> does not maintain a private assembly path: it serializes the document to XML and loads it through the canonical <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, so validation and assembly behave identically whether a document is built in-process or shipped as a file and loaded by the runtime. The same applies to the JSON form: a JSON document loaded through the loader's JSON entry point assembles a resource equivalent to <code>Build()</code> (<code>…Serialization.ToJson_WhenLoadedByResourceLoader_ShouldAssembleEquivalentResource</code>).</p>
 <h2 id="what-is-not-guaranteed">What is not guaranteed</h2>
 <ul>
 <li><strong>Byte identity for hand-authored input.</strong> Formatting, comments, and lexical variants are normalized to the canonical form (see above).</li>
 <li><strong>JSON representability of every document.</strong> XML → JSON throws for features outside the subset; it never degrades the document.</li>
+<li><strong>Revalidation of a binary rule pack on load.</strong> <code>LoadBinary</code> checks a pack's structure, enumeration values, references, model-constructor domains and digest, but not the loader's identifier, range, duplicate and cross-reference rules, which <code>Write</code> applied before encoding. A pack not produced by <code>Write</code>, such as one edited by hand, is not revalidated; load the document it was compiled from to validate it.</li>
 <li><strong>Stability of the canonical rendering across library versions.</strong> The canonical XML/JSON layout may evolve between versions; the semantic (resolved-occurrence) guarantees are the durable contract. Do not diff canonical output across different library versions as a change-detection mechanism.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
@@ -228,7 +263,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

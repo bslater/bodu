@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_Algorithms_WeekdayNearRuleStrategy" data-uid="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 WeekdayNearRuleStrategy Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ WeekdayNearRuleStrategy Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Algorithms.html">Algorithms</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs">WeekdayNearRuleStrategy.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs">WeekdayNearRuleStrategy.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Calculates a weekday on, before, after, or nearest to the date produced by another rule, such as the first Monday
@@ -207,7 +207,7 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_WeekdayNearRuleStrategy__ctor_System_String_System_String_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_System_Int32_" data-uid="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.#ctor(System.String,System.String,System.DayOfWeek,Bodu.Globalization.Calendar.WeekdayProximity,System.Int32)">
   WeekdayNearRuleStrategy(string, string?, DayOfWeek, WeekdayProximity, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -251,6 +251,11 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p><code class="paramref">notableDateRef</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">notableDateRef</code>, or a <code class="paramref">ruleRef</code> that is not <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, is not
+an identifier a notable-date document could declare: groups of lowercase ASCII letters and digits joined by
+single hyphens, beginning with a letter.</p>
+</dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
     <dd><p><code class="paramref">dayOfWeek</code> or <code class="paramref">direction</code> is not a defined enumeration value.</p>
 </dd>
@@ -269,7 +274,7 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_WeekdayNearRuleStrategy_DayOfWeek" data-uid="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.DayOfWeek">
   DayOfWeek
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -306,7 +311,7 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_WeekdayNearRuleStrategy_Direction" data-uid="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.Direction">
   Direction
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -343,7 +348,7 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_WeekdayNearRuleStrategy_NotableDateRef" data-uid="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.NotableDateRef">
   NotableDateRef
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -380,7 +385,7 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_WeekdayNearRuleStrategy_ReferenceYearOffset" data-uid="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.ReferenceYearOffset">
   ReferenceYearOffset
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -417,7 +422,7 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_WeekdayNearRuleStrategy_RuleRef" data-uid="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.RuleRef">
   RuleRef
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -458,7 +463,7 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_WeekdayNearRuleStrategy_Calculate_System_Int32_Bodu_Globalization_Calendar_Algorithms_StrategyResolutionContext_" data-uid="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.Calculate(System.Int32,Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext)">
   Calculate(int, StrategyResolutionContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/WeekdayNearRuleStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -533,7 +538,7 @@ var strategy = new WeekdayNearRuleStrategy("easter-sunday", null, DayOfWeek.Mond
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

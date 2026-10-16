@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/topics/core-foundations.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/topics/core-foundations.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="core-foundations---guides">Core Foundations - Guides</h1>
 
-<p>Recipe-style walk-throughs for the <strong>Core Foundations</strong> topic - the <code>Bodu.Core</code>, <code>Bodu.Collections</code>, and <code>Bodu.Collections.Concurrent</code> packages, plus the <code>Bodu.Text</code> namespace that ships inside <code>Bodu.Core</code>. These are the building blocks the rest of the suite stands on: bounded collections, eviction-aware caches, pooled buffers, day-of-week patterns, argument guards, and character-encoding helpers.</p>
+<p>Recipe-style walk-throughs for the <strong>Core Foundations</strong> topic - the <code>Bodu.Core</code>, <code>Bodu.Collections</code>, and <code>Bodu.Collections.Concurrent</code> packages, plus the <code>Bodu.Text</code> namespace that ships inside <code>Bodu.Core</code>. These are the building blocks the rest of the suite stands on: bounded collections, eviction-aware caches, pooled buffers, day-of-week and other calendar value sets, argument guards, and character-encoding helpers.</p>
 <p>If you have not yet installed the packages, start with the <a href="../../docs/topics/core-foundations.html">topic overview</a> for the package map and install commands, and the <a href="../../docs/topics/core-foundations-concepts.html">topic concepts page</a> for the shared vocabulary.</p>
 <h2 id="guides-for-the-package-family">Guides for the package family</h2>
 <div class="bodu-cards">
@@ -112,18 +112,22 @@
   <p><code>PooledBufferBuilder&lt;T&gt;</code> - <code>ArrayPool</code>-backed building of byte and character spans without allocation, with the ownership and lifetime rules.</p>
 </div>
 <div class="bodu-card">
-  <h3><a href="../core/week-pattern.html">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for day-of-week sets - composition (<code>MTuW</code>), bitwise operators, parsing, and enumeration.</p>
+  <h3><a href="../core/day-of-week-set.html">DayOfWeekSet</a></h3>
+  <p>Immutable set of days of the week - set operators, enumeration, working-week presets, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../core/calendar-value-sets.html">Calendar value sets</a></h3>
+  <p>Immutable sets of months, days of the month, hours, minutes, and seconds - set operators, enumeration, a list form (<code>1-3,12</code>), a list without ranges (<code>L</code>), binary (<code>B</code>), a mask of initials for months (<code>J</code>), and the <code>ICalendarValueSet&lt;TSelf, TValue&gt;</code> interface they share with <code>DayOfWeekSet</code>.</p>
 </div>
 </div>
 <h2 id="bodutext">Bodu.Text</h2>
-<p>The <code>Bodu.Text</code> character-encoding helpers (BOM detection, span- and UTF-8-friendly transcoding, preamble handling, validation) have their own guide - <strong><a href="../text-encoding/encoding-helpers.html">Encoding helpers and BOM detection</a></strong> - which walks every surface pattern by pattern. Pair it with the <a href="../../docs/text/index.html">Bodu.Text introduction</a> for the scenario map and the <a class="xref" href="../../api/Bodu.Text.html">Bodu.Text API reference</a> for the type-by-type docs.</p>
+<p>The <code>Bodu.Text</code> character-encoding helpers (BOM detection, span- and UTF-8-friendly transcoding, preamble handling, validation) have their own guide - <strong><a href="../core/encoding-helpers.html">Encoding helpers and BOM detection</a></strong> - which walks every surface pattern by pattern. Pair it with the <a href="../../docs/text/index.html">Bodu.Text introduction</a> for the scenario map and the <a class="xref" href="../../api/Bodu.Text.html">Bodu.Text API reference</a> for the type-by-type docs.</p>
 <h2 id="start-here">Start here</h2>
 <ol>
 <li><strong><a href="../../docs/topics/core-foundations.html">Topic overview</a></strong> - what ships in each package, the dependency map, and the &quot;which do I need?&quot; table.</li>
 <li><strong><a href="../../docs/topics/core-foundations-concepts.html">Topic concepts</a></strong> - the guard convention, bounded vs. growable capacity, eviction policies, pooled buffers, and the encoding vocabulary.</li>
 <li><strong><a href="../core/choosing-a-collection.html">Choosing a collection</a></strong> - pick the right type before writing code against the wrong one.</li>
-<li><strong>The walk-through for your type</strong> - <a href="../core/circular-buffer.html">circular buffer</a>, <a href="../core/evicting-dictionary.html">evicting dictionary</a>, <a href="../core/pooled-buffer-builder.html">pooled buffer builder</a>, or <a href="../core/week-pattern.html">WeekPattern</a>; the <a href="../core/index.html">guide overview</a> lists the rest (deque, indexed priority queue, ordered sets, multiset, multi-value dictionary, range-keyed lookups, segmented buffer, concurrent collections).</li>
+<li><strong>The walk-through for your type</strong> - <a href="../core/circular-buffer.html">circular buffer</a>, <a href="../core/evicting-dictionary.html">evicting dictionary</a>, <a href="../core/pooled-buffer-builder.html">pooled buffer builder</a>, or <a href="../core/day-of-week-set.html">DayOfWeekSet</a>; the <a href="../core/index.html">guide overview</a> lists the rest (deque, indexed priority queue, ordered sets, multiset, multi-value dictionary, range-keyed lookups, segmented buffer, concurrent collections).</li>
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
@@ -152,7 +156,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

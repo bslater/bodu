@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/cryptography/ascon-xof.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/ascon-xof.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -111,7 +111,7 @@ and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST 
 <tr>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></td>
 <td><code>ASCON-CXOF128</code></td>
-<td>Optional customization string</td>
+<td>Customization string (<code>Customize</code>; an empty span for the empty string)</td>
 <td>Multiple independent output functions from the same primitive.</td>
 </tr>
 </tbody>
@@ -138,7 +138,7 @@ and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST 
 </tr>
 <tr>
 <td>Absorption rounds</td>
-<td>8 (Ascon-p8)</td>
+<td>12 (Ascon-p12)</td>
 <td>Applied after each absorbed block.</td>
 </tr>
 <tr>
@@ -148,7 +148,7 @@ and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST 
 </tr>
 <tr>
 <td>Squeeze permutation</td>
-<td>8 (Ascon-p8)</td>
+<td>12 (Ascon-p12)</td>
 <td>Applied between successive squeeze blocks.</td>
 </tr>
 <tr>
@@ -171,8 +171,8 @@ and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST 
 <li><strong>Reset</strong> - call <code>Initialize()</code> to discard all state and start a fresh message.</li>
 </ol>
 <p><code>Absorb</code> after <code>Squeeze</code> has started throws <code>InvalidOperationException</code>. Call <code>Initialize()</code> to
-reset. For <code>AsconCxof128</code>, there is a fourth phase before absorption: an optional call to
-<code>Customize</code>.</p>
+reset. For <code>AsconCxof128</code>, there is a fourth phase before absorption: a call to <code>Customize</code>,
+which SP 800-232 always performs (see Pattern 7).</p>
 <h2 id="pattern-1---producing-output-of-a-fixed-length">Pattern 1 - producing output of a fixed length</h2>
 <p>The simplest path: absorb a message, squeeze an exact number of bytes.</p>
 <!-- compile -->
@@ -257,7 +257,7 @@ for (int i = 0; i &lt; 1024; i++)
 <p>This is useful for generating large amounts of deterministic pseudo-random material from a fixed
 seed - effectively a stream cipher output.</p>
 <h2 id="pattern-6---cxof128-with-a-customization-string">Pattern 6 - CXOF128 with a customization string</h2>
-<p><code>AsconCxof128</code> extends the XOF lifecycle with an optional customization step before absorption.
+<p><code>AsconCxof128</code> extends the XOF lifecycle with a customization step before absorption.
 Two instances with different customization strings produce completely independent outputs for the
 same absorbed input.</p>
 <!-- compile -->
@@ -280,28 +280,30 @@ byte[] macKey = macXof.GetHash(32);
 
 // encKey != macKey, even though message is identical.
 </code></pre>
-<p>Call <code>Customize</code> <strong>before</strong> any call to <code>Absorb</code>. Calling it afterwards, or calling it a second
-time on the same instance, throws <code>InvalidOperationException</code>. Call <code>Initialize()</code> to reset and
+<p>Call <code>Customize</code> <strong>before</strong> any call to <code>Absorb</code>. Calling it after <code>Absorb</code>, or calling it a
+second time on the same instance, throws <code>InvalidOperationException</code>. Call <code>Initialize()</code> to reset and
 allow a fresh <code>Customize</code>.</p>
 <h3 id="customization-string-semantics">Customization string semantics</h3>
-<p>The customization string is absorbed into the sponge using the standard Ascon padding rule, and
-then a domain-separation constant (XOR of 1 into state word S₄) is injected before the message
-absorption phase begins. This ensures:</p>
+<p><code>Customize</code> absorbs the bit length of the customization string <code>Z</code>, encoded as a 64-bit
+little-endian integer, then the bytes of <code>Z</code>, and closes the phase with the standard Ascon
+padding and the 12-round permutation before message absorption begins. Together with
+ASCON-CXOF128's own initialization vector, which differs from ASCON-XOF128's, this ensures:</p>
 <ul>
 <li>Two instances with different customization strings produce unrelated output.</li>
-<li>An instance with an empty customization string produces output that differs from
-<code>AsconXof128</code> for the same message (because the domain-separation constant is always applied).</li>
+<li>ASCON-CXOF128 output never equals <code>AsconXof128</code> output for the same message, whatever the
+customization string, the empty string included.</li>
 <li>The customization string may be public - it is not a secret.</li>
 </ul>
 <h2 id="pattern-7---empty-customization-string-not-the-same-as-no-customization">Pattern 7 - empty customization string (not the same as no customization)</h2>
-<p>Calling <code>Customize(ReadOnlySpan&lt;byte&gt;.Empty)</code> still applies the ASCON-CXOF128 domain separation.
-The output differs from <code>AsconXof128</code> even with no customization bytes:</p>
+<p>Calling <code>Customize(ReadOnlySpan&lt;byte&gt;.Empty)</code> still absorbs the length prefix of the empty
+string, as SP 800-232 requires. The output differs from <code>AsconXof128</code> even with no customization
+bytes:</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
 byte[] message = [0x01, 0x02, 0x03, 0x04];
 
 using AsconCxof128 cxof = new AsconCxof128();
-cxof.Customize(ReadOnlySpan&lt;byte&gt;.Empty);   // empty string - domain separation still applied
+cxof.Customize(ReadOnlySpan&lt;byte&gt;.Empty);   // empty string - its length prefix is still absorbed
 cxof.Absorb(message);
 byte[] cxofOutput = cxof.GetHash(32);
 
@@ -309,9 +311,10 @@ byte[] xofOutput = AsconXof128.HashData(message, 32);
 
 // cxofOutput != xofOutput
 </code></pre>
-<p>If <code>Customize</code> is not called at all, <code>AsconCxof128</code> operates without the customization domain
-separation - identically to a plain <code>AsconXof128</code> for the same absorbed input. The
-customization step is optional by design.</p>
+<p>If <code>Customize</code> is not called at all, <code>AsconCxof128</code> absorbs no customization block, so its
+output matches neither ASCON-CXOF128 with the empty string nor <code>AsconXof128</code> (the two start from
+different initialization vectors). SP 800-232 always absorbs <code>Z</code>, so call <code>Customize</code> - with an
+empty span for the empty string - whenever the output must match the standard.</p>
 <h2 id="pattern-8---reusing-an-instance">Pattern 8 - reusing an instance</h2>
 <p>Call <code>Initialize()</code> to reset the sponge and reuse the instance for a new message:</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -380,7 +383,7 @@ called again on the reset instance.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

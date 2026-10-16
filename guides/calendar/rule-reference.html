@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/calendar/rule-reference.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/rule-reference.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -125,7 +125,7 @@
 <h3 id="metadata---descriptive-provenance"><code>&lt;Metadata&gt;</code> - descriptive provenance</h3>
 <p><code>&lt;Metadata&gt;</code> is optional and carries an optional <code>&lt;Name&gt;</code>, an optional <code>&lt;Description&gt;</code>, and zero or more <code>&lt;Source&gt;</code> string entries. It is documentation only - it does not affect resolution.</p>
 <h3 id="resolutionpolicy---resource-level-reconciliation"><code>&lt;ResolutionPolicy&gt;</code> - resource-level reconciliation</h3>
-<p><code>&lt;ResolutionPolicy&gt;</code> is optional; an absent element means <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a><code>.Default</code>. It maps to the loaded <code>ResolutionPolicy</code> and decides how the resource reconciles duplicates and collisions and which date controls range inclusion.</p>
+<p><code>&lt;ResolutionPolicy&gt;</code> is optional; an absent element means <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a><code>.Default</code>. It maps to the loaded <code>ResolutionPolicy</code> and decides how duplicate declarations, same-day collisions and overlapping spans are settled, which span of an occurrence controls range inclusion, and which days are the working week.</p>
 <table>
 <thead>
 <tr>
@@ -140,19 +140,19 @@
 <td><code>duplicatePolicy</code></td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a></td>
 <td><code>Error</code></td>
-<td>Reconciles <em>identical</em> occurrences: <code>Error</code>, <code>KeepFirst</code>, <code>KeepLast</code>, <code>Merge</code>.</td>
+<td>Settles the concepts and rules this document declares with one id, at load: <code>Error</code> reports <code>BODU-CAL-DUP-ND</code> / <code>BODU-CAL-DUP-RULE</code>, <code>KeepFirst</code> and <code>KeepLast</code> keep one declaration, <code>Merge</code> appends a later concept's rules to the first. Imports and <code>&lt;AddRule&gt;</code> overrides keep their own rules.</td>
 </tr>
 <tr>
 <td><code>sameDayCollisionPolicy</code></td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></td>
 <td><code>KeepAll</code></td>
-<td>Settles <em>distinct</em> rules on the same day: <code>KeepAll</code>, <code>HighestPriorityOnly</code>, <code>CategoryPriority</code>, <code>Custom</code>.</td>
+<td>Settles <em>distinct</em> occurrences that share an emitted date: <code>KeepAll</code>, <code>HighestPriorityOnly</code>, <code>CategoryPriority</code>, <code>Custom</code>.</td>
 </tr>
 <tr>
 <td><code>spanCollisionPolicy</code></td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></td>
 <td><code>KeepAll</code></td>
-<td>Settles overlapping multi-day spans (same value set).</td>
+<td>Settles, after the same-day groups, every chain of occurrences connected through overlapping spans that holds a multi-day occurrence (same value set).</td>
 </tr>
 <tr>
 <td><code>priorityDirection</code></td>
@@ -164,13 +164,13 @@
 <td><code>observedDateRangePolicy</code></td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a></td>
 <td><code>ObservedOccurrenceControlsInclusion</code></td>
-<td>Which occurrence date governs range-query inclusion: <code>ObservedOccurrenceControlsInclusion</code>, <code>ActualOccurrenceControlsInclusion</code>, <code>BothOccurrencesControlInclusion</code>.</td>
+<td>Which span a range query tests: the emitted span (<code>ObservedOccurrenceControlsInclusion</code>), the actual span (<code>ActualOccurrenceControlsInclusion</code>), or either (<code>BothOccurrencesControlInclusion</code>).</td>
 </tr>
 <tr>
 <td><code>workingDays</code></td>
 <td>week pattern</td>
 <td>Mon-Fri</td>
-<td>The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. <code>0111110</code> = Mon-Fri). Maps to <code>ResolutionPolicy.WorkingWeek</code> (a <code>Bodu.Core</code> <code>WeekPattern</code>).</td>
+<td>The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. <code>0111110</code> = Mon-Fri). Maps to <code>ResolutionPolicy.WorkingWeek</code> (a <code>Bodu.Core</code> <code>DayOfWeekSet</code>). Only the binary form is accepted: any other value, a letter mask such as <code>_MTWTF_</code> included, fails the load with <code>BODU-CAL-WORKING-DAYS</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -243,10 +243,10 @@
   &lt;/Rules&gt;
 &lt;/NotableDate&gt;
 </code></pre>
-<p>A <code>&lt;Tags&gt;</code> block contains one or more <code>&lt;Tag value=&quot;...&quot;/&gt;</code> elements. Concept-level tags apply to every rule; a rule may add its own <code>&lt;Tags&gt;</code> block. Tags survive into <code>NotableDate.Tags</code> and are matched by <code>NotableDateFilter.WithTag</code> / <code>WithAnyTag</code> / <code>WithAllTags</code>.</p>
+<p>A <code>&lt;Tags&gt;</code> block contains one or more <code>&lt;Tag value=&quot;...&quot;/&gt;</code> elements. Concept-level tags apply to every rule that declares none of its own; a rule's own <code>&lt;Tags&gt;</code> block replaces the concept's tags for that rule. Tags survive into <code>NotableDate.Tags</code> and are matched by <code>NotableDateFilter.WithTag</code> / <code>WithAnyTag</code> / <code>WithAllTags</code>.</p>
 <hr>
 <h2 id="rule---the-recipe"><code>&lt;Rule&gt;</code> - the recipe</h2>
-<p>A <code>&lt;Rule&gt;</code> is one calculation recipe for its concept. It contains, <strong>in order</strong>, an optional <code>&lt;Applicability&gt;</code>, exactly one <code>&lt;Strategy&gt;</code>, an optional <code>&lt;Tags&gt;</code>, and an optional <code>&lt;Adjustments&gt;</code>.</p>
+<p>A <code>&lt;Rule&gt;</code> is one calculation recipe for its concept. It contains, <strong>in order</strong>, an optional <code>&lt;Applicability&gt;</code>, exactly one <code>&lt;Strategy&gt;</code> or <code>&lt;Recurrence&gt;</code>, an optional <code>&lt;Duration&gt;</code>, an optional <code>&lt;Tags&gt;</code>, and an optional <code>&lt;Adjustments&gt;</code>.</p>
 <table>
 <thead>
 <tr>
@@ -270,7 +270,7 @@
 <td>No</td>
 <td>int</td>
 <td><code>0</code></td>
-<td>Tie-break weight when several occurrences share a day; how it is applied is governed by the resource's <code>priorityDirection</code>.</td>
+<td>Tie-break weight when several occurrences share a day, applied per the resource's <code>priorityDirection</code>. It also orders observed-date placement among occurrences with the same actual date, the higher value first.</td>
 </tr>
 <tr>
 <td><code>category</code></td>
@@ -405,7 +405,7 @@
 <td><code>month</code></td>
 <td>Yes</td>
 <td>string</td>
-<td>Month number <code>1</code>-<code>12</code> or an English month name.</td>
+<td>Month number <code>1</code>-<code>12</code> or an English month name. In another calendar, a month number up to the most months its year can have (<code>1</code>-<code>13</code> in the Hebrew calendar, and in the Chinese lunisolar calendar unless <code>skipLeapMonth</code> is set; <code>1</code>-<code>12</code> in the Hijri, Umm al-Qura and Persian calendars) or, in the Hebrew calendar alone, a Hebrew month name. A month name matches ignoring case.</td>
 </tr>
 <tr>
 <td><code>day</code></td>
@@ -614,7 +614,7 @@
   &lt;/Rules&gt;
 &lt;/NotableDate&gt;
 </code></pre>
-<p>The referenced rule is resolved first and the offset applied - this is how Good Friday and Easter Monday hang off Easter Sunday. References are resolved cycle-safely within the resource; a self- or mutually-referential chain is reported rather than looping. When the referenced rule produces no occurrence for the year, the offset rule produces none in turn.</p>
+<p>The referenced rule is resolved first and the offset applied - this is how Good Friday and Easter Monday hang off Easter Sunday. References are resolved cycle-safely within the resource: a self- or mutually-referential chain is not reported by validation; it is broken when the dates are resolved, and the rules caught in it produce no occurrence. When the referenced rule produces no occurrence for the year, the offset rule produces none in turn.</p>
 <h3 id="algorithm---dispatch-to-a-named-calculator"><code>&lt;Algorithm&gt;</code> - dispatch to a named calculator</h3>
 <table>
 <thead>
@@ -679,7 +679,7 @@
   &lt;Recurrence&gt;&lt;MonthlyWeekday dayOfWeek=&quot;Friday&quot; weekOrdinal=&quot;Last&quot; /&gt;&lt;/Recurrence&gt;
 &lt;/Rule&gt;
 </code></pre>
-<p><code>anchorDate</code> is an ISO-8601 <code>yyyy-MM-dd</code> date. A rule declaring both <code>&lt;Strategy&gt;</code> and <code>&lt;Recurrence&gt;</code>, or neither, is rejected at load time.</p>
+<p><code>anchorDate</code> is an ISO-8601 <code>yyyy-MM-dd</code> date. A rule declaring both <code>&lt;Strategy&gt;</code> and <code>&lt;Recurrence&gt;</code>, or neither, is rejected at load time with <code>BODU-CAL-RULE-SOURCE</code>, in XML and JSON alike.</p>
 <hr>
 <h2 id="duration---a-calculated-span"><code>&lt;Duration&gt;</code> - a calculated span</h2>
 <p>A rule's span is either the fixed <code>durationDays</code> attribute (above) or a calculated <code>&lt;Duration&gt;&lt;UntilDate&gt;</code> whose end is computed by a second <code>&lt;Strategy&gt;</code>. A rule declares one or the other, never both. The end strategy is evaluated for the start anchor's civil year and, when that yields nothing acceptable, the following year - so the span can cross the year boundary and vary in length. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.html">CalculatedEndDateDurationDefinition</a>.</p>
@@ -842,11 +842,11 @@
 </tr>
 <tr>
 <td><code>MoveToNextWeekday</code> / <code>MoveToPreviousWeekday</code></td>
-<td>Moves to the next / previous working-week day.</td>
+<td>Moves to the <code>dayOfWeek</code> on or after / on or before the actual date, ignoring the working week and other holidays. Without <code>dayOfWeek</code> the date is unchanged.</td>
 </tr>
 <tr>
 <td><code>MoveToNextWorkingDay</code> / <code>MoveToPreviousWorkingDay</code></td>
-<td>Skips past non-working days (honouring <code>skipWeekends</code> / <code>skipNonWorkingDates</code>, capped by <code>maxSearchDays</code>) to the next / previous working day.</td>
+<td>Starting the day after / before the actual date, skips the days <code>skipWeekends</code> (default <code>true</code>) and <code>skipNonWorkingDates</code> (default <code>false</code>) block, scanning at most <code>maxSearchDays</code> days (default <code>7</code>; at the bound the last day scanned is used).</td>
 </tr>
 <tr>
 <td><code>ReplaceWithRule</code></td>
@@ -863,7 +863,7 @@
 </tbody>
 </table>
 <h3 id="emission---what-is-emitted"><code>&lt;Emission&gt;</code> - what is emitted</h3>
-<p><code>&lt;Emission&gt;</code> has a required <code>mode</code> (a <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a> value) and optional <code>reason</code> and <code>nonWorking</code> attributes. The <code>reason</code> is carried into <code>NotableDate.AdjustmentReason</code>.</p>
+<p><code>&lt;Emission&gt;</code> has a required <code>mode</code> (a <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a> value) and optional <code>reason</code> and <code>nonWorking</code> attributes. The <code>reason</code> is carried into <code>NotableDate.AdjustmentReason</code>; <code>nonWorking</code>, when set, replaces the rule's flag on the observed occurrence (<code>NotableDate.IsNonWorkingDay</code>) and decides whether it claims its day.</p>
 <table>
 <thead>
 <tr>
@@ -921,7 +921,7 @@
 <tr>
 <td><code>IsObserved</code></td>
 <td><code>bool</code></td>
-<td>Whether <code>Date</code> differs from <code>ActualDate</code> because an adjustment applied.</td>
+<td>Whether this is the observed occurrence emitted by a fired adjustment policy; <code>Date</code> can equal <code>ActualDate</code> when the action left it unchanged.</td>
 </tr>
 <tr>
 <td><code>EndDate</code></td>
@@ -1076,7 +1076,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

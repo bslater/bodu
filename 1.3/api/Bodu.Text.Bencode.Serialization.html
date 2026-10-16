@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.Bencode.Serialization Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.Bencode.Serialization Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Text.Bencode.Serialization.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text.Bencode.Serialization">
+
+
+  <h1 id="Bodu_Text_Bencode_Serialization" data-uid="Bodu.Text.Bencode.Serialization" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Text.Bencode.Serialization Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Bencode">Bodu.Text.Bencode</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-bencode.svg" alt="Bodu.Text.Bencode.Serialization"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Bencode.Serialization</strong> holds the extensibility surface of the <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a>: the converter base types you derive from to control how a CLR type is written and read, and the built-in enum converters. A converter reads through the <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> and writes through the <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a>. The attribute family, naming policies, and serialization callbacks it works with are shared across formats and live in <a class="xref" href="Bodu.Text.Serialization.html">Bodu.Text.Serialization</a>.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter.html">BencodeConverter</a> - the non-generic root (<code>CanConvert</code>) that <code>BencodeSerializerOptions.Converters</code> holds.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a> - the per-type base: implement <code>Read</code> and <code>Write</code> for <code>T</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a> - the base for converter families: <code>CanConvert</code> plus <code>CreateConverter</code> for a closed type.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.html">BencodeStringEnumConverter</a> / <a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter-1.html">BencodeStringEnumConverter&lt;TEnum&gt;</a> - enums as member-name byte strings, with an optional <a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> and an integer fallback that, turned off, also rejects a byte string holding an integer and refuses to write a value that is neither a member nor a combination of flags.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter-1.html">BencodeNumberEnumConverter&lt;TEnum&gt;</a> - enums as their underlying integer.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode;
+using Bodu.Text.Bencode.Reader;
+using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Bencode.Writer;
+
+public sealed class VersionConverter : BencodeConverter&lt;Version&gt;
+{
+    public override Version Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options) =&gt;
+        Version.Parse(reader.GetString());
+
+    public override void Write(Utf8BencodeWriter writer, Version value, BencodeSerializerOptions options) =&gt;
+        writer.WriteString(value.ToString());
+}
+
+var options = new BencodeSerializerOptions();
+options.Converters.Add(new VersionConverter());
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Resolution order.</strong> A <code>[Converter]</code> attribute on the member or type wins, then <code>Converters</code> in registration order, then the built-in catalog.</li>
+<li><strong>Kinds Bencode cannot represent.</strong> Booleans, floating-point values, and date-times have no built-in mapping - a registered converter must reduce them to an integer or byte string.</li>
+<li><strong>Internal converters.</strong> The <code>Bodu.Text.Bencode.Serialization.Converters</code> sub-namespace is internal; extend through the public base types above.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> and the <a href="../guides/serialization/bencode/converters.html">writing converters</a> guide.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter.html">BencodeConverter</a></dt>
+      <dd><p>Serves as the non-generic base for every Bencode converter. The hierarchy is closed to two extension points:
+<a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>, which converts a single type, and <a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a>, which
+produces a converter for a family of types.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a></dt>
+      <dd><p>Produces a <a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter.html">BencodeConverter</a> for a family of types that cannot be served by a single
+<a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a> - for example every <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.nullable-1">Nullable&lt;T&gt;</a>, every enumeration, or every
+collection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a></dt>
+      <dd><p>Converts a value of type <code class="typeparamref">T</code> to and from the Bencode reader and writer. This is the base
+authors derive to customize how a specific type is serialized.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter-1.html">BencodeNumberEnumConverter&lt;TEnum&gt;</a></dt>
+      <dd><p>Produces a converter that serializes the enumeration <code class="typeparamref">TEnum</code> as a Bencode integer carrying its
+underlying numeric value.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.html">BencodeStringEnumConverter</a></dt>
+      <dd><p>Produces a converter that serializes any enumeration as a Bencode byte string holding its member name, applying an
+optional naming policy and honoring <a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> on individual members.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter-1.html">BencodeStringEnumConverter&lt;TEnum&gt;</a></dt>
+      <dd><p>Produces a converter that serializes the enumeration <code class="typeparamref">TEnum</code> as a Bencode byte string holding
+its member name, applying an optional naming policy and honoring <a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> on
+individual members.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>MLDsa65 Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="MLDsa65 Class
+ | BODU ">
+      
+      <meta name="description" content="Provides the ML-DSA-65 parameter set of NIST FIPS 204 (matrix 6&#215;5, NIST security category 3 - the most widely recommended general-purpose set). This class cannot be inherited.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Security.Cryptography.MLDsa65">
+
+
+
+
+  <h1 id="Bodu_Security_Cryptography_MLDsa65" data-uid="Bodu.Security.Cryptography.MLDsa65" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+MLDsa65 Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.65.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_MLDsa65_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.65.cs">MLDsa.65.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides the ML-DSA-65 parameter set of NIST FIPS 204 (matrix 6×5, NIST security category 3 - the most widely
+recommended general-purpose set). This class cannot be inherited.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class MLDsa65 : MLDsa, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.MLDsa.html">MLDsa</a></div>
+      <div><span class="xref">MLDsa65</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_MaxContextSizeInBytes">MLDsa.MaxContextSizeInBytes</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_PrivateSeedSizeInBytes">MLDsa.PrivateSeedSizeInBytes</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ExportPrivateKey">MLDsa.ExportPrivateKey()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ExportPublicKey">MLDsa.ExportPublicKey()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_GenerateKey">MLDsa.GenerateKey()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateKey_System_ReadOnlySpan_System_Byte__">MLDsa.ImportPrivateKey(ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_System_ReadOnlySpan_System_Byte__">MLDsa.ImportPrivateSeed(ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportPublicKey_System_ReadOnlySpan_System_Byte__">MLDsa.ImportPublicKey(ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__">MLDsa.SignData(ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">MLDsa.SignData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">MLDsa.SignData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">MLDsa.VerifyData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">MLDsa.VerifyData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_FromXmlString_System_String_">MLDsa.FromXmlString(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ToXmlString_System_Boolean_">MLDsa.ToXmlString(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportSubjectPublicKeyInfo_System_ReadOnlySpan_System_Byte__System_Int32__">MLDsa.ImportSubjectPublicKeyInfo(ReadOnlySpan&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Int32__">MLDsa.ImportPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32__">MLDsa.ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Byte__System_Int32__">MLDsa.ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_TryExportSubjectPublicKeyInfo_System_Span_System_Byte__System_Int32__">MLDsa.TryExportSubjectPublicKeyInfo(Span&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_TryExportPkcs8PrivateKey_System_Span_System_Byte__System_Int32__">MLDsa.TryExportPkcs8PrivateKey(Span&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__">MLDsa.TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, PbeParameters, Span&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__">MLDsa.TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, PbeParameters, Span&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_DeterministicSigning">MLDsa.DeterministicSigning</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_HasPrivateKey">MLDsa.HasPrivateKey</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_HasPublicKey">MLDsa.HasPublicKey</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_KeyExchangeAlgorithm">MLDsa.KeyExchangeAlgorithm</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_PrivateKeySizeInBytes">MLDsa.PrivateKeySizeInBytes</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_PublicKeySizeInBytes">MLDsa.PublicKeySizeInBytes</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_SignatureAlgorithm">MLDsa.SignatureAlgorithm</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_SignatureSizeInBytes">MLDsa.SignatureSizeInBytes</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_AlgorithmName">MLDsa.AlgorithmName</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_SecurityStrengthBits">MLDsa.SecurityStrengthBits</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.clear">AsymmetricAlgorithm.Clear()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.create#system-security-cryptography-asymmetricalgorithm-create(system-string)">AsymmetricAlgorithm.Create(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.dispose#system-security-cryptography-asymmetricalgorithm-dispose">AsymmetricAlgorithm.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportencryptedpkcs8privatekey#system-security-cryptography-asymmetricalgorithm-exportencryptedpkcs8privatekey(system-readonlyspan((system-byte))-system-security-cryptography-pbeparameters)">AsymmetricAlgorithm.ExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, PbeParameters)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportencryptedpkcs8privatekey#system-security-cryptography-asymmetricalgorithm-exportencryptedpkcs8privatekey(system-readonlyspan((system-char))-system-security-cryptography-pbeparameters)">AsymmetricAlgorithm.ExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, PbeParameters)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportencryptedpkcs8privatekeypem#system-security-cryptography-asymmetricalgorithm-exportencryptedpkcs8privatekeypem(system-readonlyspan((system-byte))-system-security-cryptography-pbeparameters)">AsymmetricAlgorithm.ExportEncryptedPkcs8PrivateKeyPem(ReadOnlySpan&lt;byte&gt;, PbeParameters)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportencryptedpkcs8privatekeypem#system-security-cryptography-asymmetricalgorithm-exportencryptedpkcs8privatekeypem(system-readonlyspan((system-char))-system-security-cryptography-pbeparameters)">AsymmetricAlgorithm.ExportEncryptedPkcs8PrivateKeyPem(ReadOnlySpan&lt;char&gt;, PbeParameters)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportpkcs8privatekey">AsymmetricAlgorithm.ExportPkcs8PrivateKey()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportpkcs8privatekeypem">AsymmetricAlgorithm.ExportPkcs8PrivateKeyPem()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportsubjectpublickeyinfo">AsymmetricAlgorithm.ExportSubjectPublicKeyInfo()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportsubjectpublickeyinfopem">AsymmetricAlgorithm.ExportSubjectPublicKeyInfoPem()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.importfromencryptedpem#system-security-cryptography-asymmetricalgorithm-importfromencryptedpem(system-readonlyspan((system-char))-system-readonlyspan((system-byte)))">AsymmetricAlgorithm.ImportFromEncryptedPem(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.importfromencryptedpem#system-security-cryptography-asymmetricalgorithm-importfromencryptedpem(system-readonlyspan((system-char))-system-readonlyspan((system-char)))">AsymmetricAlgorithm.ImportFromEncryptedPem(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;char&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.importfrompem">AsymmetricAlgorithm.ImportFromPem(ReadOnlySpan&lt;char&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.tryexportencryptedpkcs8privatekeypem#system-security-cryptography-asymmetricalgorithm-tryexportencryptedpkcs8privatekeypem(system-readonlyspan((system-byte))-system-security-cryptography-pbeparameters-system-span((system-char))-system-int32@)">AsymmetricAlgorithm.TryExportEncryptedPkcs8PrivateKeyPem(ReadOnlySpan&lt;byte&gt;, PbeParameters, Span&lt;char&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.tryexportencryptedpkcs8privatekeypem#system-security-cryptography-asymmetricalgorithm-tryexportencryptedpkcs8privatekeypem(system-readonlyspan((system-char))-system-security-cryptography-pbeparameters-system-span((system-char))-system-int32@)">AsymmetricAlgorithm.TryExportEncryptedPkcs8PrivateKeyPem(ReadOnlySpan&lt;char&gt;, PbeParameters, Span&lt;char&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.tryexportpkcs8privatekeypem">AsymmetricAlgorithm.TryExportPkcs8PrivateKeyPem(Span&lt;char&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.tryexportsubjectpublickeyinfopem">AsymmetricAlgorithm.TryExportSubjectPublicKeyInfoPem(Span&lt;char&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.keysize">AsymmetricAlgorithm.KeySize</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.legalkeysizes">AsymmetricAlgorithm.LegalKeySizes</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Security_Cryptography_MLDsa65_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Encoding sizes: public key 1952 bytes, private key 4032 bytes, signature 3309 bytes. See <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html">MLDsa</a> for
+the shared algorithm surface and security notes.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa65__ctor_" data-uid="Bodu.Security.Cryptography.MLDsa65.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_MLDsa65__ctor" data-uid="Bodu.Security.Cryptography.MLDsa65.#ctor">
+  MLDsa65()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.65.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a> class with no key material.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MLDsa65()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa65_Create_" data-uid="Bodu.Security.Cryptography.MLDsa65.Create*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_MLDsa65_Create" data-uid="Bodu.Security.Cryptography.MLDsa65.Create">
+  Create()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.65.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a new <a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a> instance with no key material.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MLDsa65 Create()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a> instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Using MurmurHash3 | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Using MurmurHash3 | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-hashing/murmurhash3.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="using-murmurhash3">Using MurmurHash3</h1>
+
+<p>MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011) and distributed in the <a href="https://github.com/aappleby/smhasher">SMHasher</a> reference repository. It produces excellent avalanche behavior - every input bit influences every output bit - and passes all of the standard non-cryptographic hash quality tests. It is widely used in databases, distributed systems, and probabilistic data structures (Bloom filters, HyperLogLog).</p>
+<p><img src="../../images/diagrams/murmurhash3-mix.svg" alt="MurmurHash3 mixing: each block is scrambled with constants c1, c2 and rotations before folding into the accumulator, followed by an xor-shift and multiply avalanche finalization"></p>
+<p><strong>Bodu.IO.Hashing</strong> provides two variants:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Output</th>
+<th>Optimized for</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MurmurHash3_32</code></td>
+<td>32 bits</td>
+<td>All platforms</td>
+<td>General-purpose 32-bit fingerprint.</td>
+</tr>
+<tr>
+<td><code>MurmurHash3_128</code></td>
+<td>128 bits</td>
+<td>64-bit platforms</td>
+<td>128-bit fingerprint; the highest-quality variant.</td>
+</tr>
+</tbody>
+</table>
+<p>Both derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> via a shared <code>MurmurHash3</code> base. Both stream in constant memory: input is mixed one block at a time, and only a partial trailing block is held between <code>Append</code> calls.</p>
+<blockquote>
+<p><strong>Not cryptographic.</strong> MurmurHash3 must not be used for password hashing, digital signatures, or any application that requires adversarial collision resistance. An attacker who can choose inputs can construct collisions. For adversary-facing use, reach for <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</p>
+</blockquote>
+<h2 id="pattern-1---compute-a-32-bit-digest">Pattern 1 - compute a 32-bit digest</h2>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var murmur = new MurmurHash3_32();
+murmur.Append(data);
+byte[] digest = murmur.GetCurrentHash();   // 4 bytes
+uint h = BitConverter.ToUInt32(digest);
+</code></pre>
+<h2 id="pattern-2---compute-a-128-bit-digest">Pattern 2 - compute a 128-bit digest</h2>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var murmur = new MurmurHash3_128();
+murmur.Append(data);
+byte[] digest = murmur.GetCurrentHash();   // 16 bytes
+</code></pre>
+<p>Use the 128-bit variant when you need a wider fingerprint space - for example, as a Bloom filter hash or as a deduplication key over a large corpus.</p>
+<h2 id="pattern-3---seeded-hash-for-independent-lanes">Pattern 3 - seeded hash for independent lanes</h2>
+<p>Both variants accept a <code>seed</code> at construction time. Two instances with different seeds produce independent hash functions over the same input, which is useful for Bloom filters (which need multiple independent hashes) and for A/B routing.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+// Two independent 32-bit hash functions over the same data.
+using var h1 = new MurmurHash3_32(seed: 0x00000001u);
+using var h2 = new MurmurHash3_32(seed: 0x00000002u);
+
+h1.Append(data);
+h2.Append(data);
+
+uint slot1 = BitConverter.ToUInt32(h1.GetCurrentHash()) % (uint)buckets;
+uint slot2 = BitConverter.ToUInt32(h2.GetCurrentHash()) % (uint)buckets;
+</code></pre>
+<p>The seed is not a cryptographic key - it does not provide adversarial resistance.</p>
+<h2 id="pattern-4---append--getcurrenthash--reset-lifecycle">Pattern 4 - <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
+<p>MurmurHash3 is block-streamable. Each <code>Append</code> mixes whole blocks into the running accumulators and keeps only a partial trailing block; <code>GetCurrentHash</code> applies the tail and finalization mix to a copy of the accumulators. The call is non-destructive, so you can continue appending after a snapshot.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+using var murmur = new MurmurHash3_32();
+
+murmur.Append(header);
+murmur.Append(body);
+byte[] partial = murmur.GetCurrentHash();   // snapshot - mixes all bytes appended so far
+murmur.Append(trailer);
+byte[] full = murmur.GetCurrentHash();
+
+murmur.Reset();                             // discards the trailing block and resets to seed
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Memory use does not grow with the input: a 32-bit instance holds at most 3 pending bytes and a 128-bit instance at most 15, so MurmurHash3 suits very large inputs as well as short keys.</p>
+</div>
+<h2 id="pattern-5---bloom-filter-with-two-hash-functions">Pattern 5 - Bloom filter with two hash functions</h2>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+const int M = 1_000_000;   // bit-array size
+
+bool[] bits = new bool[M];
+
+void Insert(string item)
+{
+    byte[] key = Encoding.UTF8.GetBytes(item);
+
+    using var h1 = new MurmurHash3_32(seed: 1);
+    using var h2 = new MurmurHash3_32(seed: 2);
+
+    h1.Append(key);
+    h2.Append(key);
+
+    int slot1 = (int)(BitConverter.ToUInt32(h1.GetCurrentHash()) % (uint)M);
+    int slot2 = (int)(BitConverter.ToUInt32(h2.GetCurrentHash()) % (uint)M);
+
+    bits[slot1] = true;
+    bits[slot2] = true;
+}
+
+bool MightContain(string item)
+{
+    byte[] key = Encoding.UTF8.GetBytes(item);
+
+    using var h1 = new MurmurHash3_32(seed: 1);
+    using var h2 = new MurmurHash3_32(seed: 2);
+
+    h1.Append(key);
+    h2.Append(key);
+
+    int slot1 = (int)(BitConverter.ToUInt32(h1.GetCurrentHash()) % (uint)M);
+    int slot2 = (int)(BitConverter.ToUInt32(h2.GetCurrentHash()) % (uint)M);
+
+    return bits[slot1] &amp;&amp; bits[slot2];
+}
+</code></pre>
+<h2 id="murmurhash3-vs-the-other-fingerprints">MurmurHash3 vs the other fingerprints</h2>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>MurmurHash3</th>
+<th>FNV-1a</th>
+<th>CityHash</th>
+<th>BCL xxHash</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Output widths</td>
+<td>32 · 128-bit</td>
+<td>32 · 64-bit</td>
+<td>32 · 64 · 128-bit</td>
+<td>32 · 64 · 128-bit</td>
+</tr>
+<tr>
+<td>Seed support</td>
+<td>Yes</td>
+<td>No (fixed offset basis)</td>
+<td>No</td>
+<td>Limited (BCL contract)</td>
+</tr>
+<tr>
+<td>Streaming (constant memory)</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No - buffers input</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Relative throughput (large inputs)</td>
+<td>Good</td>
+<td>Moderate</td>
+<td>Excellent</td>
+<td>Excellent</td>
+</tr>
+<tr>
+<td>Distribution quality</td>
+<td>Excellent</td>
+<td>Good</td>
+<td>Excellent</td>
+<td>Excellent</td>
+</tr>
+</tbody>
+</table>
+<p>Reach for <strong>MurmurHash3</strong> when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche - for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer <strong>CityHash</strong> (in Bodu) or <code>System.IO.Hashing.XxHash64</code> (in the BCL). CityHash buffers its whole input, so for large streams prefer MurmurHash3, <strong>FNV-1a</strong>, xxHash, or <strong>CRC</strong>, which all run in constant memory.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="cityhash.html">Using CityHash</a> - fastest throughput on large inputs.</li>
+<li><a href="fnv.html">Using FNV</a> - constant-memory streaming alternative.</li>
+<li><a href="pearson.html">Using Pearson</a> - configurable output width from 8 to 2048 bits.</li>
+<li><a href="../../docs/io-hashing/index.html">Bodu.IO.Hashing introduction</a> - when to use a fingerprint vs a checksum vs a check digit.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> - key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

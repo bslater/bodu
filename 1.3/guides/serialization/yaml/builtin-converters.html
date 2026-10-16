@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Built-in converter catalog | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Built-in converter catalog | BODU ">
+      
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/serialization/yaml/builtin-converters.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="built-in-converter-catalog">Built-in converter catalog</h1>
+
+<p>Every type that <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a> handles without a user converter is served by a <strong>built-in converter</strong>. This page catalogs that set - which .NET types are provisioned, how each appears in YAML on write, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are in <a href="converters.html">Writing converters</a>.</p>
+<p>YAML carries the JSON-compatible core scalar kinds - string, integer, float, Boolean, and null - so most everyday .NET types map without any converter at all. The writer emits <strong>block-style</strong> collections (an empty container falls back to flow <code>[]</code> / <code>{}</code>), and mappings preserve insertion order.</p>
+<h2 id="scalars">Scalars</h2>
+<table>
+<thead>
+<tr>
+<th>.NET type</th>
+<th>YAML representation (write)</th>
+<th>Read accepts</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string</code></td>
+<td>string scalar</td>
+<td>string</td>
+<td>The scalar style (plain / quoted / block) is chosen by the writer and recorded on read by <a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlElement.html#Bodu_Text_Yaml_Document_YamlElement_ScalarStyle">ScalarStyle</a>.</td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td>single-character string</td>
+<td>single-character string</td>
+<td>A source of any other length raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>.</td>
+</tr>
+<tr>
+<td><code>Guid</code></td>
+<td>string, canonical 36-character form</td>
+<td>any <code>Guid.Parse</code>-accepted form</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Uri</code></td>
+<td>string, the original URI text</td>
+<td>a scalar whose text is an absolute or a relative URI</td>
+<td>Relative and absolute URIs round-trip. Text that is neither raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>.</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td>Boolean (<code>true</code> / <code>false</code>)</td>
+<td>Boolean</td>
+<td>Under <code>SpecVersion = V1_1</code>, the read path also accepts <code>yes</code> / <code>no</code> / <code>on</code> / <code>off</code> and <code>y</code> / <code>n</code>.</td>
+</tr>
+<tr>
+<td><code>sbyte</code> <code>byte</code> <code>short</code> <code>ushort</code> <code>int</code> <code>uint</code> <code>long</code> <code>nint</code></td>
+<td>integer scalar</td>
+<td>integer</td>
+<td>Checked conversions; a value outside the target type raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>.</td>
+</tr>
+<tr>
+<td><code>ulong</code> <code>nuint</code> <code>Int128</code> <code>UInt128</code></td>
+<td>integer scalar, or the invariant decimal text outside the signed 64-bit range</td>
+<td>integer or string</td>
+<td>A value the writer's signed 64-bit integer surface cannot hold is emitted as its exact decimal text (quoted only when a leading sign would otherwise resolve it numerically) and converts back exactly on read.</td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td>float scalar</td>
+<td>float</td>
+<td><code>NaN</code>, <code>+∞</code>, and <code>−∞</code> write as <code>.nan</code>, <code>.inf</code>, and <code>-.inf</code>.</td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td>float scalar</td>
+<td>float</td>
+<td>Widens to <code>double</code> on write; narrows on read, where a finite value outside the <code>float</code> range raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> rather than becoming an infinity. Rounding and underflow are accepted, and <code>.inf</code>, <code>-.inf</code>, and <code>.nan</code> read as <code>float</code>'s own values.</td>
+</tr>
+<tr>
+<td><code>decimal</code></td>
+<td>quoted string of the exact invariant text</td>
+<td>float scalar or string</td>
+<td>Quoted because the exact text would otherwise resolve as a <code>double</code>; the quoting preserves the full <code>decimal</code> precision.</td>
+</tr>
+<tr>
+<td><code>DateTime</code></td>
+<td>string, round-trip (<code>&quot;o&quot;</code>) ISO-8601</td>
+<td>string</td>
+<td>Read with <code>DateTimeStyles.RoundtripKind</code>. There is no native YAML timestamp type; the value travels as a string scalar.</td>
+</tr>
+<tr>
+<td><code>DateTimeOffset</code></td>
+<td>string, round-trip (<code>&quot;o&quot;</code>) ISO-8601</td>
+<td>string</td>
+<td>As <code>DateTime</code>, preserving the offset.</td>
+</tr>
+<tr>
+<td><code>TimeSpan</code></td>
+<td>string, the invariant <code>TimeSpan</code> form</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td>the null scalar (<code>null</code>)</td>
+<td><code>null</code>, <code>~</code>, or the empty scalar</td>
+<td>A null member is omitted instead when <code>DefaultIgnoreCondition</code> requests it.</td>
+</tr>
+<tr>
+<td><code>enum</code> (any)</td>
+<td>string, the member name</td>
+<td>string (a name, as described below) or integer</td>
+<td>Integers instead of names when <code>WriteEnumsAsStrings = false</code>.</td>
+</tr>
+</tbody>
+</table>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>decimal</code>, <code>DateTime</code>, <code>DateTimeOffset</code>, and <code>TimeSpan</code> are not YAML core-schema kinds - there is no native timestamp or high-precision decimal scalar. The serializer carries each as a string (a <code>decimal</code> is additionally quoted so plain resolution does not turn it back into a <code>double</code>), and the read path parses that string with <code>CultureInfo.InvariantCulture</code>. They therefore round-trip exactly through <code>Serialize</code> / <code>Deserialize</code>, but a value typed <code>object</code> reads back as the underlying string, not as the original CLR type.</p>
+</div>
+<p>The <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlNumberHandling.html">YamlNumberHandling</a> option governs the integer/float boundary on read: <code>Strict</code> (the default) rejects a non-integral or out-of-range float bound to an integer target, while <code>AllowFloatToInteger</code> truncates an integer-valued float toward zero. A plain integer scalar binds to a floating-point target under either policy. Integer scalars are resolved across the YAML radix forms - decimal, hexadecimal (<code>0x</code>), and the <code>0o</code> octal prefix (plus YAML 1.1's leading-zero octal under <code>SpecVersion = V1_1</code>) - so <code>0xFF</code>, <code>0o17</code>, and <code>255</code> all bind to the same <code>int</code>.</p>
+<h2 id="structural-and-document-model-types">Structural and document-model types</h2>
+<table>
+<thead>
+<tr>
+<th>.NET type</th>
+<th>YAML representation</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>arrays, <code>List&lt;T&gt;</code>, <code>IEnumerable&lt;T&gt;</code> and its interfaces, sets, and concrete collections with a parameterless constructor and <code>Add</code></td>
+<td>sequence</td>
+<td>Block-style on write; an empty collection writes as flow <code>[]</code>. On read the elements are bound into a <code>List&lt;T&gt;</code> and copied into the requested concrete type.</td>
+</tr>
+<tr>
+<td><code>IDictionary&lt;TKey,TValue&gt;</code> / <code>IReadOnlyDictionary&lt;TKey,TValue&gt;</code> and concrete dictionaries</td>
+<td>mapping</td>
+<td>Written in insertion order. Keys are stringified in invariant text, and enum keys by name, as described under <a href="#enums">Enums</a>; on read a non-<code>string</code> key type is parsed back (enum keys by name, other keys via <code>Convert.ChangeType</code>). Mapping keys resolve to unique scalar strings (the Bodu YAML Core Tree Profile) - a duplicate stringified key on write raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>.</td>
+</tr>
+<tr>
+<td>plain classes and structs</td>
+<td>mapping</td>
+<td>The catch-all object converter, consulted last; properties first (reflection order), then public fields when <code>IncludeFields</code> is set. Read requires a public parameterless constructor and sets each writable member. Delegates, reflection types (<code>Type</code> and the other <code>MemberInfo</code> types) and pointers are not plain objects: without a converter of your own, a member of one fails with <code>NotSupportedException</code> naming its type.</td>
+</tr>
+<tr>
+<td><code>object</code>-typed members</td>
+<td>the runtime type's form on write</td>
+<td>On <strong>read</strong>, an <code>object</code> target binds to a loosely-typed graph: a <code>Dictionary&lt;string, object?&gt;</code> for a mapping, a <code>List&lt;object?&gt;</code> for a sequence, and <code>bool</code> / <code>long</code> / <code>double</code> / <code>string</code> / <code>null</code> for scalars - <strong>not</strong> a <a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a>.</td>
+</tr>
+<tr>
+<td><code>Nullable&lt;T&gt;</code></td>
+<td>the underlying value, or the null scalar</td>
+<td>A null scalar binds to <code>null</code>; otherwise the value binds as <code>T</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a> (and <code>YamlObject</code> / <code>YamlArray</code> / <code>YamlValue</code>)</td>
+<td>the node's own kind</td>
+<td>Mutable DOM bridge: <code>Deserialize&lt;YamlNode&gt;</code> materializes the value as a node tree (aliases and merge keys already resolved), and a node - standalone or as a member - writes its own kind.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a></td>
+<td>the element's own kind</td>
+<td>Read produces an element view backed by an internal document that shares the reader's row store - no disposal needed.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a></td>
+<td>the document's root</td>
+<td>A deserialized document shares the reader's immutable row store; disposal is optional.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fields">Fields</h2>
+<p>Properties map by default. Public <strong>fields</strong> participate when <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_IncludeFields">IncludeFields</a> is <code>true</code>, following the same naming-policy, <code>[PropertyName]</code>, and <code>[Ignore]</code> rules as properties:</p>
+<pre><code class="lang-csharp">public sealed class Counter
+{
+    public int Total { get; set; }
+    public int Retries;   // included when IncludeFields is true
+}
+
+var options = new YamlSerializerOptions { IncludeFields = true };
+string yaml = YamlSerializer.Serialize(new Counter { Total = 3, Retries = 1 }, options);
+</code></pre>
+<pre><code class="lang-yaml">Total: 3
+Retries: 1
+</code></pre>
+<h2 id="enums">Enums</h2>
+<p>By default an enum is written as its <strong>member-name string</strong> and read back by name (or as an integer). Set <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_WriteEnumsAsStrings">WriteEnumsAsStrings</a> to <code>false</code> to write the underlying integer instead; a <code>ulong</code>-based value above <code>long.MaxValue</code>, beyond the writer's signed 64-bit integers, is written as its plain text, as a <code>ulong</code> member is:</p>
+<pre><code class="lang-csharp">public enum Status { Active, OnHold }
+
+string asString = YamlSerializer.Serialize(new { State = Status.OnHold });
+// State: OnHold
+
+var asInt = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+string asInteger = YamlSerializer.Serialize(new { State = Status.OnHold }, asInt);
+// State: 1
+</code></pre>
+<p>On read an enum binds from a name, as described below, or from an integer scalar within the range of its underlying type, regardless of <code>WriteEnumsAsStrings</code> - the flag affects only the write side. An integer outside that range raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> with the scalar's line, column and path rather than being narrowed into the type, so <code>Level: 300</code> never binds a <code>byte</code>-based enum as 44; an integer inside the range binds whether or not it names a member. Individual members rename on the wire with the shared <a class="xref" href="../../../api/Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a>, honored by the default handling and by the public enum converters:</p>
+<ul>
+<li><a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlStringEnumConverter.html">YamlStringEnumConverter</a> / <code>YamlStringEnumConverter&lt;TEnum&gt;</code> - member-name strings with an optional naming policy and an integers-on-read flag; register on the options for every enum, or reference the generic form from a <code>[Converter(...)]</code> attribute. Like System.Text.Json's <code>JsonStringEnumConverter</code>, the converter writes names whatever <code>WriteEnumsAsStrings</code> says, and with the flag off it reads names only, as that converter does from .NET 9: it rejects an integer scalar, and any other scalar that is not a member's wire name and whose text has an integer in any of its comma-separated parts (an optional sign and the digits <code>0</code> to <code>9</code>, ignoring white space around them), such as <code>&quot;2&quot;</code>, <code>!!str 2</code>, a plain integer beyond the 64-bit range, or <code>Read, 2</code>, with <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> at the scalar. A member renamed with <code>[StringEnumMemberName(&quot;1&quot;)]</code> still reads from the string <code>&quot;1&quot;</code>, because the wire names are matched first. On write it refuses a value that is neither a member nor a combination of defined flags, such as <code>(Status)99</code> or a flags value with an undefined bit, and raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> rather than writing the decimal text it would reject on read.</li>
+<li><code>YamlNumberEnumConverter&lt;TEnum&gt;</code> - the underlying numeric value as a YAML integer, regardless of <code>WriteEnumsAsStrings</code>. A <code>ulong</code>-based value above <code>long.MaxValue</code> is written as its plain text, as a <code>ulong</code> member is, and YAML resolves such a plain integer as a string, which the converter reads back up to <code>ulong.MaxValue</code>, as a <code>ulong</code> member does; a quoted or tagged string is rejected.</li>
+</ul>
+<p>Names are matched as System.Text.Json's <code>JsonStringEnumConverter</code> matches them, by the default handling and by the string-enum converter alike. A member's wire name, from <code>[StringEnumMemberName]</code> or the converter's naming policy, binds only in its own case. The CLR name of a member that <code>[StringEnumMemberName]</code> does not rename also binds, in any case, but a renamed member's CLR name does not: with <code>[StringEnumMemberName(&quot;on&quot;)]</code> on <code>Enabled</code>, <code>on</code> binds, and <code>ON</code>, <code>Enabled</code> and <code>enabled</code> do not. A combination of flags is written as the comma-separated wire names of its flags, in the order <code>Enum.ToString</code> lists them, so under <code>NamingPolicy.SnakeCaseLower</code> <code>CanRead | CanExecute</code> is <code>can_read, can_execute</code>. It is read from such a list in any order, each name trimmed of white space, with a trailing comma tolerated but no empty name anywhere else. A list holds names only: an integer binds, where integers are allowed, only as the whole scalar, so <code>1, 4</code> is rejected. A float scalar never binds, even an integral one such as <code>2.0</code>, whether integers are allowed or not, as <code>JsonStringEnumConverter</code> never binds a number that is not an integer.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var options = new YamlSerializerOptions();
+options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+
+// Status.OnHold now serializes as on_hold everywhere.
+</code></pre>
+<p>An enum used as a dictionary key follows the same names, as System.Text.Json's enum converter reads and writes a property name. A key is written by its wire name, a combination of flags by its flags' wire names, and any other value as its decimal text, whatever the rule for integer values and whatever <code>WriteEnumsAsStrings</code> says, so with <code>[StringEnumMemberName(&quot;on&quot;)]</code> on <code>Enabled</code> a <code>Dictionary&lt;Toggle, int&gt;</code> writes the key <code>on</code>, reads it back, and rejects <code>Enabled</code> with <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>. Where a <code>YamlStringEnumConverter</code> handles the key type, keys also follow its naming policy and its rule for integer values, so with <code>allowIntegerValues: false</code> the key <code>1</code> is rejected. Otherwise, under the default handling or <code>YamlNumberEnumConverter&lt;TEnum&gt;</code>, keys are written by name with no naming policy, and integer text binds.</p>
+<h2 id="what-yaml-does-not-need-a-decision-for">What YAML does not need a decision for</h2>
+<p>Unlike TOML, YAML has no <code>decimal</code>-handling or <code>byte[]</code>-handling option: <code>decimal</code> always travels as quoted exact text (above), and a <code>byte[]</code> is treated as an ordinary sequence of <code>byte</code> elements rather than a single encoded scalar. Anything outside the provisioned set - a value type rendered as one scalar, a type with a bespoke mapping shape, or a base64 <code>byte[]</code> - is the job of a <a href="converters.html">custom converter</a>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="converters.html">Writing converters</a> - overriding a built-in and the resolution order.</li>
+<li><a href="attributes.html">Mapping attributes</a> - the declarative layer over the converters.</li>
+<li><a href="using.html">Using YAML</a> - the walk-through the tables above back up.</li>
+<li><a href="../../../docs/serialization/yaml/concepts.html">Bodu.Text.Yaml core concepts</a> - the value-mapping summary in the family vocabulary.</li>
+<li><a href="../index.html">Bodu serializer guides</a> and the <a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlNumberHandling.html">YamlNumberHandling</a>.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

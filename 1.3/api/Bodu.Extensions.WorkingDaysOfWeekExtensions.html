@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>WorkingDaysOfWeekExtensions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="WorkingDaysOfWeekExtensions Class
+ | BODU ">
+      
+      <meta name="description" content="Provides bidirectional conversion between the  enum sugar and the  value type.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions">
+
+
+
+
+  <h1 id="Bodu_Extensions_WorkingDaysOfWeekExtensions" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+WorkingDaysOfWeekExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs">WorkingDaysOfWeekExtensions.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides bidirectional conversion between the <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> enum sugar and the
+<a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> value type.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class WorkingDaysOfWeekExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">WorkingDaysOfWeekExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToDayOfWeekSet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToDayOfWeekSet(Bodu.WorkingDaysOfWeek)">
+  ToDayOfWeekSet(WorkingDaysOfWeek)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the canonical <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> for the supplied <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DayOfWeekSet ToDayOfWeekSet(this WorkingDaysOfWeek value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
+    <dd><p>The named working week to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> whose selected days match <code class="paramref">value</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is not a defined member of the <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>
+enumeration.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a>, which has no canonical set.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToDayOfWeekSet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToDayOfWeekSet(Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
+  ToDayOfWeekSet(WorkingDaysOfWeek, IWeekendDefinitionProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the canonical <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> for the supplied <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value,
+consulting <code class="paramref">provider</code> when <code class="paramref">value</code> is
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DayOfWeekSet ToDayOfWeekSet(this WorkingDaysOfWeek value, IWeekendDefinitionProvider? provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
+    <dd><p>The named working week to convert.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a></dt>
+    <dd><p>A custom weekend provider consulted only when <code class="paramref">value</code> is
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> whose selected days match the working-week implied by <code class="paramref">value</code>
+(and <code class="paramref">provider</code> when applicable).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is not a defined member of the <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>
+enumeration.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a> and
+<code class="paramref">provider</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWorkingDaysOfWeek_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWorkingDaysOfWeek_Bodu_DayOfWeekSet_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek(Bodu.DayOfWeekSet)">
+  ToWorkingDaysOfWeek(DayOfWeekSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the matching <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value for the supplied <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a>, or
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a> when no named preset matches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static WorkingDaysOfWeek ToWorkingDaysOfWeek(this DayOfWeekSet workingWeek)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The working week to identify.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> whose canonical set equals <code class="paramref">workingWeek</code>, or
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a> when <code class="paramref">workingWeek</code> does not match any named preset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_TryGetWorkingDaysOfWeek_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.TryGetWorkingDaysOfWeek*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_TryGetWorkingDaysOfWeek_Bodu_DayOfWeekSet_Bodu_WorkingDaysOfWeek__" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.TryGetWorkingDaysOfWeek(Bodu.DayOfWeekSet,Bodu.WorkingDaysOfWeek@)">
+  TryGetWorkingDaysOfWeek(DayOfWeekSet, out WorkingDaysOfWeek)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to identify the supplied <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> as a named <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>
+preset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryGetWorkingDaysOfWeek(this DayOfWeekSet workingWeek, out WorkingDaysOfWeek value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The working week to identify.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the matching <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>;
+otherwise, <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">workingWeek</code> matches a named preset; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Coverage baseline | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Coverage baseline | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/articles/coverage-baseline.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="coverage-baseline">Coverage baseline</h1>
+
+<p>Per-package line and branch coverage for every packable Bodu package, computed from a merged
+Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>; do not hand-edit.</p>
+<p>Legend: <code>-</code> = not part of this collection · <code>n/a</code> = excluded by design (see <a href="code-coverage.html">Code coverage strategy</a>).</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>This table is the last full collection, at the commit named under <a href="#baseline-evidence">Baseline evidence</a>, and it has not been regenerated since. It predates <code>Bodu.IO.Biff</code> and <code>Bodu.Formats.Outlook.Pst</code>, so neither has a row, and a package that has grown since shows its size at that commit (<code>Bodu.IO.Pst</code>'s 408 lines, for one). The current floor of every package, those two included, is in <code>bld/coverage-thresholds.json</code>, which the coverage workflow enforces on every collection.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th style="text-align: right;">Line %</th>
+<th style="text-align: right;">Branch %</th>
+<th style="text-align: right;">Covered / total lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Collections</code></td>
+<td>Stable</td>
+<td style="text-align: right;">97.7%</td>
+<td style="text-align: right;">95.9%</td>
+<td style="text-align: right;">6028 / 6171</td>
+</tr>
+<tr>
+<td><code>Bodu.Collections.Concurrent</code></td>
+<td>Stable</td>
+<td style="text-align: right;">94.9%</td>
+<td style="text-align: right;">91.7%</td>
+<td style="text-align: right;">1009 / 1063</td>
+</tr>
+<tr>
+<td><code>Bodu.Core</code></td>
+<td>Stable</td>
+<td style="text-align: right;">98.6%</td>
+<td style="text-align: right;">96.4%</td>
+<td style="text-align: right;">5631 / 5711</td>
+</tr>
+<tr>
+<td><code>Bodu.Extensions.Configuration.Text</code></td>
+<td>Stable</td>
+<td style="text-align: right;">97.3%</td>
+<td style="text-align: right;">87.5%</td>
+<td style="text-align: right;">256 / 263</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial</code></td>
+<td>Stable</td>
+<td style="text-align: right;">97.3%</td>
+<td style="text-align: right;">86.9%</td>
+<td style="text-align: right;">3600 / 3700</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.DependencyInjection</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">43 / 43</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td>Stable</td>
+<td style="text-align: right;">91%</td>
+<td style="text-align: right;">84.8%</td>
+<td style="text-align: right;">332 / 365</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Boe</code></td>
+<td>Stable</td>
+<td style="text-align: right;">91.1%</td>
+<td style="text-align: right;">85.3%</td>
+<td style="text-align: right;">267 / 293</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code></td>
+<td>Stable</td>
+<td style="text-align: right;">91.6%</td>
+<td style="text-align: right;">88.6%</td>
+<td style="text-align: right;">1368 / 1493</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Caching.Distributed</code></td>
+<td>Stable</td>
+<td style="text-align: right;">93.5%</td>
+<td style="text-align: right;">91.9%</td>
+<td style="text-align: right;">172 / 184</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></td>
+<td>Stable</td>
+<td style="text-align: right;">94.8%</td>
+<td style="text-align: right;">94.8%</td>
+<td style="text-align: right;">308 / 325</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">70 / 70</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Ecb</code></td>
+<td>Stable</td>
+<td style="text-align: right;">91.7%</td>
+<td style="text-align: right;">81%</td>
+<td style="text-align: right;">254 / 277</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.3%</td>
+<td style="text-align: right;">73.7%</td>
+<td style="text-align: right;">143 / 150</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Fixer</code></td>
+<td>Stable</td>
+<td style="text-align: right;">96.7%</td>
+<td style="text-align: right;">75%</td>
+<td style="text-align: right;">147 / 152</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Fred</code></td>
+<td>Stable</td>
+<td style="text-align: right;">99.3%</td>
+<td style="text-align: right;">93.5%</td>
+<td style="text-align: right;">135 / 136</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Imf</code></td>
+<td>Experimental</td>
+<td style="text-align: right;">90.9%</td>
+<td style="text-align: right;">88.5%</td>
+<td style="text-align: right;">289 / 318</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Oanda</code></td>
+<td>Experimental</td>
+<td style="text-align: right;">97%</td>
+<td style="text-align: right;">89.2%</td>
+<td style="text-align: right;">164 / 169</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Ofx</code></td>
+<td>Experimental</td>
+<td style="text-align: right;">97.6%</td>
+<td style="text-align: right;">88.9%</td>
+<td style="text-align: right;">124 / 127</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Rba</code></td>
+<td>Stable</td>
+<td style="text-align: right;">94.4%</td>
+<td style="text-align: right;">89.5%</td>
+<td style="text-align: right;">303 / 321</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Xe</code></td>
+<td>Experimental</td>
+<td style="text-align: right;">95.4%</td>
+<td style="text-align: right;">86.6%</td>
+<td style="text-align: right;">228 / 239</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Yahoo</code></td>
+<td>Experimental</td>
+<td style="text-align: right;">96%</td>
+<td style="text-align: right;">73.1%</td>
+<td style="text-align: right;">143 / 149</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.Serialization.Json</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95%</td>
+<td style="text-align: right;">89.4%</td>
+<td style="text-align: right;">551 / 580</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Excel.Binary</code></td>
+<td>Stable</td>
+<td style="text-align: right;">92.6%</td>
+<td style="text-align: right;">85.4%</td>
+<td style="text-align: right;">731 / 789</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.9%</td>
+<td style="text-align: right;">88.9%</td>
+<td style="text-align: right;">71 / 74</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook.Msg</code></td>
+<td>Stable</td>
+<td style="text-align: right;">94.2%</td>
+<td style="text-align: right;">90.2%</td>
+<td style="text-align: right;">524 / 556</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar</code></td>
+<td>Stable</td>
+<td style="text-align: right;">97%</td>
+<td style="text-align: right;">89.6%</td>
+<td style="text-align: right;">3370 / 3474</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Africa</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">66.7%</td>
+<td style="text-align: right;">26 / 26</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Americas</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">83.3%</td>
+<td style="text-align: right;">29 / 29</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.AsiaPacific</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">75%</td>
+<td style="text-align: right;">16 / 16</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Build</code></td>
+<td>Preview</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;">n/a</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Builder</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.7%</td>
+<td style="text-align: right;">88%</td>
+<td style="text-align: right;">1692 / 1768</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching</code></td>
+<td>Stable</td>
+<td style="text-align: right;">91.2%</td>
+<td style="text-align: right;">86.5%</td>
+<td style="text-align: right;">622 / 682</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching.Distributed</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.2%</td>
+<td style="text-align: right;">93.2%</td>
+<td style="text-align: right;">118 / 124</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching.Sqlite</code></td>
+<td>Stable</td>
+<td style="text-align: right;">93.2%</td>
+<td style="text-align: right;">95.8%</td>
+<td style="text-align: right;">193 / 207</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.DependencyInjection</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.7%</td>
+<td style="text-align: right;">66.7%</td>
+<td style="text-align: right;">90 / 94</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Europe</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">83.3%</td>
+<td style="text-align: right;">30 / 30</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.MiddleEast</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">66.7%</td>
+<td style="text-align: right;">26 / 26</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Plugins</code></td>
+<td>Stable</td>
+<td style="text-align: right;">92%</td>
+<td style="text-align: right;">82.7%</td>
+<td style="text-align: right;">208 / 226</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Tool</code></td>
+<td>Preview</td>
+<td style="text-align: right;">99.2%</td>
+<td style="text-align: right;">98.4%</td>
+<td style="text-align: right;">130 / 131</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Recurrence</code></td>
+<td>Stable</td>
+<td style="text-align: right;">91.3%</td>
+<td style="text-align: right;">89.4%</td>
+<td style="text-align: right;">1314 / 1439</td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Compound</code></td>
+<td>Stable</td>
+<td style="text-align: right;">98.8%</td>
+<td style="text-align: right;">94.1%</td>
+<td style="text-align: right;">2220 / 2247</td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Hashing</code></td>
+<td>Stable</td>
+<td style="text-align: right;">98.7%</td>
+<td style="text-align: right;">96%</td>
+<td style="text-align: right;">2518 / 2551</td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Hashing (shared source)</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">48 / 48</td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Pst</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">408 / 408</td>
+</tr>
+<tr>
+<td><code>Bodu.Numerics</code></td>
+<td>Stable</td>
+<td style="text-align: right;">94.2%</td>
+<td style="text-align: right;">91%</td>
+<td style="text-align: right;">2090 / 2219</td>
+</tr>
+<tr>
+<td><code>Bodu.Numerics.Serialization.Json</code></td>
+<td>Stable</td>
+<td style="text-align: right;">92.5%</td>
+<td style="text-align: right;">83.6%</td>
+<td style="text-align: right;">494 / 534</td>
+</tr>
+<tr>
+<td><code>Bodu.Security.Cryptography</code></td>
+<td>Stable</td>
+<td style="text-align: right;">98.4%</td>
+<td style="text-align: right;">94.1%</td>
+<td style="text-align: right;">13684 / 13912</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Bencode</code></td>
+<td>Stable</td>
+<td style="text-align: right;">93.1%</td>
+<td style="text-align: right;">91.7%</td>
+<td style="text-align: right;">1525 / 1638</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Configuration</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.5%</td>
+<td style="text-align: right;">94.7%</td>
+<td style="text-align: right;">1134 / 1187</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Delimited</code></td>
+<td>Stable</td>
+<td style="text-align: right;">91.7%</td>
+<td style="text-align: right;">85.9%</td>
+<td style="text-align: right;">824 / 899</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.DotEnv</code></td>
+<td>Stable</td>
+<td style="text-align: right;">90.3%</td>
+<td style="text-align: right;">86.7%</td>
+<td style="text-align: right;">652 / 722</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Encoding</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.5%</td>
+<td style="text-align: right;">93.8%</td>
+<td style="text-align: right;">3036 / 3178</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Filtering</code></td>
+<td>Stable</td>
+<td style="text-align: right;">98.3%</td>
+<td style="text-align: right;">97.7%</td>
+<td style="text-align: right;">458 / 466</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Formats</code></td>
+<td>Stable</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;">n/a</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Ini</code></td>
+<td>Stable</td>
+<td style="text-align: right;">90.7%</td>
+<td style="text-align: right;">85.3%</td>
+<td style="text-align: right;">830 / 915</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Serialization</code></td>
+<td>Stable</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">72 / 72</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Serialization (shared source)</code></td>
+<td>Stable</td>
+<td style="text-align: right;">93.4%</td>
+<td style="text-align: right;">89%</td>
+<td style="text-align: right;">606 / 649</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Toml</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.5%</td>
+<td style="text-align: right;">92.8%</td>
+<td style="text-align: right;">2988 / 3130</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Yaml</code></td>
+<td>Stable</td>
+<td style="text-align: right;">90.7%</td>
+<td style="text-align: right;">88.9%</td>
+<td style="text-align: right;">2435 / 2685</td>
+</tr>
+<tr>
+<td><code>Caching (shared source)</code></td>
+<td>Stable</td>
+<td style="text-align: right;">92.7%</td>
+<td style="text-align: right;">93.8%</td>
+<td style="text-align: right;">102 / 110</td>
+</tr>
+</tbody>
+</table>
+<h3 id="excluded-by-design">Excluded by design</h3>
+<ul>
+<li><code>Bodu.Globalization.Calendar.Build</code> - MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.</li>
+<li><code>Bodu.Text.Formats</code> - Umbrella meta-package: references the three format libraries and ships no source of its own.</li>
+</ul>
+<p><strong>Overall:</strong> 96.1% (66879 / 69560 lines across 59 collected package(s)).</p>
+<h2 id="baseline-evidence">Baseline evidence</h2>
+<pre><code class="lang-bash">bld/collect-coverage.sh
+bld/merge-coverage.sh
+pwsh tools/New-CoverageMatrix.ps1
+</code></pre>
+<ul>
+<li>Commit: <code>f629e0beea64b7650a5ff9485b5edcaf71a76c8d</code></li>
+<li><code>Avx512F.IsSupported</code> on the collecting host: <code>true</code></li>
+<li>Phantom rows discarded: 0</li>
+<li>Files with stale line numbering: 0</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

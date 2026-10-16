@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Ini_IniSectionAttribute" data-uid="Bodu.Text.Ini.IniSectionAttribute" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 IniSectionAttribute Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Ini/src/Text.Ini/IniSectionAttribute.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Ini/src/Text.Ini/IniSectionAttribute.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ IniSectionAttribute Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Ini.html">Ini</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Ini.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Ini">Bodu.Text.Ini</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Ini">Bodu.Text.Ini</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Ini/src/Text.Ini/IniSectionAttribute.cs">IniSectionAttribute.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Ini/src/Text.Ini/IniSectionAttribute.cs">IniSectionAttribute.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Marks a partial section POCO for compile-time INI binding: the <code>Bodu.Text.Formats.Generators</code> source generator
@@ -294,9 +294,16 @@ public sealed class IniSectionAttribute : Attribute</code></pre>
 
   <h2 id="Bodu_Text_Ini_IniSectionAttribute_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-The generated factory maps the type's public read/write instance properties in declaration order, honouring
-<a class="xref" href="Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> for key names and skipping members annotated with
-<a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a>. Scalar values convert with the invariant culture.
+The generated factory maps the public read/write instance properties declared on the type, in declaration order,
+honoring <a class="xref" href="Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> for key names and skipping members annotated
+<a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> with
+<a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html#Bodu_Text_Serialization_IgnoreCondition_Always">Always</a>, the default condition. Scalar values convert with the
+invariant culture. When writing, the factory leaves out the keys the reflection binder of
+<a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a> leaves out under each member's own
+<a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html#Bodu_Text_Serialization_IgnoreAttribute_Condition">Condition</a>, and under
+<a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html#Bodu_Text_Serialization_IgnoreCondition_WhenWritingNull">WhenWritingNull</a>, the default, for a member without one; the
+factory never sees <a class="xref" href="Bodu.Text.Ini.IniSerializerOptions.html">IniSerializerOptions</a>, so another
+<a class="xref" href="Bodu.Text.Ini.IniSerializerOptions.html#Bodu_Text_Ini_IniSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a> does not apply to it.
 </p>
 <p>
 The annotated type must be declared <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/partial-method">partial</a> so the generator can add the factory to it. Passing
@@ -315,7 +322,7 @@ making the serialization path trimming- and AOT-safe.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_IniSectionAttribute__ctor" data-uid="Bodu.Text.Ini.IniSectionAttribute.#ctor">
   IniSectionAttribute()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Ini/src/Text.Ini/IniSectionAttribute.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Ini/src/Text.Ini/IniSectionAttribute.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -367,7 +374,7 @@ making the serialization path trimming- and AOT-safe.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

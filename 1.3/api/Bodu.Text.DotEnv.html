@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.DotEnv Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.DotEnv Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Text.DotEnv.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text.DotEnv">
+
+
+  <h1 id="Bodu_Text_DotEnv" data-uid="Bodu.Text.DotEnv" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Text.DotEnv Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.DotEnv">Bodu.Text.DotEnv</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-dotenv.svg" alt="Bodu.Text.DotEnv"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.DotEnv</strong> parses and emits <strong><code>.env</code></strong> files - a flat object of <code>KEY=value</code> entries with <code>export</code> prefixes, quoting, and comments - as a standalone <code>System.Text.Json</code>-shaped library: a typed settings serializer, a forward-only UTF-8 token reader/writer pair, a mutable node DOM, and a read-only document DOM. Values are deliberately literal: no <code>${VAR}</code> interpolation happens at parse time. It ships as its own package (also available through the <code>Bodu.Text.Formats</code> umbrella); see also <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a> and <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a>.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializer.html">DotEnvSerializer</a> - static serializer: settings classes / dictionaries ↔ DotEnv text.</li>
+<li><a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializerOptions.html">DotEnvSerializerOptions</a> / <a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializerDefaults.html">DotEnvSerializerDefaults</a> - naming policy and presets (<code>Web</code> = SCREAMING_SNAKE_CASE, case-insensitive).</li>
+<li><a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html">Utf8DotEnvReader</a> / <a class="xref" href="Bodu.Text.DotEnv.Writer.Utf8DotEnvWriter.html">Utf8DotEnvWriter</a> - forward-only <code>ref struct</code> token surfaces (export detection, quoting, inline comments).</li>
+<li><a class="xref" href="Bodu.Text.DotEnv.Document.DotEnvDocument.html">DotEnvDocument</a> / <a class="xref" href="Bodu.Text.DotEnv.Document.DotEnvElement.html">DotEnvElement</a> - read-only, disposable document model.</li>
+<li><a class="xref" href="Bodu.Text.DotEnv.Nodes.DotEnvNode.html">DotEnvNode</a> - mutable DOM root; preserves each entry's <code>export</code> flag.</li>
+<li><a class="xref" href="Bodu.Text.DotEnv.DotEnvFormatException.html">DotEnvFormatException</a> / <a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializationException.html">DotEnvSerializationException</a> - malformed input vs. binding failures.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Document;
+
+using DotEnvDocument env = DotEnvDocument.Parse(&quot;export APP_ENV=production\nAPP_PORT=8080\n&quot;u8);
+string appEnv = env.RootElement.GetProperty(&quot;APP_ENV&quot;).GetString();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Literal values.</strong> What the file says is what your process gets; interpolation belongs to a higher layer.</li>
+<li><strong>See also:</strong> the <a href="../docs/formats/index.html">line-formats introduction</a> and the <a href="../guides/formats/dotenv.html">DotEnv guide</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="namespaces">
+Namespaces
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.Document.html">Bodu.Text.DotEnv.Document</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.Nodes.html">Bodu.Text.DotEnv.Nodes</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.Reader.html">Bodu.Text.DotEnv.Reader</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.Writer.html">Bodu.Text.DotEnv.Writer</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvFormatException.html">DotEnvFormatException</a></dt>
+      <dd><p>Represents an error that occurs when DotEnv data is malformed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializationException.html">DotEnvSerializationException</a></dt>
+      <dd><p>Represents an error that occurs while mapping a .NET object to or from DotEnv with <a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializer.html">DotEnvSerializer</a>,
+such as an unsupported root type, a missing required key, or a value that cannot be converted to the target type.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializer.html">DotEnvSerializer</a></dt>
+      <dd><p>Provides methods for serializing .NET objects to DotEnv text and deserializing DotEnv text into .NET objects, shaped
+after <code>System.Text.Json</code>'s <code>JsonSerializer</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializerOptions.html">DotEnvSerializerOptions</a></dt>
+      <dd><p>Provides configuration for <a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializer.html">DotEnvSerializer</a>, controlling property naming, case sensitivity, field
+inclusion, null handling, and the <code>export</code> prefix on the write path.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializerDefaults.html">DotEnvSerializerDefaults</a></dt>
+      <dd><p>Specifies a set of default settings a <a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializerOptions.html">DotEnvSerializerOptions</a> can be initialized from.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html">DotEnvTokenType</a></dt>
+      <dd><p>Enumerates the token kinds a <a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html">Utf8DotEnvReader</a> reports as it advances through
+a DotEnv document.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvValueKind.html">DotEnvValueKind</a></dt>
+      <dd><p>Enumerates the value kinds a DotEnv node or element can represent.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

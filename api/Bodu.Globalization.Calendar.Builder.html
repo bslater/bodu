@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Globalization.Calendar.Builder.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Globalization.Calendar.Builder.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Builder">Bodu.Globalization.Calendar.Builder</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Builder">Bodu.Globalization.Calendar.Builder</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -117,10 +117,10 @@
 <li><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDefinitionBuilder.html">NotableDateDefinitionBuilder</a> - one <code>&lt;NotableDate&gt;</code> concept (display name, category, default duration / non-working, tags, rules), obtained from <code>AddNotableDate(id, displayName, category, configure)</code>.</li>
 <li><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> - one <code>&lt;Rule&gt;</code> (priority, category, applicability, tags, adjustment references) carrying exactly one occurrence source - a single-date strategy (<code>Fixed</code>, <code>DayOfWeekInMonth</code>, <code>WeekdayNearDate</code>, <code>RelativeWeekdayInMonth</code>, <code>OrdinalDayOfMonth</code>, <code>DayOfYear</code>, <code>IsoWeekDate</code>, <code>OffsetFromRule</code>, <code>WeekdayNearRule</code>, <code>NthWeekdayFromRule</code>, <code>WorkingDayOffsetFromRule</code>, <code>WorkingDayInMonth</code>, <code>Algorithm</code>) or a recurrence source (<code>DailyInterval</code>, <code>Weekly</code>, <code>MonthlyDay</code>, <code>MonthlyWeekday</code>); obtained from <code>AddRule(id, configure)</code>. Selecting a second strategy throws.</li>
 <li><a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.html">AdjustmentPolicyBuilder</a> and <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentScopeBuilder.html">AdjustmentScopeBuilder</a> - a reusable <code>&lt;AdjustmentPolicy&gt;</code> (scope, trigger, action, emission, handler parameters), added with <code>AddAdjustmentPolicy(id, configure)</code> and referenced from a rule by id.</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder.html">ResolutionPolicyBuilder</a> - the resource-level <code>&lt;ResolutionPolicy&gt;</code> (duplicate / collision / priority / observed-date policy and the working week).</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder.html">ResolutionPolicyBuilder</a> - the resource-level <code>&lt;ResolutionPolicy&gt;</code> (duplicate, same-day and span collision, priority and observed-date range policies, category precedence, and the working week).</li>
 <li><a class="xref" href="Bodu.Globalization.Calendar.Builder.ImportBuilder.html">ImportBuilder</a> and <a class="xref" href="Bodu.Globalization.Calendar.Builder.ImportUseBuilder.html">ImportUseBuilder</a> - <code>&lt;Imports&gt;</code> that pull concepts from the bundled common catalogues, optionally re-scoping them.</li>
 <li><a class="xref" href="Bodu.Globalization.Calendar.Builder.OverrideBuilder.html">OverrideBuilder</a> - ID-targeted <code>&lt;Overrides&gt;</code> (<code>AddRule</code> / <code>PatchRule</code> / <code>RemoveRule</code>).</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentFormat.html">NotableDateDocumentFormat</a> - selects XML or JSON for the explicit <code>Save(path, format)</code> overload.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentFormat.html">NotableDateDocumentFormat</a> - selects XML, JSON, or a binary rule pack (<code>Binary</code>) for the explicit <code>Save(path, format)</code> overload.</li>
 </ul>
 <h2 id="minimal-sample">Minimal sample</h2>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
@@ -151,10 +151,10 @@ NotableDateDocumentBuilder.Create(&quot;contoso.holidays&quot;) /* … */ .Save(
 </code></pre>
 <h2 id="notes">Notes</h2>
 <ul>
-<li><strong>XML is full-fidelity; JSON is the documented subset.</strong> <code>ToXml()</code> emits the entire schema; <code>ToJson()</code> emits the narrower JSON form and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> for features the JSON schema cannot model (imports, non-Gregorian calendars, XML-only trigger/action values, handler parameters, scope year-bounds).</li>
+<li><strong>XML is full-fidelity; JSON is the documented subset.</strong> <code>ToXml()</code> emits the entire schema; <code>ToJson()</code> emits the narrower JSON form and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> for features outside that subset (imports, non-Gregorian calendars, the triggers and actions the subset lacks, handler parameters, scope year-bounds).</li>
 <li><strong><code>Build()</code> defers to the canonical loader.</strong> It serializes to XML and loads through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, so a built resource is identical to one loaded from the equivalent file - and the same validation applies (a malformed document throws <a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a>). Pass an import resolver (e.g. <code>CommonNotableDateResources.Resolver</code>) to <code>Build(resolver)</code> when the document imports catalogues.</li>
 <li><strong>Single strategy per rule.</strong> Each <code>&lt;Rule&gt;</code> commits to exactly one strategy; a second strategy call throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.</li>
-<li><strong>Target framework.</strong> <code>net8.0</code>.</li>
+<li><strong>Target frameworks.</strong> <code>net8.0</code> and <code>net10.0</code>.</li>
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
@@ -244,7 +244,7 @@ Enums
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

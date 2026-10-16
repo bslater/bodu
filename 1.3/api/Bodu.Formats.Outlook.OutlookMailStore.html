@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>OutlookMailStore Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="OutlookMailStore Class
+ | BODU ">
+      
+      <meta name="description" content="Provides a disposable, read-only session over an Outlook personal-folders mail store (a .pst file, MS-PST Unicode or ANSI format): the store properties, the folder hierarchy, and the messages within it, decoded into the shared MAPI value model.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Formats.Outlook.OutlookMailStore">
+
+
+
+
+  <h1 id="Bodu_Formats_Outlook_OutlookMailStore" data-uid="Bodu.Formats.Outlook.OutlookMailStore" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+OutlookMailStore Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.ContainerFaults.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Formats_Outlook_OutlookMailStore_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Formats.html">Formats</a>.<a class="xref" href="Bodu.Formats.Outlook.html">Outlook</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Formats.Outlook.Pst.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Formats.Outlook.Pst">Bodu.Formats.Outlook.Pst</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.ContainerFaults.cs">OutlookMailStore.ContainerFaults.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a disposable, read-only session over an Outlook personal-folders mail store (a <code>.pst</code> file, MS-PST
+Unicode or ANSI format): the store properties, the folder hierarchy, and the messages within it, decoded into the
+shared MAPI value model.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class OutlookMailStore : IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">OutlookMailStore</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Formats_Outlook_OutlookMailStore_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+The session owns its <a class="xref" href="Bodu.IO.Pst.PstFile.html">PstFile</a> container (and the source stream unless it is left open); every
+<a class="xref" href="Bodu.Formats.Outlook.OutlookMailFolder.html">OutlookMailFolder</a> and <a class="xref" href="Bodu.Formats.Outlook.OutlookMailMessage.html">OutlookMailMessage</a> obtained from it is a view bound to the
+session's lifetime - disposing the store invalidates them all. Reads are lazy and streaming-first: opening parses
+only the container header, folder and message enumerations stream table rows, and each object decodes its properties
+once on first access.
+</p>
+<p>
+The session is single-threaded, matching the container's documented contract: its members - and the members of every
+view obtained from it - must not be called concurrently.
+</p>
+<p>
+Every failure to read the store surfaces as <a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a>, part of the
+<a class="xref" href="Bodu.Formats.Outlook.OutlookFormatException.html">OutlookFormatException</a> family the <code>.msg</code> reader shares. Container corruption met by the session
+or any view - when the store opens, a property collection decodes, a table is enumerated, or a content stream is
+read - is wrapped, with the container's <a class="xref" href="Bodu.IO.Pst.PstFileException.html">PstFileException</a> (and its
+<a class="xref" href="Bodu.IO.Pst.PstFileException.html#Bodu_IO_Pst_PstFileException_Error">Error</a> category) preserved as the inner exception.
+</p>
+<example>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead("archive.pst");
+
+foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
+{
+    Console.WriteLine(folder.DisplayName);
+    foreach (OutlookMailMessage message in folder.EnumerateMessages())
+        Console.WriteLine($"  {message.Subject} - {message.SenderName}");
+}</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_DisplayName_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.DisplayName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_DisplayName" data-uid="Bodu.Formats.Outlook.OutlookMailStore.DisplayName">
+  DisplayName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the store display name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? DisplayName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The <code>PidTagDisplayName</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The session has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></dt>
+    <dd><p>The container is malformed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_Properties_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Properties*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_Properties" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Properties">
+  Properties
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets every decoded property of the store object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MapiPropertyCollection Properties { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a></dt>
+    <dd><p>The tag-addressed property collection, decoded once on first access.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Outlook_OutlookMailStore_Properties_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>An exception thrown by <a class="xref" href="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValueOmittedCallback">ValueOmittedCallback</a> while the properties
+are decoded propagates from this access unchanged.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The session has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></dt>
+    <dd><p>The container is malformed, or, under strict validation, a property value cannot be decoded.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_RootFolder_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.RootFolder*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_RootFolder" data-uid="Bodu.Formats.Outlook.OutlookMailStore.RootFolder">
+  RootFolder
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the root of the store's folder hierarchy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OutlookMailFolder RootFolder { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMailFolder.html">OutlookMailFolder</a></dt>
+    <dd><p>The root folder view, created once on first access.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Outlook_OutlookMailStore_RootFolder_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The root folder itself is structural - user folders (the IPM subtree) hang beneath it. Walk
+<a class="xref" href="Bodu.Formats.Outlook.OutlookMailFolder.html#Bodu_Formats_Outlook_OutlookMailFolder_EnumerateSubfolders">EnumerateSubfolders()</a> to reach them.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The session has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></dt>
+    <dd><p>The container is malformed, or has no root folder node.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_Dispose_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Dispose*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_Dispose" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Releases the session and its container (and source stream, unless it was left open).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_IsPstFile_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.IsPstFile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_IsPstFile_System_IO_Stream_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.IsPstFile(System.IO.Stream)">
+  IsPstFile(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether a stream begins with the <code>!BDN</code> magic; its position is restored before returning.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsPstFile(Stream stream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable, seekable stream to sniff.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the stream begins with the magic every PST variant shares, the OST included,
+whether or not this reader opens it.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Outlook_OutlookMailStore_IsPstFile_System_IO_Stream__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The check reads only the magic, so it never throws for malformed content; a stream that cannot be read and
+sought answers <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_Open_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Open*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_Open_System_IO_Stream_Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_System_Boolean_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Open(System.IO.Stream,Bodu.Formats.Outlook.OutlookMailStoreReaderOptions,System.Boolean)">
+  Open(Stream, OutlookMailStoreReaderOptions, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a mail store from a stream with explicit options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OutlookMailStore Open(Stream stream, OutlookMailStoreReaderOptions options, bool leaveOpen = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable, seekable stream; the file is read from its current position.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html">OutlookMailStoreReaderOptions</a></dt>
+    <dd><p>The reader options.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave the stream open when the session is disposed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a></dt>
+    <dd><p>The open session.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">stream</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The stream is not readable and seekable.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></dt>
+    <dd><p>The stream is not a structurally valid PST file, or is a format variant or uses a content encoding the reader
+does not support; the container's <a class="xref" href="Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> or
+<a class="xref" href="Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> is the inner exception.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_OpenRead_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.OpenRead*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_OpenRead_System_IO_Stream_System_Boolean_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.OpenRead(System.IO.Stream,System.Boolean)">
+  OpenRead(Stream, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a mail store from a stream with default options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OutlookMailStore OpenRead(Stream stream, bool leaveOpen = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable, seekable stream; the file is read from its current position.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave the stream open when the session is disposed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a></dt>
+    <dd><p>The open session.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The stream is not readable and seekable.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></dt>
+    <dd><p>The stream is not a structurally valid PST file, or is a format variant or uses a content encoding the reader
+does not support; the container's <a class="xref" href="Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> or
+<a class="xref" href="Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> is the inner exception.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_OpenRead_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.OpenRead*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_OpenRead_System_String_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.OpenRead(System.String)">
+  OpenRead(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a mail store from a path with default options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OutlookMailStore OpenRead(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a></dt>
+    <dd><p>The open session.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is empty.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>No file exists at <code class="paramref">path</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.directorynotfoundexception">DirectoryNotFoundException</a></dt>
+    <dd><p>A directory in <code class="paramref">path</code> does not exist.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.unauthorizedaccessexception">UnauthorizedAccessException</a></dt>
+    <dd><p><code class="paramref">path</code> names a directory, or the caller does not have permission to read the file.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a></dt>
+    <dd><p>The file could not be opened.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></dt>
+    <dd><p>The file is not a structurally valid PST file, or is a format variant or uses a content encoding the reader does
+not support; the container's <a class="xref" href="Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> or
+<a class="xref" href="Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> is the inner exception.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_TryGetNamedPropertyId_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.TryGetNamedPropertyId*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_TryGetNamedPropertyId_Bodu_Formats_Outlook_MapiNamedProperty_System_UInt16__" data-uid="Bodu.Formats.Outlook.OutlookMailStore.TryGetNamedPropertyId(Bodu.Formats.Outlook.MapiNamedProperty,System.UInt16@)">
+  TryGetNamedPropertyId(MapiNamedProperty, out ushort)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to resolve the property identifier a named property maps to in this store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetNamedPropertyId(MapiNamedProperty name, out ushort id)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a></dt>
+    <dd><p>The named-property identity.</p>
+</dd>
+    <dt><code>id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the file-specific identifier (at or above <code>0x8000</code>) the
+name maps to; combine it with the expected <a class="xref" href="Bodu.Formats.Outlook.MapiPropertyType.html">MapiPropertyType</a> to address an object's properties.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the store maps the name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Outlook_OutlookMailStore_TryGetNamedPropertyId_Bodu_Formats_Outlook_MapiNamedProperty_System_UInt16___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The mapping is store-wide (MS-PST keeps one name-to-id map per file), so a single resolution applies to every
+message and attachment of the session.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The session has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></dt>
+    <dd><p>The container is malformed, or, under strict validation, the mapping streams are malformed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStore_TryGetPropertyName_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.TryGetPropertyName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStore_TryGetPropertyName_Bodu_Formats_Outlook_MapiPropertyTag_Bodu_Formats_Outlook_MapiNamedProperty__" data-uid="Bodu.Formats.Outlook.OutlookMailStore.TryGetPropertyName(Bodu.Formats.Outlook.MapiPropertyTag,Bodu.Formats.Outlook.MapiNamedProperty@)">
+  TryGetPropertyName(MapiPropertyTag, out MapiNamedProperty)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to resolve the named-property identity behind a property tag.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetPropertyName(MapiPropertyTag tag, out MapiNamedProperty name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tag</code> <a class="xref" href="Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a></dt>
+    <dd><p>A tag whose identifier is in the named range (at or above <code>0x8000</code>).</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the identity.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the store maps the tag's identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The session has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></dt>
+    <dd><p>The container is malformed, or, under strict validation, the mapping streams are malformed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

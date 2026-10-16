@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/financial/exchange-rate-providers.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/financial/exchange-rate-providers.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -150,7 +150,7 @@ caching; that is added in front (see the caching guide).</p>
 </tr>
 <tr>
 <td>XE.com</td>
-<td><code>Bodu.Financial.ExchangeRates.Xe</code></td>
+<td><code>Bodu.Financial.ExchangeRates.Xe</code> (not on nuget.org)</td>
 <td><em>any pair</em></td>
 <td>per-<strong>pair</strong> charting-rates JSON</td>
 <td>rolling ~10 years (server-determined, estimated)</td>
@@ -158,7 +158,7 @@ caching; that is added in front (see the caching guide).</p>
 </tr>
 <tr>
 <td>OANDA</td>
-<td><code>Bodu.Financial.ExchangeRates.Oanda</code></td>
+<td><code>Bodu.Financial.ExchangeRates.Oanda</code> (not on nuget.org)</td>
 <td><em>any pair</em></td>
 <td>per-<strong>pair</strong> rate-history JSON</td>
 <td>rolling ~180 days</td>
@@ -176,7 +176,7 @@ caching; that is added in front (see the caching guide).</p>
 <td>exchangerate.host</td>
 <td><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></td>
 <td><em>any pair</em></td>
-<td>per-<strong>pair</strong> time-series / single-date JSON (<code>access_key</code>)</td>
+<td>per-<strong>pair</strong> time-frame / single-date JSON (<code>access_key</code>)</td>
 <td>since 1999‑01‑01</td>
 <td><code>AddExchangeRateHostExchangeRates()</code></td>
 </tr>
@@ -206,6 +206,11 @@ plan's base-currency rules). FRED is per-pair too, but each pair must be mapped 
 FRED series identifier - it ships a built-in map for the major pairs and accepts more
 through its options. Fixer, exchangerate.host, and FRED require an API key on their
 options; IMF is keyless.</p>
+<p>The RBA, ECB, BoE, Fixer, exchangerate.host, and FRED providers read published APIs
+and are Stable. The IMF, Yahoo, OFX, XE, and OANDA providers read feeds their
+operators do not publish as APIs, so they are Experimental: a feed can change or start
+refusing requests without notice, and the provider then stops working with no change
+on the Bodu side. Pair an Experimental provider with a Stable one.</p>
 <p>Every provider advertises its history depth through
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_HistoryAvailability"><code>HistoryAvailability</code></a>,
 so a caller can resolve the earliest date worth requesting before issuing a
@@ -286,22 +291,27 @@ decimal latest = ((IRateProvider)provider).GetRate(&quot;AUD&quot;, &quot;USD&qu
 one); with no logger the provider uses <code>NullLogger</code>. Each provider's options expose
 per-event <code>*LogLevel</code> properties, defaulting to one <code>Information</code> line per
 completed download, <code>Debug</code> for download starts, and <code>Trace</code> for per-observation
-detail.</p>
+detail. Each package logs under event ids no other package uses, so a host can filter
+or route by id: ECB 4101-4106, BoE 4201-4206, RBA 4301-4306, the pair providers' shared
+base 4401-4406 (with the payload cache's 4410-4411 and XE's 4420), the caching packages
+4501-4530, and IMF 4701-4706.</p>
 <p><strong>Downloaded payloads are cached on disk.</strong> The bulk providers (ECB, BoE, RBA, IMF)
 keep a best-effort cache of the raw bytes they downloaded through <code>EnableDiskCache</code>
 (on by default for ECB, BoE, and IMF; off for RBA), so immutable history is not
 re-fetched; the pair providers do not cache payloads. This is distinct from the <a href="exchange-rate-caching.html">rate cache</a>:
 the on-disk payload cache avoids re-downloading the source file, while the rate
 cache stores parsed, resolved rates in front of the provider.</p>
-<p><strong>Shared options.</strong> The pair-provider options - Yahoo, OFX, XE, OANDA, Fixer,
-exchangerate.host, and FRED - plus the IMF options derive from the abstract
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, so they share its surface - the
-<code>BaseAddress</code>, <code>HttpTimeout</code> (default 30s), <code>UserAgent</code>, <code>AllowSynchronousNetworkAccess</code>,
-<code>DefaultLookback</code> (default 7 days), a <code>CurrencyAliases</code> map for non-ISO source symbols,
-and the per-event <code>*LogLevel</code> knobs. RBA, ECB, and BoE carry their own option types
-(<code>RbaRateProviderOptions</code> and friends) with source-specific settings such as the RBA's
-era list. The DI registration's <code>configureResilience</code> parameter tunes the standard
-Polly handler (<code>HttpStandardResilienceOptions</code>) wrapped around the named <code>HttpClient</code>.</p>
+<p><strong>Shared options.</strong> Every provider's options - the pair providers (Yahoo, OFX, XE,
+OANDA, Fixer, exchangerate.host, and FRED) and the BoE, ECB, RBA, and IMF feeds - derive
+from the abstract <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, so they
+share its surface - the <code>BaseAddress</code>, <code>HttpTimeout</code> (default 30s), <code>UserAgent</code>,
+<code>MaxResponseContentBufferSize</code>, <code>AllowSynchronousNetworkAccess</code>, <code>DefaultLookback</code>
+(default 7 days; 10 for BoE), <code>RefreshInterval</code> (default 12 hours: how long a day the
+source could still publish, such as today, is served before it is fetched again), a
+<code>CurrencyAliases</code> map for non-ISO source symbols, and the per-event <code>*LogLevel</code> knobs -
+and add source-specific settings such as the RBA's era list. The DI registration's
+<code>configureResilience</code> parameter tunes the standard Polly handler
+(<code>HttpStandardResilienceOptions</code>) wrapped around the named <code>HttpClient</code>.</p>
 <h2 id="reserve-bank-of-australia-aud">Reserve Bank of Australia (AUD)</h2>
 <p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RbaRateProvider.html"><code>RbaRateProvider</code></a>
 serves the RBA's published historical daily rates. The RBA splits its history into
@@ -337,8 +347,8 @@ RateLookupResult inverse = ecb.GetRate(&quot;USD&quot;, &quot;EUR&quot;, new Dat
 <h2 id="bank-of-england-gbp">Bank of England (GBP)</h2>
 <p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.BoeRateProvider.html"><code>BoeRateProvider</code></a>
 serves the Bank of England daily spot rates, downloaded as CSV over a requested
-date <strong>window</strong>. A synchronous miss loads a window around the requested date;
-<code>LoadRangeAsync</code> warms an explicit range. Options are
+date <strong>window</strong>. With <code>AllowSynchronousNetworkAccess</code> on, a synchronous miss loads the
+look-back window ending on the requested date; <code>LoadRangeAsync</code> warms an explicit range. Options are
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html"><code>BoeRateProviderOptions</code></a>.</p>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
@@ -353,6 +363,15 @@ fetches a Yahoo Finance chart per currency pair (the ticker <code>AUDUSD=X</code
 so unlike the central-bank providers it serves arbitrary pairs rather than one base
 currency. Warm a pair over a window with <code>LoadPairAsync</code>. Options are
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.YahooRateProviderOptions.html"><code>YahooRateProviderOptions</code></a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. Yahoo publishes no API for the chart service, and
+Yahoo's <a href="https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html">terms of service</a>
+do not permit collecting data from its services by automated means without its
+permission, so check that your use is permitted. The service can change, or start
+refusing requests, without notice. Do not rely on it as your sole rate source in
+production, and pair it with a stable primary feed.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var yahoo = new YahooRateProvider(new YahooRateProviderOptions());
@@ -366,6 +385,12 @@ fetches the OFX (ofx.com) public spot-rate-history JSON service per currency pai
 so like Yahoo it serves arbitrary pairs rather than one base currency. Warm a pair
 over a window with <code>LoadPairAsync</code>. Options are
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OfxRateProviderOptions.html"><code>OfxRateProviderOptions</code></a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. OFX documents no API for the spot-rate-history
+service, which backs the ofx.com website and can change without notice. Do not rely
+on it as your sole rate source in production, and pair it with a stable primary feed.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var ofx = new OfxRateProvider(new OfxRateProviderOptions());
@@ -408,6 +433,13 @@ days - so a request for an earlier start date returns just what the feed publish
 The provider advertises this through
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_HistoryAvailability"><code>HistoryAvailability</code></a>,
 so a caller can resolve the earliest date worth requesting before issuing a lookup.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. OANDA documents no API for the Historical Currency
+Converter service, which is gated by bot mitigation and can change without notice. Do
+not rely on it as your sole rate source in production, and pair it with a stable
+primary feed.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var oanda = new OandaRateProvider(new OandaRateProviderOptions());
@@ -427,7 +459,9 @@ destination currency as the quote symbol. Set the <code>access_key</code> throug
 <p>Fixer's free plan is locked to a EUR base and to the latest and single-date
 endpoints; changing the base currency and the time-series endpoint require a paid
 plan. A request the plan does not permit surfaces as a fetch failure, so on the free
-plan request pairs whose source currency is EUR (or rely on the inverse fallback).</p>
+plan request pairs whose source currency is EUR. A request for the reverse pair sends that
+pair's own source currency as the base, so to read <code>USD/EUR</code> warm <code>EUR/USD</code> first; its
+reverse then resolves by inversion from the loaded series.</p>
 </div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
@@ -438,11 +472,21 @@ RateLookupResult usd = fixer.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateO
 </code></pre>
 <h2 id="exchangeratehost-any-pair-api-key">exchangerate.host (any pair, API key)</h2>
 <p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.html"><code>ExchangeRateHostRateProvider</code></a>
-fetches the exchangerate.host time-series and single-date JSON endpoints per currency
+fetches the exchangerate.host <code>timeframe</code> and single-date JSON endpoints per currency
 pair. The response keys quotes by the concatenated source+quote code (for example
 <code>EURUSD</code>). Set the <code>access_key</code> through
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions.html"><code>ExchangeRateHostRateProviderOptions.ApiKey</code></a>;
-the free plan is locked to a USD source currency.</p>
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions.html"><code>ExchangeRateHostRateProviderOptions.ApiKey</code></a>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>exchangerate.host's free plan supports a USD source currency and single-date requests;
+changing the source currency and the <code>timeframe</code> (multi-day) endpoint require a paid plan
+(source-currency switching from the Basic plan, time-frame queries from the Professional Plus
+plan). A request the plan does not permit surfaces as a fetch failure. On a plan without
+time-frame queries, warm one day at a time (<code>LoadPairAsync</code> with equal start and end dates),
+because the on-demand and latest-rate lookups fetch the multi-day <code>DefaultLookback</code> window. On
+the free plan request pairs whose source currency is USD; to read <code>EUR/USD</code> warm <code>USD/EUR</code>
+first, and its reverse then resolves by inversion from the loaded series.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var host = new ExchangeRateHostRateProvider(new ExchangeRateHostRateProviderOptions { ApiKey = &quot;…&quot; });
@@ -459,6 +503,13 @@ mapped to its series identifier through
 The options ship a built-in map for the major USD pairs and accept more; a pair with
 no mapping returns no data. Missing values (FRED's <code>&quot;.&quot;</code>) are skipped. Set the
 <code>api_key</code> through <code>FredRateProviderOptions.ApiKey</code>.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>FRED's <a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html">API terms of use</a> require an
+application that uses the FRED API to place this notice prominently on the application: &quot;This
+product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of
+St. Louis.&quot; Displaying it is the application's obligation; the provider cannot do it for you.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var fred = new FredRateProvider(new FredRateProviderOptions { ApiKey = &quot;…&quot; });
@@ -477,6 +528,14 @@ quotation direction on ingest, so consumers always see a consistent <code>USD→
 month-based - one download covers every currency across a month's business days - and closed
 months are cached permanently. Options are
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html"><code>ImfRateProviderOptions</code></a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. The IMF publishes the Representative Exchange Rates,
+but it does not document the report's tab-separated export, which can change or
+disappear without notice. Do not rely on it as your sole rate source in production,
+and pair it with a stable primary feed (for example the ECB, Bank of England, RBA, or
+FRED providers).</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var imf = new ImfRateProvider(new ImfRateProviderOptions());
@@ -589,7 +648,7 @@ condition, and where in the call chain it surfaces:</p>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesNotFoundException.html">RateSeriesNotFoundException</a> (a <code>KeyNotFoundException</code>)</td>
 <td>A single-base feed is asked for a pair it structurally cannot carry - <code>USD/JPY</code> on the ECB, a cross pair on RBA, BoE, or IMF. Thrown by <code>ValidateRangeRequest</code> <strong>before any download</strong>. Catch it ahead of the base type to tell &quot;never&quot; from &quot;not today&quot;.</td>
-<td><code>GetRates</code> / <code>GetRatesAsync</code> / <code>LoadPairAsync</code> / <code>LoadRangeAsync</code></td>
+<td><code>GetRates</code> / <code>GetRatesAsync</code> / <code>LoadPairAsync</code></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateFormatException.html">ExchangeRateFormatException</a> (a <code>FormatException</code>)</td>
@@ -618,8 +677,8 @@ condition, and where in the call chain it surfaces:</p>
 </tr>
 <tr>
 <td><code>ObjectDisposedException</code></td>
-<td>Any member after <code>Dispose()</code>. Snapshots already handed out stay valid.</td>
-<td>Every public member</td>
+<td>A lookup, range, load, or snapshot member after <code>Dispose()</code>. Snapshots already handed out stay valid.</td>
+<td>The lookup, range, <code>LoadPairAsync</code>, and snapshot members; <code>GetAvailablePairs</code>, <code>HistoryAvailability</code>, and the feed warm-ups such as <code>LoadRangeAsync</code> do not check</td>
 </tr>
 </tbody>
 </table>
@@ -890,11 +949,11 @@ pair up front with <code>RateSeriesNotFoundException</code>, as the table above 
 </tr>
 <tr>
 <td>An arbitrary pair not quoted by a central bank</td>
-<td>Yahoo, OFX, XE, OANDA, Fixer, or exchangerate.host</td>
+<td>Fixer or exchangerate.host, or the Experimental Yahoo, OFX, XE, or OANDA</td>
 </tr>
 <tr>
 <td>Recent rates for an arbitrary pair (rolling ~180-day window)</td>
-<td>OANDA</td>
+<td>OANDA (Experimental)</td>
 </tr>
 <tr>
 <td>A commercial API you already hold a key for</td>
@@ -906,7 +965,7 @@ pair up front with <code>RateSeriesNotFoundException</code>, as the table above 
 </tr>
 <tr>
 <td>Official daily USD representative rates (keyless)</td>
-<td>IMF</td>
+<td>IMF (Experimental)</td>
 </tr>
 <tr>
 <td>One pair from several sources, with fallback or an average</td>
@@ -951,7 +1010,7 @@ read-through cache and grouping providers.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

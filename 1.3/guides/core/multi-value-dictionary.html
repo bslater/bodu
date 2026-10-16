@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Multi-value dictionary | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Multi-value dictionary | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/core/multi-value-dictionary.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="multi-value-dictionary">Multi-value dictionary</h1>
+
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a> maps each key to an ordered <em>list</em> of values - a one-to-many dictionary (a multimap). It removes the boilerplate of the common <code>Dictionary&lt;TKey, List&lt;TValue&gt;&gt;</code> pattern: there is no &quot;create the list if the key is missing&quot; dance, the indexer never returns <code>null</code>, and value insertion order is preserved per key.</p>
+<p>Keys are compared with an <code>IEqualityComparer&lt;TKey&gt;</code> supplied at construction.</p>
+<h2 id="pattern-1---group-values-under-keys">Pattern 1 - group values under keys</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var byCorrelation = new MultiValueDictionary&lt;string, LogEntry&gt;();
+
+foreach (LogEntry entry in entries)
+    byCorrelation.Add(entry.CorrelationId, entry);   // no pre-check needed
+
+IReadOnlyList&lt;LogEntry&gt; forId = byCorrelation[&quot;abc-123&quot;];   // never null
+</code></pre>
+<p>The indexer returns an empty, read-only list when the key is absent - it never throws and never returns <code>null</code>, so callers can iterate unconditionally:</p>
+<pre><code class="lang-csharp">foreach (LogEntry e in byCorrelation[&quot;missing-key&quot;])   // safe - empty sequence
+    Process(e);
+</code></pre>
+<h2 id="pattern-2---add-many-values-at-once">Pattern 2 - add many values at once</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">var routes = new MultiValueDictionary&lt;string, string&gt;();
+
+routes.AddRange(&quot;GET&quot;, new[] { &quot;/users&quot;, &quot;/orders&quot;, &quot;/health&quot; });
+routes.Add(&quot;POST&quot;, &quot;/users&quot;);
+
+IReadOnlyList&lt;string&gt; gets = routes.GetValues(&quot;GET&quot;);   // /users, /orders, /health
+</code></pre>
+<p><code>GetValues</code> returns the same live list as the indexer for a present key, but throws <code>KeyNotFoundException</code> for an absent one; <code>TryGetValues</code> returns <code>false</code> (and an empty list) when the key is absent, mirroring <code>Dictionary.TryGetValue</code>:</p>
+<pre><code class="lang-csharp">if (routes.TryGetValues(&quot;DELETE&quot;, out IReadOnlyList&lt;string&gt; deletes))
+    Console.WriteLine(deletes.Count);
+</code></pre>
+<h2 id="pattern-3---removing-values-and-keys">Pattern 3 - removing values and keys</h2>
+<pre><code class="lang-csharp">bool removedOne = routes.Remove(&quot;GET&quot;, &quot;/health&quot;);  // removes a single value
+bool removedKey = routes.RemoveAll(&quot;POST&quot;);         // removes the key and all its values
+</code></pre>
+<p><code>Remove(key, value)</code> removes one matching value and returns <code>false</code> when the pair is absent; <code>RemoveAll(key)</code> drops the key entirely.</p>
+<h2 id="pattern-4---membership-and-counts">Pattern 4 - membership and counts</h2>
+<pre><code class="lang-csharp">bool hasKey   = routes.ContainsKey(&quot;GET&quot;);                 // true
+bool hasPair  = routes.ContainsValue(&quot;GET&quot;, &quot;/users&quot;);     // true
+
+int totalValues  = routes.Count;       // total values across all keys
+int distinctKeys = routes.KeyCount;    // number of keys
+</code></pre>
+<p>Note the distinction: <code>Count</code> is the total number of <em>values</em> stored, while <code>KeyCount</code> is the number of <em>keys</em>.</p>
+<h2 id="pattern-5---enumerating">Pattern 5 - enumerating</h2>
+<p>Enumerating the dictionary yields each key paired with its value list:</p>
+<pre><code class="lang-csharp">foreach (KeyValuePair&lt;string, IReadOnlyList&lt;string&gt;&gt; group in routes)
+    Console.WriteLine($&quot;{group.Key}: {group.Value.Count} routes&quot;);
+</code></pre>
+<p>To iterate the flat sequence of <code>(key, value)</code> pairs - one row per value - use <code>Flatten</code>:</p>
+<pre><code class="lang-csharp">foreach (KeyValuePair&lt;string, string&gt; pair in routes.Flatten())
+    Console.WriteLine($&quot;{pair.Key} → {pair.Value}&quot;);
+</code></pre>
+<p>The <code>Keys</code> collection exposes the distinct keys; <code>Flatten()</code> yields every stored value with its key.</p>
+<h2 id="pattern-6---custom-key-comparison">Pattern 6 - custom key comparison</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">var headers = new MultiValueDictionary&lt;string, string&gt;(StringComparer.OrdinalIgnoreCase);
+headers.Add(&quot;Accept&quot;, &quot;text/html&quot;);
+headers.Add(&quot;accept&quot;, &quot;application/json&quot;);
+IReadOnlyList&lt;string&gt; accept = headers[&quot;ACCEPT&quot;];   // both values, case-insensitive key
+</code></pre>
+<h2 id="choosing-a-backing-list-vs-set">Choosing a backing: List vs Set</h2>
+<p>By default the dictionary is a <em>list</em> multimap (Guava's <code>ListMultimap</code>): every added value is retained, including per-key duplicates. Passing <code>MultiValueBacking.Set</code> at construction switches it to an order-preserving <em>set</em> multimap (Guava's <code>SetMultimap</code>): values are deduplicated per key using an optional <code>IEqualityComparer&lt;TValue&gt;</code>, and each value keeps the position of its <strong>first</strong> occurrence.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var tags = new MultiValueDictionary&lt;string, string&gt;(
+    MultiValueBacking.Set,
+    StringComparer.OrdinalIgnoreCase,    // key comparer
+    StringComparer.OrdinalIgnoreCase);   // value comparer - drives deduplication
+
+tags.Add(&quot;doc-1&quot;, &quot;Draft&quot;);
+tags.Add(&quot;doc-1&quot;, &quot;DRAFT&quot;);     // duplicate per the value comparer - ignored
+tags.Add(&quot;doc-1&quot;, &quot;review&quot;);
+
+Console.WriteLine(tags.Count);        // 2
+Console.WriteLine(tags[&quot;doc-1&quot;][0]);  // &quot;Draft&quot; - first occurrence and its casing win
+Console.WriteLine(tags.Backing);      // Set
+</code></pre>
+<p>Under <code>Set</code> backing the value comparer also drives <code>Remove(key, value)</code> and <code>ContainsValue(key, value)</code> - <code>tags.Remove(&quot;doc-1&quot;, &quot;draft&quot;)</code> removes <code>&quot;Draft&quot;</code>. Suppressed duplicate adds are not structural changes, so they do not invalidate active enumerators. Under <code>List</code> backing the value comparer is stored and reported by <code>ValueComparer</code> but not consulted; value operations use default equality, exactly as before the option existed.</p>
+<p>The backing and value comparer are fixed at construction. Ordering guarantee: per-key values are always exposed in insertion order (first-occurrence order under <code>Set</code>), through the same <code>IReadOnlyList&lt;TValue&gt;</code> views as <code>List</code> backing. The trade-off is that each <code>Set</code>-backed add scans the key's existing values linearly to detect duplicates - the cost that keeps the values ordered and the list-typed view contract intact, and a good fit for the typically small per-key buckets of a multimap.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Add(TKey, TValue)</code></td>
+<td>Appends a value to the key's list, creating the key if needed.</td>
+</tr>
+<tr>
+<td><code>AddRange(TKey, IEnumerable&lt;TValue&gt;)</code></td>
+<td>Appends several values to a key.</td>
+</tr>
+<tr>
+<td><code>this[TKey]</code></td>
+<td>Returns the key's values as an <code>IReadOnlyList&lt;TValue&gt;</code>; an empty list, never <code>null</code>, when the key is absent.</td>
+</tr>
+<tr>
+<td><code>GetValues(TKey)</code></td>
+<td>Returns the key's values; throws <code>KeyNotFoundException</code> when the key is absent.</td>
+</tr>
+<tr>
+<td><code>TryGetValues(TKey, out IReadOnlyList&lt;TValue&gt;)</code></td>
+<td>Non-throwing lookup.</td>
+</tr>
+<tr>
+<td><code>Remove(TKey, TValue)</code></td>
+<td>Removes a single value; returns <code>false</code> if absent.</td>
+</tr>
+<tr>
+<td><code>RemoveAll(TKey)</code></td>
+<td>Removes a key and all its values.</td>
+</tr>
+<tr>
+<td><code>ContainsKey(TKey)</code> / <code>ContainsValue(TKey, TValue)</code></td>
+<td>Membership tests.</td>
+</tr>
+<tr>
+<td><code>Flatten()</code></td>
+<td>Enumerates <code>(key, value)</code> pairs, one per value.</td>
+</tr>
+<tr>
+<td><code>Keys</code></td>
+<td>The distinct keys.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>Total number of values across all keys.</td>
+</tr>
+<tr>
+<td><code>KeyCount</code></td>
+<td>Number of distinct keys.</td>
+</tr>
+<tr>
+<td><code>Comparer</code></td>
+<td>The active key <code>IEqualityComparer&lt;TKey&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>Backing</code></td>
+<td>The <code>MultiValueBacking</code> (List or Set) selected at construction.</td>
+</tr>
+<tr>
+<td><code>ValueComparer</code></td>
+<td>The value <code>IEqualityComparer&lt;TValue&gt;</code>; consulted only under Set backing.</td>
+</tr>
+<tr>
+<td><code>Clear()</code></td>
+<td>Removes all keys and values.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide.</li>
+<li><a href="multiset.html">Multiset</a> - when you need value <em>counts</em> rather than value <em>lists</em>.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

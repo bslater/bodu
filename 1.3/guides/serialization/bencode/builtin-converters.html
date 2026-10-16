@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Built-in converter catalog | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Built-in converter catalog | BODU ">
+      
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/serialization/bencode/builtin-converters.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="built-in-converter-catalog">Built-in converter catalog</h1>
+
+<p>Every type that <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> handles without a user converter is served by a <strong>built-in converter</strong> - internally an ordinary <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>. This page catalogs that set - which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in <a href="converters.html">Writing converters</a>.</p>
+<p>The library follows the design shared across the <a href="../index.html">Bodu serializers</a>: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory.</p>
+<p>Bencode (BEP 3) has exactly two scalar forms - integers and byte strings - and the built-in set deliberately covers only types with a native mapping. Boolean, floating-point, <code>char</code>, <code>Guid</code>, <code>Uri</code>, <code>Version</code>, <code>TimeSpan</code>, and the date-time types are <strong>not</strong> provisioned: serializing one without a registered converter surfaces a missing-converter error rather than silently inventing a lossy representation. See <a href="converters.html#pattern-5---map-a-type-the-format-cannot-represent">Pattern 5 in Writing converters</a> for the bridging recipe.</p>
+<h2 id="scalars-and-binary-data">Scalars and binary data</h2>
+<table>
+<thead>
+<tr>
+<th>.NET type</th>
+<th>Bencode representation (write)</th>
+<th>Read accepts</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string</code></td>
+<td>byte string (UTF-8)</td>
+<td>byte string</td>
+<td></td>
+</tr>
+<tr>
+<td><code>byte[]</code></td>
+<td>byte string</td>
+<td>byte string</td>
+<td>The native binary form; no transcoding.</td>
+</tr>
+<tr>
+<td><code>Memory&lt;byte&gt;</code> / <code>ReadOnlyMemory&lt;byte&gt;</code></td>
+<td>byte string</td>
+<td>byte string</td>
+<td></td>
+</tr>
+<tr>
+<td><code>sbyte</code> <code>byte</code> <code>short</code> <code>ushort</code> <code>int</code> <code>uint</code> <code>long</code> <code>nint</code></td>
+<td>integer (<code>i…e</code>)</td>
+<td>integer</td>
+<td>Checked conversions through the signed 64-bit surface; a value outside the target type's range throws <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> on read, with the integer's offset as its <code>BytesOffset</code>.</td>
+</tr>
+<tr>
+<td><code>ulong</code></td>
+<td>integer</td>
+<td>integer</td>
+<td>Dedicated converter on the unsigned surface - the full <code>[0, ulong.MaxValue]</code> range round-trips; a negative integer throws <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> on read, with its offset as the <code>BytesOffset</code>.</td>
+</tr>
+<tr>
+<td><code>nuint</code></td>
+<td>integer</td>
+<td>integer</td>
+<td>Dedicated converter on the unsigned surface, like <code>ulong</code>: a 64-bit process reads and writes the full <code>[0, ulong.MaxValue]</code> range. A 32-bit process rejects an integer above <code>uint.MaxValue</code>, and every process rejects a negative integer, each with <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> on read and the integer's offset as its <code>BytesOffset</code>.</td>
+</tr>
+<tr>
+<td><code>Int128</code></td>
+<td>integer</td>
+<td>integer</td>
+<td>Confined by checked conversion to the signed 64-bit surface; an integer beyond it throws <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> on read, as for the narrower types.</td>
+</tr>
+<tr>
+<td><code>UInt128</code></td>
+<td>integer</td>
+<td>integer</td>
+<td>Rides the unsigned surface like <code>ulong</code>; values above <code>ulong.MaxValue</code> throw on write, and a negative integer throws on read, with its offset as the <code>BytesOffset</code>.</td>
+</tr>
+<tr>
+<td><code>enum</code> (any)</td>
+<td>byte string, the member name</td>
+<td>byte string (a name, as described below) or integer</td>
+<td>The default enum handling - no converter needed; per-member names via <code>[StringEnumMemberName]</code>. The explicit string and number enum converters below override it.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="structural-and-document-model-types">Structural and document-model types</h2>
+<table>
+<thead>
+<tr>
+<th>.NET type</th>
+<th>Bencode representation</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Nullable&lt;T&gt;</code></td>
+<td>underlying type's form</td>
+<td>Bencode has no null; a null member is omitted before any converter runs.</td>
+</tr>
+<tr>
+<td>arrays, <code>List&lt;T&gt;</code>, list interfaces, <code>Queue&lt;T&gt;</code> / <code>Stack&lt;T&gt;</code> / concurrent collections</td>
+<td>list (<code>l…e</code>)</td>
+<td>A <code>Stack&lt;T&gt;</code> round-trip reverses: the writer emits pop order.</td>
+</tr>
+<tr>
+<td>dictionaries with <code>string</code>, integer, <code>enum</code>, <code>Guid</code>, <code>bool</code>, or <code>char</code> keys</td>
+<td>dictionary (<code>d…e</code>)</td>
+<td>Keys are emitted in canonical bytewise order. An enum key is written and read by name, as described below.</td>
+</tr>
+<tr>
+<td>plain classes and structs</td>
+<td>dictionary</td>
+<td>The catch-all object converter, consulted last. Delegates, reflection types (<code>Type</code> and the other <code>MemberInfo</code> types) and pointers are not plain objects: without a converter of your own, a member of one fails with <code>NotSupportedException</code> naming its type.</td>
+</tr>
+<tr>
+<td><code>object</code>-typed members</td>
+<td>runtime type's form on write; <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> on read</td>
+<td>A bare <code>new object()</code> writes an empty dictionary; null members are omitted.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> family</td>
+<td>the node's own kind</td>
+<td>Mutable DOM bridge.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a></td>
+<td>the element's own kind</td>
+<td>Read produces an element backed by a non-pooled internal document - the <code>BencodeElement.Clone</code> lifetime, no disposal needed. The subtree is re-parsed under the serializer's dictionary-key leniency.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a></td>
+<td>the document's root</td>
+<td>A deserialized document is <strong>caller-owned</strong>: dispose it to return its pooled buffer.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-enum-converters">Public enum converters</h2>
+<p>Registered on the options or referenced from a <code>[Converter(...)]</code> attribute:</p>
+<ul>
+<li><a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.html">BencodeStringEnumConverter</a> / <code>BencodeStringEnumConverter&lt;TEnum&gt;</code> - member-name byte strings with an optional naming policy and integer-on-read flag.</li>
+<li><code>BencodeNumberEnumConverter&lt;TEnum&gt;</code> - the underlying numeric value as a Bencode integer.</li>
+</ul>
+<p>An integer read as an enum, by the default handling or by either converter, must lie within the range of the enum's underlying type: one outside it raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> at the integer's offset rather than being narrowed into the type, so <code>i300e</code> never binds a <code>byte</code>-based enum as 44. An integer inside the range binds whether or not it names a member, and an enum based on <code>ulong</code> reads integers up to <code>ulong.MaxValue</code>, which <code>BencodeNumberEnumConverter&lt;TEnum&gt;</code> also writes.</p>
+<p>Names are matched as System.Text.Json's <code>JsonStringEnumConverter</code> matches them, by the default handling and by the string-enum converter alike. A member's wire name, from <code>[StringEnumMemberName]</code> or the converter's naming policy, binds only in its own case. The CLR name of a member that <code>[StringEnumMemberName]</code> does not rename also binds, in any case, but a renamed member's CLR name does not: with <code>[StringEnumMemberName(&quot;on&quot;)]</code> on <code>Enabled</code>, <code>2:on</code> binds, and <code>2:ON</code>, <code>7:Enabled</code> and <code>7:enabled</code> do not. A combination of flags is written as the comma-separated wire names of its flags, in the order <code>Enum.ToString</code> lists them, so under <code>NamingPolicy.SnakeCaseLower</code> <code>CanRead | CanExecute</code> is <code>21:can_read, can_execute</code>. It is read from such a list in any order, each name trimmed of white space, with a trailing comma tolerated but no empty name anywhere else. A list holds names only: an integer binds, where integers are allowed, only as the whole byte string, so <code>4:1, 4</code> is rejected.</p>
+<p>A string-enum converter created with <code>allowIntegerValues: false</code> reads names only, as System.Text.Json's <code>JsonStringEnumConverter</code> does from .NET 9. It rejects a Bencode integer, and a byte string that holds one too: a byte string that is not a member's wire name and has an integer in any of its comma-separated parts (an optional sign and the digits <code>0</code> to <code>9</code>, ignoring white space around them), such as <code>1:2</code>, <code>4: +2 </code> or <code>7:Read, 2</code>, raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> at the byte string's offset rather than binding the integer. The wire names are matched first, so a member renamed with <code>[StringEnumMemberName(&quot;1&quot;)]</code> still reads from <code>1:1</code>. The default handling, and a converter that allows integers, bind a byte string that is an integer, such as <code>1:2</code>, as the integer it holds. On write, such a converter refuses a value that is neither a member nor a combination of defined flags, such as <code>(Status)99</code> or a flags value with an undefined bit, and raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> rather than writing the decimal text it would reject on read; the default handling, and a converter that allows integers, write it as that text, <code>2:99</code>.</p>
+<p>An enum used as a dictionary key follows the same names, as System.Text.Json's enum converter reads and writes a property name. A key is written by its wire name, a combination of flags by its flags' wire names, and any other value as its decimal text, whatever the rule for integer values, so with <code>[StringEnumMemberName(&quot;on&quot;)]</code> on <code>Enabled</code> a <code>Dictionary&lt;Toggle, int&gt;</code> writes the key <code>2:on</code>, reads it back, and rejects <code>7:Enabled</code> with <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>. Where a <code>BencodeStringEnumConverter</code> handles the key type, keys also follow its naming policy and its rule for integer values, so with <code>allowIntegerValues: false</code> the key <code>1:1</code> is rejected. Otherwise, under the default handling or <code>BencodeNumberEnumConverter&lt;TEnum&gt;</code>, keys are written by name with no naming policy, and integer text binds.</p>
+<h2 id="types-that-need-a-user-converter">Types that need a user converter</h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Bencode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Native scalar kinds</td>
+<td>integer, byte string</td>
+</tr>
+<tr>
+<td>Types needing a representation decision</td>
+<td>none - byte strings are native binary</td>
+</tr>
+<tr>
+<td>Types served only by a user converter</td>
+<td><code>bool</code>, floating-point (<code>double</code> / <code>float</code> / <code>decimal</code>), <code>char</code>, <code>Guid</code>, <code>Uri</code>, <code>Version</code>, <code>TimeSpan</code>, the date-time types</td>
+</tr>
+<tr>
+<td>Document root</td>
+<td>any value kind</td>
+</tr>
+<tr>
+<td><code>object</code> / element / document bridges</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p>Each of the converter-only types maps cleanly onto an integer or a byte string - see <a href="converters.html#pattern-5---map-a-type-the-format-cannot-represent">Pattern 5 in Writing converters</a> and <a href="using.html#pattern-6---handle-the-kinds-bencode-cannot-represent">Pattern 6 in Using Bencode</a> for worked bridges.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="converters.html">Writing converters</a> - overriding a built-in, factories, and resolution order.</li>
+<li><a href="using.html">Using Bencode</a> - the format walk-through the tables above back up.</li>
+<li><a href="attributes.html">Mapping attributes</a> - the declarative layer over the converters.</li>
+<li><a href="../../../docs/serialization/bencode/concepts.html">Core concepts</a> - the value-mapping summary in the Bencode vocabulary.</li>
+<li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> and the <a href="../../../docs/topics/text-and-serialization.html">topic overview</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

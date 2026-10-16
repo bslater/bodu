@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Bencode_Serialization_BencodeStringEnumConverter" data-uid="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BencodeStringEnumConverter Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ BencodeStringEnumConverter Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a>.<a class="xref" href="Bodu.Text.Bencode.Serialization.html">Serialization</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Bencode.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Bencode">Bodu.Text.Bencode</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Bencode">Bodu.Text.Bencode</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs">BencodeStringEnumConverter.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs">BencodeStringEnumConverter.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Produces a converter that serializes any enumeration as a Bencode byte string holding its member name, applying an
@@ -187,10 +187,32 @@ options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLowe
 
 
   <h2 id="Bodu_Text_Bencode_Serialization_BencodeStringEnumConverter_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>Register the factory on <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html#Bodu_Text_Bencode_BencodeSerializerOptions_Converters">Converters</a> to apply it to every enumeration, or use
+  <div class="markdown level0 remarks"><p>
+Register the factory on <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html#Bodu_Text_Bencode_BencodeSerializerOptions_Converters">Converters</a> to apply it to every enumeration, or use
 the generic <a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter-1.html">BencodeStringEnumConverter&lt;TEnum&gt;</a> with <a class="xref" href="Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a> to apply it to a
 single enumeration. Two constructors are provided: a parameterless form that applies no naming policy and accepts
-integers on read, and a form that takes an explicit naming policy and integer-handling flag.</p>
+integers on read, and a form that takes an explicit naming policy and integer-handling flag. An integer accepted on
+read must lie within the range of the enumeration's underlying type; one outside it throws
+<a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> rather than being narrowed into that type.
+</p>
+<p>
+Names are matched as System.Text.Json's <code>JsonStringEnumConverter</code> matches them. A member's wire name, from
+<a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> or the naming policy, binds only in its own case; the CLR name of a
+member the attribute does not rename also binds, in any case, while a renamed member's CLR name does not. A
+combination of flags is written as the comma-separated wire names of its flags, in the order
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.enum.tostring#system-enum-tostring">ToString()</a> lists them, and is read from a list of names in any order, with a trailing comma
+tolerated; an integer binds, where integers are allowed, only as the whole text.
+</p>
+<p>
+A converter that does not allow integers throws <a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> on a Bencode integer,
+and at a byte string that holds one: a byte string that is not a member's wire name and has an integer in any of its
+comma-separated parts, such as <code>2</code>, <code> +2 </code> or <code>Read, 2</code>, is rejected rather than bound as the
+integer, as System.Text.Json's <code>JsonStringEnumConverter</code> rejects such a string from .NET 9. The wire names are
+matched first, so a member named <code>1</code> through <a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> still reads. Such a
+converter also refuses to write a value that is neither a member nor a combination of defined flags, such as an
+undefined value or a flags value with an undefined bit, and throws <a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>
+rather than writing the decimal text it would reject on read.
+</p>
 </div>
 
 
@@ -203,7 +225,7 @@ integers on read, and a form that takes an explicit naming policy and integer-ha
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Serialization_BencodeStringEnumConverter__ctor" data-uid="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.#ctor">
   BencodeStringEnumConverter()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -235,7 +257,7 @@ and accepts integers on read.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Serialization_BencodeStringEnumConverter__ctor_Bodu_Text_Serialization_NamingPolicy_System_Boolean_" data-uid="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.#ctor(Bodu.Text.Serialization.NamingPolicy,System.Boolean)">
   BencodeStringEnumConverter(NamingPolicy?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -254,7 +276,8 @@ policy and integer-handling behavior.</p>
     <dd><p>The naming policy applied to member names, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use member names unchanged.</p>
 </dd>
     <dt><code>allowIntegerValues</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p>Whether a Bencode integer is accepted as an enumeration value on read.</p>
+    <dd><p>Whether integer values are allowed: read from a Bencode integer or a byte string that holds one, and written as
+the decimal text of a value that is neither a member nor a combination of flags.</p>
 </dd>
   </dl>
 
@@ -280,7 +303,7 @@ policy and integer-handling behavior.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Serialization_BencodeStringEnumConverter_CanConvert_System_Type_" data-uid="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.CanConvert(System.Type)">
   CanConvert(Type)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -324,7 +347,7 @@ policy and integer-handling behavior.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Serialization_BencodeStringEnumConverter_CreateConverter_System_Type_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.CreateConverter(System.Type,Bodu.Text.Bencode.BencodeSerializerOptions)">
   CreateConverter(Type, BencodeSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Bencode/src/Text.Bencode.Serialization/BencodeStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -392,7 +415,7 @@ policy and integer-handling behavior.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Runnable samples | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/samples/text-filtering.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships a runnable, self-contained sample project for <code>Bodu.Text.Filtering</code> under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Text.Filtering"><code>samples/Text.Filtering/</code></a>.
+The sample is <strong>pure computation over fixed in-code corpora</strong> - offline, deterministic, no data
+files - and is a member of <code>bodu.slnx</code>, built and executed by CI. Its README documents every
+scenario individually: its intent, what the code does, the output to expect, and the APIs
+demonstrated.</p>
+<p>Run it from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Text.Filtering/Bodu.Text.Filtering.Samples.FilteringTour
+</code></pre>
+<h2 id="the-sample">The sample</h2>
+<h3 id="bodutextfilteringsamplesfilteringtour">Bodu.Text.Filtering.Samples.FilteringTour</h3>
+<p>The engine end to end, in four scenarios: include/exclude sets under the default <code>AnyMatch</code>
+semantics - two include globs, one exclude veto, and the include-all default when no includes are
+declared; gitignore-convention parsing (<code>!</code> negation, <code>#</code> comments) evaluated under
+<a class="xref" href="../api/Bodu.Text.Filtering.TextFilterEvaluationMode.html">TextFilterEvaluationMode</a>.<code>LastMatchWins</code>, showing re-inclusion of
+<code>important.log</code> past an earlier <code>!*.log</code> and the leading-<code>!*</code> allowlist shape; the glob grammar -
+<code>{error,warn}*</code> brace alternation expanding into cheap prefix matchers, character classes, and
+escaped metacharacters - inspected through <a class="xref" href="../api/Bodu.Text.Filtering.TextFilter.html">TextFilter</a>.<code>Evaluate</code> (which
+reports the deciding pattern) and <code>GetMatchingPatterns</code> (which reports every match); and the
+telemetry surface - the reconciling decision buckets and per-pattern hit counts from
+<a class="xref" href="../api/Bodu.Text.Filtering.TextFilter.html">TextFilter</a>.<code>GetStatistics</code>, then an
+<a class="xref" href="../api/Bodu.Text.Filtering.ITextFilterObserver.html">ITextFilterObserver</a> that logs each value an exclude vetoed. <em>Package:
+<code>Bodu.Text.Filtering</code>.</em></p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../docs/text-filtering/index.html">Bodu.Text.Filtering introduction</a></strong> - the mental model and type map.</li>
+<li><strong><a href="../docs/text-filtering/getting-started.html">Getting started</a></strong> - install and minimal samples.</li>
+<li><strong><a href="../guides/text-filtering/index.html">Guides</a></strong> - the grammar, evaluation modes, and telemetry in depth.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

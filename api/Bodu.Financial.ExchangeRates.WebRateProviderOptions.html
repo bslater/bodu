@@ -8,7 +8,7 @@
       <meta name="title" content="WebRateProviderOptions Class
  | BODU ">
       
-      <meta name="description" content="Provides the configuration common to every pair-based web exchange-rate source: the endpoint base address, the HTTP contract (user agent and timeout), the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and validation.">
+      <meta name="description" content="Provides the configuration common to every web exchange-rate source, the pair-based sources and the Bank of England, ECB, RBA and IMF feeds alike: the endpoint base address, the HTTP contract (user agent, timeout and response-size cap), the synchronous-access, look-back and refresh behavior, the advertised history, the currency-alias map, and the per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and validation.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 WebRateProviderOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,14 +102,15 @@ WebRateProviderOptions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates">Bodu.Financial.ExchangeRates</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates">Bodu.Financial.ExchangeRates</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs">WebRateProviderOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs">WebRateProviderOptions.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides the configuration common to every pair-based web exchange-rate source: the endpoint base address, the HTTP
-contract (user agent and timeout), the synchronous-access and look-back behaviour, the currency-alias map, and the
-per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and
+  <div class="markdown summary"><p>Provides the configuration common to every web exchange-rate source, the pair-based sources and the Bank of England,
+ECB, RBA and IMF feeds alike: the endpoint base address, the HTTP contract (user agent, timeout and response-size
+cap), the synchronous-access, look-back and refresh behavior, the advertised history, the currency-alias map, and
+the per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and
 validation.</p>
 </div>
 
@@ -132,12 +133,15 @@ validation.</p>
   <dl class="typelist derived">
     <dt>Derived</dt>
     <dd>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html">BoeRateProviderOptions</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html">EcbRateProviderOptions</a></div>
       <div><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions.html">ExchangeRateHostRateProviderOptions</a></div>
       <div><a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.html">FixerRateProviderOptions</a></div>
       <div><a class="xref" href="Bodu.Financial.ExchangeRates.FredRateProviderOptions.html">FredRateProviderOptions</a></div>
       <div><a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html">ImfRateProviderOptions</a></div>
       <div><a class="xref" href="Bodu.Financial.ExchangeRates.OandaRateProviderOptions.html">OandaRateProviderOptions</a></div>
       <div><a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProviderOptions.html">OfxRateProviderOptions</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html">RbaRateProviderOptions</a></div>
       <div><a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProviderOptions.html">XeRateProviderOptions</a></div>
       <div><a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProviderOptions.html">YahooRateProviderOptions</a></div>
     </dd>
@@ -219,7 +223,7 @@ var options = new YahooRateProviderOptions
     DefaultLookback = TimeSpan.FromDays(14),   // window used by the timeless lookup surface
 };
 
-options.CurrencyAliases["CNH"] = "CNY";        // map a non-ISO source symbol onto its ISO code
+options.CurrencyAliases["CNY"] = "CNH";        // request the source's CNH symbol wherever CNY is asked for
 
 if (!options.TryValidate(out string? error))
     throw new InvalidOperationException(error);</code></pre>
@@ -236,7 +240,7 @@ if (!options.TryValidate(out string? error))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.#ctor">
   WebRateProviderOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -270,7 +274,7 @@ if (!options.TryValidate(out string? error))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_AllowSynchronousNetworkAccess" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.AllowSynchronousNetworkAccess">
   AllowSynchronousNetworkAccess
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -314,7 +318,7 @@ blocking on-demand fetch from the synchronous lookup path.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.BaseAddress">
   BaseAddress
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -352,12 +356,12 @@ resolve as expected.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_CurrencyAliases" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.CurrencyAliases">
   CurrencyAliases
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets or sets the map from ISO 4217 codes to the symbol component the source uses, applied while building a
-request. Codes absent from the map pass through unchanged.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the map between ISO 4217 codes and the currency symbols or labels the source uses where the two
+differ. Codes and labels absent from the map pass through unchanged.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -379,6 +383,13 @@ request. Codes absent from the map pass through unchanged.</p>
 
 
 
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_CurrencyAliases_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A source that names currencies in its requests, as the pair-based sources do, maps the ISO code (the key) to the
+symbol component it sends (the value) while building a request. A source that publishes a table naming its
+currencies, as the Bank of England, ECB and RBA feeds do, maps the label it publishes (the key) to the ISO code
+it is served under (the value) while reading the response. The derived options type states which applies. Every
+value must be a non-empty run of ASCII letters and digits; <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_TryValidate_System_String__">TryValidate(out string?)</a> rejects any other.</p>
+</div>
 
 
 
@@ -390,12 +401,13 @@ request. Codes absent from the map pass through unchanged.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_DefaultLookback" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.DefaultLookback">
   DefaultLookback
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets or sets the look-back window used when a synchronous or undated lookup must fetch a pair on demand. The
-provider fetches the window ending on the requested date and spanning this duration.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the look-back window used when a synchronous, undated, or asynchronous single-date lookup must
+fetch on demand. The provider fetches the window ending on the requested date and spanning this duration, in
+whole days; a source that publishes whole files fetches every file the window reaches.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -428,7 +440,7 @@ provider fetches the window ending on the requested date and spanning this durat
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadCompletedLogLevel" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.DownloadCompletedLogLevel">
   DownloadCompletedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -465,7 +477,7 @@ provider fetches the window ending on the requested date and spanning this durat
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadFailedLogLevel" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.DownloadFailedLogLevel">
   DownloadFailedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -502,7 +514,7 @@ provider fetches the window ending on the requested date and spanning this durat
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadStartingLogLevel" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.DownloadStartingLogLevel">
   DownloadStartingLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -539,7 +551,7 @@ provider fetches the window ending on the requested date and spanning this durat
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.HistoryAvailability">
   HistoryAvailability
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -578,11 +590,12 @@ publishes only the recent past sets a rolling window in its constructor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_HttpTimeout" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.HttpTimeout">
   HttpTimeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets or sets the HTTP request timeout applied to requests by the dependency-injection registration.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the HTTP request timeout, applied to the client a provider builds for itself and to the client the
+dependency-injection registration configures.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -615,7 +628,7 @@ publishes only the recent past sets a rolling window in its constructor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_MaxResponseContentBufferSize" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.MaxResponseContentBufferSize">
   MaxResponseContentBufferSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -644,9 +657,10 @@ the memory a single response can consume.</p>
 
 
   <h4 class="section" id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_MaxResponseContentBufferSize_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This value is applied when the provider creates and owns its own <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>. When a client is
-supplied to the provider directly, bounding its response size is the caller's responsibility and this value is
-not applied.</p>
+  <div class="markdown level1 remarks"><p>This value is applied when the provider creates and owns its own <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>, and to the named
+client that a provider's dependency-injection registration (such as <code>AddEcbExchangeRates</code>) configures. When
+a client is passed to the provider's constructor directly, bounding its response size is the caller's
+responsibility and this value is not applied.</p>
 </div>
 
 
@@ -659,7 +673,7 @@ not applied.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_ObservationIngestedLogLevel" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.ObservationIngestedLogLevel">
   ObservationIngestedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -678,7 +692,7 @@ not applied.</p>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>.</p>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-trace">Trace</a>, because a load can ingest thousands of observations.</p>
 </dd>
   </dl>
 
@@ -691,12 +705,59 @@ not applied.</p>
   </section>
 
 
+  <a id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval_" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.RefreshInterval*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.RefreshInterval">
+  RefreshInterval
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets how long a load serves a request for a day the source could still publish before that day is
+downloaded again.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan RefreshInterval { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The refresh interval; defaults to 12 hours.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A day of a load is final once it has passed (any day before the UTC date on which it was downloaded) or once the
+source has returned a rate for it, and a final day is never downloaded again. The other days of a load, today
+and any later day the source returned no rate for, are open: they are served for this interval, and the next
+request that reaches one of them after the interval has passed downloads it again, so a rate the source
+publishes later the same day is picked up. A source may apply the interval to more than its in-memory loads; the
+derived options type says where. The interval must be greater than zero; <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_TryValidate_System_String__">TryValidate(out string?)</a> rejects any
+other value.</p>
+</div>
+
+
+
+  </section>
+
+
   <a id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_SynchronousNetworkFetchLogLevel_" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.SynchronousNetworkFetchLogLevel*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_SynchronousNetworkFetchLogLevel" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.SynchronousNetworkFetchLogLevel">
   SynchronousNetworkFetchLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -733,7 +794,7 @@ not applied.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_UserAgent" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.UserAgent">
   UserAgent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -781,7 +842,7 @@ applied.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_MapCurrency_System_String_" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.MapCurrency(System.String)">
   MapCurrency(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -824,7 +885,7 @@ applied.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_TryValidate_System_String__" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.TryValidate(System.String@)">
   TryValidate(out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -874,7 +935,7 @@ application startup.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_TryValidateCore_System_String__" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.TryValidateCore(System.String@)">
   TryValidateCore(out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -919,7 +980,7 @@ it to validate its own members and is invoked only after the shared invariants h
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_WebRateProviderOptions_Validate" data-uid="Bodu.Financial.ExchangeRates.WebRateProviderOptions.Validate">
   Validate()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/WebRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -978,7 +1039,7 @@ it to validate its own members and is invoked only after the shared invariants h
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

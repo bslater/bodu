@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Compiling packs in MSBuild | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Compiling packs in MSBuild | BODU ">
+      
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/tooling/msbuild-integration.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="compiling-packs-in-msbuild">Compiling packs in MSBuild</h1>
+
+<p><code>Bodu.Globalization.Calendar.Build</code> compiles notable-date documents to sealed <code>.bcal</code> packs as part of <code>dotnet build</code>, incrementally, using the bundled <code>bodu-calendar</code> compiler. It is a <strong>development dependency</strong>: the package contributes a <code>.targets</code> file, an MSBuild task assembly, and the tool binaries, and adds no runtime reference to the consuming project. Validation failures surface as build errors carrying the same stable <code>BODU-CAL-*</code> lines the <a href="bodu-calendar-cli.html">command-line tool</a> prints.</p>
+<h2 id="pattern-1---reference-the-package-and-declare-packs">Pattern 1 - reference the package and declare packs</h2>
+<p>The package is <a href="../../../docs/package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a>, so pack it from a clone into a local feed first:</p>
+<pre><code class="lang-bash">dotnet pack Bodu.Globalization.Calendar.Build/src -c Release -o ./artifacts
+</code></pre>
+<p>Add that folder as a package source in the consuming solution's <code>nuget.config</code>, then reference the package at the version <code>dotnet pack</code> reported and declare the documents to compile:</p>
+<pre><code class="lang-xml">&lt;!-- nuget.config --&gt;
+&lt;configuration&gt;
+  &lt;packageSources&gt;
+    &lt;add key=&quot;bodu-local&quot; value=&quot;./artifacts&quot; /&gt;
+  &lt;/packageSources&gt;
+&lt;/configuration&gt;
+</code></pre>
+<pre><code class="lang-xml">&lt;ItemGroup&gt;
+  &lt;PackageReference Include=&quot;Bodu.Globalization.Calendar.Build&quot; Version=&quot;…&quot; PrivateAssets=&quot;all&quot; /&gt;
+&lt;/ItemGroup&gt;
+
+&lt;ItemGroup&gt;
+  &lt;NotableDatePack Include=&quot;rules\holidays.xml&quot; /&gt;
+  &lt;NotableDatePack Include=&quot;rules\corporate.json&quot; ResolverDir=&quot;rules\shared&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<p><code>PrivateAssets=&quot;all&quot;</code> keeps the build package out of your own package's dependency graph (the package is also marked as a development dependency, so NuGet applies this by default; stating it makes the intent explicit). Each <code>NotableDatePack</code> item is one document; the only item metadata the targets read is:</p>
+<table>
+<thead>
+<tr>
+<th>Metadata</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ResolverDir</code></td>
+<td>Optional directory whose <code>&lt;name&gt;.xml</code> / <code>&lt;name&gt;.json</code> files satisfy the document's imports, consulted before the bundled catalogues - the same semantics as the tool's <code>--resolver-dir</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Each item compiles to <code>$(NotableDatePackOutputPath)&lt;Filename&gt;.bcal</code> and, by default, is copied into the project output directory beside the application.</p>
+<h3 id="from-a-clone-without-a-package">From a clone, without a package</h3>
+<p>A <code>ProjectReference</code> to the Build project does not work on its own: it does not import the package's <code>.targets</code>, so <code>NotableDatePack</code> items compile nothing and the build reports no error. To use the clone directly, import the <code>.targets</code> yourself and point the task and tool paths at the clone's build output, as the repository's <code>RulePackToolchain</code> sample does. The two project references only order the build, so the task and the tool exist before this project's targets run:</p>
+<pre><code class="lang-xml">&lt;PropertyGroup&gt;
+  &lt;!-- The root of your Bodu clone. --&gt;
+  &lt;BoduRepoRoot&gt;$(MSBuildThisFileDirectory)..\bodu\&lt;/BoduRepoRoot&gt;
+  &lt;BoduCalendarTaskAssembly&gt;$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\src\bin\$(Configuration)\netstandard2.0\Bodu.Globalization.Calendar.Build.dll&lt;/BoduCalendarTaskAssembly&gt;
+  &lt;BoduCalendarToolDll&gt;$(BoduRepoRoot)Bodu.Globalization.Calendar.Tool\src\bin\$(Configuration)\net8.0\Bodu.Globalization.Calendar.Tool.dll&lt;/BoduCalendarToolDll&gt;
+&lt;/PropertyGroup&gt;
+
+&lt;ItemGroup&gt;
+  &lt;ProjectReference Include=&quot;$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\src\Bodu.Globalization.Calendar.Build.csproj&quot;
+                    ReferenceOutputAssembly=&quot;false&quot; Private=&quot;false&quot; SkipGetTargetFrameworkProperties=&quot;true&quot;
+                    UndefineProperties=&quot;TargetFramework&quot; /&gt;
+  &lt;ProjectReference Include=&quot;$(BoduRepoRoot)Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj&quot;
+                    ReferenceOutputAssembly=&quot;false&quot; Private=&quot;false&quot; SkipGetTargetFrameworkProperties=&quot;true&quot;
+                    UndefineProperties=&quot;TargetFramework&quot; /&gt;
+&lt;/ItemGroup&gt;
+
+&lt;ItemGroup&gt;
+  &lt;NotableDatePack Include=&quot;rules\holidays.xml&quot; /&gt;
+&lt;/ItemGroup&gt;
+
+&lt;Import Project=&quot;$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\build\Bodu.Globalization.Calendar.Build.targets&quot; /&gt;
+</code></pre>
+<p>Set the two path properties before the <code>&lt;Import&gt;</code>: the <code>.targets</code> fills them in only when they are empty, with paths into a package layout that a clone does not have. <code>UndefineProperties=&quot;TargetFramework&quot;</code> lets a multi-targeting project build each referenced project for its own framework.</p>
+<h2 id="the-compilenotabledatepack-task">The <code>CompileNotableDatePack</code> task</h2>
+<p>The <code>.targets</code> file wires every item to <code>CompileNotableDatePack</code>, a <code>ToolTask</code> that runs <code>dotnet exec --roll-forward Major &lt;tool.dll&gt; compile &lt;Input&gt; -o &lt;Output&gt; [--resolver-dir &lt;ResolverDir&gt;]</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Value the targets pass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Input</code></td>
+<td>yes</td>
+<td><code>%(NotableDatePack.Identity)</code> - the document path.</td>
+</tr>
+<tr>
+<td><code>Output</code></td>
+<td>yes</td>
+<td><code>$(NotableDatePackOutputPath)%(NotableDatePack.Filename).bcal</code>. The task creates the output directory before running the tool.</td>
+</tr>
+<tr>
+<td><code>ToolDll</code></td>
+<td>yes</td>
+<td><code>$(BoduCalendarToolDll)</code> - the <code>bodu-calendar</code> assembly executed through the <code>dotnet</code> host.</td>
+</tr>
+<tr>
+<td><code>ResolverDir</code></td>
+<td>no</td>
+<td><code>%(NotableDatePack.ResolverDir)</code>; omitted when empty.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>dotnet</code> host is resolved from the <code>PATH</code>; <code>--roll-forward Major</code> lets the net8.0 tool run on any newer installed runtime. Standard output and standard error are logged at high importance, so the compile summary and the diagnostic lines appear even at minimal verbosity, and a non-zero exit fails the build.</p>
+<h2 id="properties-and-override-points">Properties and override points</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BoduCalendarTaskAssembly</code></td>
+<td><code>&lt;package&gt;/tasks/netstandard2.0/Bodu.Globalization.Calendar.Build.dll</code></td>
+<td>The task assembly loaded by <code>UsingTask</code>. Override to run a locally built task (the repository's own integration test does this).</td>
+</tr>
+<tr>
+<td><code>BoduCalendarToolDll</code></td>
+<td><code>&lt;package&gt;/tools/Bodu.Globalization.Calendar.Tool.dll</code></td>
+<td>The compiler assembly. Override to pin a different tool build.</td>
+</tr>
+<tr>
+<td><code>NotableDatePackOutputPath</code></td>
+<td><code>$(MSBuildProjectDirectory)\$(IntermediateOutputPath)bcal\</code></td>
+<td>Directory receiving the compiled packs. Its default is computed at target time (in <code>_InitNotableDatePackProperties</code>) because <code>IntermediateOutputPath</code> is defined after the package targets are imported.</td>
+</tr>
+<tr>
+<td><code>NotableDatePackCopyToOutput</code></td>
+<td><code>true</code></td>
+<td>When <code>true</code>, each compiled pack is added as a <code>None</code> item with <code>CopyToOutputDirectory=PreserveNewest</code> and <code>Link=&lt;Filename&gt;.bcal</code>, so it lands in the output directory root. Set <code>false</code> to keep packs in the intermediate folder only.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;PropertyGroup&gt;
+  &lt;NotableDatePackOutputPath&gt;$(MSBuildProjectDirectory)\obj\packs\&lt;/NotableDatePackOutputPath&gt;
+  &lt;NotableDatePackCopyToOutput&gt;false&lt;/NotableDatePackCopyToOutput&gt;
+&lt;/PropertyGroup&gt;
+</code></pre>
+<h2 id="incremental-build-behaviour">Incremental build behaviour</h2>
+<p>The <code>CompileNotableDatePacks</code> target declares <code>Inputs=&quot;@(NotableDatePack)&quot;</code> and <code>Outputs=&quot;@(NotableDatePack-&gt;'$(NotableDatePackOutputPath)%(Filename).bcal')&quot;</code>, so MSBuild skips each <code>(document, pack)</code> pair whose output is newer than its input - a rebuild with an unchanged document does not invoke the tool at all. Because the compiler's output is byte-stable for a given document (the pack embeds a SHA-256 of its payload and no timestamps), downstream up-to-date checks stay sound after a recompile.</p>
+<p>Two consequences to know:</p>
+<ul>
+<li><strong>Changing an import is not tracked.</strong> Only the document itself is an input. If a file under <code>ResolverDir</code> changes, touch the document or delete the <code>.bcal</code> to force a recompile.</li>
+<li><strong>Renaming a document orphans its pack.</strong> The old <code>.bcal</code> stays in the output path until a clean; the copy-to-output step only copies packs that correspond to current items.</li>
+</ul>
+<p>The target runs <code>BeforeTargets=&quot;AssignTargetPaths&quot;</code> so the compiled packs can join the normal content copy in the same build. The repository's <code>CompileNotableDatePackIntegrationTests</code> drives a fixture project through this pipeline and asserts both the incremental skip and that an invalid document fails the build with its diagnostic code.</p>
+<h2 id="pattern-2---consume-the-compiled-pack-at-run-time">Pattern 2 - consume the compiled pack at run time</h2>
+<p>With <code>NotableDatePackCopyToOutput</code> left at <code>true</code>, the pack sits beside the executable under its document's file name:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+string packPath = Path.Combine(AppContext.BaseDirectory, &quot;holidays.bcal&quot;);
+
+NotableDateResource resource;
+using (FileStream stream = File.OpenRead(packPath))
+    resource = NotableDateResourceLoader.LoadBinary(stream);
+
+var service = new NotableDateService(resource);
+IReadOnlyList&lt;NotableDate&gt; thisYear = service.Resolve(2026, &quot;US&quot;);
+</code></pre>
+<p>Loading a pack performs no parsing and no validation - the build already did both - which is the trim- and AOT-friendly path described in <a href="../binary-rule-packs.html">Binary rule packs</a>. To embed the pack instead of copying it, add the compiled file as an <code>EmbeddedResource</code> from <code>$(NotableDatePackOutputPath)</code> in a target that runs <code>AfterTargets=&quot;CompileNotableDatePacks&quot;</code>, and load it from a manifest resource stream.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong><code>error MSB4062: The task &quot;Bodu.Globalization.Calendar.Build.CompileNotableDatePack&quot; could not be loaded</code>.</strong> <code>BoduCalendarTaskAssembly</code> does not point at the task DLL - usually a stale override left in a <code>Directory.Build.props</code>.</p>
+<p><strong>The build fails with a <code>BODU-CAL-*</code> line.</strong> The document is invalid; run <code>bodu-calendar lint &lt;document&gt;</code> for the same diagnostics interactively, then rebuild.</p>
+<p><strong>A pack is not recompiled after editing a shared catalogue.</strong> See the incremental caveat above - imports are not inputs.</p>
+<p><strong><code>dotnet</code> not found.</strong> The task launches the <code>dotnet</code> host from the <code>PATH</code>; on a build agent that installs the SDK to a private location, add it to <code>PATH</code> for the build step.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="bodu-calendar-cli.html">The bodu-calendar CLI</a></strong> - the compiler the task invokes, its exit codes, and the diagnostic line format.</li>
+<li><strong><a href="../binary-rule-packs.html">Binary rule packs</a></strong> - what the format guarantees.</li>
+<li><strong><a href="../validation-diagnostics.html">Calendar validation diagnostics</a></strong> - the <code>BODU-CAL-*</code> catalogue.</li>
+<li><strong><a href="../../../docs/calendar-tooling/index.html">Bodu.Globalization.Calendar tooling introduction</a></strong></li>
+<li><strong><a href="../../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

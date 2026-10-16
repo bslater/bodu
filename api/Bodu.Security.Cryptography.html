@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Security.Cryptography.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Security.Cryptography.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -134,7 +134,7 @@
 <li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a> - 256-bit key, 192-bit nonce; extended-nonce Salsa20 (NaCl / libsodium).</li>
 <li><a class="xref" href="Bodu.Security.Cryptography.Rabbit.html">Rabbit</a> - 128-bit key, 64-bit IV (RFC 4503; eSTREAM). Evolving internal state, no seekable counter.</li>
 <li><a class="xref" href="Bodu.Security.Cryptography.Hc128.html">Hc128</a> - 128-bit key, 128-bit IV (Wu; eSTREAM). Table-based with an expensive setup.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a>, <a class="xref" href="Bodu.Security.Cryptography.TransformMode.html">TransformMode</a> - the keystream-cipher contract and the encrypt/decrypt direction selector shared by the stream ciphers above.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a> - the keystream-cipher contract shared by the stream ciphers above. (<a class="xref" href="Bodu.Security.Cryptography.TransformMode.html">TransformMode</a> is a reserved direction enumeration that no public member consumes.)</li>
 </ul>
 <p><strong>Authenticated stream ciphers</strong> (Poly1305 AEAD over the extended-nonce stream ciphers)</p>
 <ul>
@@ -154,7 +154,7 @@
 <li><a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> - per-block / per-stripe transform contracts; the latter adds AEAD nonce / tag / associated-data semantics.</li>
 <li>Classic mode transforms: <a class="xref" href="Bodu.Security.Cryptography.EcbModeTransform.html">EcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CbcModeTransform.html">CbcModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CfbModeTransform.html">CfbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.OfbModeTransform.html">OfbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a>.</li>
 <li>AEAD mode transforms: <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>.</li>
-<li>Padding: <a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> with built-in strategies <a class="xref" href="Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.NoPadding.html">NoPadding</a>, <a class="xref" href="Bodu.Security.Cryptography.Iso10126Padding.html">Iso10126Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.Iso7816_4Padding.html">Iso7816_4Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.Ansix923Padding.html">Ansix923Padding</a>, selected via <a class="xref" href="Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a>.</li>
+<li>Padding: <a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> with built-in strategies <a class="xref" href="Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.NoPadding.html">NoPadding</a>, <a class="xref" href="Bodu.Security.Cryptography.Iso10126Padding.html">Iso10126Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.Iso7816_4Padding.html">Iso7816_4Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.Ansix923Padding.html">Ansix923Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.ZeroPadding.html">ZeroPadding</a>, selected via <a class="xref" href="Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a>.</li>
 </ul>
 <p><strong>Cryptographic hashes</strong> (<code>HashAlgorithm</code> lifecycle)</p>
 <ul>
@@ -179,7 +179,7 @@
 </ul>
 <p><strong>ASCON family - NIST SP 800-232</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a> - 256-bit sponge digests (12- and 8-round variants), over the shared <a class="xref" href="Bodu.Security.Cryptography.AsconHash.html">AsconHash</a> base.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a> - 256-bit sponge digests (12- and 8-round variants), over the shared <a class="xref" href="Bodu.Security.Cryptography.AsconHash.html">AsconHash</a> base. ASCON-HASHA256 is the Ascon v1.2 Hasha variant, not part of SP 800-232.</li>
 <li><a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a> - variable-length / customizable XOF.</li>
 <li><a class="xref" href="Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a> - sponge-based authenticated encryption (no separate block cipher required).</li>
 </ul>
@@ -189,7 +189,7 @@
 <li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a> - <code>byte[]</code>-returning one-shot <code>Encrypt</code> / <code>Decrypt</code> over the stream ciphers and the Poly1305 stream-AEAD transforms.</li>
 <li>Secure-zeroization, padding guards, and cryptographically secure random generation ship as internal infrastructure; consumers reach them through the public surfaces (<code>GenerateKey()</code> / <code>GenerateIV()</code> / <code>GenerateNonce()</code> / <code>GenerateTweak()</code> on the algorithm types, <code>Nonce.Random</code>, <code>HashAlgorithmExtensions.VerifyHash</code>).</li>
 <li><a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a>, <a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmFactory.html">HashAlgorithmFactory</a>, <a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a>, <a class="xref" href="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a> - helper utilities for <code>HashAlgorithm</code> consumers and factory abstractions used by the keyed constructions.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> - abstract base for keyed hashes that defer the final block (the extension point shared by the keyed-hash constructions).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> - abstract base for keyed hashes that defer the final block (BLAKE2b and BLAKE2s); SipHash, Poly1305, and Skein derive from <a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> instead.</li>
 </ul>
 <p><strong>Asymmetric - signatures, key agreement, KEM, HPKE</strong> (<code>AsymmetricAlgorithm</code> lifecycle over <a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a>)</p>
 <ul>
@@ -259,8 +259,9 @@ Classes
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a></dt>
       <dd><p>Exposes the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.aes">Aes</a> algorithm as an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing the single-block primitive
-that the authenticated-mode transforms (<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a>,
-<a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>) require.</p>
+that the mode transforms build on - the authenticated modes (<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>,
+<a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>,
+<a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>) among them.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -312,8 +313,8 @@ cannot be inherited.</p>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></dt>
       <dd><p>Computes a variable-length output using the <code>Ascon-CXOF128</code> customizable extendable output function (CXOF) as
-defined in NIST SP 800-232. Supports an optional customization string that domain-separates outputs from
-<a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>. This class cannot be inherited.</p>
+defined in NIST SP 800-232. Absorbs a customization string that domain-separates its outputs from one another and
+from <a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>. This class cannot be inherited.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -331,9 +332,9 @@ inherited.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></dt>
-      <dd><p>Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm as defined in NIST SP 800-232. Produces
-a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation during absorption over a 320-bit sponge state.
-This class cannot be inherited.</p>
+      <dd><p>Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm, the round-reduced Hasha variant of the
+Ascon v1.2 submission. Produces a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation over a 320-bit
+sponge state. This class cannot be inherited.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -501,7 +502,7 @@ inherited.</p>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a></dt>
       <dd><p>Serves as the base class for the library's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> implementations that support the
-extended cipher-mode and padding catalogues (<a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> / <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a>) beyond
+extended cipher-mode and padding catalogs (<a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> / <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a>) beyond
 the framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> enumerations.</p>
 </dd>
     </dl>
@@ -904,7 +905,8 @@ implementation published in FIPS PUB 185 (1994).</p>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Snefru.html">Snefru</a></dt>
       <dd><p>Base class for the <code>Snefru</code> family of unkeyed hash functions designed by Ralph Merkle, implementing the core
-compression routine using S-box substitutions and word rotations over 512-bit blocks.</p>
+compression routine using S-box substitutions and word rotations over a 512-bit buffer: the running hash followed by
+a 48-byte (Snefru-128) or 32-byte (Snefru-256) message block.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -939,7 +941,7 @@ family (Threefish-256, Threefish-512, and Threefish-1024).</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Threefish1024Cipher.html">Threefish1024Cipher</a></dt>
-      <dd><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish1024Cipher.html">Threefish1024Cipher</a>. The sixteen 64-bit state words are split
+      <dd><p>AVX-512 vectorized implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish1024Cipher.html">Threefish1024Cipher</a>. The sixteen 64-bit state words are split
 across two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector512-1">Vector512&lt;T&gt;</a> registers - <code>loVec</code> holds the eight even-position words
 <code>(x0, x2, x4, x6, x8, x10, x12, x14)</code> and <code>hiVec</code> the eight odd-position words
 <code>(x1, x3, x5, x7, x9, x11, x13, x15)</code>. Each round performs a vector add, a per-lane variable rotate (
@@ -955,7 +957,7 @@ round's MIX pairing.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a></dt>
-      <dd><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a>. The four 64-bit state words are split across
+      <dd><p>AVX-512 vectorized implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a>. The four 64-bit state words are split across
 two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> registers - <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>
 the odd-position words <code>(b1, b3)</code>. Each round performs a vector add, a per-lane variable rotate (<code>VPROLVQ</code>
 ), an XOR, and a single 64-bit lane swap on <code>hi</code> that realigns it for the next round's MIX pairing.</p>
@@ -969,7 +971,7 @@ the odd-position words <code>(b1, b3)</code>. Each round performs a vector add, 
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a></dt>
-      <dd><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a>. The eight 64-bit state words are split
+      <dd><p>AVX-512 vectorized implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a>. The eight 64-bit state words are split
 across two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector256-1">Vector256&lt;T&gt;</a> registers - <code>lo</code> holds the even-position words <code>(x0, x2, x4, x6)</code>
 and <code>hi</code> the odd-position words <code>(x1, x3, x5, x7)</code> - and each round applies a vector add, a per-lane
 variable rotate (<code>VPROLVQ</code>), an XOR, and a pair of lane shuffles that realign the registers for the next
@@ -1236,7 +1238,7 @@ values and extends that surface with additional padding schemes that are not par
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

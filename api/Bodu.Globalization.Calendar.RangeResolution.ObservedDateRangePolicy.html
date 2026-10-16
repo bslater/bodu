@@ -8,7 +8,7 @@
       <meta name="title" content="ObservedDateRangePolicy Enum
  | BODU ">
       
-      <meta name="description" content="Determines which emitted occurrence controls whether a resolved notable date is included by a date-range query.">
+      <meta name="description" content="Specifies which span of a resolved occurrence decides whether a date-range query includes it: the emitted span, the actual span, or either.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -94,7 +94,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ObservedDateRangePolicy Enum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ObservedDateRangePolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ObservedDateRangePolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -103,12 +103,13 @@ ObservedDateRangePolicy Enum
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.html">RangeResolution</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ObservedDateRangePolicy.cs">ObservedDateRangePolicy.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ObservedDateRangePolicy.cs">ObservedDateRangePolicy.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Determines which emitted occurrence controls whether a resolved notable date is included by a date-range query.</p>
+  <div class="markdown summary"><p>Specifies which span of a resolved occurrence decides whether a date-range query includes it: the emitted span, the
+actual span, or either.</p>
 </div>
 
   <div class="codewrapper">
@@ -175,24 +176,40 @@ ObservedDateRangePolicy Enum
   <dl class="parameters">
     <dt id="Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_ObservedOccurrenceControlsInclusion" data-bodu-frameworks="net8.0 net10.0"><code>ObservedOccurrenceControlsInclusion = 0</code></dt>
   
-  <dd><p>The emitted (observed) occurrence date controls inclusion.</p>
+  <dd><p>The emitted (observed) span controls inclusion: an occurrence is included when any day from its emitted date
+through its last day falls within the window. This is the default.</p>
 </dd>
     <dt id="Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_ActualOccurrenceControlsInclusion" data-bodu-frameworks="net8.0 net10.0"><code>ActualOccurrenceControlsInclusion = 1</code></dt>
   
-  <dd><p>The originally calculated (actual) occurrence date controls inclusion.</p>
+  <dd><p>The actual span controls inclusion: an occurrence is included when any day from its originally calculated
+(actual) date through its duration falls within the window.</p>
 </dd>
     <dt id="Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_BothOccurrencesControlInclusion" data-bodu-frameworks="net8.0 net10.0"><code>BothOccurrencesControlInclusion = 2</code></dt>
   
-  <dd><p>Either the actual or the observed occurrence date controls inclusion.</p>
+  <dd><p>Either span controls inclusion: an occurrence is included when its emitted span or its actual span meets the
+window.</p>
 </dd>
   </dl>
 
 
   <h2 id="Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-The recommended default is <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html#Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_ObservedOccurrenceControlsInclusion">ObservedOccurrenceControlsInclusion</a>, which guarantees that a single-day
-query and a range query return consistent results: an occurrence is included when its emitted (observed) date falls
-inside the requested window.
+The emitted span runs from <a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html#Bodu_Globalization_Calendar_NotableDate_Date">Date</a> through <a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html#Bodu_Globalization_Calendar_NotableDate_EndDate">EndDate</a>; the actual
+span runs from <a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html#Bodu_Globalization_Calendar_NotableDate_ActualDate">ActualDate</a> through the same duration. The occurrence a query returns is
+always the emitted one, whichever span included it.
+</p>
+<p>
+The policy applies to <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html#Bodu_Globalization_Calendar_INotableDateService_Resolve_Bodu_Globalization_Calendar_DateRange_System_String_">Resolve(DateRange, string)</a> and everything built on it: the
+by-year and single-day queries, the working-day extensions, which under
+<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html#Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_ActualOccurrenceControlsInclusion">ActualOccurrenceControlsInclusion</a> treat a moved holiday's actual day, not its observed day, as the
+day it makes non-working, and the caching decorator. Collision groups stay keyed by the emitted date, so an
+occurrence that loses its emitted day's collision is absent whichever span would include it, and the actual and
+observed occurrences of an <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html#Bodu_Globalization_Calendar_RangeResolution_EmissionMode_ActualAndObserved">ActualAndObserved</a> policy, which share their actual date,
+enter and leave an actual-controlled window together.
+</p>
+<p>
+A binary pack whose policy is not <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html#Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_ObservedOccurrenceControlsInclusion">ObservedOccurrenceControlsInclusion</a> is written at format version 3,
+so a reader from before the policy was applied rejects it rather than resolving it by the emitted span.
 </p>
 </div>
 
@@ -228,7 +245,7 @@ inside the requested window.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

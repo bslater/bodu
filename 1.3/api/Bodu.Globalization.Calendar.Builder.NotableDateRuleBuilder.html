@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>NotableDateRuleBuilder Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="NotableDateRuleBuilder Class
+ | BODU ">
+      
+      <meta name="description" content="Provides a fluent surface for authoring a single rule: its selection scalars, applicability scope, exactly one calculation strategy, rule-specific tags, and the adjustment policies applied to its occurrences.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder">
+
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+NotableDateRuleBuilder Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Builder.html">Builder</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.Builder.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Builder">Bodu.Globalization.Calendar.Builder</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs">NotableDateRuleBuilder.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a fluent surface for authoring a single rule: its selection scalars, applicability scope, exactly one
+calculation strategy, rule-specific tags, and the adjustment policies applied to its occurrences.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class NotableDateRuleBuilder</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NotableDateRuleBuilder</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_examples">Examples</h2>
+  <pre><code class="lang-csharp">// U.S. Thanksgiving: the fourth Thursday of November, scoped to the United States.
+definition.AddRule("us", r =&gt; r
+    .ForTerritory("US")
+    .DayOfWeekInMonth(11, DayOfWeek.Thursday, WeekOrdinal.Fourth)
+    .AsNonWorking());</code></pre>
+
+
+  <h2 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+A rule must declare exactly one calculation strategy - for example <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_Int32_System_Int32_System_Boolean_System_Boolean_">Fixed(int, int, bool, bool)</a>,
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfWeekInMonth_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_">DayOfWeekInMonth(int, DayOfWeek, WeekOrdinal)</a>,
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearDate_System_Int32_System_Int32_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_">WeekdayNearDate(int, int, DayOfWeek, WeekdayProximity)</a>,
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OffsetFromRule_System_String_System_Int32_System_String_">OffsetFromRule(string, int, string?)</a>, or <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Algorithm_System_String_">Algorithm(string)</a>. Scope the rule to a
+calendar, territories, or a year window with the <code>For…</code> / <code>…Year(s)</code> members, and attach reusable
+adjustment policies with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustment_System_String_">WithAdjustment(string)</a>. Configure the builder inside
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDefinitionBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDefinitionBuilder_AddRule_System_String_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder__">AddRule(string, Action&lt;NotableDateRuleBuilder&gt;)</a>.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AddTag_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AddTag*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AddTag_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AddTag(System.String)">
+  AddTag(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a single tag to the rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder AddTag(string tag)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tag</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The tag value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">tag</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Algorithm_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Algorithm*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Algorithm_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Algorithm(System.String)">
+  Algorithm(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with an algorithm strategy that resolves its date from a named built-in or custom algorithm.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder Algorithm(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The algorithm key, for example <code>&quot;western-easter&quot;</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A strategy has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AnchorYear_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AnchorYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AnchorYear_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AnchorYear(System.Int32)">
+  AnchorYear(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the anchor year used by interval recurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder AnchorYear(int year)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>year</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The anchor year.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AsNonWorking_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AsNonWorking*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AsNonWorking_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AsNonWorking(System.Boolean)">
+  AsNonWorking(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets whether occurrences of the rule are non-working days.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder AsNonWorking(bool value = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>The non-working flag.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DailyInterval_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DailyInterval*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DailyInterval_System_DateOnly_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DailyInterval(System.DateOnly,System.Int32)">
+  DailyInterval(DateOnly, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a daily-interval recurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder DailyInterval(DateOnly anchorDate, int intervalDays = 1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>anchorDate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The anchor date that defines occurrence zero and the phase of the series.</p>
+</dd>
+    <dt><code>intervalDays</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of calendar days between consecutive occurrences.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfWeekInMonth_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfWeekInMonth*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfWeekInMonth_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfWeekInMonth(System.Int32,System.DayOfWeek,Bodu.Extensions.WeekOrdinal)">
+  DayOfWeekInMonth(int, DayOfWeek, WeekOrdinal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a day-of-week-in-month strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder DayOfWeekInMonth(int month, DayOfWeek dayOfWeek, WeekOrdinal weekOrdinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>month</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The one-based month number.</p>
+</dd>
+    <dt><code>dayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The day of the week to select.</p>
+</dd>
+    <dt><code>weekOrdinal</code> <a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a></dt>
+    <dd><p>The ordinal position of the weekday within the month.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">month</code> is outside 1 to 12.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A strategy has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfYear_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfYear_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfYear(System.Int32)">
+  DayOfYear(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a day-of-year strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder DayOfYear(int ordinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ordinal</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed ordinal position of the day within the year.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_EveryYears_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.EveryYears*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_EveryYears_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.EveryYears(System.Int32)">
+  EveryYears(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the recurrence interval in years for the rule's applicability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder EveryYears(int years)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>years</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The interval between applicable years.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">years</code> is less than 1.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ExceptYears_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ExceptYears*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ExceptYears_System_Int32___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ExceptYears(System.Int32[])">
+  ExceptYears(params int[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Replaces the rule's exception year list with the supplied years.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder ExceptYears(params int[] years)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>years</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>[]</dt>
+    <dd><p>The years for which the rule is suppressed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">years</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_Int32_System_Int32_System_Boolean_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed(System.Int32,System.Int32,System.Boolean,System.Boolean)">
+  Fixed(int, int, bool, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a fixed day-of-month strategy using a numeric month.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>month</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The one-based month number in the rule's calendar.</p>
+</dd>
+    <dt><code>day</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The day of the month.</p>
+</dd>
+    <dt><code>skipLeapMonth</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>A value indicating whether a leap month is skipped on lunisolar calendars.</p>
+</dd>
+    <dt><code>sweepCalendarYears</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>A value indicating whether the date is swept across adjacent calendar years.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_Int32_System_Int32_System_Boolean_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The month is written in the form the loader reads in the rule's calendar: its full English name in the Gregorian
+calendar, and its number in any other, where it names that month of the calendar's year. A calendar set later
+with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForCalendar_Bodu_Globalization_Calendar_CalendarSystem_">ForCalendar(CalendarSystem)</a> rewrites it in that calendar's form.
+</p>
+<p>
+The Hebrew calendar adds Adar II as its seventh month in a leap year, so a number above 6 names a different
+month in a leap year than in a common year; to name a Hebrew month in every year, pass its name, such as
+<code>Nisan</code> or <code>LastAdar</code>, to <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_String_System_Int32_System_Boolean_System_Boolean_">Fixed(string, int, bool, bool)</a> instead.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">month</code> is outside the months of the rule's calendar, as set by
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForCalendar_Bodu_Globalization_Calendar_CalendarSystem_">ForCalendar(CalendarSystem)</a> before this call: 1 to 13 in the Hebrew calendar, and in the Chinese
+lunisolar calendar unless <code class="paramref">skipLeapMonth</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and 1 to 12 otherwise;
+or <code class="paramref">day</code> is outside 1 to 31.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A strategy has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_String_System_Int32_System_Boolean_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed(System.String,System.Int32,System.Boolean,System.Boolean)">
+  Fixed(string, int, bool, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a fixed day-of-month strategy using a month name or numeric month token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder Fixed(string month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>month</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The month name or numeric month token, in the form the rule's calendar takes.</p>
+</dd>
+    <dt><code>day</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The day of the month.</p>
+</dd>
+    <dt><code>skipLeapMonth</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>A value indicating whether a leap month is skipped on lunisolar calendars.</p>
+</dd>
+    <dt><code>sweepCalendarYears</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>A value indicating whether the date is swept across adjacent calendar years.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_String_System_Int32_System_Boolean_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The month is written as given, and the loader reads it in the rule's calendar: a Gregorian month is a full
+English month name, ignoring case, or an integer from 1 to 12; a Hebrew month is an integer from 1 to 13 or a
+Hebrew month name (<code>Tishri</code>, <code>Heshvan</code>, <code>Kislev</code>, <code>Tevet</code>, <code>Shevat</code>, <code>AdarI</code>,
+<code>AdarII</code>, <code>LastAdar</code>, <code>Nisan</code>, <code>Iyar</code>, <code>Sivan</code>, <code>Tammuz</code>, <code>Av</code> or <code>Elul</code>,
+ignoring case); a Chinese lunisolar month is an integer from 1 to 13, or from 1 to 12 when
+<code class="paramref">skipLeapMonth</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>; and a Hijri, Umm al-Qura or Persian month is an
+integer from 1 to 12. Any other month is reported with <code>BODU-CAL-MONTH</code> when the document is validated or
+built.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">month</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">day</code> is outside 1 to 31.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A strategy has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForCalendar_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForCalendar*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForCalendar_Bodu_Globalization_Calendar_CalendarSystem_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForCalendar(Bodu.Globalization.Calendar.CalendarSystem)">
+  ForCalendar(CalendarSystem)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the calendar system of the rule's applicability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder ForCalendar(CalendarSystem calendar)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>calendar</code> <a class="xref" href="Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a></dt>
+    <dd><p>The calendar system.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForCalendar_Bodu_Globalization_Calendar_CalendarSystem__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A month that <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_Int32_System_Int32_System_Boolean_System_Boolean_">Fixed(int, int, bool, bool)</a> has already written, on the strategy or on a calculated
+end strategy, is rewritten in the form <code class="paramref">calendar</code> reads: its English name in the Gregorian
+calendar, its number in any other.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForTerritories_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForTerritories*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForTerritories_System_String___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForTerritories(System.String[])">
+  ForTerritories(params string[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Replaces the rule's territory scope with the supplied collection of territory codes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder ForTerritories(params string[] codes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>codes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
+    <dd><p>The ISO territory codes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">codes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForTerritory_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForTerritory*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForTerritory_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForTerritory(System.String)">
+  ForTerritory(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a single territory code to the rule's applicability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder ForTerritory(string code)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>code</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ISO territory code, for example <code>&quot;US&quot;</code> or <code>&quot;AU-WA&quot;</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">code</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_FromYear_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.FromYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_FromYear_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.FromYear(System.Int32)">
+  FromYear(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the inclusive lower year bound of the rule's applicability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder FromYear(int year)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>year</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The first year for which the rule applies.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_IsoWeekDate_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.IsoWeekDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_IsoWeekDate_System_Int32_System_DayOfWeek_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.IsoWeekDate(System.Int32,System.DayOfWeek)">
+  IsoWeekDate(int, DayOfWeek)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with an ISO-week-date strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder IsoWeekDate(int week, DayOfWeek dayOfWeek)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>week</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The one-based ISO-8601 week number.</p>
+</dd>
+    <dt><code>dayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The weekday within the ISO week.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_MonthlyDay_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.MonthlyDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_MonthlyDay_System_Int32_System_Int32_System_Nullable_System_DateOnly__Bodu_Globalization_Calendar_Algorithms_InvalidDayOfMonthBehavior_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.MonthlyDay(System.Int32,System.Int32,System.Nullable{System.DateOnly},Bodu.Globalization.Calendar.Algorithms.InvalidDayOfMonthBehavior)">
+  MonthlyDay(int, int, DateOnly?, InvalidDayOfMonthBehavior)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a monthly day-of-month recurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder MonthlyDay(int dayOfMonth, int intervalMonths = 1, DateOnly? anchorDate = null, InvalidDayOfMonthBehavior invalidDayBehavior = InvalidDayOfMonthBehavior.Skip)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dayOfMonth</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The one-based day of the month.</p>
+</dd>
+    <dt><code>intervalMonths</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of months between consecutive occurrences.</p>
+</dd>
+    <dt><code>anchorDate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>?</dt>
+    <dd><p>The anchor whose year and month define month zero, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>invalidDayBehavior</code> <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.InvalidDayOfMonthBehavior.html">InvalidDayOfMonthBehavior</a></dt>
+    <dd><p>How a month without the requested day is handled.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_MonthlyWeekday_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.MonthlyWeekday*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_MonthlyWeekday_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_System_Int32_System_Nullable_System_DateOnly__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.MonthlyWeekday(System.DayOfWeek,Bodu.Extensions.WeekOrdinal,System.Int32,System.Nullable{System.DateOnly})">
+  MonthlyWeekday(DayOfWeek, WeekOrdinal, int, DateOnly?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a monthly ordinal-weekday recurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder MonthlyWeekday(DayOfWeek dayOfWeek, WeekOrdinal weekOrdinal, int intervalMonths = 1, DateOnly? anchorDate = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The weekday to select in each participating month.</p>
+</dd>
+    <dt><code>weekOrdinal</code> <a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a></dt>
+    <dd><p>The ordinal position of the weekday within the month.</p>
+</dd>
+    <dt><code>intervalMonths</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of months between consecutive occurrences.</p>
+</dd>
+    <dt><code>anchorDate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>?</dt>
+    <dd><p>The anchor whose year and month define month zero, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_NthWeekdayFromRule_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.NthWeekdayFromRule*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_NthWeekdayFromRule_System_String_System_DayOfWeek_System_Int32_System_Int32_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.NthWeekdayFromRule(System.String,System.DayOfWeek,System.Int32,System.Int32,System.String)">
+  NthWeekdayFromRule(string, DayOfWeek, int, int, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with an nth-weekday-from-rule strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder NthWeekdayFromRule(string notableDateRef, DayOfWeek dayOfWeek, int ordinal, int referenceYearOffset = 0, string? ruleRef = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>notableDateRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the referenced concept.</p>
+</dd>
+    <dt><code>dayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The weekday to seek.</p>
+</dd>
+    <dt><code>ordinal</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed ordinal count of matching weekdays from the reference.</p>
+</dd>
+    <dt><code>referenceYearOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed year offset applied to the reference.</p>
+</dd>
+    <dt><code>ruleRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the referenced rule, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">notableDateRef</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OffsetFromRule_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OffsetFromRule*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OffsetFromRule_System_String_System_Int32_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OffsetFromRule(System.String,System.Int32,System.String)">
+  OffsetFromRule(string, int, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with an offset-from-rule strategy that derives its date from another rule's occurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder OffsetFromRule(string notableDateRef, int offsetDays, string? ruleRef = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>notableDateRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the concept whose rule supplies the anchor date.</p>
+</dd>
+    <dt><code>offsetDays</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed day offset from the anchor occurrence.</p>
+</dd>
+    <dt><code>ruleRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the anchor rule within the referenced concept, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">notableDateRef</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A strategy has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OnlyYears_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OnlyYears*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OnlyYears_System_Int32___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OnlyYears(System.Int32[])">
+  OnlyYears(params int[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Replaces the rule's exclusive year list with the supplied years.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder OnlyYears(params int[] years)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>years</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>[]</dt>
+    <dd><p>The years for which the rule applies.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">years</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OrdinalDayOfMonth_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OrdinalDayOfMonth*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OrdinalDayOfMonth_System_Int32_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OrdinalDayOfMonth(System.Int32,System.Int32)">
+  OrdinalDayOfMonth(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with an ordinal-day-of-month strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder OrdinalDayOfMonth(int month, int ordinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>month</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The one-based month number.</p>
+</dd>
+    <dt><code>ordinal</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed ordinal position of the day within the month.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_RelativeWeekdayInMonth_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.RelativeWeekdayInMonth*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_RelativeWeekdayInMonth_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.RelativeWeekdayInMonth(System.Int32,System.DayOfWeek,Bodu.Extensions.WeekOrdinal,System.DayOfWeek,Bodu.Globalization.Calendar.WeekdayProximity)">
+  RelativeWeekdayInMonth(int, DayOfWeek, WeekOrdinal, DayOfWeek, WeekdayProximity)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a relative-weekday-in-month strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder RelativeWeekdayInMonth(int month, DayOfWeek dayOfWeek, WeekOrdinal weekOrdinal, DayOfWeek relativeDayOfWeek, WeekdayProximity direction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>month</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The one-based month number.</p>
+</dd>
+    <dt><code>dayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The anchor day of the week.</p>
+</dd>
+    <dt><code>weekOrdinal</code> <a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a></dt>
+    <dd><p>The ordinal position of the anchor weekday within the month.</p>
+</dd>
+    <dt><code>relativeDayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The weekday selected relative to the anchor.</p>
+</dd>
+    <dt><code>direction</code> <a class="xref" href="Bodu.Globalization.Calendar.WeekdayProximity.html">WeekdayProximity</a></dt>
+    <dd><p>The proximity rule relative to the anchor weekday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">month</code> is outside 1 to 12.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A strategy has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ToYear_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ToYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ToYear_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ToYear(System.Int32)">
+  ToYear(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the inclusive upper year bound of the rule's applicability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder ToYear(int year)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>year</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The last year for which the rule applies.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_UntilDate_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.UntilDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_UntilDate_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder__Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_EndDateSelection_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.UntilDate(System.Action{Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder},Bodu.Globalization.Calendar.DateBoundary,Bodu.Globalization.Calendar.DateBoundary,Bodu.Globalization.Calendar.EndDateSelection)">
+  UntilDate(Action&lt;NotableDateRuleBuilder&gt;, DateBoundary, DateBoundary, EndDateSelection)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a calculated end-date duration whose end anchor is produced by a second strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder UntilDate(Action&lt;NotableDateRuleBuilder&gt; endStrategy, DateBoundary startBoundary = DateBoundary.Inclusive, DateBoundary endBoundary = DateBoundary.Inclusive, EndDateSelection selection = EndDateSelection.FirstOnOrAfterStart)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>endStrategy</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a>&gt;</dt>
+    <dd><p>A configurator that selects the end strategy via one strategy method.</p>
+</dd>
+    <dt><code>startBoundary</code> <a class="xref" href="Bodu.Globalization.Calendar.DateBoundary.html">DateBoundary</a></dt>
+    <dd><p>Whether the start anchor is included in the span.</p>
+</dd>
+    <dt><code>endBoundary</code> <a class="xref" href="Bodu.Globalization.Calendar.DateBoundary.html">DateBoundary</a></dt>
+    <dd><p>Whether the end anchor is included in the span.</p>
+</dd>
+    <dt><code>selection</code> <a class="xref" href="Bodu.Globalization.Calendar.EndDateSelection.html">EndDateSelection</a></dt>
+    <dd><p>How the end anchor is selected relative to the start anchor.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_UntilDate_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder__Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_EndDateSelection__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The end strategy is read in the rule's calendar, so a month that the configurator passes to
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_Int32_System_Int32_System_Boolean_System_Boolean_">Fixed(int, int, bool, bool)</a> is held to that calendar's range and written in its form, and a
+calendar set later with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForCalendar_Bodu_Globalization_Calendar_CalendarSystem_">ForCalendar(CalendarSystem)</a> rewrites it.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">endStrategy</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A fixed duration is already configured, a calculated duration is already configured, or the configurator did not
+select a strategy.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearDate_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearDate_System_Int32_System_Int32_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearDate(System.Int32,System.Int32,System.DayOfWeek,Bodu.Globalization.Calendar.WeekdayProximity)">
+  WeekdayNearDate(int, int, DayOfWeek, WeekdayProximity)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a weekday-near-date strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WeekdayNearDate(int month, int day, DayOfWeek dayOfWeek, WeekdayProximity direction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>month</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The one-based month number.</p>
+</dd>
+    <dt><code>day</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The reference day of the month.</p>
+</dd>
+    <dt><code>dayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The day of the week to select.</p>
+</dd>
+    <dt><code>direction</code> <a class="xref" href="Bodu.Globalization.Calendar.WeekdayProximity.html">WeekdayProximity</a></dt>
+    <dd><p>The proximity rule relative to the reference date.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">month</code> is outside 1 to 12 or <code class="paramref">day</code> is outside 1 to 31.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A strategy has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearRule_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearRule*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearRule_System_String_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_System_Int32_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearRule(System.String,System.DayOfWeek,Bodu.Globalization.Calendar.WeekdayProximity,System.Int32,System.String)">
+  WeekdayNearRule(string, DayOfWeek, WeekdayProximity, int, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a weekday-near-rule strategy that seeks a weekday relative to another rule's
+occurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WeekdayNearRule(string notableDateRef, DayOfWeek dayOfWeek, WeekdayProximity direction, int referenceYearOffset = 0, string? ruleRef = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>notableDateRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the referenced concept.</p>
+</dd>
+    <dt><code>dayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The weekday to seek.</p>
+</dd>
+    <dt><code>direction</code> <a class="xref" href="Bodu.Globalization.Calendar.WeekdayProximity.html">WeekdayProximity</a></dt>
+    <dd><p>The proximity rule relative to the reference.</p>
+</dd>
+    <dt><code>referenceYearOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed year offset applied to the reference.</p>
+</dd>
+    <dt><code>ruleRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the referenced rule, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">notableDateRef</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Weekly_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Weekly*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Weekly_System_Collections_Generic_IEnumerable_System_DayOfWeek__System_Int32_System_Nullable_System_DateOnly__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Weekly(System.Collections.Generic.IEnumerable{System.DayOfWeek},System.Int32,System.Nullable{System.DateOnly})">
+  Weekly(IEnumerable&lt;DayOfWeek&gt;, int, DateOnly?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a weekly recurrence on the supplied weekdays.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder Weekly(IEnumerable&lt;DayOfWeek&gt; daysOfWeek, int intervalWeeks = 1, DateOnly? anchorDate = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>daysOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>&gt;</dt>
+    <dd><p>The weekdays to generate occurrences on.</p>
+</dd>
+    <dt><code>intervalWeeks</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of weeks between consecutive occurrences.</p>
+</dd>
+    <dt><code>anchorDate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>?</dt>
+    <dd><p>The anchor date that phases each weekday series, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">daysOfWeek</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustment_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustment*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustment_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustment(System.String)">
+  WithAdjustment(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a single adjustment policy reference to the rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WithAdjustment(string policyRef)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>policyRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the adjustment policy to apply.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">policyRef</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustments_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustments*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustments_System_String___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustments(System.String[])">
+  WithAdjustments(params string[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Replaces the rule's adjustment policy references with the supplied collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WithAdjustments(params string[] policyRefs)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>policyRefs</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
+    <dd><p>The identifiers of the adjustment policies to apply.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">policyRefs</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithCategory_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithCategory*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithCategory_Bodu_Globalization_Calendar_NotableDateCategory_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithCategory(Bodu.Globalization.Calendar.NotableDateCategory)">
+  WithCategory(NotableDateCategory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the category override of the rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WithCategory(NotableDateCategory category)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>category</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a></dt>
+    <dd><p>The category that overrides the concept's category.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithComment_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithComment*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithComment_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithComment(System.String)">
+  WithComment(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the authoring comment of the rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WithComment(string comment)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comment</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The comment text.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">comment</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithDurationDays_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithDurationDays*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithDurationDays_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithDurationDays(System.Int32)">
+  WithDurationDays(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the duration override of the rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WithDurationDays(int durationDays)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>durationDays</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The duration in days.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">durationDays</code> is less than 1.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A calculated end-date duration has already been configured with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_UntilDate_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder__Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_EndDateSelection_">UntilDate(Action&lt;NotableDateRuleBuilder&gt;, DateBoundary, DateBoundary, EndDateSelection)</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithPriority_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithPriority*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithPriority_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithPriority(System.Int32)">
+  WithPriority(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the selection priority of the rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WithPriority(int priority)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>priority</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The numeric selection priority.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithTags_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithTags*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithTags_System_String___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithTags(System.String[])">
+  WithTags(params string[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Replaces the rule's tags with the supplied collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WithTags(params string[] tags)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tags</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
+    <dd><p>The tag values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">tags</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WorkingDayInMonth_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WorkingDayInMonth*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WorkingDayInMonth_System_Int32_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WorkingDayInMonth(System.Int32,System.Int32)">
+  WorkingDayInMonth(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a working-day-in-month strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WorkingDayInMonth(int month, int ordinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>month</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The one-based month number.</p>
+</dd>
+    <dt><code>ordinal</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed ordinal position of the working day within the month.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WorkingDayOffsetFromRule_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WorkingDayOffsetFromRule*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WorkingDayOffsetFromRule_System_String_System_Int32_System_Int32_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WorkingDayOffsetFromRule(System.String,System.Int32,System.Int32,System.String)">
+  WorkingDayOffsetFromRule(string, int, int, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateRuleBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the rule with a working-day-offset-from-rule strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateRuleBuilder WorkingDayOffsetFromRule(string notableDateRef, int offsetWorkingDays, int referenceYearOffset = 0, string? ruleRef = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>notableDateRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the referenced concept.</p>
+</dd>
+    <dt><code>offsetWorkingDays</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed number of working days from the reference.</p>
+</dd>
+    <dt><code>referenceYearOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The signed year offset applied to the reference.</p>
+</dd>
+    <dt><code>ruleRef</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the referenced rule, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">notableDateRef</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>An occurrence source has already been configured on this rule.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDefinitionBuilder.html">NotableDateDefinitionBuilder</a></div>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.html">AdjustmentPolicyBuilder</a></div>
+      <div><span><a href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</a></span></div>
+      <div><span><a href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</a></span></div>
+  </div>
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

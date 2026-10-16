@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy" data-uid="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 RelativeWeekdayInMonthStrategy Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ RelativeWeekdayInMonthStrategy Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Algorithms.html">Algorithms</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs">RelativeWeekdayInMonthStrategy.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs">RelativeWeekdayInMonthStrategy.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Calculates a notable date that falls on a weekday relative to an anchor weekday occurrence within a month, such as
@@ -206,7 +206,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy__ctor_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_" data-uid="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.#ctor(System.Int32,System.DayOfWeek,Bodu.Extensions.WeekOrdinal,System.DayOfWeek,Bodu.Globalization.Calendar.WeekdayProximity)">
   RelativeWeekdayInMonthStrategy(int, DayOfWeek, WeekOrdinal, DayOfWeek, WeekdayProximity)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -248,7 +248,9 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p><code class="paramref">month</code> is not between 1 and 12.</p>
+    <dd><p><code class="paramref">month</code> is not between 1 and 12, or <code class="paramref">dayOfWeek</code>,
+<code class="paramref">weekOrdinal</code>, <code class="paramref">relativeDayOfWeek</code> or <code class="paramref">direction</code> is not a
+value its enumeration defines.</p>
 </dd>
   </dl>
 
@@ -265,7 +267,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy_DayOfWeek" data-uid="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.DayOfWeek">
   DayOfWeek
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -302,7 +304,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy_Direction" data-uid="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.Direction">
   Direction
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -339,7 +341,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy_Month" data-uid="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.Month">
   Month
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -376,7 +378,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy_RelativeDayOfWeek" data-uid="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.RelativeDayOfWeek">
   RelativeDayOfWeek
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -413,7 +415,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy_WeekOrdinal" data-uid="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.WeekOrdinal">
   WeekOrdinal
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -432,7 +434,8 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a></dt>
-    <dd><p>The anchor <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.html#Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy_WeekOrdinal">WeekOrdinal</a>.</p>
+    <dd><p>The anchor <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.html#Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy_WeekOrdinal">WeekOrdinal</a>. A value the enumeration does not define is kept, and the strategy yields
+no date for it.</p>
 </dd>
   </dl>
 
@@ -454,7 +457,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_RelativeWeekdayInMonthStrategy_Calculate_System_Int32_Bodu_Globalization_Calendar_Algorithms_StrategyResolutionContext_" data-uid="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.Calculate(System.Int32,Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext)">
   Calculate(int, StrategyResolutionContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/RelativeWeekdayInMonthStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -529,7 +532,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

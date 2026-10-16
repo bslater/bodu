@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Threading_AsyncAutoResetEvent" data-uid="Bodu.Threading.AsyncAutoResetEvent" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 AsyncAutoResetEvent Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ AsyncAutoResetEvent Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Threading.html">Threading</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs">AsyncAutoResetEvent.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs">AsyncAutoResetEvent.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides an asynchronous auto-reset signaling primitive: each call to <a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html#Bodu_Threading_AsyncAutoResetEvent_Set">Set()</a> releases exactly one waiter
@@ -196,7 +196,7 @@ async Task ConsumeAsync(CancellationToken token)
 
   <h2 id="Bodu_Threading_AsyncAutoResetEvent_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a> is the asynchronous analogue of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.autoresetevent">AutoResetEvent</a>. When a waiter is
+<a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a> is the asynchronous analog of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.autoresetevent">AutoResetEvent</a>. When a waiter is
 queued, <a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html#Bodu_Threading_AsyncAutoResetEvent_Set">Set()</a> releases the longest-waiting caller (strict FIFO) and consumes the signal. When no waiter
 is queued, the signal is latched so that the next <a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html#Bodu_Threading_AsyncAutoResetEvent_WaitAsync">WaitAsync()</a> completes immediately; the event holds
 at most one pending signal.
@@ -223,7 +223,7 @@ token is already canceled. A token only cancels a wait that cannot complete imme
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Threading_AsyncAutoResetEvent__ctor" data-uid="Bodu.Threading.AsyncAutoResetEvent.#ctor">
   AsyncAutoResetEvent()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -254,7 +254,7 @@ token is already canceled. A token only cancels a wait that cannot complete imme
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Threading_AsyncAutoResetEvent__ctor_System_Boolean_" data-uid="Bodu.Threading.AsyncAutoResetEvent.#ctor(System.Boolean)">
   AsyncAutoResetEvent(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -295,7 +295,7 @@ token is already canceled. A token only cancels a wait that cannot complete imme
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Threading_AsyncAutoResetEvent_Set" data-uid="Bodu.Threading.AsyncAutoResetEvent.Set">
   Set()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -326,7 +326,7 @@ token is already canceled. A token only cancels a wait that cannot complete imme
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Threading_AsyncAutoResetEvent_WaitAsync" data-uid="Bodu.Threading.AsyncAutoResetEvent.WaitAsync">
   WaitAsync()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -366,7 +366,7 @@ token is already canceled. A token only cancels a wait that cannot complete imme
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Threading_AsyncAutoResetEvent_WaitAsync_System_Threading_CancellationToken_" data-uid="Bodu.Threading.AsyncAutoResetEvent.WaitAsync(System.Threading.CancellationToken)">
   WaitAsync(CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Core/src/Threading/AsyncAutoResetEvent.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -443,7 +443,7 @@ cancellation removes only the calling waiter from the queue.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Evaluation modes | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Evaluation modes | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/text-filtering/evaluation-modes.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="evaluation-modes">Evaluation modes</h1>
+
+<p><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterEvaluationMode.html"><code>TextFilterEvaluationMode</code></a> selects how a
+filter's rules combine into a decision. The two modes are the two models established tools already
+use - pick the one matching the mental model your users bring.</p>
+<h2 id="quick-reference">Quick reference</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>AnyMatch</code> (default)</th>
+<th><code>LastMatchWins</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>Ant / MSBuild include-exclude sets</td>
+<td>gitignore ordered rules</td>
+</tr>
+<tr>
+<td>Order matters?</td>
+<td>No - sets are order-independent</td>
+<td>Yes - the last matching rule decides</td>
+</tr>
+<tr>
+<td>Unmatched value</td>
+<td>Included when the include set is empty; otherwise rejected</td>
+<td>Always included</td>
+</tr>
+<tr>
+<td>Exclude vs include conflict</td>
+<td>Exclude always vetoes</td>
+<td>Whichever matched <strong>later</strong> wins</td>
+</tr>
+<tr>
+<td>Cost-tier reordering</td>
+<td>Full (cheapest-first)</td>
+<td>Per-rule matchers only; order is semantic</td>
+</tr>
+</tbody>
+</table>
+<h2 id="anymatch---includeexclude-sets"><code>AnyMatch</code> - include/exclude sets</h2>
+<p>A value is accepted when <em>(the include set is empty OR at least one include matches)</em> AND <em>no
+exclude matches</em>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var filter = TextFilter.Build(
+[
+    TextFilterPattern.Include(&quot;error*&quot;),
+    TextFilterPattern.Exclude(&quot;*debug*&quot;),
+]);
+</code></pre>
+<p>With no includes at all, everything passes unless vetoed - the exclude-only shape <code>.gitignore</code>
+users expect. Declaring any include flips the filter into allowlist behavior. Because set matching
+is an order-independent OR, the engine evaluates each group cheapest-strategy-first and
+short-circuits - reordering can never change the outcome, only which of several matching patterns
+gets <em>reported</em> as the deciding one.</p>
+<h2 id="lastmatchwins---ordered-rules"><code>LastMatchWins</code> - ordered rules</h2>
+<p>Rules form one ordered list; evaluation conceptually walks it and the <strong>last</strong> matching rule's
+action decides. Unmatched values are included, exactly as in gitignore.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var ordered = new TextFilterOptions { Mode = TextFilterEvaluationMode.LastMatchWins };
+var filter = TextFilter.Parse([&quot;!*.log&quot;, &quot;important.log&quot;], ordered);
+// app.log → excluded; important.log → re-included by the later rule; readme.txt → included
+</code></pre>
+<p>Re-inclusion is the point of this mode: a later include re-admits what an earlier exclude
+rejected. Express an <strong>allowlist</strong> with a leading exclude-everything rule:</p>
+<pre><code class="lang-csharp">var allow = TextFilter.Parse([&quot;!*&quot;, &quot;error*&quot;, &quot;!*debug*&quot;], ordered);
+// only error* values pass, except those containing &quot;debug&quot;
+</code></pre>
+<h2 id="parsing-raw-lines">Parsing raw lines</h2>
+<p><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter.Parse</code></a> reads raw pattern lines with the
+gitignore file conventions in either mode: a bare line is an include, a leading <code>!</code> makes it an
+exclude, <code>#</code> starts a comment line, blank lines are skipped, and <code>\!</code> / <code>\#</code> escape a literal
+leading character. Lines always parse as wildcard patterns; declare regexes through
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPattern.html"><code>TextFilterPattern</code></a> or the
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterBuilder.html"><code>TextFilterBuilder</code></a>.</p>
+<h2 id="choosing-a-mode">Choosing a mode</h2>
+<ul>
+<li>Configuration that reads like <em>&quot;take these, but not those&quot;</em> - <code>AnyMatch</code>.</li>
+<li>Configuration users will edit like a <code>.gitignore</code> file, with later lines overriding earlier
+ones - <code>LastMatchWins</code>.</li>
+<li>Need maximum throughput over huge corpora with many patterns - <code>AnyMatch</code>, which gets the full
+cost-tier reordering.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="patterns-and-globs.html">Patterns and globs</a></strong> - the grammar the rules are written in.</li>
+<li><strong><a href="telemetry-and-tuning.html">Telemetry and tuning</a></strong> - seeing which rules decide at volume.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterEvaluationMode.html">API reference</a></strong> - the mode enumeration.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

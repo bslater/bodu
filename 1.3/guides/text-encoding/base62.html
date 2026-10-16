@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Using Base62 | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Using Base62 | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/text-encoding/base62.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="using-base62">Using Base62</h1>
+
+<p><code>Base62</code> encodes binary data with the <strong>GMP-style</strong> alphabet <code>0-9 A-Z a-z</code> (digits first, then upper-case, then
+lower-case letters). Like <a href="base58.html">Base58</a>, its radix is <strong>not a power of two</strong>, so it treats the input as a
+big-integer and repeatedly divides by 62 to extract digits. Unlike Base58, it keeps the four visually ambiguous
+characters Base58 drops (<code>0</code>, <code>O</code>, <code>I</code>, <code>l</code>) - Base62 optimises for <strong>density and URL-safety</strong>, not
+hand-transcription.</p>
+<p>Base62 is the natural choice for short URLs, compact record identifiers, and slugs: every character is a letter or
+digit, so the output is URL-safe and shell-safe without any escaping, and the 62-character radix is more compact than
+Base58 while staying free of the <code>+</code>, <code>/</code>, and <code>=</code> that make Base64 awkward in a path segment.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] data = RandomNumberGenerator.GetBytes(16);
+
+string id = Base62.Encode(data);   // e.g. a ~22-character URL-safe identifier
+byte[] back = Base62.Decode(id);   // round-trips exactly
+</code></pre>
+<h2 id="alphabet-ordering">Alphabet ordering</h2>
+<p>The alphabet is <code>0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</code> - digit <code>0</code> is value 0, <code>A</code> is 10,
+<code>a</code> is 36. This is the <strong>GMP / base-conversion</strong> ordering, the most widely used Base62 convention. It is <em>not</em> the same
+as Base64's alphabet, and the two are not interchangeable.</p>
+<h2 id="leading-zeros">Leading zeros</h2>
+<p>Because Base62 uses big-integer arithmetic, leading zero bytes would normally vanish. The implementation preserves
+them as leading <code>0</code> characters (where <code>0</code> is <code>alphabet[0]</code>), exactly as Base58 preserves leading <code>1</code> characters:</p>
+<table>
+<thead>
+<tr>
+<th>Input bytes</th>
+<th>Encoded</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x00</code></td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td><code>0x00 0x00</code></td>
+<td><code>00</code></td>
+</tr>
+<tr>
+<td><code>0x00 0x01</code></td>
+<td><code>01</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">byte[] withZeros = { 0x00, 0x00, 0xDE, 0xAD };
+string encoded = Base62.Encode(withZeros);
+byte[] back = Base62.Decode(encoded);   // back.SequenceEqual(withZeros)
+</code></pre>
+<p>This makes the round trip exact for any byte sequence, including one with a run of leading zeros.</p>
+<h2 id="lenient-parsing">Lenient parsing</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BaseFormatStyles.IgnoreWhitespace</code></td>
+<td>Strip ASCII space / tab / CR / LF anywhere</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowPrefix</code></td>
+<td>No-op for Base62</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowMissingPadding</code></td>
+<td>No-op for Base62 (no padding character)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">byte[] payload = Base62.Decode(&quot;  3p Kq9  &quot;, BaseFormatStyles.IgnoreWhitespace);
+</code></pre>
+<p>The decoder otherwise rejects any character outside the 62-symbol alphabet with a <code>FormatException</code>; <code>TryDecode</code>
+returns <code>false</code> instead.</p>
+<h2 id="span-path-and-sizing">Span path and sizing</h2>
+<pre><code class="lang-csharp">int maxChars = Base62.GetMaxEncodedLength(payload.Length);   // upper bound (data-dependent)
+char[] buffer = new char[maxChars];
+
+int written = Base62.Encode(payload, buffer);
+ReadOnlySpan&lt;char&gt; result = buffer.AsSpan(0, written);
+</code></pre>
+<p>Exact length is data-dependent (it varies with the leading-zero count and the magnitude of the non-zero portion), so
+the library exposes <code>GetMaxEncodedLength</code> / <code>GetMaxDecodedLength</code> as upper bounds. Base62 uses big-integer arithmetic
+and is therefore <strong>not streamable</strong> - there is no <code>OperationStatus</code> path; each call needs the entire input.</p>
+<h2 id="validation">Validation</h2>
+<pre><code class="lang-csharp">Base62.IsValid(&quot;3pKq9&quot;);      // true
+Base62.IsValid(&quot;3p+q9&quot;);      // false - '+' is not in the alphabet
+Base62.IsBase62Digit('Z');    // true
+Base62.IsBase62Digit('+');    // false
+</code></pre>
+<h2 id="base58-or-base62">Base58 or Base62?</h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Pick</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hand-transcribed identifiers (no <code>0</code>/<code>O</code>/<code>I</code>/<code>l</code> ambiguity)</td>
+<td><a href="base58.html">Base58</a></td>
+</tr>
+<tr>
+<td>Blockchain / Bitcoin / IPFS interop</td>
+<td><a href="base58.html">Base58</a></td>
+</tr>
+<tr>
+<td>Densest URL-safe identifier, machine-to-machine</td>
+<td><strong>Base62</strong></td>
+</tr>
+<tr>
+<td>Built-in checksum on addresses / keys</td>
+<td><a href="base58.html#base58check---checksum-protected-payloads">Base58Check</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base58.html">Base58 guide</a></strong> - the ambiguity-free sibling, plus <code>Base58Check</code>.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> - when interop with existing Base64 tooling matters more than path-safety.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> - Base62 is registered as <code>BinaryEncodings.Base62</code> for runtime selection.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

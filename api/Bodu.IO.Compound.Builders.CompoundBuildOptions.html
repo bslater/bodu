@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Compound_Builders_CompoundBuildOptions" data-uid="Bodu.IO.Compound.Builders.CompoundBuildOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CompoundBuildOptions Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundBuildOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundBuildOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ CompoundBuildOptions Struct
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.Builders.html">Builders</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.IO.Compound.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Compound">Bodu.IO.Compound</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Compound">Bodu.IO.Compound</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundBuildOptions.cs">CompoundBuildOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundBuildOptions.cs">CompoundBuildOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Specifies options that control how a <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> tree serializes a compound file.</p>
@@ -196,7 +196,9 @@ CompoundBuildOptions Struct
 
   <h2 id="Bodu_IO_Compound_Builders_CompoundBuildOptions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>The default value (<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>) selects version 3 (512-byte sectors) and the default maximum nesting
-depth, producing the most widely compatible output.</p>
+depth, producing the most widely compatible output. A <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html#Bodu_IO_Compound_Builders_CompoundBuildOptions_Version">Version</a> that is neither the default nor a
+defined <a class="xref" href="Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a> is rejected with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> by every
+serializer and by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a>.</p>
 </div>
 
 
@@ -209,7 +211,7 @@ depth, producing the most widely compatible output.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_Builders_CompoundBuildOptions_MaxDepth" data-uid="Bodu.IO.Compound.Builders.CompoundBuildOptions.MaxDepth">
   MaxDepth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundBuildOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundBuildOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -246,7 +248,7 @@ depth, producing the most widely compatible output.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Compound_Builders_CompoundBuildOptions_Version" data-uid="Bodu.IO.Compound.Builders.CompoundBuildOptions.Version">
   Version
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundBuildOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundBuildOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -272,6 +274,11 @@ depth, producing the most widely compatible output.</p>
 
 
 
+  <h4 class="section" id="Bodu_IO_Compound_Builders_CompoundBuildOptions_Version_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Only the default and the defined <a class="xref" href="Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a> members are accepted; any other value makes
+the serializers and <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a> throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> naming the options parameter, before anything is written.</p>
+</div>
 
 
 
@@ -305,7 +312,7 @@ depth, producing the most widely compatible output.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

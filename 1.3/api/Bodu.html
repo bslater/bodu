@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu">
+
+
+  <h1 id="Bodu" data-uid="Bodu" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
+<h2 id="purpose">Purpose</h2>
+<p>The root <strong>Bodu</strong> namespace holds the cross-cutting primitives that the rest of <code>Bodu.Core</code> - and the wider solution - build on: the calendar value sets, the centralized argument-validation helper, and a small pluggable random-number abstraction. These types are namespace-root on purpose: they are used everywhere and carry no sub-domain of their own.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/core/index.html">Bodu.Core introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../guides/core/day-of-week-set.html"><code>DayOfWeekSet</code> guide</a></strong> - composing, parsing, and enumerating sets of days of the week, and migrating from <code>WeekPattern</code>.</li>
+<li><strong><a href="../guides/core/calendar-value-sets.html">Calendar value sets guide</a></strong> - the sets of months, days of the month, hours, minutes, and seconds.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> - an immutable set of days of the week. Built from <code>DayOfWeek</code> values (<code>new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday)</code>, <code>With</code> / <code>Without</code>) or taken from the named presets (<code>Weekdays</code>, <code>Weekend</code>, <code>All</code>, <code>Empty</code>, and the regional working weeks such as <code>SundayToThursday</code>); supports the set operators (<code>DayOfWeekSet.Weekdays | DayOfWeekSet.Weekend</code>), parsing, formatting, and enumeration. It replaces <code>WeekPattern</code>, which Bodu.Core 1.3.0 removed. See the <a href="../guides/core/day-of-week-set.html"><code>DayOfWeekSet</code> guide</a>.</li>
+<li><a class="xref" href="Bodu.MonthSet.html">MonthSet</a>, <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, <a class="xref" href="Bodu.HourSet.html">HourSet</a>, <a class="xref" href="Bodu.MinuteSet.html">MinuteSet</a>, <a class="xref" href="Bodu.SecondSet.html">SecondSet</a> - the same shape over months 1-12, days of the month 1-31, hours 0-23, minutes 0-59, and seconds 0-59, written as a list of values and ranges (<code>&quot;1-3,12&quot;</code>), every value (<code>&quot;1,2,3,12&quot;</code>, format <code>L</code>) or binary text (<code>&quot;111000000001&quot;</code>, format <code>B</code>), and for months a mask of initials (<code>&quot;JFM________D&quot;</code>, format <code>J</code>). See the <a href="../guides/core/calendar-value-sets.html">calendar value sets guide</a>.</li>
+<li><a class="xref" href="Bodu.ICalendarValueSet-2.html">ICalendarValueSet&lt;TSelf, TValue&gt;</a> - the interface the six calendar value sets implement: <code>Empty</code> and <code>All</code>, membership, <code>With</code> and <code>Without</code>, the bits round trip, <code>ParseExact</code> and <code>TryParseExact</code>, formatting, the set operators, equality and enumeration, so generic code can work with any of them.</li>
+<li><a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> - an enum naming the common working weeks used by the date and calendar extensions, one member per week (<code>MondayToFriday</code>, <code>SundayToThursday</code>, ...), with <code>Custom</code> for a week supplied some other way. It is not a flags enum: its members are not combined, and a set of days is a <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a>.</li>
+<li><a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a> - a minimal abstraction over a random source, so algorithms (shuffles, sampling) can be tested deterministically or swapped between PRNG implementations.</li>
+<li><a class="xref" href="Bodu.XorShiftRandom.html">XorShiftRandom</a> - a fast xorshift PRNG that derives from <code>System.Random</code>; seedable for reproducible sequences. Drop-in where <code>Random</code> is expected, faster where throughput matters and cryptographic strength is <em>not</em> required.</li>
+<li><a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a> - the centralized argument-validation surface (<code>ThrowIfNull</code>, <code>ThrowIfLessThan</code>, <code>ThrowIfGreaterThan</code>, span/array offset checks, enum-defined checks, …). Public APIs across the solution validate their parameters through these <code>ThrowIf…</code> members rather than hand-rolled checks.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu;
+
+// Compose and test a day-of-week set.
+DayOfWeekSet weekdays = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+                                         DayOfWeek.Thursday, DayOfWeek.Friday);   // same set as DayOfWeekSet.Weekdays
+DayOfWeekSet fourDay  = weekdays.Without(DayOfWeek.Friday);
+bool worksSaturday    = weekdays.Contains(DayOfWeek.Saturday);   // false
+
+// The other calendar fields have sets of their own.
+MonthSet quarterEnds  = MonthSet.Parse(&quot;3,6,9,12&quot;);
+bool isQuarterEnd     = quarterEnds.Contains(DateTime.Today.Month);
+
+// Deterministic randomness for reproducible tests.
+IRandomGenerator rng = new XorShiftRandom(seed: 12345);
+int roll = rng.Next(6) + 1;   // Next(maxValue) yields [0, maxValue) - here a die roll of 1-6
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong><code>XorShiftRandom</code> is not cryptographically secure.</strong> Use <code>System.Security.Cryptography.RandomNumberGenerator</code> for security-sensitive randomness.</li>
+<li><strong>Validate through <code>ThrowHelper</code>.</strong> When contributing public APIs, prefer an existing <code>ThrowIf…</code> helper over a hand-written check; add a new helper only when the rule is general-purpose.</li>
+<li><strong>See also:</strong> the <a href="../guides/core/day-of-week-set.html"><code>DayOfWeekSet</code> guide</a>, the <a href="../guides/core/calendar-value-sets.html">calendar value sets guide</a>, and the <a class="xref" href="Bodu.Collections.Generic.html">Bodu.Collections.Generic overview</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="namespaces">
+Namespaces
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Buffers.html">Bodu.Buffers</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Collections.html">Bodu.Collections</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Extensions.html">Bodu.Extensions</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Financial.html">Bodu.Financial</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Formats.html">Bodu.Formats</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Functional.html">Bodu.Functional</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Globalization.html">Bodu.Globalization</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IO.html">Bodu.IO</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Numerics.html">Bodu.Numerics</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Security.Cryptography.html">Bodu.Security.Cryptography</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Sequences.html">Bodu.Sequences</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.html">Bodu.Text</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.html">Bodu.Threading</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Xml.Linq.html">Bodu.Xml.Linq</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a></dt>
+      <dd><p>Provides centralized guard clause methods for argument validation, offering consistent and concise exception
+throwing across the library.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.XorShiftRandom.html">XorShiftRandom</a></dt>
+      <dd><p>Represents a high-performance, non-cryptographic pseudo-random number generator based on Marsaglia's xorshift128
+algorithm.</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
+      <dd><p>Represents an immutable set of days of the month, 1 to 31.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.DayOfMonthSet.Enumerator.html">DayOfMonthSet.Enumerator</a></dt>
+      <dd><p>Enumerates the days a <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a> selects, in ascending order, without allocating.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+      <dd><p>Represents an immutable set of days of the week.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.DayOfWeekSet.Enumerator.html">DayOfWeekSet.Enumerator</a></dt>
+      <dd><p>Enumerates the days a <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> selects, in <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> order, Sunday first,
+without allocating.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+      <dd><p>Represents an immutable set of hours of the day, 0 to 23.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.HourSet.Enumerator.html">HourSet.Enumerator</a></dt>
+      <dd><p>Enumerates the hours an <a class="xref" href="Bodu.HourSet.html">HourSet</a> selects, in ascending order, without allocating.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.MinuteSet.html">MinuteSet</a></dt>
+      <dd><p>Represents an immutable set of minutes of the hour, 0 to 59.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.MinuteSet.Enumerator.html">MinuteSet.Enumerator</a></dt>
+      <dd><p>Enumerates the minutes a <a class="xref" href="Bodu.MinuteSet.html">MinuteSet</a> selects, in ascending order, without allocating.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.MonthSet.html">MonthSet</a></dt>
+      <dd><p>Represents an immutable set of months of the year, 1 (January) to 12 (December).</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.MonthSet.Enumerator.html">MonthSet.Enumerator</a></dt>
+      <dd><p>Enumerates the months a <a class="xref" href="Bodu.MonthSet.html">MonthSet</a> selects, in ascending order, without allocating.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.SecondSet.html">SecondSet</a></dt>
+      <dd><p>Represents an immutable set of seconds of the minute, 0 to 59.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.SecondSet.Enumerator.html">SecondSet.Enumerator</a></dt>
+      <dd><p>Enumerates the seconds a <a class="xref" href="Bodu.SecondSet.html">SecondSet</a> selects, in ascending order, without allocating.</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.ICalendarValueSet-2.html">ICalendarValueSet&lt;TSelf, TValue&gt;</a></dt>
+      <dd><p>Defines an immutable set of values drawn from a fixed calendar domain of at most 64 values, such as the days of the
+week or the minutes of an hour.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a></dt>
+      <dd><p>Defines the minimal contract for a pluggable, non-cryptographic random-integer source used by shuffle, sampling, and
+randomized-collection helpers throughout the library.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
+      <dd><p>Represents a named pattern of working days within a seven-day week.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/topics/binary-formats.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/topics/binary-formats.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -110,7 +110,7 @@
 </tr>
 <tr>
 <td><code>Bodu.IO.Biff</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>A low-level codec for the BIFF5 and BIFF8 record streams inside <code>.xls</code> workbooks: the forward-only, allocation-free <code>BiffReader</code> (record framing, version from BOF, code page from CODEPAGE, typed accessors for cell, sheet, and workbook-globals records), <code>BiffSstReader</code> for the BIFF8 shared string table across CONTINUE records, and <code>BiffWriter</code> for emitting BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation.</td>
 <td><a href="../io-biff/index.html">Intro</a> · <a href="../io-biff/concepts.html">Concepts</a> · <a href="../io-biff/getting-started.html">Get started</a></td>
 </tr>
@@ -121,22 +121,28 @@
 <td><a href="../excel/index.html">Intro</a> · <a href="../excel/concepts.html">Concepts</a> · <a href="../excel/getting-started.html">Get started</a></td>
 </tr>
 <tr>
+<td><code>Bodu.Formats.Outlook</code></td>
+<td>Stable</td>
+<td>The shared MAPI value model of the two Outlook readers: property tags and types, the tag-addressed <code>MapiPropertyCollection</code>, named-property identities, the recipient and attachment enumerations, and <code>OutlookFormatException</code>. Container-free.</td>
+<td><a href="../outlook/index.html">Intro</a> · <a href="../outlook/concepts.html">Concepts</a> · <a href="../outlook/getting-started.html">Get started</a></td>
+</tr>
+<tr>
 <td><code>Bodu.Formats.Outlook.Msg</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>A read-only <code>.msg</code> (MS-OXMSG) reader over <code>Bodu.IO.Compound</code>: the <code>OutlookMessage</code> session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text/HTML/compressed-RTF bodies - sharing the <code>Bodu.Formats.Outlook</code> value model with the <code>.pst</code> reader.</td>
-<td><a href="../../guides/outlook/index.html">Guides</a></td>
+<td><a href="../outlook/index.html">Intro</a> · <a href="../outlook/getting-started.html">Get started</a> · <a href="../../guides/outlook/reading-msg-files.html">Guide</a></td>
 </tr>
 <tr>
 <td><code>Bodu.IO.Pst</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>A read-only PST (MS-PST, Unicode and ANSI formats) container reader: the <code>PstFile</code> / <code>PstNode</code> session over the node database - B-trees, data and subnode trees, content encodings, checksums - and the LTP property-context and table-context views with wire-typed values; streaming payload access with a decoded-block LRU cache. No MAPI semantics, no writing.</td>
 <td><a href="../io-pst/index.html">Intro</a> · <a href="../io-pst/concepts.html">Concepts</a> · <a href="../io-pst/getting-started.html">Get started</a></td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook.Pst</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>A read-only <code>.pst</code> mail-store reader over <code>Bodu.IO.Pst</code>: the <code>OutlookMailStore</code> session exposing the folder hierarchy and every message with decoded MAPI properties, recipients, attachments (including embedded messages), named-property resolution, and the text/HTML/compressed-RTF bodies - sharing the <code>Bodu.Formats.Outlook</code> value model with the <code>.msg</code> reader.</td>
-<td><a href="../io-pst/getting-started.html">Get started</a></td>
+<td><a href="../outlook/index.html">Intro</a> · <a href="../outlook/getting-started.html">Get started</a> · <a href="../../guides/outlook/reading-pst-mail-stores.html">Guide</a></td>
 </tr>
 </tbody>
 </table>
@@ -205,7 +211,7 @@ dotnet add package Bodu.Formats.Outlook.Msg
 dotnet add package Bodu.IO.Pst
 dotnet add package Bodu.Formats.Outlook.Pst
 </code></pre>
-<p><code>Bodu.Formats.Excel.Binary</code> depends on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>, <code>Bodu.Formats.Outlook.Msg</code> depends on <code>Bodu.IO.Compound</code>, and <code>Bodu.Formats.Outlook.Pst</code> depends on <code>Bodu.IO.Pst</code>; both Outlook readers share <code>Bodu.Formats.Outlook</code>. <code>Bodu.IO.Compound</code> depends only on <code>Bodu.Core</code>, <code>Bodu.IO.Biff</code> on <code>Bodu.Core</code> and the <code>System.Text.Encoding.CodePages</code> NuGet package (for BIFF5 byte strings), and <code>Bodu.IO.Pst</code> on <code>Bodu.Core</code> and <code>Bodu.Collections</code> - install the topmost package your application consumes.</p>
+<p><code>Bodu.Formats.Excel.Binary</code> depends on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>, <code>Bodu.Formats.Outlook.Msg</code> depends on <code>Bodu.IO.Compound</code>, and <code>Bodu.Formats.Outlook.Pst</code> depends on <code>Bodu.IO.Pst</code>; both Outlook readers share <code>Bodu.Formats.Outlook</code>. <code>Bodu.IO.Compound</code> depends only on <code>Bodu.Core</code>, <code>Bodu.IO.Biff</code> on <code>Bodu.Core</code> alone (BIFF5 byte strings decode through the shared framework's <code>CodePagesEncodingProvider</code>, so no code-pages package is needed), and <code>Bodu.IO.Pst</code> on <code>Bodu.Core</code> and <code>Bodu.Collections</code> - install the topmost package your application consumes.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><strong><a href="binary-formats-concepts.html">Binary Formats &amp; I/O concepts</a></strong> - the shared vocabulary: container, storage, stream, sector chain, BIFF record.</li>
@@ -235,7 +241,7 @@ dotnet add package Bodu.Formats.Outlook.Pst
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

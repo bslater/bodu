@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Globalization.Calendar.Algorithms.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Globalization.Calendar.Algorithms.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -128,7 +128,7 @@
 <p><strong>Custom algorithms</strong></p>
 <ul>
 <li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> - <code>DateOnly? Calculate(int year)</code>. Implement this to add a calculator (returning <code>null</code> for years you do not support).</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a> - the lookup and its chainable, mutable implementation (<code>Register(key, algorithm)</code>). Keys not recognised by <code>AlgorithmDateStrategy</code> fall through to this registry, so a custom key registered here can be referenced from a rule as <code>&lt;Algorithm key=&quot;my-key&quot; /&gt;</code>. Pass the registry to <code>NotableDateResourceLoader.Load(xml, resolver, registry)</code> (to whitelist the key during validation) and to the service through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a><code>.Algorithms</code> - <code>new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry })</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a> - the lookup and its chainable, mutable implementation (<code>Register(key, algorithm)</code>). <code>AlgorithmDateStrategy</code> consults this registry before the built-in calculators, so a custom key registered here can be referenced from a rule as <code>&lt;Algorithm key=&quot;my-key&quot; /&gt;</code>, and a key that matches a built-in one overrides it. Pass the registry to <code>NotableDateResourceLoader.Load(xml, resolver, registry)</code> or <code>LoadJson(json, resolver, registry)</code> (to whitelist the key during validation) and to the service through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a><code>.Algorithms</code> - <code>new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry })</code>.</li>
 <li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext.html">StrategyResolutionContext</a> - the per-resolution context passed to strategies; resolves referenced rules (<code>ResolveReference</code>) cycle-safely and carries the custom algorithm registry.</li>
 </ul>
 <h2 id="minimal-sample">Minimal sample</h2>
@@ -285,13 +285,13 @@ every second Tuesday or the last Friday of every month.</p>
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a></dt>
       <dd><p>Computes the date of a notable date for a Gregorian year from a closed-form or tabular algorithm. Implementations
 are registered under a key and dispatched by the <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a> when a rule references that
-key, allowing the algorithm catalogue to be extended beyond the built-in computations.</p>
+key, allowing the algorithm catalog to be extended beyond the built-in computations.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a></dt>
       <dd><p>Provides lookup of custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> implementations by key, supplementing the engine's
-built-in algorithm catalogue.</p>
+built-in algorithm catalog.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -321,7 +321,7 @@ Enums
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

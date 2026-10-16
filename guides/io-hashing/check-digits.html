@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/io-hashing/check-digits.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-hashing/check-digits.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -107,13 +107,13 @@
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a></td>
 <td>ASCII decimal digits (<code>'0'</code>-<code>'9'</code>)</td>
 <td>A single <code>char</code></td>
-<td><code>Luhn</code>, <code>Damm</code>, <code>Verhoeff</code>, <code>Ean8</code>, <code>Ean13</code>, <code>Gtin14</code>, <code>UpcA</code>, <code>Isbn13</code>, <code>AbaRoutingNumber</code></td>
+<td><code>Luhn</code>, <code>Damm</code>, <code>Verhoeff</code>, <code>Gumm</code>, <code>Ean8</code>, <code>Ean13</code>, <code>Gtin14</code>, <code>UpcA</code>, <code>Isbn13</code>, <code>AbaRoutingNumber</code></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a></td>
 <td>Digits and/or letters</td>
 <td>A single <code>char</code> (may be <code>'X'</code>)</td>
-<td><code>Isin</code>, <code>Isbn10</code>, <code>Sedol</code>, <code>Cusip</code>, <code>Iso7064Mod11_2</code></td>
+<td><code>Isin</code>, <code>Isbn10</code>, <code>Sedol</code>, <code>Cusip</code>, <code>Iso7064Mod11_2</code>, <code>Code39Mod43</code>, <code>Crockford32</code></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a></td>
@@ -159,7 +159,7 @@ bool valid = Damm.IsValid(&quot;5724&quot;);          // true
 </code></pre>
 <hr>
 <h3 id="verhoeff---verhoeff">Verhoeff - <code>Verhoeff</code></h3>
-<p>The <strong>Verhoeff algorithm</strong> uses the dihedral group D₅ and a permutation table to detect all single-digit substitution errors, all adjacent transpositions, and all twin errors. It was designed by Jacobus Verhoeff (1969) and is used by the German ID card system and various medical device identifiers.</p>
+<p>The <strong>Verhoeff algorithm</strong> uses the dihedral group D₅ and a permutation table to detect all single-digit substitution errors, all adjacent transpositions, and most twin errors. It was designed by Jacobus Verhoeff (1969) and is used by the German ID card system and various medical device identifiers.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
 
 var verhoeff = new Verhoeff();
@@ -225,19 +225,20 @@ bool valid = AbaRoutingNumber.IsValid(&quot;021000021&quot;);   // true (JPMorga
 // Body = country code + BBAN (without the two check digits).
 var iban = new Iban();
 iban.Append(&quot;GB&quot;);       // country code
-iban.Append(&quot;BARC20201530093459&quot;);   // BBAN
+iban.Append(&quot;WEST12345698765432&quot;);   // BBAN
 Span&lt;char&gt; checkBuf = stackalloc char[2];
-iban.GetCurrentCheckDigits(checkBuf);   // &quot;29&quot;  →  &quot;GB29 BARC 2020 1530 0934 59&quot;
+iban.GetCurrentCheckDigits(checkBuf);   // &quot;82&quot;  →  &quot;GB82 WEST 1234 5698 7654 32&quot;
 
-bool valid = Iban.IsValid(&quot;GB29BARC20201530093459&quot;);   // true
+bool valid = Iban.IsValid(&quot;GB82WEST12345698765432&quot;);   // true
 </code></pre>
+<p><code>Iban.IsValid</code> checks the check digits and the character set only: at least four characters, all uppercase ASCII letters or digits, with digits in the two check positions. It does not check the country code or the country-specific length and BBAN format, so validate those separately when you need a complete IBAN check.</p>
 <hr>
 <h3 id="isbn---isbn10--isbn13">ISBN - <code>Isbn10</code> / <code>Isbn13</code></h3>
 <p><code>Isbn10</code> uses weighted mod-11 (the check digit may be <code>'X'</code> representing 10). <code>Isbn13</code> uses GS1 weighted mod-10 and is identical to EAN-13. Both share the same streaming API.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
 
 char check10 = Isbn10.Compute(&quot;030640615&quot;);   // '2'  →  &quot;0306406152&quot;
-char check13 = Isbn13.Compute(&quot;978030640615&quot;);   // '2'
+char check13 = Isbn13.Compute(&quot;978030640615&quot;);   // '7'
 
 bool valid10 = Isbn10.IsValid(&quot;0306406152&quot;);
 bool valid13 = Isbn13.IsValid(&quot;9780306406157&quot;);
@@ -247,16 +248,16 @@ bool valid13 = Isbn13.IsValid(&quot;9780306406157&quot;);
 <p>SEDOL (Stock Exchange Daily Official List) is a 7-character identifier used by the London Stock Exchange. The 6-character body uses digits and uppercase consonants (vowels are excluded); the check digit is the result of a weighted mod-10 computation.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
 
-char check = Sedol.Compute(&quot;710889&quot;);   // '2'  →  &quot;7108892&quot;
-bool valid  = Sedol.IsValid(&quot;7108892&quot;);   // true
+char check = Sedol.Compute(&quot;B0WNLY&quot;);   // '7'  →  &quot;B0WNLY7&quot;
+bool valid  = Sedol.IsValid(&quot;B0WNLY7&quot;);   // true
 </code></pre>
 <hr>
 <h3 id="cusip---cusip">CUSIP - <code>Cusip</code></h3>
 <p>CUSIP (Committee on Uniform Securities Identification Procedures, ANSI X9.6) identifies North American financial securities with a 9-character identifier. The check is computed from the 8-character body using a modified Luhn algorithm that handles alphanumeric characters.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
 
-char check = Cusip.Compute(&quot;037833100&quot;);   // '5'  →  &quot;0378331005&quot;  (Apple)
-bool valid  = Cusip.IsValid(&quot;0378331005&quot;);
+char check = Cusip.Compute(&quot;03783310&quot;);   // '0'  →  &quot;037833100&quot;  (Apple)
+bool valid  = Cusip.IsValid(&quot;037833100&quot;);   // true
 </code></pre>
 <hr>
 <h3 id="lei---lei">LEI - <code>Lei</code></h3>
@@ -280,11 +281,18 @@ bool valid = Lei.IsValid(&quot;5493000IBP32UQZ0KL24&quot;);   // true
 </thead>
 <tbody>
 <tr>
-<td>Mod 10, weighted sum (Luhn)</td>
-<td><code>Luhn</code>, <code>Ean8</code>, <code>Ean13</code>, <code>Gtin14</code>, <code>UpcA</code>, <code>AbaRoutingNumber</code>, <code>Isin</code></td>
+<td>Mod 10, Luhn doubling</td>
+<td><code>Luhn</code>, <code>Isin</code>, <code>Cusip</code></td>
 <td>All</td>
 <td>All <strong>except</strong> <code>09 ↔ 90</code></td>
-<td>No</td>
+<td>Most (misses <code>22 ↔ 55</code>, <code>33 ↔ 66</code>, <code>44 ↔ 77</code>)</td>
+</tr>
+<tr>
+<td>Mod 10, fixed weights (GS1 3-1, ABA 3-7-1, SEDOL 1-3-1-7-3-9)</td>
+<td><code>Ean8</code>, <code>Ean13</code>, <code>Gtin14</code>, <code>UpcA</code>, <code>Isbn13</code>, <code>AbaRoutingNumber</code>, <code>Sedol</code></td>
+<td>All</td>
+<td>All <strong>except</strong> swaps of digits that differ by 5</td>
+<td>Some</td>
 </tr>
 <tr>
 <td>Quasigroup (Damm)</td>
@@ -298,14 +306,21 @@ bool valid = Lei.IsValid(&quot;5493000IBP32UQZ0KL24&quot;);   // true
 <td><code>Verhoeff</code></td>
 <td>All</td>
 <td>All</td>
+<td>Most</td>
+</tr>
+<tr>
+<td>Dihedral D₅, alternating (Gumm)</td>
+<td><code>Gumm</code></td>
 <td>All</td>
+<td>All</td>
+<td>Some (more than four in ten pass)</td>
 </tr>
 <tr>
 <td>Mod 11</td>
-<td><code>Isbn10</code>, <code>Sedol</code>, <code>Cusip</code>, <code>Iso7064Mod11_2</code></td>
+<td><code>Isbn10</code>, <code>Iso7064Mod11_2</code></td>
+<td>All</td>
 <td>All</td>
 <td>Most</td>
-<td>Some</td>
 </tr>
 <tr>
 <td>Mod 97-10 (ISO 7064)</td>
@@ -316,7 +331,7 @@ bool valid = Lei.IsValid(&quot;5493000IBP32UQZ0KL24&quot;);   // true
 </tr>
 </tbody>
 </table>
-<p>The <code>Ean*</code>, <code>Gtin14</code>, <code>UpcA</code>, and <code>Isin</code> schemes share Luhn's mod-10 floor (and its <code>09 ↔ 90</code> blind spot) because they reduce to a weighted-sum-mod-10 over the expanded payload. For a <strong>free</strong> choice of a general decimal identifier, <code>Damm</code> closes that gap with a single character; <code>Verhoeff</code> adds twin-error coverage at the cost of a permutation table. Reach for <code>Luhn</code> only when a standard mandates it. The two-character <code>Iban</code> / <code>Lei</code> schemes over a large modulus catch essentially every realistic transcription error - the appropriate strength for high-value financial identifiers. See the <a href="../../docs/io-hashing/concepts.html#transcription-error-classes">concepts page</a> for what each error class means.</p>
+<p><code>Isin</code> and <code>Cusip</code> apply Luhn's doubling, so they share its <code>09 ↔ 90</code> blind spot. The fixed-weight schemes catch <code>09 ↔ 90</code> but miss every adjacent swap of two digits that differ by 5 (<code>05</code>, <code>16</code>, <code>27</code>, <code>38</code>, <code>49</code>), because each pair of neighbouring weights differs by an even number. For a <strong>free</strong> choice of a general decimal identifier, <code>Damm</code> closes those gaps with a single character; <code>Verhoeff</code> also catches more twin errors, at the cost of a permutation table. The measured figures, with <code>Gumm</code>, <code>Code39Mod43</code>, and <code>Crockford32</code>, are in <a href="alphanumeric-check-digits.html#error-classes---measured">Alphanumeric and encoded check digits</a>. Reach for <code>Luhn</code> only when a standard mandates it. The two-character <code>Iban</code> / <code>Lei</code> schemes over a large modulus catch essentially every realistic transcription error - the appropriate strength for high-value financial identifiers. See the <a href="../../docs/io-hashing/concepts.html#transcription-error-classes">concepts page</a> for what each error class means.</p>
 <h2 id="streaming-a-payload-in-chunks">Streaming a payload in chunks</h2>
 <p>The static <code>Compute</code> / <code>IsValid</code> helpers cover one-shot use, but each type is also a stateful instance you can feed in pieces - useful when the payload arrives across buffers, or when you want to validate then re-read the computed digit:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
@@ -394,8 +409,17 @@ luhn.Reset();                               // ready for the next identifier
 <td>Legal entity identifier (LEI)</td>
 <td><code>Lei</code></td>
 </tr>
+<tr>
+<td>Code 39 barcode check character</td>
+<td><code>Code39Mod43</code></td>
+</tr>
+<tr>
+<td>Crockford base-32 identifier</td>
+<td><code>Crockford32</code></td>
+</tr>
 </tbody>
 </table>
+<p><code>Gumm</code> guards the same two error classes as <code>Verhoeff</code> with a simpler construction but catches far fewer twin errors; <a href="alphanumeric-check-digits.html">Alphanumeric and encoded check digits</a> covers it with the other schemes.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><a href="../../docs/io-hashing/index.html">Bodu.IO.Hashing introduction</a> - how check digits relate to checksums and fingerprints, and where the cryptographic families fit.</li>
@@ -421,7 +445,7 @@ luhn.Reset();                               // ready for the next identifier
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Sequenced dictionary | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Sequenced dictionary | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/core/sequenced-dictionary.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="sequenced-dictionary">Sequenced dictionary</h1>
+
+<p><code>SequencedDictionary&lt;TKey, TValue&gt;</code> is a dictionary that preserves the order in which entries are encountered and gives O(1) access to - and removal of - the first and last entries. It is the .NET analogue of Java's <code>LinkedHashMap</code>, and realizes the same <em>sequenced</em> (encounter-order) contract: a well-defined first and last entry with constant-time access to each.</p>
+<p>It is <strong>unbounded</strong> - it never evicts. For a fixed-capacity cache with a built-in eviction policy, reach for <a href="evicting-dictionary.html"><code>EvictingDictionary&lt;TKey, TValue&gt;</code></a> instead.</p>
+<h2 id="ordering-modes">Ordering modes</h2>
+<p>The ordering mode is chosen at construction and is fixed for the lifetime of the instance:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Constructor</th>
+<th>Reads reorder?</th>
+<th>First / Last</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insertion order <em>(default)</em></td>
+<td><code>new SequencedDictionary&lt;K,V&gt;()</code></td>
+<td>No</td>
+<td>Oldest / newest <strong>inserted</strong> entry.</td>
+</tr>
+<tr>
+<td>Access order</td>
+<td><code>new SequencedDictionary&lt;K,V&gt;(accessOrder: true)</code></td>
+<td>Yes - a read or indexed update moves the entry to the tail.</td>
+<td>Least- / most-<strong>recently-used</strong> entry.</td>
+</tr>
+</tbody>
+</table>
+<p>In access-order mode, a successful lookup (<code>this[key]</code> getter or <code>TryGetValue</code>) and an indexed value update move the affected entry to the end of the iteration order. <code>ContainsKey</code>, <code>TryGetFirst</code>/<code>TryGetLast</code>, and <code>First</code>/<code>Last</code> are pure reads and never reorder.</p>
+<h2 id="pattern-1---insertion-ordered-map">Pattern 1 - insertion-ordered map</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var headers = new SequencedDictionary&lt;string, string&gt;();
+headers.Add(&quot;Host&quot;, &quot;example.com&quot;);
+headers.Add(&quot;Accept&quot;, &quot;application/json&quot;);
+headers.Add(&quot;User-Agent&quot;, &quot;bodu/1.0&quot;);
+
+// Enumeration always follows insertion order.
+foreach (var (name, value) in headers)
+    Console.WriteLine($&quot;{name}: {value}&quot;);
+</code></pre>
+<h2 id="pattern-2---o1-ends-as-a-queue-like-store">Pattern 2 - O(1) ends as a queue-like store</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var pending = new SequencedDictionary&lt;Guid, WorkItem&gt;();
+pending.Add(item.Id, item);
+
+// Peek and pop the oldest entry in O(1).
+if (pending.TryGetFirst(out var oldest))
+    Process(oldest.Value);
+
+pending.TryRemoveFirst(out _);   // dequeue the head
+</code></pre>
+<h2 id="pattern-3---least-recently-used-cache">Pattern 3 - least-recently-used cache</h2>
+<p>Access-order mode makes the least-recently-used entry the <code>First</code> entry, so an unbounded LRU with manual trimming is a few lines:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var cache = new SequencedDictionary&lt;string, byte[]&gt;(accessOrder: true);
+
+byte[] GetOrLoad(string key)
+{
+    if (cache.TryGetValue(key, out var data))   // moves key to most-recently-used
+        return data;
+
+    data = Load(key);
+    cache[key] = data;
+
+    // Trim to a soft cap by evicting the least-recently-used entries.
+    while (cache.Count &gt; 100)
+        cache.TryRemoveFirst(out _);
+
+    return data;
+}
+</code></pre>
+<h2 id="pattern-4---assignment-semantics">Pattern 4 - assignment semantics</h2>
+<p><code>Add</code> follows the strict BCL <code>Dictionary&lt;TKey, TValue&gt;.Add</code> contract and throws on a duplicate key. The indexer upserts: a new key is appended to the tail, and an existing key's value is updated in place (and, in access-order mode, moved to the tail).</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var map = new SequencedDictionary&lt;string, int&gt;();
+map.Add(&quot;a&quot;, 1);
+map[&quot;a&quot;] = 10;          // updates in place - order unchanged in insertion mode
+// map.Add(&quot;a&quot;, 2);     // would throw ArgumentException (duplicate key)
+</code></pre>
+<h2 id="thread-safety">Thread safety</h2>
+<p><code>SequencedDictionary&lt;TKey, TValue&gt;</code> is <strong>not thread-safe</strong>. In access-order mode reads mutate the iteration order, so even concurrent read-read is unsafe without external synchronization. Wrap a shared instance in an exclusive lock; a <code>ReaderWriterLockSlim</code> read lock is enough only in insertion-order mode, where reads do not write.</p>
+<h2 id="relationship-to-ordereddictionarytkey-tvalue">Relationship to <code>OrderedDictionary&lt;TKey, TValue&gt;</code></h2>
+<p>The BCL's <code>OrderedDictionary&lt;TKey, TValue&gt;</code> (.NET 9+) is <em>positional</em> - index-addressable with <code>Insert(index, …)</code>, <code>RemoveAt(index)</code>, and O(1) random access by position, but O(n) removal of a non-tail entry. <code>SequencedDictionary&lt;TKey, TValue&gt;</code> exposes <strong>no</strong> positional surface; it trades index access for O(1) removal of either end and O(1) removal of any entry by key, and adds the access-order mode. On Bodu's <code>net8.0</code> target the BCL <code>OrderedDictionary&lt;TKey, TValue&gt;</code> is not available regardless.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>this[TKey]</code> (get)</td>
+<td>Returns the value; throws if the key is not present. Moves the key to the tail in access-order mode.</td>
+</tr>
+<tr>
+<td><code>this[TKey]</code> (set)</td>
+<td>Adds a new entry at the tail, or updates an existing one in place.</td>
+</tr>
+<tr>
+<td><code>Add(TKey, TValue)</code></td>
+<td>Appends a new entry; throws <code>ArgumentException</code> on a duplicate key.</td>
+</tr>
+<tr>
+<td><code>TryGetValue(TKey, out TValue)</code></td>
+<td>Returns the value without throwing. Moves the key to the tail in access-order mode.</td>
+</tr>
+<tr>
+<td><code>ContainsKey(TKey)</code></td>
+<td>Returns <code>true</code> without reordering.</td>
+</tr>
+<tr>
+<td><code>Remove(TKey)</code></td>
+<td>Removes the entry in O(1).</td>
+</tr>
+<tr>
+<td><code>First</code> / <code>Last</code></td>
+<td>The head / tail entry; O(1). Throws if empty.</td>
+</tr>
+<tr>
+<td><code>TryGetFirst</code> / <code>TryGetLast</code></td>
+<td>The head / tail entry without throwing; O(1). Never reorders.</td>
+</tr>
+<tr>
+<td><code>TryRemoveFirst</code> / <code>TryRemoveLast</code></td>
+<td>Removes and returns the head / tail entry in O(1).</td>
+</tr>
+<tr>
+<td><code>AccessOrder</code></td>
+<td><code>true</code> when the dictionary reorders on access.</td>
+</tr>
+<tr>
+<td><code>Comparer</code></td>
+<td>The <code>IEqualityComparer&lt;TKey&gt;</code> used for key identity.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>Number of entries currently held.</td>
+</tr>
+<tr>
+<td><code>Keys</code> / <code>Values</code></td>
+<td>Live, order-preserving views.</td>
+</tr>
+<tr>
+<td><code>Clear()</code></td>
+<td>Removes all entries.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> - fixed-capacity cache with FIFO / LRU / LFU eviction policies.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide across the namespace.</li>
+<li><a href="index.html">Bodu.Collections guide index</a> - all key types at a glance.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/io-pst/reading-nodes-and-tables.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-pst/reading-nodes-and-tables.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -99,7 +99,7 @@ Console.WriteLine($&quot;{file.Format} format, block data: {file.CryptMethod}&qu
 
 // Unicode format, block data: Permute
 </code></pre>
-<p><code>OpenRead(path)</code> owns the file it opens. <code>OpenRead(stream, leaveOpen)</code> and <code>Open(stream, options, leaveOpen)</code> read a stream that must be readable and seekable (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> otherwise); the container starts at the stream's <em>current position</em>, so a PST embedded in a larger stream opens without copying. Opening parses the header only - a wrong magic, an undeclared version, or (under <code>Strict</code>) a bad header CRC throws <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> here, and the 4 KiB-page OST variant throws <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a>.</p>
+<p><code>OpenRead(path)</code> owns the file it opens. <code>OpenRead(stream, leaveOpen)</code> and <code>Open(stream, options, leaveOpen)</code> read a stream that must be readable and seekable (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> otherwise); the container starts at the stream's <em>current position</em>, so a PST embedded in a larger stream opens without copying. Opening parses the header only - a wrong magic, an undeclared version, or (under <code>Compatible</code> and <code>Strict</code>) a bad header CRC throws <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> here, and an OST file (client magic <code>SO</code>, whatever its version) or the 4 KiB-page variant throws <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a>.</p>
 <p><a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html#Bodu_IO_Pst_PstFile_Format">Format</a> reports the variant (<code>Unicode</code>, 64-bit structures, or <code>Ansi</code>, 32-bit); every public type behaves identically over either. <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html#Bodu_IO_Pst_PstFile_CryptMethod">CryptMethod</a> is the header's content encoding - <code>None</code>, <code>Permute</code>, or <code>Cyclic</code> - which the reader undoes transparently on every block read; you never see encoded bytes.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
@@ -183,7 +183,7 @@ foreach ((PstNodeType type, int count) in census)
 Console.WriteLine($&quot;largest payload: {largest} bytes&quot;);
 
 PstNode store = file.GetNode(PstNodeId.MessageStore);             // throws PstNodeNotFoundException when absent
-Console.WriteLine($&quot;{store} parent={store.ParentId} subnodes={store.HasSubnodes} data={store.DataLength} bytes&quot;);
+Console.WriteLine($&quot;{store} parent={store.ParentNodeId} subnodes={store.HasSubnodes} data={store.DataLength} bytes&quot;);
 
 if (!file.TryGetNode(new PstNodeId(PstNodeType.NormalFolder, 0x7FFFFFF), out PstNode? missing))
     Console.WriteLine(&quot;no such node&quot;);
@@ -249,6 +249,7 @@ foreach (PstPropertyValue value in properties)
 // record key: 6A552B813C43F94384F18B7DA2393E95
 //   0x0E34 (0x0102, 24 bytes)
 //   0x0E38 (0x0003, 4 bytes)
+//   0x0FF9 (0x0102, 16 bytes)
 //   0x3001 (0x001F, 14 bytes)
 //   ...
 </code></pre>
@@ -423,7 +424,7 @@ PstNodeInfo first = file.EnumerateNodes().First(n =&gt; n.NodeId.Type == PstNode
 PstNode message = file.GetNode(first.NodeId);
 PstPropertyContext properties = message.ReadPropertyContext();
 
-Console.WriteLine($&quot;{message}: {properties.Count} properties, parent folder {message.ParentId}&quot;);
+Console.WriteLine($&quot;{message}: {properties.Count} properties, parent folder {message.ParentNodeId}&quot;);
 
 // 0x0037 PidTagSubject, 0x001A PidTagMessageClass - UTF-16 (0x001F) in a Unicode-format file.
 if (properties.TryGetValue(0x0037, out PstPropertyValue subject) &amp;&amp; subject.WireType == 0x001F)
@@ -486,7 +487,7 @@ if (message.TryGetSubnodeOfType(PstNodeType.RecipientTable, out PstNode? recipie
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a></td>
-<td><code>Id</code> · <code>ParentId</code> · <code>HasSubnodes</code> · <code>DataLength</code> · <code>ReadAllBytes()</code> · <code>OpenDataStream()</code> · <code>EnumerateSubnodes()</code> · <code>TryGetSubnode(id, out node)</code> · <code>TryGetSubnodeOfType(type, out node)</code> · <code>ReadPropertyContext()</code> · <code>ReadTableContext()</code></td>
+<td><code>NodeId</code> · <code>ParentNodeId</code> · <code>HasSubnodes</code> · <code>DataLength</code> · <code>ReadAllBytes()</code> · <code>OpenDataStream()</code> · <code>EnumerateSubnodes()</code> · <code>TryGetSubnode(id, out node)</code> · <code>TryGetSubnodeOfType(type, out node)</code> · <code>ReadPropertyContext()</code> · <code>ReadTableContext()</code></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a></td>
@@ -532,7 +533,7 @@ if (message.TryGetSubnodeOfType(PstNodeType.RecipientTable, out PstNode? recipie
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

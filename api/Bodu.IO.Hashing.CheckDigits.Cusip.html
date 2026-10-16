@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_CheckDigits_Cusip" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Cusip Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ Cusip Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.CheckDigits.html">CheckDigits</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs">Cusip.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs">Cusip.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes the check digit of a 9-character Committee on Uniform Securities Identification Procedures (CUSIP)
@@ -214,6 +214,11 @@ Each body character's numeric value is multiplied by a positional weight (<code>
 being added to the running total. The check digit is chosen so that the total is a multiple of ten.
 </p>
 <p>
+<a class="xref" href="Bodu.IO.Hashing.CheckDigits.Cusip.html#Bodu_IO_Hashing_CheckDigits_Cusip_IsValid_System_ReadOnlySpan_System_Char__">IsValid(ReadOnlySpan&lt;char&gt;)</a> checks the length (nine characters), the character set, and the check
+digit. <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Cusip.html#Bodu_IO_Hashing_CheckDigits_Cusip_Compute_System_ReadOnlySpan_System_Char__">Compute(ReadOnlySpan&lt;char&gt;)</a> does not check the body length: it returns a digit for a body of
+any length, so pass the eight-character body alone.
+</p>
+<p>
 <b>Worked example.</b> For the body <code>"03783310"</code> - Apple Inc. - the computed check digit is <code>'0'</code>, and the
 resulting CUSIP <code>"037833100"</code> is therefore valid.
 </p>
@@ -231,7 +236,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip__ctor" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.#ctor">
   Cusip()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -265,7 +270,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_BodyLength" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.BodyLength">
   BodyLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -300,7 +305,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_SequenceLength" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.SequenceLength">
   SequenceLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -340,7 +345,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_AlgorithmName" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.AlgorithmName">
   AlgorithmName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -377,7 +382,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_InputAlphabet" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.InputAlphabet">
   InputAlphabet
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -414,7 +419,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_OutputAlphabet" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.OutputAlphabet">
   OutputAlphabet
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -455,7 +460,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_Append_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.Append(System.ReadOnlySpan{System.Char})">
   Append(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -499,7 +504,7 @@ a permitted no-op.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_Compute_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.Compute(System.ReadOnlySpan{System.Char})">
   Compute(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -548,7 +553,7 @@ a permitted no-op.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_GetCurrentCheckDigit" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.GetCurrentCheckDigit">
   GetCurrentCheckDigit()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -590,7 +595,7 @@ with identical results between appends.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.IsValid(System.ReadOnlySpan{System.Char})">
   IsValid(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -636,7 +641,7 @@ character is outside the CUSIP alphabet, or the check character is not a decimal
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Cusip_Reset" data-uid="Bodu.IO.Hashing.CheckDigits.Cusip.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Cusip.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -692,7 +697,7 @@ character is outside the CUSIP alphabet, or the check character is not a decimal
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

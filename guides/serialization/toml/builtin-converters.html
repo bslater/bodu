@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/serialization/toml/builtin-converters.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/serialization/toml/builtin-converters.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -156,19 +156,19 @@
 <td><code>double</code></td>
 <td>float (including <code>inf</code> / <code>-inf</code> / <code>nan</code>)</td>
 <td>float</td>
-<td></td>
+<td>A literal beyond the binary64 range, such as <code>1e400</code>, reads as an infinity, and one too small to represent reads as zero: the reader rounds every literal to binary64 as IEEE 754 does.</td>
 </tr>
 <tr>
 <td><code>float</code></td>
 <td>float</td>
 <td>float</td>
-<td>Widens to binary64 on write; narrows on read.</td>
+<td>Widens to binary64 on write; narrows on read, rounding to nearest. A finite float outside the <code>float</code> range is a serialization error, as an integer overflow is; <code>inf</code>, <code>-inf</code> and <code>nan</code> read as <code>float</code>'s own.</td>
 </tr>
 <tr>
 <td><code>Half</code></td>
 <td>float</td>
 <td>float</td>
-<td>Exact widening on write; <strong>saturating</strong> IEEE 754 narrow on read - an out-of-range finite float reads back as ±infinity.</td>
+<td>Exact widening on write; narrows on read as <code>float</code> does, so a finite float outside the <code>Half</code> range is a serialization error.</td>
 </tr>
 <tr>
 <td><code>decimal</code></td>
@@ -215,7 +215,7 @@
 <tr>
 <td><code>enum</code> (any)</td>
 <td>string, the member name</td>
-<td>string (case-insensitive) or integer</td>
+<td>string (a name, as described below) or integer</td>
 <td>Per-member names via <code>[StringEnumMemberName]</code>; see the enum converters below.</td>
 </tr>
 </tbody>
@@ -268,12 +268,12 @@
 <tr>
 <td>dictionaries with <code>string</code>, integer, <code>enum</code>, <code>Guid</code>, <code>bool</code>, or <code>char</code> keys</td>
 <td>table</td>
-<td>Non-string keys are written in invariant text. The newer scalars (<code>Version</code>, <code>TimeSpan</code>, <code>decimal</code>, <code>Half</code>, 128-bit integers) are deliberately not key types.</td>
+<td>Non-string keys are written in invariant text, and enum keys by name, as described below. The newer scalars (<code>Version</code>, <code>TimeSpan</code>, <code>decimal</code>, <code>Half</code>, 128-bit integers) are deliberately not key types.</td>
 </tr>
 <tr>
 <td>plain classes and structs</td>
 <td>table</td>
-<td>The catch-all object converter, consulted last.</td>
+<td>The catch-all object converter, consulted last. Delegates, reflection types (<code>Type</code> and the other <code>MemberInfo</code> types) and pointers are not plain objects: without a converter of your own, a member of one fails with <code>NotSupportedException</code> naming its type.</td>
 </tr>
 <tr>
 <td><code>object</code>-typed members</td>
@@ -303,6 +303,10 @@
 <li><a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlStringEnumConverter.html">TomlStringEnumConverter</a> / <code>TomlStringEnumConverter&lt;TEnum&gt;</code> - member-name strings with an optional naming policy and integer-on-read flag.</li>
 <li><code>TomlNumberEnumConverter&lt;TEnum&gt;</code> - the underlying numeric value as a TOML integer.</li>
 </ul>
+<p>An integer read as an enum, by the default handling or by either converter, must lie within the range of the enum's underlying type: one outside it raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> with the integer's line, column and path rather than being narrowed into the type, so <code>Level = 300</code> never binds a <code>byte</code>-based enum as 44. An integer inside the range binds whether or not it names a member. A TOML integer is a signed 64-bit value, so an enum based on <code>ulong</code> reads integers up to <code>long.MaxValue</code>, and <code>TomlNumberEnumConverter&lt;TEnum&gt;</code> rejects writing a larger value with <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>, as writing such a <code>ulong</code> member does.</p>
+<p>Names are matched as System.Text.Json's <code>JsonStringEnumConverter</code> matches them, by the default handling and by the string-enum converter alike. A member's wire name, from <code>[StringEnumMemberName]</code> or the converter's naming policy, binds only in its own case. The CLR name of a member that <code>[StringEnumMemberName]</code> does not rename also binds, in any case, but a renamed member's CLR name does not: with <code>[StringEnumMemberName(&quot;on&quot;)]</code> on <code>Enabled</code>, <code>&quot;on&quot;</code> binds, and <code>&quot;ON&quot;</code>, <code>&quot;Enabled&quot;</code> and <code>&quot;enabled&quot;</code> do not. A combination of flags is written as the comma-separated wire names of its flags, in the order <code>Enum.ToString</code> lists them, so under <code>NamingPolicy.SnakeCaseLower</code> <code>CanRead | CanExecute</code> is <code>&quot;can_read, can_execute&quot;</code>. It is read from such a list in any order, each name trimmed of white space, with a trailing comma tolerated but no empty name anywhere else. A list holds names only: an integer binds, where integers are allowed, only as the whole string, so <code>&quot;1, 4&quot;</code> is rejected.</p>
+<p>A string-enum converter created with <code>allowIntegerValues: false</code> reads names only, as System.Text.Json's <code>JsonStringEnumConverter</code> does from .NET 9. It rejects a TOML integer, and a string that holds one too: a string that is not a member's wire name and has an integer in any of its comma-separated parts (an optional sign and the digits <code>0</code> to <code>9</code>, ignoring white space around them), such as <code>&quot;2&quot;</code>, <code>&quot; +2 &quot;</code> or <code>&quot;Read, 2&quot;</code>, raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> with the string's line, column and path rather than binding the integer. The wire names are matched first, so a member renamed with <code>[StringEnumMemberName(&quot;1&quot;)]</code> still reads from <code>&quot;1&quot;</code>. The default handling, and a converter that allows integers, bind a string that is an integer, such as <code>&quot;2&quot;</code>, as the integer it holds. On write, such a converter refuses a value that is neither a member nor a combination of defined flags, such as <code>(Status)99</code> or a flags value with an undefined bit, and raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> rather than writing the decimal text it would reject on read; the default handling, and a converter that allows integers, write it as that text, <code>&quot;99&quot;</code>.</p>
+<p>An enum used as a dictionary key follows the same names, as System.Text.Json's enum converter reads and writes a property name. A key is written by its wire name, a combination of flags by its flags' wire names, and any other value as its decimal text, whatever the rule for integer values, so with <code>[StringEnumMemberName(&quot;on&quot;)]</code> on <code>Enabled</code> a <code>Dictionary&lt;Toggle, int&gt;</code> writes the key <code>on</code>, reads it back, and rejects <code>Enabled</code> with <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>. Where a <code>TomlStringEnumConverter</code> handles the key type, keys also follow its naming policy and its rule for integer values, so with <code>allowIntegerValues: false</code> the key <code>1</code> is rejected. Otherwise, under the default handling or <code>TomlNumberEnumConverter&lt;TEnum&gt;</code>, keys are written by name with no naming policy, and integer text binds.</p>
 <h2 id="representation-decisions-at-a-glance">Representation decisions at a glance</h2>
 <p>TOML's native scalar kinds - string, integer, float, boolean, and the four date-time forms - cover nearly every common BCL type without a choice to make. Two types carry a representation selector on the options:</p>
 <table>
@@ -354,7 +358,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/recurrence/index.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/recurrence/index.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 <p><img src="../../images/hero-recurrence.svg" alt="Bodu.Globalization.Recurrence"></p>
 <p><strong>Bodu.Globalization.Recurrence</strong> evaluates recurring schedules expressed in the industry-standard textual grammars - RFC 5545 (iCalendar) recurrence rules, Vixie-style cron expressions, and instant-anchored intervals in the RFC 5545 duration grammar. Every form parses from text, renders back to canonical text, compares by value, and answers the two questions a scheduler asks: <em>when is the next occurrence?</em> and <em>when was the previous one?</em> It is an independent sibling of the notable-date engine in the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
-<p>The package is published as <strong>Preview</strong>: the API surface is stable enough to evaluate and build on, but may still change between releases without a major-version bump. It depends only on <code>Bodu.Core</code> and carries no calendar data.</p>
+<p>The package is published as <strong>Stable</strong>: the public API surface is committed, and breaking changes are reserved for a major-version bump. It depends only on <code>Bodu.Core</code> and carries no calendar data.</p>
 <h2 id="the-four-schedule-forms">The four schedule forms</h2>
 <table>
 <thead>
@@ -105,19 +105,19 @@
 <td>RFC 5545 recurrence rule</td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a></td>
 <td><code>FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR</code></td>
-<td>Calendar-aligned. A base frequency (<code>DAILY</code> … <code>YEARLY</code>) refined by <code>INTERVAL</code>, bounded by <code>COUNT</code> or <code>UNTIL</code>, and filtered by the <code>BY*</code> parts. The rule carries no start of its own - the series start (<code>DTSTART</code>) is passed to every query.</td>
+<td>Calendar-aligned. A base frequency (<code>SECONDLY</code> … <code>YEARLY</code>) refined by <code>INTERVAL</code>, bounded by <code>COUNT</code> or <code>UNTIL</code>, and filtered by the <code>BY*</code> parts. The rule carries no start of its own - the series start (<code>DTSTART</code>) is passed to every query.</td>
 </tr>
 <tr>
 <td>Composed rule set</td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a></td>
-<td>An iCalendar property block: <code>DTSTART</code>, one or more <code>RRULE</code> lines, optional <code>RDATE</code> / <code>EXDATE</code></td>
+<td>An iCalendar property block: <code>DTSTART</code>, at least one <code>RRULE</code> or <code>RDATE</code> line, optional <code>EXDATE</code></td>
 <td>One or more rules anchored at a common start, merged with explicit recurrence dates and with exception dates removed.</td>
 </tr>
 <tr>
 <td>Cron expression</td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a></td>
 <td><code>0 2 * * MON-FRI</code>, <code>*/15 * * * *</code>, <code>@daily</code></td>
-<td>Calendar-aligned. The five-field Vixie layout (<a class="xref" href="../../api/Bodu.Globalization.Recurrence.CronFormat.html">CronFormat</a><code>.Standard</code>) or the six-field layout with a leading seconds field (<code>CronFormat.WithSeconds</code>), plus the <code>@yearly</code> / <code>@annually</code>, <code>@monthly</code>, <code>@weekly</code>, <code>@daily</code> / <code>@midnight</code>, and <code>@hourly</code> macros.</td>
+<td>Calendar-aligned. The five-field Vixie layout (<a class="xref" href="../../api/Bodu.Globalization.Recurrence.CronFormat.html">CronFormat</a><code>.Standard</code>) or the six-field layout with a leading seconds field (<code>CronFormat.WithSeconds</code>), plus the <code>@yearly</code> / <code>@annually</code>, <code>@monthly</code>, <code>@weekly</code>, <code>@daily</code> / <code>@midnight</code>, and <code>@hourly</code> macros. The two day fields also take the <a href="../../guides/recurrence/cron.html#the-quartz-day-tokens">Quartz day tokens</a> <code>L</code>, <code>W</code>, <code>#</code> and <code>?</code>.</td>
 </tr>
 <tr>
 <td>Anchored interval</td>
@@ -132,7 +132,7 @@
 <ul>
 <li><strong><code>GetNextOccurrence(after, inclusive)</code></strong> returns the first occurrence strictly after <code>after</code> - or at <code>after</code> when <code>inclusive</code> is <code>true</code> - as a nullable value; <code>null</code> means the schedule produces nothing further (a <code>COUNT</code> exhausted, an <code>UNTIL</code> passed, or a cron expression that can never match).</li>
 <li><strong><code>GetPreviousOccurrence(before, inclusive)</code></strong> returns the last occurrence strictly before <code>before</code> - or at <code>before</code> when <code>inclusive</code> is <code>true</code>. Due-ness is a one-line comparison over this answer: <code>lastCompleted &lt; schedule.GetPreviousOccurrence(now, inclusive: true)</code>.</li>
-<li>Both queries have <strong><code>DateTime</code> and <code>DateTimeOffset</code> overloads</strong>. The <code>DateTime</code> overloads preserve the argument's <code>Kind</code>; the <code>DateTimeOffset</code> overloads evaluate on the wall-clock time and reattach the argument's offset. The rule-based forms additionally expose windowed and open-ended <code>GetOccurrences</code> enumerators.</li>
+<li>Both queries have <strong><code>DateTime</code> and <code>DateTimeOffset</code> overloads</strong>. The <code>DateTime</code> overloads preserve the argument's <code>Kind</code>. The <code>DateTimeOffset</code> overloads differ by form: a rule answers in its start's offset, a set or cron expression reads its wall-clock data in the query's offset and answers in it, and an anchored interval compares instants and answers in the query's offset (see <a href="concepts.html#offsets-and-daylight-saving">Offsets and daylight saving</a>). The rule-based forms additionally expose windowed and open-ended <code>GetOccurrences</code> enumerators.</li>
 <li><strong><code>Parse</code> / <code>TryParse</code></strong> follow the BCL <code>IParsable&lt;T&gt;</code> shape, and every form adds a <strong><code>TryParse(s, out result, out failureMessage)</code></strong> overload whose message names the specific defect (<code>The cron field '25' is not valid.</code>, <code>The COUNT and UNTIL rule parts cannot both appear in the same rule.</code>) rather than a generic &quot;invalid format&quot;.</li>
 <li><strong><code>ToString()</code></strong> renders the canonical text, which re-parses to an equal value; <strong><code>Equals</code></strong> compares by value, so a host can detect a changed schedule by comparing the parsed objects rather than the raw strings.</li>
 </ul>
@@ -162,8 +162,8 @@
 </tr>
 <tr>
 <td>&quot;The last Friday of every month&quot;, &quot;the second Tuesday&quot;, &quot;every other week on Monday and Thursday&quot;</td>
-<td><code>RecurrenceRule</code></td>
-<td><code>BYDAY</code> ordinals (<code>-1FR</code>, <code>2TU</code>), <code>BYSETPOS</code>, <code>INTERVAL</code>, and the <code>COUNT</code> / <code>UNTIL</code> bounds.</td>
+<td><code>RecurrenceRule</code>, or <code>CronExpression</code> for the first two</td>
+<td><code>BYDAY</code> ordinals (<code>-1FR</code>, <code>2TU</code>), <code>BYSETPOS</code>, <code>INTERVAL</code>, and the <code>COUNT</code> / <code>UNTIL</code> bounds. Cron's Quartz day tokens write the first two as <code>5L</code> and <code>2#2</code> (in Vixie's weekday numbering), but cron cannot express the third, which needs an interval over weeks.</td>
 </tr>
 <tr>
 <td>Schedules that must interoperate with iCalendar data (<code>RRULE</code> text from a calendar feed)</td>
@@ -222,7 +222,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceFrequency.html">RecurrenceFrequency</a></td>
-<td><code>Secondly</code> … <code>Yearly</code> - the <code>FREQ</code> scale. Sub-daily frequencies parse and round-trip, but enumerating them is not yet supported.</td>
+<td><code>Secondly</code> … <code>Yearly</code> - the <code>FREQ</code> scale.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a></td>
@@ -257,7 +257,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Authoring compound files | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Authoring compound files | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/io-compound/authoring-compound-files.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="authoring-compound-files">Authoring compound files</h1>
+
+<p><strong>Bodu.IO.Compound</strong> writes as well as reads. This guide covers building a Compound File Binary (CFB) container from scratch, embedding nested storages and named streams, and round-tripping OLE property sets. As with the read path, the library has no application-format knowledge - it lays out the storage tree and the raw bytes you give it, and leaves the format payload to you.</p>
+<p>There are two authoring paths, and they suit different jobs:</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Reach for it when</th>
+<th>Entry point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Builder</strong></td>
+<td>You are assembling a container from scratch, or editing one you loaded, and want to serialize it once at the end.</td>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></td>
+</tr>
+<tr>
+<td><strong>In-place</strong></td>
+<td>You want a writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> whose streams you mutate through the familiar <code>Stream</code> surface, finalized by a single <code>Commit</code>.</td>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_">Create</a></td>
+</tr>
+</tbody>
+</table>
+<p>The builder path is the default recommendation: it is a detached, in-memory object model with no open file handle until you serialize. Reach for the in-place path when you want to write a stream's bytes through a real <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> cursor.</p>
+<h2 id="pattern-1---assemble-a-container-with-the-builder">Pattern 1 - assemble a container with the builder</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot">CreateRoot()</a> returns a detached root. <code>AddStream</code> adds a named stream from an in-memory payload; <code>AddStorage</code> adds a nested storage and returns it so you can descend. Serialize with <code>Save</code>, <code>WriteTo</code>, or <code>ToArray</code>.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound.Builders;
+
+var root = CompoundStorageBuilder.CreateRoot();
+
+// A stream directly under the root.
+root.AddStream(&quot;Workbook&quot;, workbookBytes);
+
+// A nested storage with its own stream.
+CompoundStorageBuilder storage = root.AddStorage(&quot;Storage 1&quot;);
+storage.AddStream(&quot;Nested&quot;, new byte[] { 1, 2, 3 });
+
+root.Save(&quot;out.xls&quot;);                 // write to a file
+byte[] bytes = root.ToArray();        // …or materialize the bytes
+</code></pre>
+<p><code>AddStream</code> accepts a <code>ReadOnlyMemory&lt;byte&gt;</code>, so a <code>byte[]</code> binds directly. Both <code>AddStream</code> and <code>AddStorage</code> throw <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a> if a child with the same name already exists in that storage.</p>
+<h2 id="pattern-2---defer-large-payloads">Pattern 2 - defer large payloads</h2>
+<p>When a stream's bytes come from a file or another source you do not want to hold in memory, add it with a deferred opener or directly from a path. The bytes are read only when the container is serialized.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Compound.Builders;
+
+var root = CompoundStorageBuilder.CreateRoot();
+
+// Deferred: the delegate is invoked at serialization time.
+root.AddStream(&quot;Pictures&quot;, () =&gt; File.OpenRead(&quot;media.bin&quot;), length: new FileInfo(&quot;media.bin&quot;).Length);
+
+// Or straight from a file path.
+root.AddStreamFromFile(&quot;Data&quot;, &quot;payload.dat&quot;);
+
+root.Save(&quot;out.cfb&quot;);
+</code></pre>
+<h2 id="pattern-3---create-and-mutate-a-file-in-place">Pattern 3 - create and mutate a file in place</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_">Create</a> returns a writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>. Its <code>RootStorage.CreateStream</code> returns a writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> - a real read-write <code>Stream</code> (<code>CanWrite</code> is <code>true</code>) - and <code>CreateStorage</code> adds a nested storage. Both throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> at the call when the storage already holds a child of that name, compared case-insensitively. Edits are staged in memory and persisted by <code>Commit</code>.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using FileStream output = File.Create(&quot;book.xls&quot;);
+using CompoundFile file = CompoundFile.Create(output);
+
+using (CompoundStream stream = file.RootStorage.CreateStream(&quot;Workbook&quot;))
+{
+    stream.Write(workbookBytes);
+}
+
+CompoundStorage storage = file.RootStorage.CreateStorage(&quot;Storage 1&quot;);
+using (CompoundStream nested = storage.CreateStream(&quot;Nested&quot;))
+{
+    nested.Write(new byte[] { 1, 2, 3 });
+}
+
+file.Commit();   // nothing is written to `output` until this call
+</code></pre>
+<p>A writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> also exposes its directory-entry metadata as settable properties - <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_ClassId">ClassId</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_CreationTime">CreationTime</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_ModifiedTime">ModifiedTime</a>, and <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_StateBits">StateBits</a>. The root storage's <code>ClassId</code> is the conventional file-type discriminator for OLE2-based formats:</p>
+<pre><code class="lang-csharp">file.RootStorage.ClassId = new Guid(&quot;00020820-0000-0000-c000-000000000046&quot;);   // Excel workbook CLSID
+</code></pre>
+<p>Metadata is never stamped automatically - <code>Commit</code> leaves timestamps untouched, so a value only changes when you set it (and byte-identical re-saves stay possible). Per MS-CFB, only storage entries carry this metadata; stream entries are always written with zero CLSID, timestamps, and state bits.</p>
+<p>Disposing the file <strong>without</strong> calling <code>Commit</code> discards the staged edits - <code>Commit</code> is the only thing that writes to the destination. <code>Revert</code> drops staged edits explicitly; <code>IsDirty</code> reports whether any are pending.</p>
+<h2 id="pattern-4---edit-an-existing-container">Pattern 4 - edit an existing container</h2>
+<p>To change a file you already have, load it into a builder, mutate the tree, and re-serialize. <a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_FromFile_">FromFile</a> copies from an open <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> (pass <code>lazy: true</code> to defer reading stream payloads until serialization); <code>Load</code> reads from a stream.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.Builders;
+
+CompoundStorageBuilder root;
+using (CompoundFile source = CompoundFile.OpenRead(&quot;in.xls&quot;))
+    root = CompoundStorageBuilder.FromFile(source);
+
+root.Remove(&quot;Obsolete&quot;);                       // drop a stream
+root.AddStream(&quot;Added&quot;, new byte[] { 9, 9 });  // add another
+root.Rename(&quot;Storage 1&quot;, &quot;Archive&quot;);           // rename a child
+
+root.Save(&quot;out.xls&quot;);
+</code></pre>
+<h2 id="pattern-5---write-document-property-sets">Pattern 5 - write document property sets</h2>
+<p>The <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets</a> namespace authors OLE property sets as well as reading them. Build a <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.SummaryInformationBuilder.html">SummaryInformationBuilder</a> from typed fields, serialize it with <code>ToArray</code>, and embed it at the conventional stream name. <code>CompoundFile.TryGetSummaryInformation</code> reads it back.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.Builders;
+using Bodu.IO.Compound.PropertySets;
+
+var summary = new SummaryInformationBuilder
+{
+    Title = &quot;Quarterly report&quot;,
+    Author = &quot;Ada&quot;,
+    WordCount = 1280,
+    CreateTime = DateTimeOffset.UtcNow,
+};
+
+var root = CompoundStorageBuilder.CreateRoot();
+root.AddStream(SummaryInformation.StreamName, summary.ToArray());   // &quot;\x05SummaryInformation&quot;
+root.AddStream(&quot;Workbook&quot;, workbookBytes);
+
+byte[] cfb = root.ToArray();
+
+// Round-trip: read the metadata back.
+using CompoundFile file = CompoundFile.Open(new MemoryStream(cfb));
+if (file.TryGetSummaryInformation(out SummaryInformation? read))
+    Console.WriteLine(read.Title);   // &quot;Quarterly report&quot;
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.DocumentSummaryInformationBuilder.html">DocumentSummaryInformationBuilder</a> works the same way for the <code>\x05DocumentSummaryInformation</code> stream, and the lower-level <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> / <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a> types let you author non-standard properties. See <a href="property-sets.html">Reading property sets</a> for the read side.</p>
+<h2 id="options-and-rules">Options and rules</h2>
+<ul>
+<li><strong>Sector version.</strong> <a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a> selects the on-disk version: <code>V3</code> (512-byte sectors) is the most compatible default; <code>V4</code> (4096-byte sectors) suits larger containers. A value that is neither the default nor one of these two throws <code>ArgumentOutOfRangeException</code> before anything is written. [MS-CFB] limits a <code>V3</code> file to 2 GB, so serializing or committing a tree whose <code>V3</code> container would be larger throws <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a> before any byte is written; write <code>V4</code> instead. A <code>V4</code> container that passes 2 GB keeps sector 0x7FFFE, the range lock sector [MS-CFB] reserves, free of data: it is marked ENDOFCHAIN, written as zeros, and skipped by every chain. Pass it to any serializer, e.g. <code>root.Save(&quot;out.cfb&quot;, new CompoundBuildOptions { Version = CompoundFileVersion.V4 })</code>.</li>
+<li><strong>Nesting depth.</strong> <code>CompoundBuildOptions.MaxDepth</code> bounds storage nesting (default 64); exceeding it throws <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a>.</li>
+<li><strong>Names.</strong> An entry name is at most 31 UTF-16 code units, non-empty, and must not contain <code>/</code>, <code>\</code>, <code>:</code>, or <code>!</code>. Names are compared case-insensitively by default (per the CFB format); set <code>NameComparisonCaseSensitive</code> on <a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions.html">CompoundStorageBuilderOptions</a> via <code>CreateRoot(options)</code> to change that. A builder (<a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a>) throws <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a> for a duplicate name, and for a missing one in <code>Rename</code>; a writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>'s storages throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> for a duplicate name at the call (<code>CreateStream</code>, <code>CreateStorage</code>, and the new name in <code>Rename</code>) and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> when <code>Rename</code> finds no child of the old name. An invalid name throws <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a> from either.</li>
+<li><strong>Errors.</strong> Authoring failures surface through <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a>; a malformed container encountered while loading one to edit surfaces through <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a>.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="reading-compound-files.html">Reading compound files</a></strong> - the open → navigate → read recipe the write path mirrors.</li>
+<li><strong><a href="property-sets.html">Reading property sets</a></strong> - the read side of the summary-information streams.</li>
+<li><strong><a href="streaming-and-buffering.html">Buffered vs streaming access</a></strong> - the read strategy and the <code>CompoundStream</code> cursor.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound API reference</a> and the <a class="xref" href="../../api/Bodu.IO.Compound.Builders.html">Bodu.IO.Compound.Builders</a> authoring types.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

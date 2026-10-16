@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Formats.Excel.Binary guides | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Formats.Excel.Binary guides | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/excel/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="boduformatsexcelbinary-guides">Bodu.Formats.Excel.Binary guides</h1>
+
+<p>Recipe-style walk-throughs for <strong>Bodu.Formats.Excel.Binary</strong>, the narrow, read-only reader for the Excel binary workbook format (<code>.xls</code>) - BIFF8 (Excel 97-2003) and BIFF5 (Excel 5.0/95). It surfaces the raw cell values of each worksheet - strings, numbers, booleans, and errors, including a formula cell's cached result - without formula evaluation, styling, or higher-level interpretation.</p>
+<p>An <code>.xls</code> file is a BIFF5 or BIFF8 record stream stored inside the <code>Workbook</code> stream of an OLE2 compound file. This package interprets the records as worksheets and cells; the container around them is read by <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>, and the record framing and decoding come from <a class="xref" href="../../api/Bodu.IO.Biff.BiffReader.html">BiffReader</a> in <code>Bodu.IO.Biff</code> - the package is built on both.</p>
+<p>If you are new to the library, start with the <a href="../../docs/excel/index.html">introduction</a>, the <a href="../../docs/excel/concepts.html">Core concepts</a> glossary, and the <a href="../../docs/excel/getting-started.html">getting-started page</a>. The guides below assume you know the vocabulary (BIFF record, workbook globals, cell kind, serial date, used range).</p>
+<h2 id="how-the-library-works">How the library works</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> opens the <code>.xls</code> container, parses the workbook globals once - the date system, the shared string table, the number-format table, and the sheet directory - and lists the sheets. A sheet is read on demand by seeking to the byte offset its directory entry records, so a single sheet can be read without parsing the others and the whole workbook is never materialized.</p>
+<p><img src="../../images/diagrams/excel-binary-structure.svg" alt="An Excel binary workbook is a BIFF5 or BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes and Bodu.IO.Biff decodes the records; ExcelBinaryWorkbook parses the workbook globals once, then reads each sheet on demand and surfaces ExcelCell values through a forward-only reader or a materialized worksheet."></p>
+<p>A sheet is surfaced through one of two cell surfaces: the forward-only, low-allocation <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a>, or the materialized, randomly addressable <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a>. Both yield the same sparse <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a> values; only the access pattern and memory profile differ.</p>
+<blockquote>
+<p>These guides cover the read path only - the reader never writes, evaluates formulas, or applies styling.</p>
+</blockquote>
+<h2 id="namespace-map">Namespace map</h2>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>What lives here</th>
+<th>Guides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel</a></td>
+<td>The <code>ExcelBinaryWorkbook</code> session, the <code>ExcelWorksheetReader</code> / <code>ExcelWorksheet</code> surfaces, the <code>ExcelCell</code> value model, <code>ExcelSerialDate</code> / <code>ExcelCellReference</code> helpers, and the workbook exceptions.</td>
+<td><a href="reading-workbooks.html">Reading workbooks</a> · <a href="cell-values-and-dates.html">Cell values and dates</a> · <a href="worksheets-and-rows.html">Streaming vs materialized</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="guides">Guides</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="reading-workbooks.html">Reading workbooks</a></h3>
+  <p>Open an <code>.xls</code> from a path or stream, list the sheets and their used ranges, control stream ownership and optional metadata work, and read authored document properties - the end-to-end open recipe.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="cell-values-and-dates.html">Cell values and dates</a></h3>
+  <p>The <code>ExcelCell</code> kinds and value projections, a formula cell's cached result, date-format detection, serial-date conversion across the 1900 and 1904 systems, and A1 reference conversion.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="worksheets-and-rows.html">Streaming vs materialized</a></h3>
+  <p>The forward-only <code>ExcelWorksheetReader</code> (<code>TryReadCell</code>, <code>ReadCells</code>, <code>ReadRows</code>) versus the materialized <code>ExcelWorksheet</code> (<code>TryGetCell</code>, <code>Rows</code>) - when to reach for each, and how to bound allocation.</p>
+</div>
+</div>
+<h2 id="suggested-reading-path">Suggested reading path</h2>
+<ol>
+<li><strong><a href="reading-workbooks.html">Reading workbooks</a></strong> - the core open → list → read recipe that every other use builds on.</li>
+<li><strong><a href="cell-values-and-dates.html">Cell values and dates</a></strong> - interpret the cell kinds and turn date-formatted numbers into calendar dates.</li>
+<li><strong><a href="worksheets-and-rows.html">Streaming vs materialized</a></strong> - choose the access pattern that fits a one-pass scan or random access.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../samples/excel.html">Runnable samples</a> - the offline ExcelReading sample under <code>samples/Formats.Excel/</code>: the workbook session, forward-only streaming, materialized worksheets, and serial-date decoding over a workbook the sample generates.</li>
+<li><a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel API reference</a> - every type and member.</li>
+<li><a href="../io-compound/index.html">Bodu.IO.Compound</a> - the container reader beneath this package.</li>
+<li><a href="../../docs/io-biff/index.html">Bodu.IO.Biff</a> - the BIFF5 / BIFF8 record codec beneath this package.</li>
+<li><a href="../topics/binary-formats.html">Binary Formats &amp; I/O topic guides</a> - recipe-style walk-throughs across the topic.</li>
+<li><a href="../../docs/package-matrix.html">Package matrix</a> - where Bodu.Formats.Excel.Binary sits in the suite and its dependency stack.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

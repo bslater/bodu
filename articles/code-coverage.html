@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/articles/code-coverage.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/articles/code-coverage.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -116,6 +116,18 @@ pwsh tools/New-CoverageMatrix.ps1                # -&gt; docs/articles/coverage-
 <p>Pass the settings file, and <strong>do not</strong> also pass a <code>--collect</code> switch: a
 command-line collector is a second, unconfigured instance whose exclusion lists
 are empty, which silently readmits generated sources to the denominator.</p>
+<p><strong>One framework.</strong> Every test project targets each framework in
+<code>$(BoduNetTargets)</code>, and an unrestricted <code>dotnet test</code> runs, and covers, each of
+them. <code>bld/collect-coverage.sh</code> collects one, the same for every project: the
+newest in <code>$(BoduNetTargets)</code> (net10.0 today), or the one <code>--framework</code> names, and
+<code>environment.json</code> records it. Before it did, the script ran every leg and kept
+whichever leg's file was written last, so a package's figure depended on the
+finish order, and a file under a framework conditional, such as
+<code>#if NET10_0_OR_GREATER</code> and its fallback, reported different line sets from
+different projects, which the matrix's stale-numbering check reads as stale
+data. Code compiled only for an older framework, such as a polyfill guarded by
+<code>#if !NET9_0_OR_GREATER</code>, is outside the measured assembly and so outside the
+denominator.</p>
 <p>The current measured figures live in <a href="coverage-baseline.html">Coverage baseline</a>.</p>
 <p><code>tools/Filter-CoverageXml.ps1</code> extracts a single assembly's results from a
 Microsoft Code Coverage XML export for focused review.</p>
@@ -139,7 +151,11 @@ uncovered by design.</li>
 <h2 id="the-90-floor">The 90% floor</h2>
 <p>Every collected package sits at or above <strong>90% line coverage</strong>, and
 <code>bld/coverage-thresholds.json</code> holds a per-package floor at roughly its measured
-rate. The floor is a gate, not a target: a package well above it is not
+rate (the measurement less the 0.5pp grace band, as
+<code>tools/Update-CoverageThresholds.ps1</code> records it). The ratchet,
+<code>tools/New-CoverageMatrix.ps1 -Check</code>, also fails for a collected package that
+has no floor, so a new package is gated from its first collection. The floor is
+a gate, not a target: a package well above it is not
 &quot;finished&quot;, and a package at it is not in trouble. What the invariant buys is
 that a new gap has to be introduced deliberately - the ratchet fails the build
 before an untested subsystem can arrive quietly inside an otherwise healthy
@@ -176,8 +192,9 @@ the standard KAT suites; coverage simply depends on where the suite runs. The
 report that prompted this work was collected on a non-AVX512 machine, which is
 why those files appeared at 0%.</p>
 <blockquote>
-<p><strong>Measured correction - see <a href="coverage-baseline.html">Coverage baseline</a>.</strong> That
-reasoning holds for whichever path the host <em>can</em> execute, but it has been used
+<p><strong>Measured correction (historical: it predates the SIMD-off assembly's linked
+known-answer suites, described under <a href="#the-switch-itself">The switch itself</a>).</strong>
+That reasoning holds for whichever path the host <em>can</em> execute, but it has been used
 to wave away both. Collected on an <strong>AVX512-capable</strong> host with
 <code>Bodu.Security.Cryptography.Simd.Test</code> in the merge, the split is:</p>
 <table>
@@ -203,9 +220,11 @@ to wave away both. Collected on an <strong>AVX512-capable</strong> host with
 </table>
 <p>The scalar fallbacks are a <strong>real</strong> gap, not a hardware artifact:
 <code>ThreefishBlockCipher.1024.cs</code> sits at 8.3%, <code>.256.cs</code> at 19.0%, and <code>.512.cs</code>
-at 12.8%. The two-run merge is what should close this, but
-<code>Bodu.Security.Cryptography.Simd.Test</code> runs <strong>3 tests</strong> against the main
-suite's 28,757 - the feature switch works, the suite behind it is a stub.</p>
+at 12.8%. The two-run merge is what should close this, but at the time
+<code>Bodu.Security.Cryptography.Simd.Test</code> ran <strong>3 tests</strong> against the main
+suite's 28,757 - the feature switch worked, the suite behind it was a stub. It
+now links the main suite's test infrastructure and fourteen of its known-answer
+source files.</p>
 <p>The symmetry is what makes this easy to miss: on a non-AVX512 machine the same
 gap is invisible, because there the scalar paths are the ones the KAT suite
 drives and the intrinsics read as 0% &quot;by design&quot;. Whichever host you measure
@@ -395,8 +414,8 @@ across the hosts (a line counts as covered when any host covers it); and</li>
 <li><strong>subtracts</strong> those files from the <code>Toml</code> / <code>Bencode</code> / <code>Yaml</code> rows, so the
 solution total does not count them once per host.</li>
 </ul>
-<h3 id="there-are-three-such-sets-not-one">There are three such sets, not one</h3>
-<p>The serializer core is the largest, but two more source sets are <code>Compile Include</code>d across projects, and each gets its own synthetic unit. The table lives
+<h3 id="there-are-six-such-sets-not-one">There are six such sets, not one</h3>
+<p>The serializer core is the largest, but five more source sets are <code>Compile Include</code>d across projects, and each gets its own synthetic unit. The table lives
 at <code>$SharedSourceSets</code> in <code>tools/New-CoverageMatrix.ps1</code>; keep it in step with
 the host csproj globs.</p>
 <table>
@@ -416,12 +435,27 @@ the host csproj globs.</p>
 <tr>
 <td><code>Bodu.IO.Hashing/shared/**</code> (<code>CrcCore.cs</code>)</td>
 <td><code>Bodu.IO.Hashing (shared source)</code></td>
-<td><code>IO.Hashing</code>, <code>IO.Pst</code>, <code>Formats.Outlook.Msg</code></td>
+<td><code>IO.Hashing</code>, <code>IO.Pst</code>, <code>Formats.Outlook.Msg</code>, <code>Formats.Outlook.Pst</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook/shared/**</code> (the MAPI decode layer)</td>
+<td><code>Bodu.Formats.Outlook (shared source)</code></td>
+<td><code>Formats.Outlook.Msg</code>, <code>Formats.Outlook.Pst</code></td>
 </tr>
 <tr>
 <td><code>shared/Caching/**</code></td>
 <td><code>Caching (shared source)</code></td>
 <td><code>Financial.ExchangeRates.Caching</code>, <code>Globalization.Calendar.Caching</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Serialization/flat/src/*</code> (the line formats' member discovery, scalar codec, line cursor and output sink)</td>
+<td><code>Bodu.Text.Serialization (line-format shared source)</code></td>
+<td><code>Delimited</code>, <code>DotEnv</code>, <code>Ini</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates/shared/*</code> (the provider plumbing each feed links file by file)</td>
+<td><code>Bodu.Financial.ExchangeRates (shared source)</code></td>
+<td><code>Financial.ExchangeRates</code> and the <code>Boe</code>, <code>Ecb</code>, <code>Imf</code>, <code>Rba</code>, <code>ExchangeRateHost</code>, <code>Fixer</code>, <code>Oanda</code>, <code>Ofx</code>, <code>Xe</code> and <code>Yahoo</code> providers</td>
 </tr>
 </tbody>
 </table>
@@ -434,13 +468,36 @@ would have moved a row that does not own it. Splitting the sets out cost
 <code>Outlook.Msg</code> 1.1pp and gained <code>ExchangeRates.Caching</code> 0.3pp, with the solution
 figure unchanged - a correction, not a regression, so the two <code>Outlook.Msg</code>
 ratchet floors were lowered by hand to match. That is the only circumstance in
-which a floor comes down.</p>
-<p>The three sets are not alike in one respect that the stale-numbering check cares
-about. <code>Bodu.Text.Serialization/shared/**</code> selects <strong>whole members</strong> by format
-symbol, so its hosts legitimately instrument different line sets and it is exempt
-from that check. The other two select only a namespace declaration, which carries
-no sequence points - so if their hosts ever disagree about which lines are
-instrumentable, that really is stale data and should be reported.</p>
+which a floor comes down. The Outlook decode layer was the same kind of
+correction when it joined the table: the merge had credited it to
+<code>Outlook.Msg</code>, the first host it emits, while a collection of <code>Outlook.Pst</code>
+alone credited it to that package instead (88.6% line there, against 94.0% for
+the package's own code). Its unit and both readers' floors were reset by hand
+from a net10.0 collection of the two readers' test projects, less the grace
+band: the unit at 96.7 / 94.6, <code>Outlook.Msg</code> at 94.3 / 93.0 and <code>Outlook.Pst</code>
+at 93.5 / 88.0 (line / branch).</p>
+<p>The last two sets joined the table the same way, from a net10.0 collection of
+the 20 test projects under <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>,
+<code>Bodu.Text.Ini</code>, <code>Bodu.Text.Formats.Generators</code> and every
+<code>Bodu.Financial.ExchangeRates*</code> project. The merge had credited each file to
+the first of its hosts in name order: all of <code>flat/src</code> to <code>Delimited</code>, and
+the exchange-rate files to the core package, <code>Boe</code>, <code>Ecb</code>, <code>ExchangeRateHost</code>
+or <code>Imf</code>. The two units' floors are their measured rates less the grace band:
+98.4 / 96.8 for the line formats' source (measured 98.9 / 97.3) and 95.2 / 90.6
+for the exchange-rate source (95.7 / 91.1). The hosts whose rates fell had
+their floors lowered by exactly the change the split made to their measured
+rates - <code>Delimited</code> by 0.8 / 0.6, <code>Financial.ExchangeRates</code> by 0.5 line,
+<code>Boe</code> by 0.1 / 0.6, <code>Ecb</code> by 0.2 / 1.1 and <code>ExchangeRateHost</code> by 0.4 / 5.0,
+the last because the shared JSON reader, exercised by six providers' tests,
+had lifted its branch figure - while <code>Imf</code>, whose rates rose, kept its floors.</p>
+<p>The six sets are not alike in one respect that the stale-numbering check cares
+about. <code>Bodu.Text.Serialization/shared/**</code> and <code>Bodu.Formats.Outlook/shared/**</code>
+select <strong>whole members</strong> by format symbol (the Outlook layer throws each
+reader's own exception type), so their hosts legitimately instrument different
+line sets and they are exempt from that check. The other four select at most a
+namespace declaration, which carries no sequence points - so if their hosts ever
+disagree about which lines are instrumentable, that really is stale data and
+should be reported.</p>
 <p>The same keying - by source path and line number rather than by class - also
 collapses the duplicate rows a file containing several classes would otherwise
 contribute.</p>
@@ -482,7 +539,7 @@ happy, edge, and exception cases together.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

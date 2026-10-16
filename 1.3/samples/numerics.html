@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Runnable samples | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/samples/numerics.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects for <code>Bodu.Numerics</code> (and its
+<code>Bodu.Numerics.Serialization.Json</code> companion) under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Numerics"><code>samples/Numerics/</code></a>. All five
+samples are <strong>offline and deterministic</strong> - they format with the invariant culture so output
+does not vary by machine - and are members of <code>bodu.slnx</code>, built and executed by CI, so the code
+they show cannot drift from the current API. Each sample's README documents every scenario
+individually: its intent, what the code does, the output to expect, and the APIs demonstrated.</p>
+<p>Run any sample from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Numerics/&lt;SampleName&gt;
+</code></pre>
+<h2 id="the-samples">The samples</h2>
+<h3 id="bodunumericssamplesfractions">Bodu.Numerics.Samples.Fractions</h3>
+<p>Exact rational arithmetic with <a class="xref" href="../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>: construction and auto-reduction,
+<code>+ − × ÷</code> over <code>Fraction&lt;int&gt;</code> and <code>Fraction&lt;BigInteger&gt;</code>, parse/format, <code>Fraction&lt;T&gt;</code> as a
+first-class <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> in generic algorithms, and the continued-fraction
+surface (<code>ToContinuedFraction</code>, <code>Approximate</code>, <code>LimitDenominator</code> - e.g. approximating π to
+<code>355/113</code>). <em>Package: <code>Bodu.Numerics</code>.</em></p>
+<h3 id="bodunumericssamplesintervals">Bodu.Numerics.Samples.Intervals</h3>
+<p>The interval algebra: <a class="xref" href="../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> closed/open/half-open factories with
+<code>Contains</code>/<code>Overlaps</code>; the convex-hull union and the two-piece <code>Difference</code> /
+<code>SymmetricDifference</code> results as <code>IntervalPair&lt;T&gt;</code>; the integer-aware
+<a class="xref" href="../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> with adjacency-merge and <code>DiscreteIntervalPair&lt;T&gt;</code>; and
+the normalizing <a class="xref" href="../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> with membership, union/intersect/except, and
+complement. <em>Package: <code>Bodu.Numerics</code>.</em></p>
+<h3 id="bodunumericssamplesstreamingstatistics">Bodu.Numerics.Samples.StreamingStatistics</h3>
+<p>The single-pass statistics types: <code>RunningStatistics&lt;T&gt;</code> (Welford mean, population/sample
+variance and standard deviation, min/max), the sliding-window <code>MovingSum&lt;T&gt;</code> and
+<code>MovingMinMax&lt;T&gt;</code>, the streaming <code>RunningQuantile&lt;T&gt;</code> (median and p95 estimators), and
+<code>BigDecimal</code> exact scaled arithmetic with rounding modes. <em>Package: <code>Bodu.Numerics</code>.</em></p>
+<h3 id="bodunumericssamplescomplexnumbers">Bodu.Numerics.Samples.ComplexNumbers</h3>
+<p><a class="xref" href="../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a>, the generic counterpart of the <code>double</code>-only
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex">Complex</a>: the arithmetic operators (including the non-componentwise
+multiply), <code>Conjugate</code> / <code>Reciprocal</code> / <code>Magnitude</code> / <code>Phase</code>, polar construction, and the
+transcendental surface (<code>Sqrt</code> of a negative real, Euler's identity through <code>Exp</code>, <code>Log</code>, <code>Pow</code>,
+and the trig functions) - each result printed beside <code>System.Numerics.Complex</code>'s answer for the
+same call. A closing scenario runs one generic Mandelbrot iteration over <code>Complex&lt;float&gt;</code>,
+<code>Complex&lt;double&gt;</code>, and <code>Complex&lt;Half&gt;</code> to show where the precision choice actually changes the
+answer, and covers parse/format round-tripping and the <code>Equals</code>-versus-<code>==</code> split on <code>NaN</code>.
+<em>Package: <code>Bodu.Numerics</code>.</em></p>
+<h3 id="bodunumericssamplesjsonconverters">Bodu.Numerics.Samples.JsonConverters</h3>
+<p><code>System.Text.Json</code> integration from the companion package: <code>AddNumericsJsonConverters()</code>
+registration round-tripping <code>Fraction&lt;T&gt;</code> / <code>Interval&lt;T&gt;</code> / <code>DiscreteInterval&lt;T&gt;</code> /
+<code>IntervalSet&lt;T&gt;</code>, the <code>NumericsJsonPolicy</code> string-vs-object wire shapes, the
+<code>FractionJsonExtensions</code> read/write helpers, and a nested POCO whose numeric-typed properties
+round-trip in one document. <em>Package: <code>Bodu.Numerics.Serialization.Json</code>.</em></p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="financial.html">Financial samples</a> - money and exchange-rate types, including a dedicated JSON
+sample built on the same companion-package pattern.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

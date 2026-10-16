@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Using ASCON | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Using ASCON | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/ascon.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="using-ascon">Using ASCON</h1>
+
+<p><strong>ASCON</strong> is a family of lightweight cryptographic algorithms standardized by NIST in
+<a href="https://doi.org/10.6028/NIST.SP.800-232">SP 800-232</a> (August 2025). All members of the family
+share a single 320-bit sponge state - five 64-bit words - and a common permutation called
+Ascon-p. The permutation is compact enough to run on the smallest microcontrollers, yet resists
+all known distinguishing attacks and has a well-studied, wide peer-reviewed security margin.</p>
+<p><img src="../../images/diagrams/ascon-sponge.svg" alt="ASCON sponge construction - 320-bit state, Ascon-p permutation, absorb and squeeze phases"></p>
+<p><strong>Bodu.Security.Cryptography</strong> ships the four algorithms SP 800-232 defines, plus ASCON-HASHA256, the round-reduced hash from the Ascon v1.2 submission that SP 800-232 did not adopt - five types in all:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Algorithm name</th>
+<th>Category</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a></td>
+<td><code>ASCON-HASH256</code></td>
+<td>Hash</td>
+<td>Fixed-length 256-bit digest. Conservative 12-round absorption.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></td>
+<td><code>ASCON-HASHA256</code></td>
+<td>Hash</td>
+<td>Fixed-length 256-bit digest. 8-round absorption for higher throughput. Not part of SP 800-232.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a></td>
+<td><code>ASCON-XOF128</code></td>
+<td>XOF</td>
+<td>Variable-length output - squeeze any number of bytes from a single absorbed message.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></td>
+<td><code>ASCON-CXOF128</code></td>
+<td>XOF</td>
+<td>Variable-length output with a customization string - separates output domains from the same primitive.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a></td>
+<td><code>ASCON-AEAD128</code></td>
+<td>AEAD</td>
+<td>Authenticated encryption - 128-bit key, 128-bit nonce, 128-bit authentication tag.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="choosing-the-right-algorithm">Choosing the right algorithm</h2>
+<table>
+<thead>
+<tr>
+<th>If you need…</th>
+<th>Reach for</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A fixed-length 256-bit digest (conservative)</td>
+<td><code>AsconHash256</code></td>
+<td>12-round absorption throughout - maximum security margin.</td>
+</tr>
+<tr>
+<td>A fixed-length 256-bit digest (throughput)</td>
+<td><code>AsconHashA256</code></td>
+<td>8-round absorption and squeezing - faster on large inputs; the non-standard Ascon v1.2 variant, not SP 800-232.</td>
+</tr>
+<tr>
+<td>An output of arbitrary length - key derivation, stream seed</td>
+<td><code>AsconXof128</code></td>
+<td>Squeeze as many bytes as needed from one absorbed input.</td>
+</tr>
+<tr>
+<td>Multiple independent output functions from one primitive</td>
+<td><code>AsconCxof128</code></td>
+<td>A customization string domain-separates the output; same primitive, different contexts.</td>
+</tr>
+<tr>
+<td>Encrypt-and-authenticate a message</td>
+<td><code>AsconAead128</code></td>
+<td>Sponge-based AEAD with a 128-bit key and tag; no separate MAC step required.</td>
+</tr>
+</tbody>
+</table>
+<p>When in doubt: reach for <code>AsconHash256</code> for hashing and <code>AsconAead128</code> for authenticated encryption.</p>
+<h2 id="one-permutation-three-roles">One permutation, three roles</h2>
+<p>The defining feature of the family is that hashing, extendable output, and authenticated encryption are all built from the <strong>same</strong> sponge - a 320-bit state and the Ascon-p permutation - rather than from three unrelated primitives. The role is determined entirely by how the sponge is initialised and which phases (absorb, squeeze, key injection, domain separation) are applied:</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Type(s)</th>
+<th>What the sponge does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hash</strong></td>
+<td><code>AsconHash256</code>, <code>AsconHashA256</code></td>
+<td>Absorb the message, then squeeze a fixed 256-bit digest.</td>
+</tr>
+<tr>
+<td><strong>XOF</strong></td>
+<td><code>AsconXof128</code>, <code>AsconCxof128</code></td>
+<td>Absorb the message, then squeeze an arbitrary number of output bytes.</td>
+</tr>
+<tr>
+<td><strong>AEAD</strong></td>
+<td><code>AsconAead128</code></td>
+<td>Inject key and nonce, absorb AAD, encrypt by XORing the rate, then squeeze a tag.</td>
+</tr>
+</tbody>
+</table>
+<p>The practical payoff is a single, small implementation surface: one permutation to audit, one state layout, one round function. A device that already ships ASCON for authenticated encryption gets hashing and key derivation for free. NIST SP 800-232 specifies all of these except ASCON-HASHA256 under one umbrella, so they share a common security analysis.</p>
+<h2 id="the-shared-permutation">The shared permutation</h2>
+<p>All five types use the same Ascon-p permutation. Each call applies a configurable number of
+identical rounds (up to 12) to the 320-bit state. Each round is:</p>
+<ol>
+<li><strong>Constant addition</strong> - XOR a round-dependent constant into state word S₂ to break round
+symmetry.</li>
+<li><strong>Substitution</strong> - a 5-bit S-box applied simultaneously in bit-sliced fashion across all 64
+bit-columns of the state, providing non-linearity.</li>
+<li><strong>Linear diffusion</strong> - each word is XORed with two rotated copies of itself using
+word-specific rotation constants, spreading any change across the full state.</li>
+</ol>
+<p>The round count is the throughput / margin trade-off. <code>AsconHash256</code>, <code>AsconXof128</code>, and
+<code>AsconCxof128</code> use 12 rounds throughout. <code>AsconHashA256</code> uses 8 rounds to absorb and between
+squeezed output blocks, and 12 only for the transition from absorbing to squeezing.
+<code>AsconAead128</code> uses 12 rounds for initialization and finalization and 8 for the associated-data
+and message blocks.</p>
+<h2 id="quick-start-examples">Quick-start examples</h2>
+<h3 id="hash">Hash</h3>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] data    = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+using var hash = new AsconHash256();
+byte[] digest  = hash.ComputeHash(data);    // always 32 bytes
+string hex     = Convert.ToHexString(digest);
+</code></pre>
+<h3 id="xof---deriving-two-keys-from-one-input">XOF - deriving two keys from one input</h3>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] ikm = RandomNumberGenerator.GetBytes(32);
+
+using var xof = new AsconXof128();
+xof.Absorb(ikm);
+
+byte[] encKey = new byte[32];
+byte[] macKey = new byte[32];
+xof.Squeeze(encKey);    // first 32 bytes of XOF output
+xof.Squeeze(macKey);    // next 32 bytes - independent of encKey
+</code></pre>
+<h3 id="aead---encrypt-and-authenticate">AEAD - encrypt and authenticate</h3>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);    // 16 bytes
+byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);  // 16 bytes
+byte[] plaintext = Encoding.UTF8.GetBytes(&quot;secret payload&quot;);
+byte[] aad       = Encoding.UTF8.GetBytes(&quot;request-id:abc123&quot;);
+
+// Encrypt - output is ciphertext || 16-byte tag
+using var enc = new AsconAead128(key, nonce);
+byte[] cipherWithTag = new byte[plaintext.Length + enc.TagSize / 8];
+enc.ProcessAssociatedData(aad);
+enc.Encrypt(plaintext, cipherWithTag);
+
+// Decrypt - throws CryptographicException if tampered
+using var dec = new AsconAead128(key, nonce);
+byte[] recovered = new byte[plaintext.Length];
+dec.ProcessAssociatedData(aad);
+dec.Decrypt(cipherWithTag, recovered);
+</code></pre>
+<h2 id="when-to-reach-for-ascon">When to reach for ASCON</h2>
+<p>ASCON is a good choice when:</p>
+<ul>
+<li>You need a <strong>NIST-approved algorithm</strong> (SP 800-232, 2025) alongside or instead of SHA-2 or AES.</li>
+<li>You are targeting <strong>constrained hardware</strong> - microcontrollers, IoT devices, FPGAs - where the
+320-bit ASCON state (40 bytes) fits in registers and the simple permutation is efficient even
+without hardware acceleration.</li>
+<li>You need <strong>variable-length output</strong> without a full key derivation framework; <code>AsconXof128</code> and
+<code>AsconCxof128</code> provide this directly with a well-understood security model.</li>
+<li>You want a <strong>single primitive family</strong> that covers hashing, XOF, and AEAD - reducing
+cryptographic surface area and simplifying key management.</li>
+</ul>
+<p>On x86-64 targets with AES-NI and SHA extensions, the BCL's hardware-accelerated
+<code>System.Security.Cryptography.SHA256</code> and <code>AesGcm</code> will
+typically outperform software ASCON in raw throughput. Use ASCON when standards compliance,
+portability, or XOF/AEAD requirements point to it - not primarily for throughput on
+well-provisioned servers.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="ascon-hashing.html">ASCON hashing</a> - full pattern guide for <code>AsconHash256</code> and <code>AsconHashA256</code>.</li>
+<li><a href="ascon-xof.html">ASCON extendable output (XOF)</a> - all patterns for <code>AsconXof128</code> and <code>AsconCxof128</code>.</li>
+<li><a href="ascon-aead.html">ASCON authenticated encryption (AEAD)</a> - all patterns for <code>AsconAead128</code>.</li>
+<li><a href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232</a> - the normative specification.</li>
+<li>API reference: <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a></li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

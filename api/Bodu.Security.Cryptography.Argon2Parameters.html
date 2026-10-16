@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Argon2Parameters" data-uid="Bodu.Security.Cryptography.Argon2Parameters" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Argon2Parameters Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ Argon2Parameters Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs">Argon2Parameters.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs">Argon2Parameters.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Specifies the cost and auxiliary inputs for an Argon2 key-derivation or password-hashing operation, as defined by
@@ -184,7 +184,8 @@ parallelism of four.
 </p>
 <p>
 The optional <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html#Bodu_Security_Cryptography_Argon2Parameters_Secret">Secret</a> (a server-side "pepper") and <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html#Bodu_Security_Cryptography_Argon2Parameters_AssociatedData">AssociatedData</a> are folded into the
-pre-hashing digest. They are not stored in the PHC encoded string and must be supplied again at verification time.
+pre-hashing digest. The secret is not stored in the PHC encoded string and must be supplied again at verification
+time; the associated data is stored in it, as the <code>data=</code> parameter.
 </p>
 </div>
 
@@ -198,7 +199,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters__ctor" data-uid="Bodu.Security.Cryptography.Argon2Parameters.#ctor">
   Argon2Parameters()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -232,7 +233,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_AssociatedData" data-uid="Bodu.Security.Cryptography.Argon2Parameters.AssociatedData">
   AssociatedData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -269,7 +270,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_Iterations" data-uid="Bodu.Security.Cryptography.Argon2Parameters.Iterations">
   Iterations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -306,7 +307,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_MemoryKiB" data-uid="Bodu.Security.Cryptography.Argon2Parameters.MemoryKiB">
   MemoryKiB
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -332,6 +333,13 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
 
 
 
+  <h4 class="section" id="Bodu_Security_Cryptography_Argon2Parameters_MemoryKiB_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Must be at least <code>8 * </code><a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html#Bodu_Security_Cryptography_Argon2Parameters_Parallelism">Parallelism</a> and at most <code>2^21</code> KiB (2 GiB). The upper bound is a
+library ceiling, lower than RFC 9106's, that bounds what an untrusted PHC string can make a verification
+allocate. The parameters are validated where they are used - an <a class="xref" href="Bodu.Security.Cryptography.Argon2.html">Argon2</a> constructor, a static
+derivation helper, or a verification - which throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> for a value
+outside that range.</p>
+</div>
 
 
 
@@ -343,7 +351,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_Parallelism" data-uid="Bodu.Security.Cryptography.Argon2Parameters.Parallelism">
   Parallelism
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -380,7 +388,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_Secret" data-uid="Bodu.Security.Cryptography.Argon2Parameters.Secret">
   Secret
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -417,7 +425,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_TagLength" data-uid="Bodu.Security.Cryptography.Argon2Parameters.TagLength">
   TagLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -454,7 +462,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_Version" data-uid="Bodu.Security.Cryptography.Argon2Parameters.Version">
   Version
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -495,7 +503,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_Equals_Bodu_Security_Cryptography_Argon2Parameters_" data-uid="Bodu.Security.Cryptography.Argon2Parameters.Equals(Bodu.Security.Cryptography.Argon2Parameters)">
   Equals(Argon2Parameters?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -538,7 +546,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_Equals_System_Object_" data-uid="Bodu.Security.Cryptography.Argon2Parameters.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -581,7 +589,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_GetHashCode" data-uid="Bodu.Security.Cryptography.Argon2Parameters.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -618,7 +626,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_ToString" data-uid="Bodu.Security.Cryptography.Argon2Parameters.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -659,7 +667,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_op_Equality_Bodu_Security_Cryptography_Argon2Parameters_Bodu_Security_Cryptography_Argon2Parameters_" data-uid="Bodu.Security.Cryptography.Argon2Parameters.op_Equality(Bodu.Security.Cryptography.Argon2Parameters,Bodu.Security.Cryptography.Argon2Parameters)">
   operator ==(Argon2Parameters?, Argon2Parameters?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -701,7 +709,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Argon2Parameters_op_Inequality_Bodu_Security_Cryptography_Argon2Parameters_Bodu_Security_Cryptography_Argon2Parameters_" data-uid="Bodu.Security.Cryptography.Argon2Parameters.op_Inequality(Bodu.Security.Cryptography.Argon2Parameters,Bodu.Security.Cryptography.Argon2Parameters)">
   operator !=(Argon2Parameters?, Argon2Parameters?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Parameters.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -765,7 +773,7 @@ pre-hashing digest. They are not stored in the PHC encoded string and must be su
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -8,7 +8,7 @@
       <meta name="title" content="ConfigurationDocument Class
  | BODU ">
       
-      <meta name="description" content="Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing, loading, and saving such documents. It inherits the read-only INI model from  (global section, named sections, lookup) and adds Bodu-specific behaviour - profile presets, inline-comment-mode handling, diagnostic routing, and round-trip support - on top of the shared INI infrastructure.">
+      <meta name="description" content="Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing, loading, and saving such documents. It inherits the read-only INI model from  (global section, named sections, lookup) and adds Bodu-specific behavior - profile presets, inline-comment-mode handling, diagnostic routing, and round-trip support - on top of the shared INI infrastructure.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Configuration_ConfigurationDocument" data-uid="Bodu.Text.Configuration.ConfigurationDocument" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ConfigurationDocument Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,14 +102,14 @@ ConfigurationDocument Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs">ConfigurationDocument.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs">ConfigurationDocument.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,
 loading, and saving such documents. It inherits the read-only INI model from <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> (global
-section, named sections, lookup) and adds Bodu-specific behaviour - profile presets, inline-comment-mode handling,
+section, named sections, lookup) and adds Bodu-specific behavior - profile presets, inline-comment-mode handling,
 diagnostic routing, and round-trip support - on top of the shared INI infrastructure.</p>
 </div>
 
@@ -223,8 +223,9 @@ method to evaluate the document for a specific target path. The document holds t
 <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> holds the resolved, target-specific snapshot consumed by application code.
 </p>
 <p>
-A <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> exposes only the read surface of <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a>; it is
-produced by the configuration reader and is not mutated by application code.
+A <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is produced by the configuration reader, and its section list is fixed: it
+does not re-expose the protected methods of <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> that add or remove sections. Its sections
+and their entries remain mutable through <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a>.
 </p>
 <p>
 Diagnostic routing is controlled by the supplied <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a>. In
@@ -245,7 +246,7 @@ mode the parser continues, the document's valid portions remain usable, and ever
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.IO.Stream,Bodu.Text.Configuration.ConfigurationParseOptions,System.Text.Encoding,System.Boolean)">
   Load(Stream, ConfigurationParseOptions?, Encoding?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -307,7 +308,7 @@ options' default encoding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_TextReader_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.IO.TextReader,Bodu.Text.Configuration.ConfigurationParseOptions)">
   Load(TextReader, ConfigurationParseOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -342,6 +343,11 @@ options' default encoding.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_TextReader_Bodu_Text_Configuration_ConfigurationParseOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A single U+FEFF that opens the text <code class="paramref">reader</code> delivers is ignored as a byte order mark, as
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_">Load(Stream, ConfigurationParseOptions?, Encoding?, bool)</a> ignores the mark that opens a stream; a
+U+FEFF anywhere else is content.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -359,7 +365,7 @@ options' default encoding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.String)">
   Load(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -392,6 +398,13 @@ UTF-8 encoding with BOM detection.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The document records the full path of the file. When <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> is not
+set, resolving the document rebases the target path against the directory that holds the file, so a section's
+glob is relative to the file, as EditorConfig defines it; a <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a>
+that is set takes precedence. Each entry of a resolved view reports the full path of the file in its
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolvedEntry.html#Bodu_Text_Configuration_ConfigurationResolvedEntry_SourceLocation">SourceLocation</a>.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -412,7 +425,7 @@ UTF-8 encoding with BOM detection.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
   Load(string, ConfigurationParseOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -447,6 +460,13 @@ UTF-8 encoding with BOM detection.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_Bodu_Text_Configuration_ConfigurationParseOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The document records the full path of the file. When <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> is not
+set, resolving the document rebases the target path against the directory that holds the file, so a section's
+glob is relative to the file, as EditorConfig defines it; a <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a>
+that is set takes precedence. Each entry of a resolved view reports the full path of the file in its
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolvedEntry.html#Bodu_Text_Configuration_ConfigurationResolvedEntry_SourceLocation">SourceLocation</a>.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -467,7 +487,7 @@ UTF-8 encoding with BOM detection.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Parse(System.String)">
   Parse(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -499,6 +519,11 @@ UTF-8 encoding with BOM detection.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A single U+FEFF at the start of <code class="paramref">text</code> is ignored as a byte order mark, as
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_">Load(Stream, ConfigurationParseOptions?, Encoding?, bool)</a> ignores the mark that opens a stream; a
+U+FEFF anywhere else is content.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -519,7 +544,7 @@ UTF-8 encoding with BOM detection.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Parse(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
   Parse(string, ConfigurationParseOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -554,6 +579,11 @@ UTF-8 encoding with BOM detection.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A single U+FEFF at the start of <code class="paramref">text</code> is ignored as a byte order mark, as
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_">Load(Stream, ConfigurationParseOptions?, Encoding?, bool)</a> ignores the mark that opens a stream; a
+U+FEFF anywhere else is content.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -574,7 +604,7 @@ UTF-8 encoding with BOM detection.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
   ParseWithDiagnostics(string, ConfigurationParseOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -610,6 +640,11 @@ parse.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_System_String_Bodu_Text_Configuration_ConfigurationParseOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A single U+FEFF at the start of <code class="paramref">text</code> is ignored as a byte order mark, as
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_">Load(Stream, ConfigurationParseOptions?, Encoding?, bool)</a> ignores the mark that opens a stream; a
+U+FEFF anywhere else is content.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -631,7 +666,7 @@ parse.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_Stream_Bodu_Text_Configuration_ConfigurationWriteOptions_System_Boolean_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.IO.Stream,Bodu.Text.Configuration.ConfigurationWriteOptions,System.Boolean)">
   Save(IniDocumentBase, Stream, ConfigurationWriteOptions?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -686,7 +721,7 @@ parse.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_TextWriter_Bodu_Text_Configuration_ConfigurationWriteOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.IO.TextWriter,Bodu.Text.Configuration.ConfigurationWriteOptions)">
   Save(IniDocumentBase, TextWriter, ConfigurationWriteOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -718,6 +753,10 @@ parse.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_TextWriter_Bodu_Text_Configuration_ConfigurationWriteOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The writer is neither flushed nor disposed: the caller owns it, and flushes or disposes it to commit the text.
+The writer's own encoding applies; <a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_Encoding">Encoding</a> does not.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -735,7 +774,7 @@ parse.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationWriteOptions)">
   Save(IniDocumentBase, string, ConfigurationWriteOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -787,7 +826,7 @@ parse.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationDocument__" data-uid="Bodu.Text.Configuration.ConfigurationDocument.TryParse(System.String,Bodu.Text.Configuration.ConfigurationDocument@)">
   TryParse(string?, out ConfigurationDocument?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -822,6 +861,11 @@ parse.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationDocument___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A single U+FEFF at the start of <code class="paramref">text</code> is ignored as a byte order mark, as
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_">Load(Stream, ConfigurationParseOptions?, Encoding?, bool)</a> ignores the mark that opens a stream; a
+U+FEFF anywhere else is content.</p>
+</div>
 
 
 
@@ -833,7 +877,7 @@ parse.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationDocument__" data-uid="Bodu.Text.Configuration.ConfigurationDocument.TryParse(System.String,Bodu.Text.Configuration.ConfigurationParseOptions,Bodu.Text.Configuration.ConfigurationDocument@)">
   TryParse(string?, ConfigurationParseOptions?, out ConfigurationDocument?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -871,6 +915,11 @@ parse.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationDocument___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A single U+FEFF at the start of <code class="paramref">text</code> is ignored as a byte order mark, as
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_">Load(Stream, ConfigurationParseOptions?, Encoding?, bool)</a> ignores the mark that opens a stream; a
+U+FEFF anywhere else is content.</p>
+</div>
 
 
 
@@ -904,7 +953,7 @@ parse.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

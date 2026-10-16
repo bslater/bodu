@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ImfRateProviderOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ ImfRateProviderOptions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Imf.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Imf">Bodu.Financial.ExchangeRates.Imf</a> <span class="bodu-package-version">0.7.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Imf">Bodu.Financial.ExchangeRates.Imf</a> <span class="bodu-package-version">0.7.2</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs">ImfRateProviderOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs">ImfRateProviderOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProvider.html">ImfRateProvider</a> addresses, caches, and interprets the IMF Representative Exchange
@@ -156,6 +156,9 @@ Rates monthly report.</p>
     </div>
     <div>
       <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DefaultLookback">WebRateProviderOptions.DefaultLookback</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval">WebRateProviderOptions.RefreshInterval</a>
     </div>
     <div>
       <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">WebRateProviderOptions.HistoryAvailability</a>
@@ -227,10 +230,18 @@ Rates monthly report.</p>
   <h2 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 This type derives from <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, which supplies the endpoint base address, the HTTP
-contract, the synchronous-access and look-back behaviour, and the per-concern log levels. The members declared here
-are report-specific: the <a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_ReportPath">ReportPath</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_ReportType">ReportType</a> that address the monthly report,
-the on-disk cache settings, and the <a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_CurrencyNames">CurrencyNames</a> map that resolves an IMF currency label to its ISO
-4217 code. The report is keyless, so no API key is required.
+contract, the synchronous-access, look-back and refresh behavior, and the per-concern log levels. The members
+declared here are report-specific: the <a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_ReportPath">ReportPath</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_ReportType">ReportType</a> that address the
+monthly report, the on-disk cache settings, and the <a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_CurrencyNames">CurrencyNames</a> map that resolves an IMF currency
+label to its ISO 4217 code. The report is keyless, so no API key is required.
+</p>
+<p>
+<strong>Refresh.</strong> The inherited <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval">RefreshInterval</a> governs both the
+in-memory months and the on-disk cache. A report cached after its month closed is immutable and is served from cache
+regardless of age; a report cached while its month was still growing is subject to the interval, even once the month
+has closed. In memory, a loaded month serves for good a request that ends before the day it was downloaded, or on a
+day it returned rates for; a request that reaches a later day of the month downloads the month again once the
+interval has passed.
 </p>
 <p>
 <strong>USD-anchored, bulk.</strong> The report quotes every reported currency against the US dollar for each
@@ -251,7 +262,7 @@ fallback. Every member carries a working default, so the options bind cleanly th
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.#ctor">
   ImfRateProviderOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -287,7 +298,7 @@ base address, an unbounded history depth, and the default currency-name map.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_CacheDirectory" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.CacheDirectory">
   CacheDirectory
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -324,7 +335,7 @@ base address, an unbounded history depth, and the default currency-name map.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_CurrencyNames" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.CurrencyNames">
   CurrencyNames
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -352,7 +363,7 @@ while normalizing a report row.</p>
 
 
   <h4 class="section" id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_CurrencyNames_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>A label absent from this map is resolved directly against the ISO 4217 catalogue, and a label that resolves
+  <div class="markdown level1 remarks"><p>A label absent from this map is resolved directly against the ISO 4217 catalog, and a label that resolves
 neither way is skipped. Extend the map to add labels the IMF publishes that are not seeded here.</p>
 </div>
 
@@ -366,7 +377,7 @@ neither way is skipped. Extend the map to add labels the IMF publishes that are 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_EnableDiskCache" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.EnableDiskCache">
   EnableDiskCache
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -399,53 +410,12 @@ neither way is skipped. Extend the map to add labels the IMF publishes that are 
   </section>
 
 
-  <a id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_RefreshInterval_" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.RefreshInterval*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_RefreshInterval" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.RefreshInterval">
-  RefreshInterval
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets how long a cached copy of the current month's report remains fresh before it is re-downloaded.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan RefreshInterval { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
-    <dd><p>The refresh interval; defaults to 12 hours.</p>
-</dd>
-  </dl>
-
-
-
-
-  <h4 class="section" id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_RefreshInterval_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>A closed month's report is immutable and is served from cache regardless of age; only the current, still-growing
-month is subject to this interval.</p>
-</div>
-
-
-
-  </section>
-
-
   <a id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_ReportPath_" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.ReportPath*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_ReportPath" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.ReportPath">
   ReportPath
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -482,7 +452,7 @@ month is subject to this interval.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_ReportType" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.ReportType">
   ReportType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -523,7 +493,7 @@ month is subject to this interval.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_ImfRateProviderOptions_TryValidateCore_System_String__" data-uid="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.TryValidateCore(System.String@)">
   TryValidateCore(out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Imf/src/Financial.ExchangeRates/ImfRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -589,7 +559,7 @@ month is subject to this interval.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

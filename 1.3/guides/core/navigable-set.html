@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Navigable set | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Navigable set | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/core/navigable-set.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="navigable-set">Navigable set</h1>
+
+<p><code>NavigableSet&lt;T&gt;</code> is a sorted set augmented with order statistics - a comparer-ordered <code>ISet&lt;T&gt;</code> backed by a red-black tree whose nodes carry subtree sizes. That one augmentation turns the whole positional query family into O(log n) operations: nearest-neighbour lookups (<code>TryGetFloor</code> / <code>TryGetCeiling</code> / <code>TryGetHigher</code> / <code>TryGetLower</code>), rank and select (<code>IndexOf</code> / <code>GetAt</code>), and range counting (<code>CountInRange</code>), plus cheap <code>Ascending()</code> / <code>Descending()</code> / <code>Range(low, high)</code> views.</p>
+<p>It fits problems where &quot;sorted&quot; is not enough and the <em>position</em> of an element matters: order books and price ladders (nearest quote at or below a limit), percentile and median tracking over a mutating population (k-th smallest in O(log n)), scheduling (next free slot after <em>t</em>), leaderboards (rank of a player, player at rank), and windowed counting (how many events between two timestamps) without iterating the window.</p>
+<p>The BCL's sorted collections each miss part of this contract:</p>
+<ul>
+<li><code>SortedSet&lt;T&gt;</code> sorts and offers <code>GetViewBetween</code>, but has no floor/ceiling/higher/lower queries, no rank/select, and no O(log n) range count (<code>GetViewBetween(...).Count</code> is O(k)).</li>
+<li><code>SortedList&lt;TKey,TValue&gt;</code> gives positional access but pays O(n) per insert and remove.</li>
+<li><code>SortedDictionary&lt;TKey,TValue&gt;</code> is a key-value map with neither positional access nor navigation queries.</li>
+</ul>
+<p>Contract points worth keeping in mind:</p>
+<ul>
+<li><strong>Set semantics.</strong> Comparer-equal duplicates are rejected - <code>Add</code> returns <code>false</code> and keeps the stored element, exactly like <code>SortedSet&lt;T&gt;</code>.</li>
+<li><strong>Null elements are rejected</strong> with <code>ArgumentNullException</code>, consistent with the rest of the Bodu collection family. This deliberately diverges from <code>SortedSet&lt;T&gt;</code>, which permits <code>null</code> for reference types; a null-permitting sorted set would make the Try-pattern navigation results ambiguous.</li>
+<li><strong>Views are live and fail-fast.</strong> <code>Ascending()</code>, <code>Descending()</code>, and <code>Range(low, high)</code> re-resolve against the current tree each time they are iterated; mutating the set <em>during</em> an iteration throws <code>InvalidOperationException</code> on the next advance, matching the family convention.</li>
+<li><code>Range</code> bounds are <strong>inclusive on both ends</strong>, need not be present in the set, and the walk costs O(log n + k) - it descends straight to the first in-range element.</li>
+<li><code>Min</code> / <code>Max</code> throw <code>InvalidOperationException</code> on an empty set; <code>TryGetMin</code> / <code>TryGetMax</code> are the non-throwing forms.</li>
+<li>Not thread-safe.</li>
+</ul>
+<p>The backing-structure decision (order-statistic red-black tree with parent pointers, versus a skip list) is recorded in the design note at <code>Bodu.Collections/docs/navigable-collections-design.md</code>. <a href="navigable-dictionary.html"><code>NavigableDictionary&lt;TKey,TValue&gt;</code></a> is the key-value counterpart over the same node machinery.</p>
+<h2 id="pattern-1---nearest-neighbour-queries">Pattern 1 - nearest-neighbour queries</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var ladder = new NavigableSet&lt;decimal&gt;(new[] { 99.50m, 100.00m, 100.25m, 101.00m });
+
+// Best bid at or below a limit price.
+if (ladder.TryGetFloor(100.10m, out decimal bid))
+    Console.WriteLine(bid);              // 100.00
+
+// Best ask strictly above the last trade.
+if (ladder.TryGetHigher(100.25m, out decimal ask))
+    Console.WriteLine(ask);              // 101.00
+
+ladder.TryGetCeiling(100.10m, out decimal atOrAbove);  // 100.25 - least &gt;= value
+ladder.TryGetLower(99.50m, out _);                     // false - nothing strictly below the minimum
+</code></pre>
+<h2 id="pattern-2---rank-select-and-range-counting">Pattern 2 - rank, select, and range counting</h2>
+<p><code>IndexOf</code> is the zero-based rank (elements smaller than the value); <code>GetAt</code> is the inverse (the k-th smallest); <code>CountInRange</code> subtracts two rank walks, so none of the three iterates the set:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var latencies = new NavigableSet&lt;int&gt;();
+foreach (int sample in new[] { 12, 5, 210, 47, 8, 33, 90, 61 })
+    latencies.Add(sample);
+
+int median = latencies.GetAt(latencies.Count / 2);   // k-th smallest - 47
+int p90 = latencies.GetAt((int)(latencies.Count * 0.9) - 1);
+
+int rank = latencies.IndexOf(33);                    // 3 - three samples are smaller
+int fastPath = latencies.CountInRange(0, 50);        // 5 - O(log n), no iteration
+</code></pre>
+<h2 id="pattern-3---directional-and-range-views">Pattern 3 - directional and range views</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var schedule = new NavigableSet&lt;TimeOnly&gt;(new[]
+{
+    new TimeOnly(9, 0), new TimeOnly(10, 30), new TimeOnly(13, 0), new TimeOnly(15, 45),
+});
+
+// Ascending() == enumeration order; Descending() walks the other way without materializing.
+foreach (TimeOnly slot in schedule.Descending())
+    Console.WriteLine(slot);             // 15:45, 13:00, 10:30, 09:00
+
+// Inclusive-bounds sub-range; the bounds need not be booked slots.
+foreach (TimeOnly slot in schedule.Range(new TimeOnly(10, 0), new TimeOnly(14, 0)))
+    Console.WriteLine(slot);             // 10:30, 13:00
+
+// Views are live: a view captured before a mutation reflects it on the next fresh iteration.
+IEnumerable&lt;TimeOnly&gt; morning = schedule.Range(new TimeOnly(0, 0), new TimeOnly(12, 0));
+schedule.Add(new TimeOnly(11, 15));
+Console.WriteLine(morning.Count());      // 3 - 09:00, 10:30, 11:15
+</code></pre>
+<h2 id="choosing-against-the-alternatives">Choosing against the alternatives</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sorted uniqueness only, no positional queries</td>
+<td><code>SortedSet&lt;T&gt;</code> (BCL)</td>
+</tr>
+<tr>
+<td>Sorted + floor/ceiling/rank/select/range-count</td>
+<td><code>NavigableSet&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Sorted key-value with positional access, rare writes</td>
+<td><code>SortedList&lt;TKey,TValue&gt;</code> (BCL) - accepts O(n) inserts</td>
+</tr>
+<tr>
+<td>Membership over dense integer universe</td>
+<td><a href="bit-set.html"><code>BitSet</code></a></td>
+</tr>
+<tr>
+<td>Disjoint interval membership</td>
+<td><a href="range-dictionary.html"><code>RangeSet&lt;T&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="navigable-dictionary.html">Navigable dictionary</a> - the key-value counterpart with the same query family.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide.</li>
+<li><a href="ordered-sets.html">Indexed and ordered sets</a> - insertion-ordered (not comparer-ordered) unique collections.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

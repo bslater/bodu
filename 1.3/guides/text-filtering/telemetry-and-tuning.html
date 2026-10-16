@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Telemetry and tuning | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Telemetry and tuning | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/text-filtering/telemetry-and-tuning.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="telemetry-and-tuning">Telemetry and tuning</h1>
+
+<p>A <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a> is built for bulk work - 100k+ values against
+tens to hundreds of patterns - so it ships with the observability needed to understand and tune a
+filter at that volume: always-on counters, per-pattern hit attribution, and an optional
+per-decision observer.</p>
+<h2 id="quick-reference">Quick reference</h2>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>What it tells you</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_GetStatistics"><code>GetStatistics()</code></a></td>
+<td>Decision buckets, per-pattern hit counts, regex timeouts, optional timing</td>
+<td>A few plain counter increments per value</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_Evaluate_"><code>Evaluate(value)</code></a></td>
+<td>The decision and the deciding pattern for one value</td>
+<td>Same as <code>IsMatch</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_GetMatchingPatterns_"><code>GetMatchingPatterns(value)</code></a></td>
+<td><em>Every</em> matching pattern (no short-circuit)</td>
+<td>Full scan; diagnostic use</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_Observer"><code>Observer</code></a></td>
+<td>Every decision as it happens, with the deciding pattern</td>
+<td>One null check when unattached</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-statistics-snapshot">The statistics snapshot</h2>
+<p><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html"><code>TextFilterStatistics</code></a> is an immutable snapshot.
+The buckets always reconcile - <code>ItemsEvaluated == ItemsAccepted + ItemsExcluded + ItemsNotIncluded</code> - and per-pattern
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPatternStatistics.html"><code>HitCount</code></a> credits the <strong>deciding</strong> pattern
+only: the include that admitted the value or the exclude that vetoed it. That is exactly the signal
+selectivity tuning needs - a pattern with a near-zero hit count over a large corpus is either
+redundant or shadowed.</p>
+<p>Counters are deliberately plain (not interlocked): matching results are always exact under
+concurrency (the compiled state is immutable), but counters may undercount when evaluating from
+multiple threads. Single-threaded pipelines get exact statistics for free. Timing is opt-in via
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterOptions.html"><code>TextFilterOptions.CaptureEvaluationTime</code></a> and
+accumulates into <code>EvaluationTime</code>.</p>
+<h2 id="the-observer-hook">The observer hook</h2>
+<p>Attach an <a class="xref" href="../../api/Bodu.Text.Filtering.ITextFilterObserver.html"><code>ITextFilterObserver</code></a> to see every
+decision - the evaluated value, the <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterDecision.html"><code>TextFilterDecision</code></a>,
+and the deciding pattern - for sampling, audit logging, or debugging a surprising veto. The
+callback runs synchronously on the evaluating thread; exceptions propagate to the caller; when no
+observer is attached the evaluation path pays only a single null check.</p>
+<h2 id="cost-tiers-and-what-they-mean-for-tuning">Cost tiers and what they mean for tuning</h2>
+<p>At build time each glob is classified into the cheapest strategy its shape permits, and in
+<code>AnyMatch</code> mode each group runs cheapest-first:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Pattern shape</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>*</code></td>
+<td>always true</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>abc</code></td>
+<td>whole-string equality</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>abc*</code>, <code>*abc</code>, <code>abc*def</code></td>
+<td>prefix / suffix comparison</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>*abc*</code></td>
+<td>vectorized substring search</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>?</code>, classes, multiple <code>*</code> segments</td>
+<td>general wildcard matcher</td>
+</tr>
+<tr>
+<td>5</td>
+<td>regex</td>
+<td><code>NonBacktracking</code> regex engine</td>
+</tr>
+</tbody>
+</table>
+<p>Practical consequences:</p>
+<ul>
+<li>Prefer glob shapes over regexes when both can express the rule - <code>{error,warn}*</code> compiles to two
+tier-2 prefix checks, while <code>^(error|warn)</code> is tier 5.</li>
+<li>Order within a group does not matter in <code>AnyMatch</code> - write rules for readability; the engine
+sorts by cost.</li>
+<li>The indicative benchmark (100k values, 100 mixed patterns) runs ~3× faster than a compiled
+per-pattern-regex baseline, with zero allocations per value.</li>
+</ul>
+<h2 id="regex-timeouts-fail-safe">Regex timeouts fail safe</h2>
+<p>Regexes prefer the linear-time <code>NonBacktracking</code> engine; patterns it cannot compile
+(backreferences, lookarounds) fall back to the backtracking engine guarded by
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterOptions.html"><code>RegexMatchTimeout</code></a>. If a match times out, the
+decision fails safe <strong>by action</strong>: a timed-out include does not admit the value, and a timed-out
+exclude still vetoes it - the filter never accidentally lets a value through because its exclude
+timed out. Timeouts are counted in
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html"><code>TextFilterStatistics.RegexTimeouts</code></a>, the only
+place they are reported: the observer receives the fail-safe decision like any other, with
+nothing to mark it as a timeout.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="patterns-and-globs.html">Patterns and globs</a></strong> - shaping rules into cheap tiers.</li>
+<li><strong><a href="evaluation-modes.html">Evaluation modes</a></strong> - set vs ordered semantics.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html">API reference</a></strong> - the statistics types.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

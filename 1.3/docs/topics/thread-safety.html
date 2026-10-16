@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Thread safety | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Thread safety | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/topics/thread-safety.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="thread-safety">Thread safety</h1>
+
+<p>&quot;Can I share this object between threads?&quot; has a different answer for each kind of Bodu type, and getting it wrong rarely fails loudly: a race corrupts state quietly, or shows up once under load. This page gathers the answer for the types you are most likely to keep in a field, register as a singleton, or hand to parallel work, across the whole suite. Every row comes from the type's own API documentation, or, where the documentation says nothing, from its source, and the table says which.</p>
+<p>For <code>Bodu.Core</code>, <code>Bodu.Collections</code>, and <code>Bodu.Collections.Concurrent</code>, the <a href="../../guides/core/thread-safety.html">thread-safety contracts guide</a> has a row for every public type, with its enumeration behavior; this page summarizes it.</p>
+<h2 id="terms">Terms</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Safe</strong></td>
+<td>Designed for concurrent use from any number of threads without your own locking.</td>
+</tr>
+<tr>
+<td><strong>Immutable</strong></td>
+<td>Cannot change after construction, so sharing is safe.</td>
+</tr>
+<tr>
+<td><strong>Read-only safe</strong></td>
+<td>Concurrent reads are safe while no thread writes; a write needs exclusive access.</td>
+</tr>
+<tr>
+<td><strong>Single-threaded</strong></td>
+<td>No internal synchronization: confine the instance to one thread at a time, or lock around every use.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="core-foundations">Core Foundations</h2>
+<table>
+<thead>
+<tr>
+<th>Types</th>
+<th>Contract</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The calendar value sets (<code>DayOfWeekSet</code> and its siblings), <code>Option&lt;T&gt;</code>, <code>Result&lt;T&gt;</code>, <code>Either&lt;TLeft,TRight&gt;</code></td>
+<td>Immutable</td>
+<td>Value types; every operation returns a new value.</td>
+</tr>
+<tr>
+<td>The <code>Bodu.Threading</code> primitives (<code>AsyncLock</code>, <code>AsyncSemaphore</code>, <code>RateGate</code>, and the rest), <code>Memoizer</code></td>
+<td>Safe</td>
+<td>Concurrent use is their purpose.</td>
+</tr>
+<tr>
+<td>The extension classes and <code>ThrowHelper</code></td>
+<td>Safe</td>
+<td>Stateless; only as safe as the arguments you pass them.</td>
+</tr>
+<tr>
+<td><code>PooledBufferBuilder&lt;T&gt;</code>, <code>XorShiftRandom</code></td>
+<td>Single-threaded</td>
+<td>One owner each.</td>
+</tr>
+<tr>
+<td>Every mutable collection in <code>Bodu.Collections</code></td>
+<td>Single-threaded, or read-only safe</td>
+<td>None takes a lock. Where a lookup rewrites state - <code>EvictingDictionary&lt;TKey,TValue&gt;</code> under a recency policy, <code>SequencedDictionary&lt;TKey,TValue&gt;</code> in access order, <code>DefaultingDictionary&lt;TKey,TValue&gt;</code>'s indexer, <code>DisjointSet&lt;T&gt;.Find</code> - even concurrent readers race.</td>
+</tr>
+<tr>
+<td><code>ConcurrentCircularBuffer&lt;T&gt;</code>, <code>ConcurrentHashSet&lt;T&gt;</code>, <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code>, <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code></td>
+<td>Safe</td>
+<td>Enumeration never throws for concurrent modification; the hash set's is weakly consistent and the other three enumerate a snapshot.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="hashing-and-cryptography">Hashing and cryptography</h2>
+<table>
+<thead>
+<tr>
+<th>Types</th>
+<th>Contract</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Every <code>Bodu.IO.Hashing</code> algorithm (<code>Crc</code>, <code>Fnv1a64</code>, <code>Fletcher32</code>, ...) and check-digit algorithm</td>
+<td>Single-threaded</td>
+<td>Their remarks say instances are not thread-safe: construct one per thread, or lock. The process-wide CRC lookup-table cache behind <code>Crc</code> is shared and safe.</td>
+</tr>
+<tr>
+<td>Every <code>Bodu.Security.Cryptography</code> algorithm instance: the <code>HashAlgorithm</code>, <code>KeyedHashAlgorithm</code>, <code>SymmetricAlgorithm</code>, and <code>AsymmetricAlgorithm</code> types, the mode and AEAD transforms, <code>SecretBytes</code></td>
+<td>Single-threaded</td>
+<td>The BCL's per-instance model; the <a href="../../guides/cryptography/security-posture.html#thread-safety">security posture guide</a> states the single-caller rule.</td>
+</tr>
+<tr>
+<td>The static entry points (<code>Hkdf</code>, <code>Hotp</code>, <code>Totp</code>, <code>Hpke</code>, <code>Argon2id.DeriveKey</code>, <code>Scrypt.DeriveKey</code>, <code>HashAlgorithmHelper</code>, <code>BlockCipherModeFactory</code>, <code>PaddingFactory</code>)</td>
+<td>Safe</td>
+<td>They hold no shared mutable state.</td>
+</tr>
+<tr>
+<td><code>MerkleTree</code></td>
+<td>Safe</td>
+<td>Immutable and stateless between calls, so one instance can be a singleton - <strong>provided its factory returns a fresh <code>HashAlgorithm</code> on every call</strong>, as <code>SHA256.Create</code> does. A factory that hands back one shared algorithm corrupts concurrent computations.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="globalization-and-calendars">Globalization and calendars</h2>
+<table>
+<thead>
+<tr>
+<th>Types</th>
+<th>Contract</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NotableDateService</code></td>
+<td>Safe</td>
+<td>Immutable once constructed, with no per-query state; share one instance per resource.</td>
+</tr>
+<tr>
+<td><code>NotableDateResource</code></td>
+<td>Immutable</td>
+<td>Imports and overrides are applied while it loads.</td>
+</tr>
+<tr>
+<td><code>NotableDateAlgorithmRegistry</code></td>
+<td>Safe</td>
+<td>Lookups are lock-free and may run concurrently with registrations.</td>
+</tr>
+<tr>
+<td><code>CachingNotableDateService</code></td>
+<td>Safe</td>
+<td>Built to be a shared decorator: concurrent misses for the same cold year coalesce onto one computation, and a reload swaps its state atomically (from its source; the type has no thread statement).</td>
+</tr>
+<tr>
+<td><code>InMemoryNotableDateCache</code></td>
+<td>Safe</td>
+<td>Reads and writes are individually thread-safe; two concurrent stores for one territory resolve last-write-wins.</td>
+</tr>
+<tr>
+<td><code>RecurrenceRule</code></td>
+<td>Immutable</td>
+<td>Build it once and query it from any thread.</td>
+</tr>
+<tr>
+<td><code>CronExpression</code>, <code>RecurrenceSet</code>, <code>AnchoredInterval</code></td>
+<td>Immutable</td>
+<td>No thread statement, but every field is fixed when the value is parsed or built.</td>
+</tr>
+<tr>
+<td><code>RecurrenceRuleBuilder</code></td>
+<td>Single-threaded</td>
+<td>A mutable builder; build, then share the rule it produces.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="text-and-serialization">Text and serialization</h2>
+<table>
+<thead>
+<tr>
+<th>Types</th>
+<th>Contract</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The <code>Utf8…Reader</code> and <code>Utf8…Writer</code> types of every format, and <code>BiffReader</code> / <code>BiffWriter</code></td>
+<td>Single-threaded</td>
+<td><code>ref struct</code>s: they live on one thread's stack by construction.</td>
+</tr>
+<tr>
+<td><code>…SerializerOptions</code></td>
+<td>Safe once frozen</td>
+<td>An options instance is mutable until its first use (or <code>MakeReadOnly()</code>), then read-only, with its resolved converters cached in concurrent dictionaries. Configure one, and share it. See <a href="../serialization/core/concepts.html#options-lifecycle-freezing-and-thread-safety">options lifecycle</a>.</td>
+</tr>
+<tr>
+<td>The static serializers (<code>TomlSerializer</code>, <code>YamlSerializer</code>, <code>DelimitedSerializer</code>, and the rest)</td>
+<td>Safe</td>
+<td>Static entry points; thread safety is that of the options and values you pass.</td>
+</tr>
+<tr>
+<td>The mutable node DOMs (<code>TomlNode</code>, <code>IniObject</code>, ...)</td>
+<td>Single-threaded</td>
+<td>Ordinary object graphs.</td>
+</tr>
+<tr>
+<td><code>YamlDocument</code></td>
+<td>Read-only safe</td>
+<td>Element views stay valid until the document is disposed, and disposing it while another thread reads is not safe. The other formats' read-only documents carry no thread statement.</td>
+</tr>
+<tr>
+<td><code>TextFilter</code></td>
+<td>Safe</td>
+<td>The compiled state is immutable, so matching and filtering are exact under concurrency; only the statistics counters are unsynchronized and may undercount.</td>
+</tr>
+<tr>
+<td><code>BinaryEncodings</code> instances</td>
+<td>Safe</td>
+<td>Each property returns a thread-safe singleton.</td>
+</tr>
+<tr>
+<td><code>ConfigurationDocument</code></td>
+<td>Single-threaded</td>
+<td>Its section list is fixed, but sections and entries stay mutable through <code>IniSection</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="numerics-and-financial">Numerics and financial</h2>
+<table>
+<thead>
+<tr>
+<th>Types</th>
+<th>Contract</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Fraction&lt;T&gt;</code>, <code>BigDecimal</code>, <code>Complex&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>Money</code>, <code>Money&lt;TCurrency&gt;</code></td>
+<td>Immutable</td>
+<td><code>readonly struct</code>s.</td>
+</tr>
+<tr>
+<td><code>MoneyBag</code></td>
+<td>Immutable</td>
+<td>Every mutator returns a new instance.</td>
+</tr>
+<tr>
+<td><code>CurrencyRegistry</code></td>
+<td>Safe</td>
+<td>Lookups read an immutable frozen dictionary.</td>
+</tr>
+<tr>
+<td>The web exchange-rate providers (every <code>WebRateProvider</code>, such as <code>EcbRateProvider</code>)</td>
+<td>Safe</td>
+<td>Lookups read an immutable snapshot and never block behind a fetch; concurrent loads for one window share a single request. See <a href="../exchange-rates/concepts.html#thread-safety">exchange-rate concepts</a>.</td>
+</tr>
+<tr>
+<td><code>InMemoryRateCache</code></td>
+<td>Safe</td>
+<td>Reads and writes are individually thread-safe; concurrent stores for one pair resolve last-write-wins. <code>SqliteRateCache</code> runs each write in a transaction, so concurrent writes for one pair lose neither.</td>
+</tr>
+<tr>
+<td><code>RateSeriesBuilder</code>, <code>RateTableBuilder</code></td>
+<td>Single-threaded</td>
+<td>Their remarks say so.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="binary-formats">Binary formats</h2>
+<table>
+<thead>
+<tr>
+<th>Types</th>
+<th>Contract</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CompoundFile</code>, opened read-only and buffered (the default)</td>
+<td>Safe</td>
+<td>The whole source is read at open, so access never touches it again. Opened unbuffered, reads are serialized against the shared source position: concurrent, but not parallel.</td>
+</tr>
+<tr>
+<td><code>CompoundFile</code>, opened for editing</td>
+<td>Not stated</td>
+<td>The thread statement covers read-only instances only. Edits are staged until <code>Commit</code>; make them from one thread.</td>
+</tr>
+<tr>
+<td><code>ExcelBinaryWorkbook</code></td>
+<td>Single-threaded</td>
+<td>Its remarks say to call its members from one thread at a time; an <code>ExcelWorksheetReader</code> is a forward-only reader for one consumer.</td>
+</tr>
+<tr>
+<td><code>PstFile</code>, <code>OutlookMailStore</code></td>
+<td>Single-threaded</td>
+<td>Their remarks say a session's members, and those of every view obtained from it, must not be called concurrently.</td>
+</tr>
+<tr>
+<td><code>OutlookMessage</code></td>
+<td>Single-threaded</td>
+<td>Its remarks say a message's members, and those of every recipient, attachment, and nested message obtained from it, must not be called concurrently; its recipients, attachments, and named-property map are decoded on first access and cached without synchronization.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rules-of-thumb">Rules of thumb</h2>
+<ol>
+<li><strong>Share immutable values and frozen configuration; confine builders, sessions, and algorithm instances.</strong> The value types, resources, compiled filters, and frozen serializer options are made to be shared; a hash algorithm, a document session, or a builder is not.</li>
+<li><strong>Register singletons only for types marked Safe or Immutable.</strong> Every Bodu dependency-injection registration adds its services as singletons, so a type you plug into one - a currency lookup, a rate provider, a cache backend - must be safe for concurrent use too; see <a href="hosting.html">dependency injection and configuration</a>.</li>
+<li><strong>Do not use a reader-writer lock for a type whose reads write.</strong> The collections listed above rewrite state on lookup.</li>
+<li><strong>Give each worker its own algorithm.</strong> For parallel hashing, share a factory (<code>Func&lt;HashAlgorithm&gt;</code> or <code>IHashAlgorithmFactory&lt;T&gt;</code>), never an instance.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../guides/core/thread-safety.html">Thread-safety contracts guide</a></strong> - every Core Foundations type, with its enumeration behavior.</li>
+<li><strong><a href="../../guides/core/concurrent-collections.html">Concurrent collections</a></strong> - the four thread-safe collections in depth.</li>
+<li><strong><a href="../../guides/core/async-primitives.html">Async coordination primitives</a></strong> - the locks and gates for coordinating the rest.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

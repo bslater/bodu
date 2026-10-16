@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Table&lt;TRow, TColumn, TValue&gt; Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Table&lt;TRow, TColumn, TValue&gt; Class
+ | BODU ">
+      
+      <meta name="description" content="Represents a two-dimensional map that associates an ordered row/column key pair with a single value, exposing live row and column projections over a row-major backing store.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Collections.Generic.Table`3">
+
+
+
+
+  <h1 id="Bodu_Collections_Generic_Table_3" data-uid="Bodu.Collections.Generic.Table`3" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Table&lt;TRow, TColumn, TValue&gt; Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.Views.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Collections_Generic_Table_3_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.Views.cs">Table{T,T,T}.Views.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a two-dimensional map that associates an ordered row/column key pair with a single value, exposing live
+row and column projections over a row-major backing store.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Table&lt;TRow, TColumn, TValue&gt; : IEnumerable&lt;KeyValuePair&lt;(TRow Row, TColumn Column), TValue&gt;&gt;, IEnumerable where TRow : notnull where TColumn : notnull</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TRow</code></dt>
+    <dd><p>Specifies the type of row keys in the table.</p>
+</dd>
+    <dt><code>TColumn</code></dt>
+    <dd><p>Specifies the type of column keys in the table.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>Specifies the type of values stored in the table's cells.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Table&lt;TRow, TColumn, TValue&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;(TRow <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-1-.row">Row</a>, TColumn <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-1-.column">Column</a>), TValue&gt;&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Collections_Generic_Table_3_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> is the .NET analog of Guava's <code>Table</code>: a map keyed by two
+independent keys - a row and a column - whose reason to exist is the <i>projections</i>. A plain
+<code>Dictionary&lt;(TRow, TColumn), TValue&gt;</code> already covers flat two-key lookup; adopt this type when you also
+need <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_Row__0_">Row(TRow)</a> ("all cells of this row") or <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_Column__1_">Column(TColumn)</a> ("this column across all
+rows") as first-class dictionary views, or the per-row iteration of <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_RowMap">RowMap()</a>.
+</p>
+<p>
+The backing store is row-major - an outer dictionary from row key to an inner dictionary of that row's cells - so
+row-oriented operations are O(1) hash lookups. Column-oriented operations have no second index in this version:
+<a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_Column__1_">Column(TColumn)</a>, <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_ContainsColumn__1_">ContainsColumn(TColumn)</a>, and <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_RemoveColumn__1_">RemoveColumn(TColumn)</a>
+scan every row and cost O(rows) per call (per enumeration for the column view), and <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_ColumnKeys">ColumnKeys</a> walks
+every cell. Choose the row axis for the key you project by most often.
+</p>
+<p>
+The table never retains an empty row: removing a row's last cell - through <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_Remove__0__1_">Remove(TRow, TColumn)</a> or
+<a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_RemoveColumn__1_">RemoveColumn(TColumn)</a> - also removes the row itself, so <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_ContainsRow__0_">ContainsRow(TRow)</a> and
+<a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_RowKeys">RowKeys</a> only ever report rows that hold at least one cell.
+</p>
+<p>
+Enumeration yields the flat cells as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair&lt;TKey, TValue&gt;</a> entries keyed by a
+<code>(Row, Column)</code> tuple, in row-major order: all cells of one row are contiguous, but the order of rows and the
+order of cells within a row follow the unspecified, insertion-biased order of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> - do not rely on it. The views delegate to the
+live backing dictionaries, so mutating the table while enumerating the table or one of its views surfaces the
+standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> fail-fast behavior (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>).
+</p>
+<p>
+<a class="xref" href="Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> is not thread-safe. Concurrent reads and writes, including through the
+row and column views, require external synchronization.
+</p>
+<example>
+<pre><code class="lang-csharp">var sales = new Table&lt;string, int, decimal&gt;();
+sales.Add("Widgets", 2024, 1200m);
+sales.Add("Widgets", 2025, 1350m);
+sales.Add("Gadgets", 2025, 800m);
+
+// The projections are the point of the type.
+IReadOnlyDictionary&lt;int, decimal&gt; widgets = sales.Row("Widgets");     // 2024 -&gt; 1200, 2025 -&gt; 1350
+IReadOnlyDictionary&lt;string, decimal&gt; in2025 = sales.Column(2025);     // Widgets -&gt; 1350, Gadgets -&gt; 800
+
+sales["Gadgets", 2025] = 850m;             // upsert through the flat indexer…
+decimal revised = in2025["Gadgets"];       // 850 - the held view is live</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_Table_3__ctor_" data-uid="Bodu.Collections.Generic.Table`3.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3__ctor" data-uid="Bodu.Collections.Generic.Table`3.#ctor">
+  Table()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> class that is empty and uses the
+default row and column comparers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Table()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3__ctor_" data-uid="Bodu.Collections.Generic.Table`3.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3__ctor_System_Collections_Generic_IEqualityComparer__0__System_Collections_Generic_IEqualityComparer__1__" data-uid="Bodu.Collections.Generic.Table`3.#ctor(System.Collections.Generic.IEqualityComparer{`0},System.Collections.Generic.IEqualityComparer{`1})">
+  Table(IEqualityComparer&lt;TRow&gt;?, IEqualityComparer&lt;TColumn&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> class that is empty and uses the
+specified row and column comparers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Table(IEqualityComparer&lt;TRow&gt;? rowComparer, IEqualityComparer&lt;TColumn&gt;? columnComparer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rowComparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;TRow&gt;</dt>
+    <dd><p>The equality comparer to use for row keys, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the default comparer.</p>
+</dd>
+    <dt><code>columnComparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;TColumn&gt;</dt>
+    <dd><p>The equality comparer to use for column keys, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the default comparer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_ColumnComparer_" data-uid="Bodu.Collections.Generic.Table`3.ColumnComparer*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_ColumnComparer" data-uid="Bodu.Collections.Generic.Table`3.ColumnComparer">
+  ColumnComparer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> used to determine column key equality.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEqualityComparer&lt;TColumn&gt; ColumnComparer { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;TColumn&gt;</dt>
+    <dd><p>The comparer used for column identity within every row.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_ColumnKeys_" data-uid="Bodu.Collections.Generic.Table`3.ColumnKeys*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_ColumnKeys" data-uid="Bodu.Collections.Generic.Table`3.ColumnKeys">
+  ColumnKeys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.Views.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the distinct column keys currently present in any row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;TColumn&gt; ColumnKeys { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;TColumn&gt;</dt>
+    <dd><p>A snapshot of the distinct column keys, deduplicated by <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_ColumnComparer">ColumnComparer</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_ColumnKeys_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The backing store is row-major with no column index, so each access recomputes the set by walking every cell -
+an O(cells) operation returning a snapshot, unlike the live <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_RowKeys">RowKeys</a>. Columns appear in row-major
+encounter order.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_Count_" data-uid="Bodu.Collections.Generic.Table`3.Count*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_Count" data-uid="Bodu.Collections.Generic.Table`3.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the total number of cells in the table.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of row/column/value cells across all rows, maintained as an O(1) counter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_IsEmpty_" data-uid="Bodu.Collections.Generic.Table`3.IsEmpty*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_IsEmpty" data-uid="Bodu.Collections.Generic.Table`3.IsEmpty">
+  IsEmpty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the table contains no cells.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsEmpty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the table holds no cells; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_Item_" data-uid="Bodu.Collections.Generic.Table`3.Item*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_Item__0__1_" data-uid="Bodu.Collections.Generic.Table`3.Item(`0,`1)">
+  this[TRow, TColumn]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the value of the cell at the specified row and column.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TValue this[TRow row, TColumn column] { get; set; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key of the cell. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key of the cell. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TValue</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_Item__0__1__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The setter upserts: assigning a new row/column pair adds the cell (creating the row when absent), while
+assigning an existing pair replaces its value. Use <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_Add__0__1__2_">Add(TRow, TColumn, TValue)</a> to reject
+duplicates instead.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> or <code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The cell does not exist when read.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_RowComparer_" data-uid="Bodu.Collections.Generic.Table`3.RowComparer*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_RowComparer" data-uid="Bodu.Collections.Generic.Table`3.RowComparer">
+  RowComparer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> used to determine row key equality.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEqualityComparer&lt;TRow&gt; RowComparer { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;TRow&gt;</dt>
+    <dd><p>The comparer used for row identity in the row-major backing store.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_RowKeys_" data-uid="Bodu.Collections.Generic.Table`3.RowKeys*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_RowKeys" data-uid="Bodu.Collections.Generic.Table`3.RowKeys">
+  RowKeys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.Views.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a live view of the table's row keys.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;TRow&gt; RowKeys { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;TRow&gt;</dt>
+    <dd><p>A read-only collection over the backing store's row keys, reflecting later mutations.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_RowKeys_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Because empty rows are never retained, every reported row holds at least one cell. The collection is the backing
+dictionary's live key collection, so its order matches the table's (unspecified) row order.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_Add_" data-uid="Bodu.Collections.Generic.Table`3.Add*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_Add__0__1__2_" data-uid="Bodu.Collections.Generic.Table`3.Add(`0,`1,`2)">
+  Add(TRow, TColumn, TValue)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a value at the specified row and column.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Add(TRow row, TColumn column, TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key of the cell to add. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key of the cell to add. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to store in the cell.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_Add__0__1__2__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Duplicate cells follow the strict <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2.add">Add(TKey, TValue)</a> contract and always throw; use the indexer setter to upsert or <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_TryAdd__0__1__2_">TryAdd(TRow, TColumn, TValue)</a> to stay non-throwing. Adding to an absent row creates the row.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> or <code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The table already contains a cell at the specified row and column.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_Clear_" data-uid="Bodu.Collections.Generic.Table`3.Clear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_Clear" data-uid="Bodu.Collections.Generic.Table`3.Clear">
+  Clear()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes all cells from the table.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Clear()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_Column_" data-uid="Bodu.Collections.Generic.Table`3.Column*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_Column__1_" data-uid="Bodu.Collections.Generic.Table`3.Column(`1)">
+  Column(TColumn)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.Views.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a live read-only dictionary view over the specified column's cells across all rows, keyed by row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;TRow, TValue&gt; Column(TColumn column)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;TRow, TValue&gt;</dt>
+    <dd><p>A read-only dictionary from row key to cell value for the column; empty when no row holds the column.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_Column__1__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The view holds the table and the column key and resolves against the live backing store on every access, so it
+reflects all later mutations, including a view created before any row holds the column. Each call allocates a
+new lightweight view instance.
+</p>
+<p>
+The backing store is row-major with no column index, so the view's aggregate members are honest about their
+cost: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1.count">Count</a> and each full enumeration scan every row and are O(rows) per
+access, while the per-row lookups (the indexer, <code>ContainsKey</code>, <code>TryGetValue</code>) are O(1). Mutating the
+table while enumerating the view surfaces the standard
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> fail-fast behavior (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>).
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_Contains_" data-uid="Bodu.Collections.Generic.Table`3.Contains*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_Contains__0__1_" data-uid="Bodu.Collections.Generic.Table`3.Contains(`0,`1)">
+  Contains(TRow, TColumn)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the table contains a cell at the specified row and column.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Contains(TRow row, TColumn column)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key to locate. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key to locate. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the cell exists; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> or <code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_ContainsColumn_" data-uid="Bodu.Collections.Generic.Table`3.ContainsColumn*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_ContainsColumn__1_" data-uid="Bodu.Collections.Generic.Table`3.ContainsColumn(`1)">
+  ContainsColumn(TColumn)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the table contains at least one cell in the specified column.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsColumn(TColumn column)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key to locate. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if any row holds a cell in the column; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_ContainsColumn__1__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The backing store is row-major with no column index, so this operation scans every row and is O(rows), unlike
+the O(1) <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_ContainsRow__0_">ContainsRow(TRow)</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_ContainsRow_" data-uid="Bodu.Collections.Generic.Table`3.ContainsRow*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_ContainsRow__0_" data-uid="Bodu.Collections.Generic.Table`3.ContainsRow(`0)">
+  ContainsRow(TRow)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the table contains at least one cell in the specified row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsRow(TRow row)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key to locate. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the row holds at least one cell; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_ContainsRow__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Because empty rows are never retained, this is an O(1) hash lookup that is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> exactly when
+the row has one or more cells.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_ContainsValue_" data-uid="Bodu.Collections.Generic.Table`3.ContainsValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_ContainsValue__2_" data-uid="Bodu.Collections.Generic.Table`3.ContainsValue(`2)">
+  ContainsValue(TValue)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the table contains a cell with the specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsValue(TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to locate. The value can be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for reference types.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if any cell holds a value equal to <code class="paramref">value</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_ContainsValue__2__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This operation scans every cell and is O(cells). Value equality is determined by
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a> for <code class="typeparamref">TValue</code>.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_GetEnumerator_" data-uid="Bodu.Collections.Generic.Table`3.GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_GetEnumerator" data-uid="Bodu.Collections.Generic.Table`3.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.Views.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates over the table's cells in row-major order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;KeyValuePair&lt;(TRow Row, TColumn Column), TValue&gt;&gt; GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;(TRow <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-1-.row">Row</a>, TColumn <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-1-.column">Column</a>), TValue&gt;&gt;</dt>
+    <dd><p>An enumerator over the flat cells as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair&lt;TKey, TValue&gt;</a> entries keyed by a
+<code>(Row, Column)</code> tuple.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_GetEnumerator_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>All cells of one row are contiguous, but the order of rows and of cells within a row follows the unspecified,
+insertion-biased order of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> - do not rely on
+it. Mutating the table while enumerating surfaces the standard dictionary fail-fast behavior (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>).</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_Remove_" data-uid="Bodu.Collections.Generic.Table`3.Remove*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_Remove__0__1_" data-uid="Bodu.Collections.Generic.Table`3.Remove(`0,`1)">
+  Remove(TRow, TColumn)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes the cell at the specified row and column.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Remove(TRow row, TColumn column)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key of the cell to remove. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key of the cell to remove. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the cell was found and removed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_Remove__0__1__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Removing a row's last cell also removes the row itself, so <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_ContainsRow__0_">ContainsRow(TRow)</a> and
+<a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_RowKeys">RowKeys</a> never report an empty row.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> or <code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_RemoveColumn_" data-uid="Bodu.Collections.Generic.Table`3.RemoveColumn*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_RemoveColumn__1_" data-uid="Bodu.Collections.Generic.Table`3.RemoveColumn(`1)">
+  RemoveColumn(TColumn)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes the specified column's cell from every row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveColumn(TColumn column)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key whose cells to remove. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if at least one cell was removed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_RemoveColumn__1__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The backing store is row-major with no column index, so this operation scans every row and is O(rows). Rows
+whose last cell was in the removed column are pruned, so <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_ContainsRow__0_">ContainsRow(TRow)</a> and
+<a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_RowKeys">RowKeys</a> never report an empty row.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_RemoveRow_" data-uid="Bodu.Collections.Generic.Table`3.RemoveRow*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_RemoveRow__0_" data-uid="Bodu.Collections.Generic.Table`3.RemoveRow(`0)">
+  RemoveRow(TRow)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes all cells in the specified row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveRow(TRow row)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key whose cells to remove. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the row existed and its cells were removed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_Row_" data-uid="Bodu.Collections.Generic.Table`3.Row*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_Row__0_" data-uid="Bodu.Collections.Generic.Table`3.Row(`0)">
+  Row(TRow)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.Views.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a live read-only dictionary view over the cells of the specified row, keyed by column.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;TColumn, TValue&gt; Row(TRow row)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;TColumn, TValue&gt;</dt>
+    <dd><p>A read-only dictionary from column key to cell value for the row; empty when the row is absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_Row__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The view holds the table and the row key and resolves the row on every access, so it is fully live: cells added
+or removed after the view was created are reflected, a view created before the row exists reports empty and
+starts reporting cells once the row appears, and it reverts to empty when the row's last cell is removed. Each
+call allocates a new lightweight view instance.
+</p>
+<p>
+Every member is an O(1) delegation to the row's live cell dictionary. Mutating the table while enumerating the
+view surfaces the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> fail-fast behavior
+(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>).
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_RowMap_" data-uid="Bodu.Collections.Generic.Table`3.RowMap*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_RowMap" data-uid="Bodu.Collections.Generic.Table`3.RowMap">
+  RowMap()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.Views.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a lazy sequence pairing each row key with a live row view over that row's cells.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;KeyValuePair&lt;TRow, IReadOnlyDictionary&lt;TColumn, TValue&gt;&gt;&gt; RowMap()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;TRow, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;TColumn, TValue&gt;&gt;&gt;</dt>
+    <dd><p>A sequence of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair&lt;TKey, TValue&gt;</a> entries associating each row key with the same live view
+that <a class="xref" href="Bodu.Collections.Generic.Table-3.html#Bodu_Collections_Generic_Table_3_Row__0_">Row(TRow)</a> returns for it.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Table_3_RowMap_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The sequence enumerates the backing store's row keys lazily, so mutating the table while iterating surfaces the
+standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> fail-fast behavior (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>).
+Because empty rows are never retained, every yielded view holds at least one cell at the moment it is yielded.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_TryAdd_" data-uid="Bodu.Collections.Generic.Table`3.TryAdd*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_TryAdd__0__1__2_" data-uid="Bodu.Collections.Generic.Table`3.TryAdd(`0,`1,`2)">
+  TryAdd(TRow, TColumn, TValue)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to add a value at the specified row and column without throwing on a duplicate cell.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryAdd(TRow row, TColumn column, TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key of the cell to add. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key of the cell to add. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to store in the cell.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the cell was added; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if the table already contains a cell at
+the specified row and column, in which case the table is unchanged.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> or <code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_TryGetValue_" data-uid="Bodu.Collections.Generic.Table`3.TryGetValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_TryGetValue__0__1__2__" data-uid="Bodu.Collections.Generic.Table`3.TryGetValue(`0,`1,`2@)">
+  TryGetValue(TRow, TColumn, out TValue)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to retrieve the value of the cell at the specified row and column.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetValue(TRow row, TColumn column, out TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <span class="xref">TRow</span></dt>
+    <dd><p>The row key of the cell. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>column</code> <span class="xref">TColumn</span></dt>
+    <dd><p>The column key of the cell. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>When this method returns, contains the value of the cell, if the cell is found; otherwise, the default value for
+the type of the value parameter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the table contains the cell; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">row</code> or <code class="paramref">column</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="eii">Explicit Interface Implementations
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_Table_3_System_Collections_IEnumerable_GetEnumerator_" data-uid="Bodu.Collections.Generic.Table`3.System#Collections#IEnumerable#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_Table_3_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Collections.Generic.Table`3.System#Collections#IEnumerable#GetEnumerator">
+  IEnumerable.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/Table%7BT%2CT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through a collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator IEnumerable.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a> object that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

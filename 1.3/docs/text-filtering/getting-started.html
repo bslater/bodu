@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.Filtering - Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.Filtering - Getting started | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/text-filtering/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="bodutextfiltering---getting-started">Bodu.Text.Filtering - Getting started</h1>
+
+<p>Unfamiliar with terms like <em>action</em>, <em>evaluation mode</em>, or <em>deciding pattern</em>? Read
+<a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Text.Filtering
+</code></pre>
+<p>Targets <code>net8.0</code> and <code>net10.0</code>. The package has a single dependency on <code>Bodu.Core</code>.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="filter-a-list-with-includeexclude-globs">Filter a list with include/exclude globs</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Filtering;
+
+var filter = TextFilter.Build(
+[
+    TextFilterPattern.Include(&quot;error*&quot;),
+    TextFilterPattern.Include(&quot;warn*&quot;),
+    TextFilterPattern.Exclude(&quot;*debug*&quot;),
+]);
+
+string[] lines = [&quot;error: disk full&quot;, &quot;warn: retrying&quot;, &quot;error-debug-trace&quot;, &quot;info: started&quot;];
+var kept = filter.FilterToList(lines);
+// → &quot;error: disk full&quot;, &quot;warn: retrying&quot;
+</code></pre>
+<h3 id="parse-gitignore-style-lines">Parse gitignore-style lines</h3>
+<pre><code class="lang-csharp">var filter = TextFilter.Parse(
+[
+    &quot;# log selection&quot;,
+    &quot;error*&quot;,
+    &quot;!*debug*&quot;,       // '!' flips the pattern to an exclude
+]);
+
+bool match = filter.IsMatch(&quot;error-7&quot;);        // → true
+bool vetoed = filter.IsMatch(&quot;error-debug&quot;);   // → false
+</code></pre>
+<h3 id="ordered-rules-with-re-inclusion-gitignore-semantics">Ordered rules with re-inclusion (gitignore semantics)</h3>
+<pre><code class="lang-csharp">var ordered = new TextFilterOptions { Mode = TextFilterEvaluationMode.LastMatchWins };
+var filter = TextFilter.Parse([&quot;!*.log&quot;, &quot;important.log&quot;], ordered);
+
+filter.IsMatch(&quot;app.log&quot;);        // → false - excluded by &quot;!*.log&quot;
+filter.IsMatch(&quot;important.log&quot;);  // → true  - re-included by the later rule
+filter.IsMatch(&quot;readme.txt&quot;);     // → true  - unmatched values are included
+</code></pre>
+<h3 id="ask-which-pattern-decided">Ask which pattern decided</h3>
+<pre><code class="lang-csharp">var result = filter.Evaluate(&quot;app.log&quot;);
+// → result.Decision == TextFilterDecision.Excluded, result.Pattern is the &quot;!*.log&quot; rule
+</code></pre>
+<h3 id="read-the-telemetry">Read the telemetry</h3>
+<pre><code class="lang-csharp">var stats = filter.GetStatistics();
+// → stats.ItemsEvaluated, stats.ItemsAccepted, stats.ItemsExcluded,
+//   stats.Patterns[i].HitCount - decisions credited to each pattern
+</code></pre>
+<h2 id="fluent-assembly-with-the-builder">Fluent assembly with the builder</h2>
+<pre><code class="lang-csharp">var filter = new TextFilterBuilder()
+    .AddInclude(&quot;{error,warn}*&quot;)                 // brace alternation → two cheap prefix matchers
+    .AddIncludeRegex(@&quot;^audit-\d+$&quot;)
+    .AddExclude(&quot;*retry*&quot;)
+    .Build();
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../guides/text-filtering/index.html">Bodu.Text.Filtering guides</a></strong> - the grammar, the modes, and telemetry in depth.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - type map and scenario index.</li>
+<li><strong><a href="../../samples/text-filtering.html">Runnable samples</a></strong> - the FilteringTour console sample.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.html">Bodu.Text.Filtering API reference</a></strong> - full type-by-type docs.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

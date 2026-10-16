@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Natural string comparer | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Natural string comparer | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/core/natural-string-comparer.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="natural-string-comparer">Natural string comparer</h1>
+
+<p><em>Natural</em> (numeric-aware) ordering compares the digit runs embedded in strings by numeric value instead of character by character, so <code>file2</code> sorts before <code>file10</code> - the ordering Windows Explorer (<code>StrCmpLogicalW</code>) and Python's <code>natsort</code> produce. <a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> packages that behaviour as a stateless, thread-safe comparer with the same factory shape as <code>StringComparer</code>: <code>Ordinal</code>, <code>OrdinalIgnoreCase</code>, <code>CurrentCulture</code>, <code>CurrentCultureIgnoreCase</code>, and <code>Create(CultureInfo, bool)</code>.</p>
+<p>A few contract points worth keeping in mind:</p>
+<ul>
+<li><strong>Digit runs never overflow.</strong> Runs are compared by trimmed length and then digit by digit - they are never parsed into a bounded integer - so a 30-digit serial number compares correctly against a 29-digit one.</li>
+<li><strong>The order is total.</strong> Two runs with equal numeric value but different zero padding are <em>not</em> equal: when the strings are otherwise equal, the run with fewer leading zeros sorts first (<code>7</code> before <code>07</code>), keeping sorts deterministic.</li>
+<li><strong>Only ASCII digits <code>0</code>-<code>9</code> are numeric.</strong> Other Unicode digit classes are ordinary text, a <code>-</code> is just a character (no sign parsing), and there is no decimal, thousands-separator, or version-sort dotted-tuple handling - <code>.</code> merely separates adjacent runs.</li>
+<li><strong>Null and prefix ordering follow BCL conventions.</strong> <code>null</code> sorts before any string, the empty string before any non-empty one, and a strict prefix before the longer string (<code>file</code> before <code>file1</code>). At the same position a digit run sorts before non-digit text.</li>
+<li><strong>Equality and hashing agree.</strong> <code>Equals(x, y)</code> is exactly <code>Compare(x, y) == 0</code>, and <code>GetHashCode</code> assigns equal hashes to equal strings (culture-aware modes trade some hash distribution for that guarantee).</li>
+</ul>
+<h2 id="pattern-1---sort-file-style-names">Pattern 1 - Sort file-style names</h2>
+<p>Use the <code>Ordinal</code> instance wherever an <code>IComparer&lt;string&gt;</code> is accepted:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+var names = new[] { &quot;file10&quot;, &quot;file2&quot;, &quot;file1&quot; };
+
+Array.Sort(names, NaturalStringComparer.Ordinal);
+// names is now [&quot;file1&quot;, &quot;file2&quot;, &quot;file10&quot;]
+
+var ordered = names.OrderBy(n =&gt; n, NaturalStringComparer.OrdinalIgnoreCase);
+</code></pre>
+<p><code>OrdinalIgnoreCase</code> folds case the way <code>StringComparer.OrdinalIgnoreCase</code> does while still comparing digit runs numerically, so <code>FILE2</code> sorts before <code>file10</code>.</p>
+<h2 id="pattern-2---culture-aware-text-numeric-digits">Pattern 2 - Culture-aware text, numeric digits</h2>
+<p>The culture modes compare the non-digit segments with the culture's collation rules and leave digit-run handling unchanged. <code>CurrentCulture</code> and <code>CurrentCultureIgnoreCase</code> read <code>CultureInfo.CurrentCulture</code> at compare time (mirroring <code>StringComparer.CurrentCulture</code>); <code>Create</code> captures a specific culture:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Extensions;
+
+var german = NaturalStringComparer.Create(CultureInfo.GetCultureInfo(&quot;de-DE&quot;), ignoreCase: false);
+
+german.Compare(&quot;ä2&quot;, &quot;b10&quot;);                       // &lt; 0 - &quot;ä&quot; collates with &quot;a&quot;, and 2 &lt; 10
+NaturalStringComparer.Ordinal.Compare(&quot;ä2&quot;, &quot;b10&quot;); // &gt; 0 - ordinal compares code points
+</code></pre>
+<p>Because the comparer also implements <code>IEqualityComparer&lt;string?&gt;</code>, any instance can key a <code>HashSet&lt;string&gt;</code> or <code>Dictionary&lt;string, T&gt;</code> - for example to deduplicate names that differ only by case under <code>OrdinalIgnoreCase</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> - the full API surface, including the exact tiebreak and hashing contracts.</li>
+<li><a href="day-of-week-set.html">DayOfWeekSet</a> - another small, framework-style value primitive in <code>Bodu.Core</code>.</li>
+<li><a href="../topics/core-foundations.html">Core foundations</a> - the wider <code>Bodu.Core</code> toolbox.</li>
+<li><a href="../../docs/core/index.html">Core documentation</a> - concepts and getting started for <code>Bodu.Core</code>.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

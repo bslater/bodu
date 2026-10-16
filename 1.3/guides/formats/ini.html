@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Using INI | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Using INI | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/formats/ini.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="using-ini">Using INI</h1>
+
+<p><code>Bodu.Text.Ini</code> reads and writes sectioned <code>[name]</code> / <code>key=value</code> configuration files. The value model is a two-level object-of-objects: global keys (before the first section header) hoist onto the root, and each section is a nested object of string values.</p>
+<h2 id="pattern-1---query-a-document">Pattern 1 - query a document</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Ini.Document;
+
+using IniDocument document = IniDocument.Parse(File.ReadAllBytes(&quot;app.ini&quot;));
+IniElement root = document.RootElement;
+
+string environment = root.GetProperty(&quot;environment&quot;).GetString();      // global key
+IniElement server = root.GetProperty(&quot;server&quot;);                        // [server] section
+string host = server.GetProperty(&quot;host&quot;).GetString();
+
+foreach (IniProperty property in root.EnumerateObject())
+{
+    // Globals surface first (String kind), then sections (Object kind).
+    Console.WriteLine($&quot;{property.Name}: {property.Value.ValueKind}&quot;);
+}
+</code></pre>
+<h2 id="pattern-2---typed-binding-via-the-serializer">Pattern 2 - typed binding via the serializer</h2>
+<p>Scalar members bind global keys; object-shaped members (section POCOs or <code>Dictionary&lt;string, string&gt;</code>) bind sections:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+
+sealed class AppConfig
+{
+    public string? Environment { get; set; }                  // global key
+    public ServerSection? Server { get; set; }                // [server]
+    public Dictionary&lt;string, string&gt;? Logging { get; set; }  // [logging]
+}
+
+sealed class ServerSection
+{
+    public string? Host { get; set; }
+    public int Port { get; set; }
+}
+
+AppConfig config = IniSerializer.Deserialize&lt;AppConfig&gt;(
+    iniText, new IniSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower });
+</code></pre>
+<p>A section type, or the root type, may be a structure, nullable or not: a nullable structure is read into the structure, and a document without the section leaves the member <code>null</code>, as for a section of a class. <code>Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;</code> works as an all-sections root. Any type that implements <code>IDictionary&lt;string, TValue&gt;</code>, whether or not it also implements the non-generic <code>IDictionary</code>, binds as a root or a section dictionary in both directions, as <code>Dictionary&lt;,&gt;</code> does. A dictionary whose type is not keyed by <code>string</code>, such as <code>Hashtable</code>, <code>SortedList</code> or <code>Dictionary&lt;int, string&gt;</code>, is a collection rather than an object or a section: as the root, a section member, the global-section member or a root dictionary's entry it throws <code>IniSerializationException</code> in both directions, as a <code>List&lt;T&gt;</code> does. A dictionary entry that is not a section is one key, so its value must be <code>null</code> or a scalar, whatever the dictionary's value type: any other value, such as a <code>List&lt;T&gt;</code> or a class, throws <code>IniSerializationException</code> naming the section and the key, rather than being written as its <code>ToString()</code> text, which does not read back. A <code>null</code> entry of a dictionary root, written only under <code>IgnoreCondition.Never</code>, is decided by the dictionary's value type instead: a string-keyed dictionary type writes an empty section, as a POCO root's <code>null</code> section member does, a scalar or <code>object</code> writes an empty key, and any other type throws <code>IniSerializationException</code>. A <code>null</code> entry of a dictionary written as a section, the global section included, is decided the same way, except that a string-keyed dictionary type, which would be a third level, throws as well. A POCO root's type is checked whole, once per type and options instance, before the input is read or anything is written, and the check is on the type's shape, not the instance. A root member declared as <code>object</code> could be either a key or a section, so it throws <code>IniSerializationException</code> naming the member; declare it as a scalar, a section type or a string-keyed dictionary instead. A member nested beyond INI's two levels, such as a <code>List&lt;T&gt;</code> at the root or any member of a section type that is not a scalar, throws <code>IniSerializationException</code> naming the member too. The check covers every mapped member, whether it can be read, set or both, and the declared type of every section, whether or not the instance holds one, so a type is rejected in both directions or in neither: writing rejects it even while the section is <code>null</code>, and reading rejects it even when the document has no such section. A member left out with <code>[Ignore]</code> is not checked. A string-keyed dictionary, as the root or as a section, is checked by its entries' values instead, as described above.</p>
+<h3 id="the-global-section-name">The global section name</h3>
+<p>Hoisting global keys onto the root is ergonomic but ambiguous when a global key and a section share a name (always rejected), and impossible for a nested-dictionary root. <code>IniSerializerOptions.GlobalSectionName</code> routes the global entries to and from a reserved root key instead:</p>
+<pre><code class="lang-csharp">var options = new IniSerializerOptions { GlobalSectionName = &quot;global&quot; };
+var all = IniSerializer.Deserialize&lt;Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;&gt;(iniText, options);
+string env = all[&quot;global&quot;][&quot;environment&quot;];
+</code></pre>
+<h3 id="reflection-free-binding">Reflection-free binding</h3>
+<p>Annotate a partial section type with <code>[IniSection]</code> and reference the <code>Bodu.Text.Formats.Generators</code> source generator, and a static <code>IniFactory</code> property (<code>IIniSectionFactory&lt;ServerSection&gt;</code>) is emitted at compile time. The section overloads - <code>IniSerializer.SerializeSection(&quot;server&quot;, section, ServerSection.IniFactory)</code> / <code>DeserializeSection(iniText, &quot;server&quot;, ServerSection.IniFactory)</code> - bind one section through the factory instead of the reflection binder, making the path trimming- and AOT-safe. An empty section name addresses the document's global keys; duplicate-section merge still applies before binding.</p>
+<h2 id="pattern-3---comment-preserving-edits-with-the-mutable-dom">Pattern 3 - comment-preserving edits with the mutable DOM</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Nodes;
+
+IniObject root = IniNode.Parse(File.ReadAllBytes(&quot;app.ini&quot;));
+
+root[&quot;server&quot;].AsObject()[&quot;port&quot;].AsValue().Value = &quot;9090&quot;;   // edit in place, trivia kept
+
+var metrics = new IniObject();
+var enabled = new IniValue(&quot;true&quot;);
+enabled.LeadingComments.Add(&quot; scrape target&quot;);                 // authored comment
+metrics[&quot;enabled&quot;] = enabled;
+root[&quot;metrics&quot;] = metrics;
+
+File.WriteAllBytes(&quot;app.ini&quot;, root.ToUtf8Bytes());
+</code></pre>
+<p>Comment lines from the source are kept on the nodes they precede (<code>LeadingComments</code> on sections and values, <code>TrailingComments</code> per object), with two exceptions: a comment before a duplicate key that the duplicate-key policy discards (the earlier entry under the default <code>LastWins</code>, the later one under <code>FirstWins</code>) is lost with it, and every comment is written with the writer's <code>CommentPrefix</code>, <code>;</code> by default, so a <code>#</code> comment comes back as a <code>;</code> comment. Layout is canonicalized: <code>key=value</code> without padding, and global entries always precede the first section header. Inline comments are not modeled - the dialect keeps an inline <code>;</code> or <code>#</code> and the text after it as value content.</p>
+<h2 id="pattern-4---duplicate-policies">Pattern 4 - duplicate policies</h2>
+<p>Duplicates are resolved when the document is materialized, controlled by <code>IniDocumentOptions</code> (also on <code>IniSerializerOptions</code>):</p>
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Reader;
+
+var strict = new IniDocumentOptions
+{
+    DuplicateSectionBehavior = IniDuplicateSectionBehavior.Disallowed,
+    DuplicateKeyBehavior = IniDuplicateKeyBehavior.Disallowed,
+};
+using IniDocument document = IniDocument.Parse(bytes, IniReaderOptions.Default, strict);
+</code></pre>
+<p>The defaults merge repeated sections and keep the last duplicate key - the permissive Windows-profile reading. <code>IniSerializerDefaults.Strict</code> selects <code>Disallowed</code> for both - Python <code>configparser</code> strict mode.</p>
+<h2 id="the-two-readers">The two readers</h2>
+<p><code>Utf8IniReader</code> streams the file <strong>as authored</strong> (section headers, keys, values, comments, in source order). The normalized <code>IniDocumentReader</code> pre-parses the whole document - duplicate-section merge declares structure out of source order - and emits the logical object-of-objects token stream that the serializer and read-only DOM consume.</p>
+<h2 id="dialect">Dialect</h2>
+<p><code>=</code> only (no <code>:</code>), keys and values trimmed of the spaces and tabs around them, values otherwise literal to end of line (quotes preserved, inline <code>;</code>/<code>#</code> kept as content), <code>;</code> and <code>#</code> full-line comments, BOM skipped, LF/CRLF/CR equivalent. See <a href="../../docs/formats/parser-policies.html">Parser policies</a>.</p>
+<p>A section name runs to the first <code>]</code> that only whitespace or a comment follows, so a name may contain <code>]</code>: <code>[foo]bar]</code> names the section <code>foo]bar</code>, and <code>[server] ; primary</code> names <code>server</code>. A comment after a header is skipped, not reported as a comment token, so the mutable DOM does not keep it; any other text after the header, as in <code>[server] primary</code>, throws <code>IniFormatException</code>.</p>
+<h2 id="writing">Writing</h2>
+<p><code>Utf8IniWriter</code> writes only text that <code>Utf8IniReader</code> reads back unchanged, and throws <code>ArgumentException</code> for the text below, so the mutable DOM's <code>WriteTo</code> and <code>ToUtf8Bytes</code> refuse it too, and the serializer's <code>Serialize</code>, <code>SerializeAsync</code> and <code>SerializeSection</code> overloads report it as an <code>IniSerializationException</code> that names the section and key, with the writer's <code>ArgumentException</code> as its inner exception:</p>
+<ul>
+<li>a <strong>value</strong> containing a line break, which a <code>key=value</code> line cannot hold, or beginning or ending with a space or tab, which the reader trims (an empty value is written as <code>key=</code>);</li>
+<li>a <strong>key</strong> that is empty, begins or ends with a space or tab, contains <code>=</code> or a line break, or begins with <code>[</code>, <code>;</code> or <code>#</code>, which would read back as another key, a section header or a comment (<code>#</code> is refused even where <code>#</code> comments are disallowed, because the writer cannot know how its output will be read);</li>
+<li>a <strong>section name</strong> that is empty, begins or ends with a space or tab, contains a line break, or holds a <code>]</code> followed, after optional whitespace, by <code>;</code> or <code>#</code>, where the reader would end the name (any other <code>]</code> is fine: <code>WriteSectionHeader(&quot;foo]bar&quot;)</code> writes <code>[foo]bar]</code>, which reads back as <code>foo]bar</code>);</li>
+<li>a <strong>key or section name</strong> that begins with U+FEFF, which the reader skips as a byte order mark at the start of a document (refused wherever the name is written, so that the rule does not depend on position).</li>
+</ul>
+<p>A comment containing line breaks is written as one comment line per line, each with the comment prefix, so <code>WriteComment(&quot;first\nsecond&quot;)</code> writes <code>;first</code> and <code>;second</code>.</p>
+<h2 id="exceptions">Exceptions</h2>
+<p><code>IniFormatException</code> for malformed input and duplicate-policy violations (line/offset attached; a duplicate is reported at the offending section header or key); <code>IniSerializationException</code> for binding failures (non-object root, depth beyond two levels, missing <code>[Required]</code> member, non-convertible value, a key, section name or value INI cannot represent); <code>ArgumentException</code> from the writer and the mutable DOM for text they refuse to write (see <a href="#writing">Writing</a>).</p>
+<h2 id="when-to-reach-for-bodutextconfiguration-instead">When to reach for <code>Bodu.Text.Configuration</code> instead</h2>
+<p>When you need EditorConfig-style behaviour - glob-targeted sections, layered resolution, typed views with diagnostics - use <code>Bodu.Text.Configuration</code>. It carries its own INI document model and does not depend on this package.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="streaming.html">Streams and token-level I/O</a></li>
+<li><a href="choosing-a-format.html">Choosing a text format</a></li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

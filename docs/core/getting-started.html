@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/core/getting-started.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/core/getting-started.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -90,22 +90,27 @@
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.Core
 </code></pre>
-<p>Targets <code>net8.0</code>. No external runtime dependencies. <code>Bodu.Core</code> covers the buffers, extensions, threading, and functional surfaces; the specialized collection catalogue ships in the companion <a href="../collections/getting-started.html"><code>Bodu.Collections</code></a> package (namespaces unchanged; it depends on <code>Bodu.Core</code>), and the thread-safe collections in <a href="../collections-concurrent/getting-started.html"><code>Bodu.Collections.Concurrent</code></a>:</p>
+<p>Targets <code>net8.0</code> and <code>net10.0</code>. No external runtime dependencies. <code>Bodu.Core</code> covers the buffers, extensions, threading, and functional surfaces; the specialized collection catalogue ships in the companion <a href="../collections/getting-started.html"><code>Bodu.Collections</code></a> package (namespaces unchanged; it depends on <code>Bodu.Core</code>), and the thread-safe collections in <a href="../collections-concurrent/getting-started.html"><code>Bodu.Collections.Concurrent</code></a>:</p>
 <pre><code class="lang-bash">dotnet add package Bodu.Collections             # collection catalogue
 dotnet add package Bodu.Collections.Concurrent  # thread-safe variants
 </code></pre>
 <h2 id="minimal-samples">Minimal samples</h2>
 <p>Every sample below needs only <code>Bodu.Core</code>. For collection samples (<code>CircularBuffer&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey, TValue&gt;</code>, <code>Deque&lt;T&gt;</code>, and the rest of the catalogue), see the <a href="../collections/getting-started.html">Bodu.Collections getting-started page</a>.</p>
-<h3 id="week-pattern-weekpattern">Week pattern (<code>WeekPattern</code>)</h3>
+<h3 id="calendar-value-sets-dayofweekset-monthset-hourset-">Calendar value sets (<code>DayOfWeekSet</code>, <code>MonthSet</code>, <code>HourSet</code>, ...)</h3>
+<!-- run -->
 <pre><code class="lang-csharp">using Bodu;
 
-WeekPattern weekdays = WeekPattern.Parse(&quot;_MTWTF_&quot;);
-WeekPattern weekend  = WeekPattern.Parse(&quot;SaSu&quot;);
-WeekPattern allDays  = weekdays | weekend;
+DayOfWeekSet weekdays = DayOfWeekSet.Parse(&quot;_MTWTF_&quot;);
+DayOfWeekSet weekend  = DayOfWeekSet.Parse(&quot;S_____S&quot;);
+DayOfWeekSet allDays  = weekdays | weekend;
 
 bool monday = weekdays.Contains(DayOfWeek.Monday); // true
+
+MonthSet quarterEnds = MonthSet.Parse(&quot;3,6,9,12&quot;);
+HourSet  openHours   = HourSet.Parse(&quot;9-17&quot;);
+bool open = openHours.Contains(new DateTime(2025, 3, 31, 10, 0, 0).Hour); // true
 </code></pre>
-<p><code>WeekPattern</code> is an immutable <code>readonly struct</code>, so <code>With</code> / <code>Without</code> and the <code>|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code> operators each return a new value. Presets <code>WeekPattern.Empty</code>, <code>WeekPattern.Weekdays</code>, and <code>WeekPattern.Weekend</code> cover the common cases.</p>
+<p>Each set is an immutable <code>readonly struct</code>, so <code>With</code> / <code>Without</code> and the <code>|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code> operators each return a new value. Presets <code>DayOfWeekSet.Empty</code>, <code>DayOfWeekSet.Weekdays</code>, and <code>DayOfWeekSet.Weekend</code> cover the common cases; the numeric sets read and write a list of values and ranges (<code>&quot;9-17&quot;</code>) by default, and also a list without ranges (<code>L</code>), binary (<code>B</code>), and for months a mask of initials (<code>J</code>). <code>DayOfWeekSet</code> and the five numeric sets all implement <code>ICalendarValueSet&lt;TSelf, TValue&gt;</code>, so one generic method can take any of them. See the <a href="../../guides/core/day-of-week-set.html">DayOfWeekSet</a> and <a href="../../guides/core/calendar-value-sets.html">calendar value sets</a> guides.</p>
 <h3 id="railway-outcomes-optiont--resultt">Railway outcomes (<code>Option&lt;T&gt;</code> / <code>Result&lt;T&gt;</code>)</h3>
 <p>Model &quot;might be absent&quot; and &quot;might fail&quot; as values, and chain the happy path through combinators:</p>
 <pre><code class="lang-csharp">using Bodu.Functional;
@@ -150,7 +155,7 @@ public async Task WriteAsync(Entry entry, CancellationToken cancellationToken)
     }
 }   // releaser disposes → lock released, next waiter resumes
 </code></pre>
-<p><code>AsyncSemaphore</code>, <code>AsyncReaderWriterLock</code>, the async reset/countdown events, <code>AsyncLazy&lt;T&gt;</code>, <code>AsyncDebouncer</code>, and <code>RateGate</code> follow the same awaitable, cancellation-aware shape.</p>
+<p><code>AsyncSemaphore</code>, <code>AsyncReaderWriterLock</code>, the async reset/countdown events, <code>AsyncLazy&lt;T&gt;</code>, and <code>AsyncDebouncer</code> follow the same awaitable, cancellation-aware shape; <code>RateGate</code> is a synchronous gate whose <code>TryInvoke</code> admits at most one call per interval.</p>
 <h3 id="date-arithmetic-datetimeextensions">Date arithmetic (<code>DateTimeExtensions</code>)</h3>
 <pre><code class="lang-csharp">using Bodu.Extensions;
 
@@ -159,9 +164,9 @@ DateTime today = DateTime.Today;
 DateTime startOfWeek  = today.FirstDateOfWeek();                 // culture's first day of the current week
 DateTime nextFriday   = today.NextDateOfWeek(DayOfWeek.Friday);  // strictly after today
 DateTime endOfQuarter = today.LastDateOfQuarter();              // calendar Q-end
-int isoWeek           = today.IsoWeekOfYear();                  // ISO 8601 week number (method, not property)
+int isoWeek           = today.IsoWeekOfYear;                    // ISO 8601 week number (C# 14 extension property)
 </code></pre>
-<p><code>FirstDateOfWeek</code> has overloads taking a <code>CultureInfo</code> or a <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset; <code>LastDateOfQuarter</code> accepts a <a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> (e.g. <code>AprilToMarch</code>, <code>April6ToApril5</code> for the UK tax year) so the same call covers fiscal calendars. The <code>DateOnly</code> equivalents live on <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a>, which adds an <code>Age</code> calculation.</p>
+<p><code>IsoWeekOfYear</code> is read without parentheses; consuming the C# 14 extension properties needs <code>&lt;LangVersion&gt;14&lt;/LangVersion&gt;</code> (or <code>latest</code> on the .NET 10 SDK) - see the <a href="../../guides/core/date-extensions.html">date and time extensions guide</a>. <code>FirstDateOfWeek</code> has overloads taking a <code>CultureInfo</code> or a <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset; <code>LastDateOfQuarter</code> accepts a <a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> (e.g. <code>AprilToMarch</code>, <code>April6ToApril5</code> for the UK tax year) so the same call covers fiscal calendars. The <code>DateOnly</code> equivalents, <code>Age</code> included, live on <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a>.</p>
 <h3 id="centralized-argument-validation-throwhelper">Centralized argument validation (<code>ThrowHelper</code>)</h3>
 <pre><code class="lang-csharp">using Bodu;
 
@@ -199,7 +204,7 @@ public static double Average(IReadOnlyList&lt;int&gt; values)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_GcmModeTransform" data-uid="Bodu.Security.Cryptography.GcmModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 GcmModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ GcmModeTransform Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs">GcmModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs">GcmModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies Galois/Counter Mode (GCM) to a 128-bit block cipher, providing single-pass authenticated encryption with
@@ -251,10 +251,10 @@ data at <code>2⁶⁴</code> bits per <code>(key, nonce)</code> pair. <a class="
 are dead code through the public <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> surface today (the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>-typed
 length caps inputs at ≈ 2 GiB, far below either limit) but document the invariant at the call site and protect any
 future surface that admits longer inputs. The 32-bit counter is separately guarded against wrapping past
-<code>0xFFFFFFFF</code> - see <code>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</code>.
+<code>0xFFFFFFFF</code>.
 </p>
 <p>
-<strong>When to use GCM.</strong> The default modern AEAD mode - single-pass, parallelisable, and
+<strong>When to use GCM.</strong> The default modern AEAD mode - single-pass, parallelizable, and
 hardware-accelerated on AES-NI / PCLMULQDQ. The cost is fragility under nonce reuse: a single repeated
 <code>(key, nonce)</code> pair leaks the GHASH subkey and forfeits authentication forever. For nonce-misuse resistance
 prefer <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> or <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>; for constrained environments prefer
@@ -263,7 +263,7 @@ prefer <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html
 </p>
 <p>
 <strong>When to use GCM.</strong> The default modern AEAD mode - TLS 1.2/1.3, IPsec ESP, SSH, QUIC, and most
-file-format AEAD layers all use AES-GCM. Single-pass, parallelisable, hardware-accelerated on AES-NI / PCLMULQDQ,
+file-format AEAD layers all use AES-GCM. Single-pass, parallelizable, hardware-accelerated on AES-NI / PCLMULQDQ,
 and the fastest AEAD on commodity x86/ARM. The cost is fragility under nonce reuse: a single repeated
 <code>(key, nonce)</code> pair leaks the GHASH key and forfeits authentication forever. Use only when the caller can <em>
 guarantee</em> nonce uniqueness - usually via a 96-bit counter or a random nonce drawn from a large enough space.
@@ -283,7 +283,7 @@ fragility profile prefer <a class="xref" href="Bodu.Security.Cryptography.OcbMod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_GcmModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_Nonce_" data-uid="Bodu.Security.Cryptography.GcmModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,Bodu.Security.Cryptography.Nonce)">
   GcmModeTransform(IBlockCipher, Nonce)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -323,8 +323,8 @@ produced by <a class="xref" href="Bodu.Security.Cryptography.Nonce.html#Bodu_Sec
     <dd><p><code class="paramref">cipher</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p><code class="paramref">cipher</code> does not have a 16-byte block size, or <code class="paramref">nonce</code> is not exactly
-<span class="xref">Bodu.Security.Cryptography.GcmModeTransform.NonceSize</span> bytes.</p>
+    <dd><p><code class="paramref">cipher</code> does not have a 16-byte block size, or <code class="paramref">nonce</code> is not exactly 12
+bytes.</p>
 </dd>
   </dl>
 
@@ -337,7 +337,7 @@ produced by <a class="xref" href="Bodu.Security.Cryptography.Nonce.html#Bodu_Sec
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_GcmModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.GcmModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
   GcmModeTransform(IBlockCipher, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -373,8 +373,8 @@ produced by <a class="xref" href="Bodu.Security.Cryptography.Nonce.html#Bodu_Sec
     <dd><p><code class="paramref">cipher</code> or <code class="paramref">nonce</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p><code class="paramref">cipher</code> does not have a 16-byte block size, or <code class="paramref">nonce</code> is not exactly
-<span class="xref">Bodu.Security.Cryptography.GcmModeTransform.NonceSize</span> bytes.</p>
+    <dd><p><code class="paramref">cipher</code> does not have a 16-byte block size, or <code class="paramref">nonce</code> is not exactly 12
+bytes.</p>
 </dd>
   </dl>
 
@@ -387,7 +387,7 @@ produced by <a class="xref" href="Bodu.Security.Cryptography.Nonce.html#Bodu_Sec
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_GcmModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.GcmModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.ReadOnlySpan{System.Byte})">
   GcmModeTransform(IBlockCipher, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -423,8 +423,8 @@ produced by <a class="xref" href="Bodu.Security.Cryptography.Nonce.html#Bodu_Sec
     <dd><p><code class="paramref">cipher</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p><code class="paramref">cipher</code> does not have a 16-byte block size, or <code class="paramref">nonce</code> is not exactly
-<span class="xref">Bodu.Security.Cryptography.GcmModeTransform.NonceSize</span> bytes.</p>
+    <dd><p><code class="paramref">cipher</code> does not have a 16-byte block size, or <code class="paramref">nonce</code> is not exactly 12
+bytes.</p>
 </dd>
   </dl>
 
@@ -441,7 +441,7 @@ produced by <a class="xref" href="Bodu.Security.Cryptography.Nonce.html#Bodu_Sec
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_GcmModeTransform_TagSize" data-uid="Bodu.Security.Cryptography.GcmModeTransform.TagSize">
   TagSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -482,7 +482,7 @@ produced by <a class="xref" href="Bodu.Security.Cryptography.Nonce.html#Bodu_Sec
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_GcmModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.GcmModeTransform.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -520,19 +520,19 @@ Must be at least <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform
 
   <h4 class="section" id="Bodu_Security_Cryptography_GcmModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-<strong>Authentication failure contract.</strong> All implementations honour the same observable guarantee on
-tag mismatch: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> is thrown and no plaintext is released to the caller.
+<strong>Authentication failure contract.</strong> All implementations honor the same observable guarantee on tag
+mismatch: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> is thrown and no plaintext is released to the caller.
 Implementations achieve this in one of two ways:
 </p>
 <ul><li>
 <em>Verify-before-release.</em> The tag is compared in constant time before any plaintext byte is written to
-<code class="paramref">output</code>. Used by GCM, CCM, EAX, and OCB.
+<code class="paramref">output</code>. Used by GCM and EAX.
 </li><li>
 <em>Write-then-clear.</em> The candidate plaintext is streamed into <code class="paramref">output</code> first because the
 algorithm's structure requires the transform to complete before the tag can be computed. The tag is then
 compared in constant time; on mismatch <code class="paramref">output</code> is zeroed via
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.zeromemory">ZeroMemory(Span&lt;byte&gt;)</a> before the exception is thrown. Used by Ascon-AEAD-128 and
-GCM-SIV.
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.zeromemory">ZeroMemory(Span&lt;byte&gt;)</a> before the exception is thrown. Used by CCM, OCB, SIV,
+GCM-SIV, and Ascon-AEAD-128.
 </li></ul>
 <p>
 In both cases the API is strictly one-shot: a failed decryption invalidates the instance, and subsequent calls
@@ -574,7 +574,7 @@ transforms are single-use per message - construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_GcmModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.GcmModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -607,7 +607,7 @@ ownership remains with the caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_GcmModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.GcmModeTransform.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -674,11 +674,11 @@ int-typed span surface today.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_GcmModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.GcmModeTransform.ProcessAssociatedData(System.ReadOnlySpan{System.Byte})">
   ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/GcmModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Processes associated data (AAD) that will be authenticated but not encrypted. Must be called before
+  <div class="markdown level1 summary"><p>Processes associated data (AAD) that will be authenticated but not encrypted. Call it at most once, before
 <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -701,6 +701,12 @@ int-typed span surface today.</p>
 
 
 
+  <h4 class="section" id="Bodu_Security_Cryptography_GcmModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The call is optional for most implementations: when it is omitted, the message is authenticated with empty
+associated data. <a class="xref" href="Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a> is the exception - it requires the call, with an empty span when
+there is no associated data, and its <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> and <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> without it.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -757,7 +763,7 @@ public int-typed span surface today.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

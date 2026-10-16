@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>IntervalTree&lt;T&gt; Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="IntervalTree&lt;T&gt; Class
+ | BODU ">
+      
+      <meta name="description" content="Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries ( - all intervals containing a point) and overlap-window queries ( - all intervals intersecting a window) in O(log n + k).">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Collections.Generic.IntervalTree`1">
+
+
+
+
+  <h1 id="Bodu_Collections_Generic_IntervalTree_1" data-uid="Bodu.Collections.Generic.IntervalTree`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+IntervalTree&lt;T&gt; Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Collections_Generic_IntervalTree_1_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs">IntervalTree{T}.Enumerator.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries
+(<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_">QueryPoint(T)</a> - all intervals containing a point) and overlap-window queries
+(<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_">QueryOverlaps(T, T)</a> - all intervals intersecting a window) in O(log n + k).</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class IntervalTree&lt;T&gt; : IReadOnlyCollection&lt;(T Low, T High)&gt;, IEnumerable&lt;(T Low, T High)&gt;, IEnumerable where T : notnull</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the interval endpoints. Endpoints must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">IntervalTree&lt;T&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;(T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.low">Low</a>, T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.high">High</a>)&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.low">Low</a>, T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.high">High</a>)&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Collections_Generic_IntervalTree_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">var bookings = new IntervalTree&lt;int&gt;();
+bookings.Add(9, 11);    // 09:00-11:00
+bookings.Add(10, 12);   // 10:00-12:00 - overlaps are stored, not merged
+bookings.Add(14, 15);
+
+foreach ((int low, int high) in bookings.QueryPoint(10))
+    Console.WriteLine($"[{low}, {high}]");            // [9, 11] then [10, 12]
+
+bool clash = bookings.Intersects(11, 13);             // true - [10, 12] reaches into the window</code></pre>
+
+
+  <h2 id="Bodu_Collections_Generic_IntervalTree_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a> is backed by a max-endpoint augmented red-black tree ordered by the (low, high)
+lexicographic pair: every node carries the greatest high endpoint in its subtree, maintained through all rotations,
+so queries prune whole subtrees that cannot reach the probe. See
+<code>Bodu.Collections/docs/interval-tree-design.md</code> for the design decision record.
+</p>
+<p>
+This type is the only member of the Bodu range family that <em>stores</em> overlapping intervals.
+<a class="xref" href="Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a> and <a class="xref" href="Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a> are sorted non-overlapping maps that
+merge or reject overlapping inserts, and <code>Bodu.Numerics</code>' <code>IntervalSet&lt;T&gt;</code> normalizes its contents
+to disjoint ranges - reach for this type when the overlaps themselves are the data.
+</p>
+<p>
+Intervals are closed on both ends: [low, high] contains every point x with low &lt;= x &lt;= high under the active
+comparer, and low equal to high is a valid degenerate interval. Duplicate intervals are permitted - each
+<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Add__0__0_">Add(T, T)</a> of an existing (low, high) pair increments a per-node multiplicity, and <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Remove__0__0_">Remove(T, T)</a>
+removes one occurrence at a time. <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Count">Count</a> and enumeration include duplicates.
+</p>
+<p>
+This type is not thread-safe.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1__ctor_" data-uid="Bodu.Collections.Generic.IntervalTree`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1__ctor" data-uid="Bodu.Collections.Generic.IntervalTree`1.#ctor">
+  IntervalTree()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a> class using the default comparer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalTree()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1__ctor_" data-uid="Bodu.Collections.Generic.IntervalTree`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1__ctor_System_Collections_Generic_IComparer__0__" data-uid="Bodu.Collections.Generic.IntervalTree`1.#ctor(System.Collections.Generic.IComparer{`0})">
+  IntervalTree(IComparer&lt;T&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a> class using the specified comparer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalTree(IComparer&lt;T&gt;? comparer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The endpoint ordering comparer, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the default comparer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_Comparer_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Comparer*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_Comparer" data-uid="Bodu.Collections.Generic.IntervalTree`1.Comparer">
+  Comparer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the comparer that defines the endpoint ordering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IComparer&lt;T&gt; Comparer { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The active endpoint comparer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_Count_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Count*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_Count" data-uid="Bodu.Collections.Generic.IntervalTree`1.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the total number of stored intervals, duplicates included.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of intervals currently stored in the tree.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_Add_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Add*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_Add__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Add(`0,`0)">
+  Add(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds the closed interval [<code class="paramref">low</code>, <code class="paramref">high</code>] to the tree.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Add(T low, T high)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>low</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower endpoint. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>high</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper endpoint. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_Add__0__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Overlapping intervals are always accepted, and adding an interval equal to one already stored records a
+duplicate occurrence rather than being rejected - the per-node multiplicity is incremented and
+<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Count">Count</a> grows by one.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">low</code> or <code class="paramref">high</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">low</code> orders after <code class="paramref">high</code> under the active comparer.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_Clear_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Clear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_Clear" data-uid="Bodu.Collections.Generic.IntervalTree`1.Clear">
+  Clear()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes all intervals from the tree.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Clear()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_Contains_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Contains*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_Contains__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Contains(`0,`0)">
+  Contains(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the tree stores the exact interval [<code class="paramref">low</code>, <code class="paramref">high</code>].</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Contains(T low, T high)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>low</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower endpoint. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>high</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper endpoint. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if at least one occurrence of the exact interval is stored; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_Contains__0__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is an exact-match test on the (low, high) pair. Use <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Intersects__0__0_">Intersects(T, T)</a> or
+<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_IntersectsPoint__0_">IntersectsPoint(T)</a> to ask whether any stored interval merely overlaps a window or point.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">low</code> or <code class="paramref">high</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">low</code> orders after <code class="paramref">high</code> under the active comparer.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_GetEnumerator_" data-uid="Bodu.Collections.Generic.IntervalTree`1.GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_GetEnumerator" data-uid="Bodu.Collections.Generic.IntervalTree`1.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the stored intervals in ascending (low, high) order, repeating
+duplicate intervals once per occurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalTree&lt;T&gt;.Enumerator GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree</a>&lt;T&gt;.<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.Enumerator.html">Enumerator</a></dt>
+    <dd><p>An <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.Enumerator.html">IntervalTree&lt;T&gt;.Enumerator</a> over the stored intervals.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_Intersects_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Intersects*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_Intersects__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Intersects(`0,`0)">
+  Intersects(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether any stored interval intersects the closed window [<code class="paramref">low</code>,
+<code class="paramref">high</code>], without enumerating the matches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Intersects(T low, T high)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>low</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower edge of the window. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>high</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper edge of the window. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if at least one stored interval overlaps the window; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_Intersects__0__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is the early-exit form of <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_">QueryOverlaps(T, T)</a> - a single O(log n) descent regardless of how many
+intervals match.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">low</code> or <code class="paramref">high</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">low</code> orders after <code class="paramref">high</code> under the active comparer.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_IntersectsPoint_" data-uid="Bodu.Collections.Generic.IntervalTree`1.IntersectsPoint*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_IntersectsPoint__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.IntersectsPoint(`0)">
+  IntersectsPoint(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether any stored interval contains <code class="paramref">point</code>, without enumerating the matches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IntersectsPoint(T point)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>point</code> <span class="xref">T</span></dt>
+    <dd><p>The point to test. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if at least one stored interval contains the point; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_IntersectsPoint__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is the early-exit form of <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_">QueryPoint(T)</a> - a single O(log n) descent regardless of how many
+intervals match.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">point</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps_" data-uid="Bodu.Collections.Generic.IntervalTree`1.QueryOverlaps*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.QueryOverlaps(`0,`0)">
+  QueryOverlaps(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns all stored intervals intersecting the closed window [<code class="paramref">low</code>, <code class="paramref">high</code>],
+in ascending (low, high) order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;(T Low, T High)&gt; QueryOverlaps(T low, T high)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>low</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower edge of the window. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>high</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper edge of the window. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.low">Low</a>, T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.high">High</a>)&gt;</dt>
+    <dd><p>A lazily evaluated sequence of the intervals overlapping the window.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+An interval matches when it shares at least one point with the window - touching at a single common endpoint
+counts, because both the stored intervals and the window are closed. Duplicate intervals are repeated once per
+stored occurrence. Iterating costs O(log n + k) for k reported intervals in the common case.
+</p>
+<p>
+The sequence is live: each fresh iteration re-resolves against the tree's current state. Within a single
+iteration it is fail-fast - any structural mutation causes the next advance to throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">low</code> or <code class="paramref">high</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">low</code> orders after <code class="paramref">high</code> under the active comparer.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_QueryPoint_" data-uid="Bodu.Collections.Generic.IntervalTree`1.QueryPoint*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.QueryPoint(`0)">
+  QueryPoint(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns all stored intervals containing <code class="paramref">point</code> (the stabbing query), in ascending (low, high)
+order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;(T Low, T High)&gt; QueryPoint(T point)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>point</code> <span class="xref">T</span></dt>
+    <dd><p>The point to stab. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.low">Low</a>, T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.high">High</a>)&gt;</dt>
+    <dd><p>A lazily evaluated sequence of the intervals whose closed range contains the point.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Both endpoints are inclusive: an interval [low, high] matches when low &lt;= point &lt;= high under the active
+comparer. Duplicate intervals are repeated once per stored occurrence. Iterating costs O(log n + k) for k
+reported intervals in the common case.
+</p>
+<p>
+The sequence is live: each fresh iteration re-resolves against the tree's current state. Within a single
+iteration it is fail-fast - any structural mutation causes the next advance to throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">point</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_Remove_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Remove*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_Remove__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Remove(`0,`0)">
+  Remove(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes one occurrence of the exact interval [<code class="paramref">low</code>, <code class="paramref">high</code>] from the tree.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Remove(T low, T high)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>low</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower endpoint. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>high</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper endpoint. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if an occurrence was removed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the exact
+interval is not stored.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_Remove__0__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Only an exact (low, high) match is removed - intervals that merely overlap the arguments are untouched. When the
+interval is stored more than once, one occurrence is removed per call; the node itself is deleted only when its
+multiplicity reaches zero.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">low</code> or <code class="paramref">high</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">low</code> orders after <code class="paramref">high</code> under the active comparer.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="eii">Explicit Interface Implementations
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_System_Collections_Generic_IEnumerable_System_ValueTuple_T_T___GetEnumerator_" data-uid="Bodu.Collections.Generic.IntervalTree`1.System#Collections#Generic#IEnumerable{System#ValueTuple{T,T}}#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_System_Collections_Generic_IEnumerable_System_ValueTuple_T_T___GetEnumerator" data-uid="Bodu.Collections.Generic.IntervalTree`1.System#Collections#Generic#IEnumerable{System#ValueTuple{T,T}}#GetEnumerator">
+  IEnumerable&lt;(T, T)&gt;.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator&lt;(T Low, T High)&gt; IEnumerable&lt;(T, T)&gt;.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;(T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.low">Low</a>, T <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple--0,-0-.high">High</a>)&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_IntervalTree_1_System_Collections_IEnumerable_GetEnumerator_" data-uid="Bodu.Collections.Generic.IntervalTree`1.System#Collections#IEnumerable#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_IntervalTree_1_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Collections.Generic.IntervalTree`1.System#Collections#IEnumerable#GetEnumerator">
+  IEnumerable.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through a collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator IEnumerable.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a> object that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

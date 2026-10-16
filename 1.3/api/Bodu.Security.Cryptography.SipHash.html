@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>SipHash Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="SipHash Class
+ | BODU ">
+      
+      <meta name="description" content="Base class for the SipHash family of keyed pseudorandom functions, a fast keyed hash designed by Aumasson and Bernstein for short input messages. See the official SipHash specification for details.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Security.Cryptography.SipHash">
+
+
+
+
+  <h1 id="Bodu_Security_Cryptography_SipHash" data-uid="Bodu.Security.Cryptography.SipHash" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+SipHash Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_SipHash_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs">SipHash.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Base class for the <code>SipHash</code> family of keyed pseudorandom functions, a fast keyed hash designed by Aumasson and
+Bernstein for short input messages. See the official <a href="https://131002.net/siphash/">SipHash specification</a>
+for details.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class SipHash : KeyedBlockHashAlgorithm, ICryptoTransform, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a></div>
+      <div><span class="xref">SipHash</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedBlockHashAlgorithm_KeySizeValue">KeyedBlockHashAlgorithm.KeySizeValue</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedBlockHashAlgorithm_KeyValue">KeyedBlockHashAlgorithm.KeyValue</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedBlockHashAlgorithm_Initialize">KeyedBlockHashAlgorithm.Initialize()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedBlockHashAlgorithm_Key">KeyedBlockHashAlgorithm.Key</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_HashCore_System_ReadOnlySpan_System_Byte__">BlockHashAlgorithm.HashCore(ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_HashFinal">BlockHashAlgorithm.HashFinal()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_">BlockHashAlgorithm.PadBlock(ReadOnlySpan&lt;byte&gt;, ulong)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_ShouldPadFinalBlock">BlockHashAlgorithm.ShouldPadFinalBlock()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_AllowUnalignedFinalBlock">BlockHashAlgorithm.AllowUnalignedFinalBlock</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_BlockSize">BufferedBlockHashAlgorithm.BlockSize</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_HashCore_System_Byte___System_Int32_System_Int32_">BufferedBlockHashAlgorithm.HashCore(byte[], int, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_ThrowIfDisposed">BufferedBlockHashAlgorithm.ThrowIfDisposed()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_ThrowIfInvalidState">BufferedBlockHashAlgorithm.ThrowIfInvalidState()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_IsDisposed">BufferedBlockHashAlgorithm.IsDisposed</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashsizevalue">HashAlgorithm.HashSizeValue</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashvalue">HashAlgorithm.HashValue</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.state">HashAlgorithm.State</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.clear">HashAlgorithm.Clear()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.computehash#system-security-cryptography-hashalgorithm-computehash(system-byte())">HashAlgorithm.ComputeHash(byte[])</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.computehash#system-security-cryptography-hashalgorithm-computehash(system-byte()-system-int32-system-int32)">HashAlgorithm.ComputeHash(byte[], int, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.computehash#system-security-cryptography-hashalgorithm-computehash(system-io-stream)">HashAlgorithm.ComputeHash(Stream)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.computehashasync">HashAlgorithm.ComputeHashAsync(Stream, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.create#system-security-cryptography-hashalgorithm-create">HashAlgorithm.Create()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.create#system-security-cryptography-hashalgorithm-create(system-string)">HashAlgorithm.Create(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.dispose#system-security-cryptography-hashalgorithm-dispose">HashAlgorithm.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">HashAlgorithm.TransformBlock(byte[], int, int, byte[], int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformfinalblock">HashAlgorithm.TransformFinalBlock(byte[], int, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.trycomputehash">HashAlgorithm.TryComputeHash(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.tryhashfinal">HashAlgorithm.TryHashFinal(Span&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hash">HashAlgorithm.Hash</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashsize">HashAlgorithm.HashSize</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.inputblocksize">HashAlgorithm.InputBlockSize</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.outputblocksize">HashAlgorithm.OutputBlockSize</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">HashAlgorithmExtensions.AppendDataAsync(HashAlgorithm, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, string, Encoding, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[], int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformBlock(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Security_Cryptography_SipHash_examples">Examples</h2>
+  <pre><code class="lang-csharp">using var sipHash = new SipHash64
+{
+    Key = myKey,
+    CompressionRounds = 4,
+    FinalizationRounds = 8,
+};
+byte[] tag = sipHash.ComputeHash(message);</code></pre>
+
+
+  <h2 id="Bodu_Security_Cryptography_SipHash_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Security.Cryptography.SipHash.html">SipHash</a> is a keyed hash function that requires a 128-bit (16-byte) secret key. It mixes each input
+block into four 64-bit state variables (<code>v0</code> through <code>v3</code>) using Add-Rotate-XOR (ARX) steps, and is
+designed to resist hash-flooding attacks against hash tables.
+</p>
+<p>
+This base class is extended by:
+</p>
+<ul><li>
+<a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> produces a 64-bit hash output suitable for compact keyed checksums.
+</li><li>
+<a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a> produces a 128-bit hash output offering increased collision resistance.
+</li></ul>
+<p>
+Each 64-bit input block is absorbed during a compression phase consisting of <a class="xref" href="Bodu.Security.Cryptography.SipHash.html#Bodu_Security_Cryptography_SipHash_CompressionRounds">CompressionRounds</a>
+rounds. Once all input has been processed, <a class="xref" href="Bodu.Security.Cryptography.SipHash.html#Bodu_Security_Cryptography_SipHash_FinalizationRounds">FinalizationRounds</a> rounds are applied to produce the final
+digest. The defaults (<code>c = 2</code>, <code>d = 4</code>) correspond to the standard <code>SipHash-2-4</code> parameterization.
+</p>
+<p>
+<strong>When to choose SipHash.</strong> SipHash is the de-facto standard for protecting hash tables and bloom
+filters against collision-based denial-of-service attacks - Python, Ruby, Rust, Perl, and OpenBSD's stdlib all use
+it for that purpose. Pick <a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> when 64 bits is enough; pick <a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a> when
+collision pressure on the tag width matters. For protocol-level message authentication over long messages prefer
+HMAC-SHA-256 or <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>-MAC. Do not use SipHash where the key may be exposed - its security target is
+hash-flooding resistance, not generic MAC strength.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash__ctor_" data-uid="Bodu.Security.Cryptography.SipHash.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.SipHash.#ctor(System.Int32)">
+  SipHash(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.SipHash.html">SipHash</a> class with a specified hash size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected SipHash(int hashSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hashSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The desired size of the final hash in bits. Supported values are 64 or 128.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">hashSize</code> is not 64 or 128.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_KeySize" data-uid="Bodu.Security.Cryptography.SipHash.KeySize">
+  KeySize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Length of the SipHash key is 128 bits (16 bytes).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int KeySize = 128</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  </section>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_MinCompressionRounds" data-uid="Bodu.Security.Cryptography.SipHash.MinCompressionRounds">
+  MinCompressionRounds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>The minimum number of compression rounds required by SipHash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MinCompressionRounds = 2</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  </section>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_MinFinalizationRounds" data-uid="Bodu.Security.Cryptography.SipHash.MinFinalizationRounds">
+  MinFinalizationRounds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>The minimum number of finalization rounds required by SipHash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MinFinalizationRounds = 4</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_AlgorithmName_" data-uid="Bodu.Security.Cryptography.SipHash.AlgorithmName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_AlgorithmName" data-uid="Bodu.Security.Cryptography.SipHash.AlgorithmName">
+  AlgorithmName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the fully qualified algorithm name, including the variant and hash output size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string AlgorithmName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_SipHash_AlgorithmName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Follows the convention &quot;SipHash-c-d-x&quot;, where:</p>
+<ul><li><code>c</code>: compression rounds</li><li><code>d</code>: finalization rounds</li><li><code>x</code>: output hash size in bits</li></ul>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_CanReuseTransform_" data-uid="Bodu.Security.Cryptography.SipHash.CanReuseTransform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_CanReuseTransform" data-uid="Bodu.Security.Cryptography.SipHash.CanReuseTransform">
+  CanReuseTransform
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the current transform can be reused.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanReuseTransform { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Always <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_CanTransformMultipleBlocks_" data-uid="Bodu.Security.Cryptography.SipHash.CanTransformMultipleBlocks*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.SipHash.CanTransformMultipleBlocks">
+  CanTransformMultipleBlocks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether multiple blocks can be transformed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanTransformMultipleBlocks { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if multiple blocks can be transformed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_CompressionRounds_" data-uid="Bodu.Security.Cryptography.SipHash.CompressionRounds*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_CompressionRounds" data-uid="Bodu.Security.Cryptography.SipHash.CompressionRounds">
+  CompressionRounds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the number of compression rounds applied to each input block during the SipHash computation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompressionRounds { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A positive integer greater than or equal to <a class="xref" href="Bodu.Security.Cryptography.SipHash.html#Bodu_Security_Cryptography_SipHash_MinCompressionRounds">MinCompressionRounds</a>. The default is 2.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_SipHash_CompressionRounds_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Compression rounds are performed for every 8-byte message block before finalization. Increasing this value
+improves diffusion and resistance to hash-flooding attacks, but also increases computation time.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the assigned value is less than <a class="xref" href="Bodu.Security.Cryptography.SipHash.html#Bodu_Security_Cryptography_SipHash_MinCompressionRounds">MinCompressionRounds</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the algorithm instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicunexpectedoperationexception">CryptographicUnexpectedOperationException</a></dt>
+    <dd><p>Thrown if the hash computation has already begun and the property is modified mid-operation.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_FinalizationRounds_" data-uid="Bodu.Security.Cryptography.SipHash.FinalizationRounds*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_FinalizationRounds" data-uid="Bodu.Security.Cryptography.SipHash.FinalizationRounds">
+  FinalizationRounds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the number of finalization rounds executed after all message blocks have been absorbed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int FinalizationRounds { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A positive integer greater than or equal to <a class="xref" href="Bodu.Security.Cryptography.SipHash.html#Bodu_Security_Cryptography_SipHash_MinFinalizationRounds">MinFinalizationRounds</a>. The default is 4.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_SipHash_FinalizationRounds_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Finalization rounds strengthen the avalanche effect after all input is processed. Increasing this value improves
+security at the cost of additional computation during final hash derivation.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the assigned value is less than <a class="xref" href="Bodu.Security.Cryptography.SipHash.html#Bodu_Security_Cryptography_SipHash_MinFinalizationRounds">MinFinalizationRounds</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the algorithm instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicunexpectedoperationexception">CryptographicUnexpectedOperationException</a></dt>
+    <dd><p>Thrown if the hash computation has already begun and the property is modified mid-operation.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_Dispose_" data-uid="Bodu.Security.Cryptography.SipHash.Dispose*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.SipHash.Dispose(System.Boolean)">
+  Dispose(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Releases the unmanaged resources used by the algorithm and clears the key from memory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to release both managed and unmanaged resources; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to release
+only unmanaged resources.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_SipHash_Dispose_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Ensures all internal secrets are overwritten with zeros before releasing resources.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_OnKeyChanged_" data-uid="Bodu.Security.Cryptography.SipHash.OnKeyChanged*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_OnKeyChanged" data-uid="Bodu.Security.Cryptography.SipHash.OnKeyChanged">
+  OnKeyChanged()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Rebuilds the internal SipHash state vectors from the current key whenever the key is assigned or the instance is
+re-initialized.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnKeyChanged()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_SipHash_OnKeyChanged_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>XORs the key halves with the SipHash initial constants, then applies the SipHash-128 finalization tweak if
+required.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_PadBlock_" data-uid="Bodu.Security.Cryptography.SipHash.PadBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.SipHash.PadBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Span{System.Byte})">
+  PadBlock(ReadOnlySpan&lt;byte&gt;, ulong, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Produces the SipHash final padding block: copies the residual 0-7 bytes into an 8-byte buffer and places the low
+byte of <code class="paramref">messageLength</code> into the last slot.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override int PadBlock(ReadOnlySpan&lt;byte&gt; block, ulong messageLength, Span&lt;byte&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>block</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The residual input bytes; length must be in <code>[0..7]</code>.</p>
+</dd>
+    <dt><code>messageLength</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The total processed message length in bytes. Only the low byte is used per the SipHash specification.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span receiving the padded block or blocks; at least two blocks long.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The padded 8-byte block.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">block</code> is longer than 7 bytes.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_ProcessBlock_" data-uid="Bodu.Security.Cryptography.SipHash.ProcessBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_ProcessBlock_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.SipHash.ProcessBlock(System.ReadOnlySpan{System.Byte})">
+  ProcessBlock(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Processes a single 64-bit block of data using SipHash compression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void ProcessBlock(ReadOnlySpan&lt;byte&gt; block)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>block</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The 64-bit block to process.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_SipHash_ProcessBlock_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Updates internal state using <span class="xref">Bodu.Security.Cryptography.SipHash.PerformSipRounds(System.Int32)</span> and XOR operations.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_SipHash_ProcessFinalBlock_" data-uid="Bodu.Security.Cryptography.SipHash.ProcessFinalBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_SipHash_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.SipHash.ProcessFinalBlock">
+  ProcessFinalBlock()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Finalizes the hash computation and produces the output hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override byte[] ProcessFinalBlock()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A byte array containing the final hash value (8 or 16 bytes).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_SipHash_ProcessFinalBlock_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Combines all partial input and applies the finalization round logic based on the configured output size.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a></div>
+  </div>
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

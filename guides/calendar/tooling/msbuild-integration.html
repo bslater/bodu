@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/calendar/tooling/msbuild-integration.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/tooling/msbuild-integration.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,6 +89,17 @@
 
 <p><code>Bodu.Globalization.Calendar.Build</code> compiles notable-date documents to sealed <code>.bcal</code> packs as part of <code>dotnet build</code>, incrementally, using the bundled <code>bodu-calendar</code> compiler. It is a <strong>development dependency</strong>: the package contributes a <code>.targets</code> file, an MSBuild task assembly, and the tool binaries, and adds no runtime reference to the consuming project. Validation failures surface as build errors carrying the same stable <code>BODU-CAL-*</code> lines the <a href="bodu-calendar-cli.html">command-line tool</a> prints.</p>
 <h2 id="pattern-1---reference-the-package-and-declare-packs">Pattern 1 - reference the package and declare packs</h2>
+<p>The package is <a href="../../../docs/package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a>, so pack it from a clone into a local feed first:</p>
+<pre><code class="lang-bash">dotnet pack Bodu.Globalization.Calendar.Build/src -c Release -o ./artifacts
+</code></pre>
+<p>Add that folder as a package source in the consuming solution's <code>nuget.config</code>, then reference the package at the version <code>dotnet pack</code> reported and declare the documents to compile:</p>
+<pre><code class="lang-xml">&lt;!-- nuget.config --&gt;
+&lt;configuration&gt;
+  &lt;packageSources&gt;
+    &lt;add key=&quot;bodu-local&quot; value=&quot;./artifacts&quot; /&gt;
+  &lt;/packageSources&gt;
+&lt;/configuration&gt;
+</code></pre>
 <pre><code class="lang-xml">&lt;ItemGroup&gt;
   &lt;PackageReference Include=&quot;Bodu.Globalization.Calendar.Build&quot; Version=&quot;…&quot; PrivateAssets=&quot;all&quot; /&gt;
 &lt;/ItemGroup&gt;
@@ -114,6 +125,31 @@
 </tbody>
 </table>
 <p>Each item compiles to <code>$(NotableDatePackOutputPath)&lt;Filename&gt;.bcal</code> and, by default, is copied into the project output directory beside the application.</p>
+<h3 id="from-a-clone-without-a-package">From a clone, without a package</h3>
+<p>A <code>ProjectReference</code> to the Build project does not work on its own: it does not import the package's <code>.targets</code>, so <code>NotableDatePack</code> items compile nothing and the build reports no error. To use the clone directly, import the <code>.targets</code> yourself and point the task and tool paths at the clone's build output, as the repository's <code>RulePackToolchain</code> sample does. The two project references only order the build, so the task and the tool exist before this project's targets run:</p>
+<pre><code class="lang-xml">&lt;PropertyGroup&gt;
+  &lt;!-- The root of your Bodu clone. --&gt;
+  &lt;BoduRepoRoot&gt;$(MSBuildThisFileDirectory)..\bodu\&lt;/BoduRepoRoot&gt;
+  &lt;BoduCalendarTaskAssembly&gt;$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\src\bin\$(Configuration)\netstandard2.0\Bodu.Globalization.Calendar.Build.dll&lt;/BoduCalendarTaskAssembly&gt;
+  &lt;BoduCalendarToolDll&gt;$(BoduRepoRoot)Bodu.Globalization.Calendar.Tool\src\bin\$(Configuration)\net8.0\Bodu.Globalization.Calendar.Tool.dll&lt;/BoduCalendarToolDll&gt;
+&lt;/PropertyGroup&gt;
+
+&lt;ItemGroup&gt;
+  &lt;ProjectReference Include=&quot;$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\src\Bodu.Globalization.Calendar.Build.csproj&quot;
+                    ReferenceOutputAssembly=&quot;false&quot; Private=&quot;false&quot; SkipGetTargetFrameworkProperties=&quot;true&quot;
+                    UndefineProperties=&quot;TargetFramework&quot; /&gt;
+  &lt;ProjectReference Include=&quot;$(BoduRepoRoot)Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj&quot;
+                    ReferenceOutputAssembly=&quot;false&quot; Private=&quot;false&quot; SkipGetTargetFrameworkProperties=&quot;true&quot;
+                    UndefineProperties=&quot;TargetFramework&quot; /&gt;
+&lt;/ItemGroup&gt;
+
+&lt;ItemGroup&gt;
+  &lt;NotableDatePack Include=&quot;rules\holidays.xml&quot; /&gt;
+&lt;/ItemGroup&gt;
+
+&lt;Import Project=&quot;$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\build\Bodu.Globalization.Calendar.Build.targets&quot; /&gt;
+</code></pre>
+<p>Set the two path properties before the <code>&lt;Import&gt;</code>: the <code>.targets</code> fills them in only when they are empty, with paths into a package layout that a clone does not have. <code>UndefineProperties=&quot;TargetFramework&quot;</code> lets a multi-targeting project build each referenced project for its own framework.</p>
 <h2 id="the-compilenotabledatepack-task">The <code>CompileNotableDatePack</code> task</h2>
 <p>The <code>.targets</code> file wires every item to <code>CompileNotableDatePack</code>, a <code>ToolTask</code> that runs <code>dotnet exec --roll-forward Major &lt;tool.dll&gt; compile &lt;Input&gt; -o &lt;Output&gt; [--resolver-dir &lt;ResolverDir&gt;]</code>:</p>
 <table>
@@ -238,7 +274,7 @@ IReadOnlyList&lt;NotableDate&gt; thisYear = service.Resolve(2026, &quot;US&quot;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

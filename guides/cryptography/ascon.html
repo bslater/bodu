@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/cryptography/ascon.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/ascon.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -93,7 +93,7 @@ share a single 320-bit sponge state - five 64-bit words - and a common permutati
 Ascon-p. The permutation is compact enough to run on the smallest microcontrollers, yet resists
 all known distinguishing attacks and has a well-studied, wide peer-reviewed security margin.</p>
 <p><img src="../../images/diagrams/ascon-sponge.svg" alt="ASCON sponge construction - 320-bit state, Ascon-p permutation, absorb and squeeze phases"></p>
-<p><strong>Bodu.Security.Cryptography</strong> ships all four NIST-defined algorithm types:</p>
+<p><strong>Bodu.Security.Cryptography</strong> ships the four algorithms SP 800-232 defines, plus ASCON-HASHA256, the round-reduced hash from the Ascon v1.2 submission that SP 800-232 did not adopt - five types in all:</p>
 <table>
 <thead>
 <tr>
@@ -114,7 +114,7 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></td>
 <td><code>ASCON-HASHA256</code></td>
 <td>Hash</td>
-<td>Fixed-length 256-bit digest. 8-round absorption for higher throughput.</td>
+<td>Fixed-length 256-bit digest. 8-round absorption for higher throughput. Not part of SP 800-232.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a></td>
@@ -154,7 +154,7 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 <tr>
 <td>A fixed-length 256-bit digest (throughput)</td>
 <td><code>AsconHashA256</code></td>
-<td>8-round absorption - faster on large inputs; squeeze phase is unchanged.</td>
+<td>8-round absorption and squeezing - faster on large inputs; the non-standard Ascon v1.2 variant, not SP 800-232.</td>
 </tr>
 <tr>
 <td>An output of arbitrary length - key derivation, stream seed</td>
@@ -174,7 +174,7 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 </tbody>
 </table>
 <p>When in doubt: reach for <code>AsconHash256</code> for hashing and <code>AsconAead128</code> for authenticated encryption.</p>
-<h2 id="one-permutation-four-roles">One permutation, four roles</h2>
+<h2 id="one-permutation-three-roles">One permutation, three roles</h2>
 <p>The defining feature of the family is that hashing, extendable output, and authenticated encryption are all built from the <strong>same</strong> sponge - a 320-bit state and the Ascon-p permutation - rather than from three unrelated primitives. The role is determined entirely by how the sponge is initialised and which phases (absorb, squeeze, key injection, domain separation) are applied:</p>
 <table>
 <thead>
@@ -202,7 +202,7 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 </tr>
 </tbody>
 </table>
-<p>The practical payoff is a single, small implementation surface: one permutation to audit, one state layout, one round function. A device that already ships ASCON for authenticated encryption gets hashing and key derivation for free. NIST SP 800-232 specifies all of these under one umbrella, so they share a common security analysis.</p>
+<p>The practical payoff is a single, small implementation surface: one permutation to audit, one state layout, one round function. A device that already ships ASCON for authenticated encryption gets hashing and key derivation for free. NIST SP 800-232 specifies all of these except ASCON-HASHA256 under one umbrella, so they share a common security analysis.</p>
 <h2 id="the-shared-permutation">The shared permutation</h2>
 <p>All five types use the same Ascon-p permutation. Each call applies a configurable number of
 identical rounds (up to 12) to the 320-bit state. Each round is:</p>
@@ -214,10 +214,11 @@ bit-columns of the state, providing non-linearity.</li>
 <li><strong>Linear diffusion</strong> - each word is XORed with two rotated copies of itself using
 word-specific rotation constants, spreading any change across the full state.</li>
 </ol>
-<p>The round count is the throughput / margin trade-off. Absorption phases use 12 rounds
-(<code>AsconHash256</code>) or 8 rounds (<code>AsconHashA256</code>, <code>AsconXof128</code>, <code>AsconCxof128</code>, <code>AsconAead128</code>).
-Squeeze phases and AEAD finalization always use 12 rounds, so the output step carries the full
-security margin in every variant.</p>
+<p>The round count is the throughput / margin trade-off. <code>AsconHash256</code>, <code>AsconXof128</code>, and
+<code>AsconCxof128</code> use 12 rounds throughout. <code>AsconHashA256</code> uses 8 rounds to absorb and between
+squeezed output blocks, and 12 only for the transition from absorbing to squeezing.
+<code>AsconAead128</code> uses 12 rounds for initialization and finalization and 8 for the associated-data
+and message blocks.</p>
 <h2 id="quick-start-examples">Quick-start examples</h2>
 <h3 id="hash">Hash</h3>
 <!-- compile -->
@@ -311,7 +312,7 @@ well-provisioned servers.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

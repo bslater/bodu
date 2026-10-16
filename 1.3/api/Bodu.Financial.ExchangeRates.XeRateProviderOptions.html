@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>XeRateProviderOptions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="XeRateProviderOptions Class
+ | BODU ">
+      
+      <meta name="description" content="Configures how the  addresses and interprets the XE.com charting-rates JSON service, and how it acquires the authorization token that endpoint requires.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions">
+
+
+
+
+  <h1 id="Bodu_Financial_ExchangeRates_XeRateProviderOptions" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+XeRateProviderOptions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Xe/src/Financial.ExchangeRates/XeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Xe.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><span class="bodu-package-id">Bodu.Financial.ExchangeRates.Xe</span> <span class="bodu-package-version">0.7.2</span> <span class="bodu-package-note">(not published on nuget.org)</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Xe/src/Financial.ExchangeRates/XeRateProviderOptions.cs">XeRateProviderOptions.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProvider.html">XeRateProvider</a> addresses and interprets the XE.com charting-rates JSON service,
+and how it acquires the authorization token that endpoint requires.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class XeRateProviderOptions : WebRateProviderOptions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a></div>
+      <div><span class="xref">XeRateProviderOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_Validate">WebRateProviderOptions.Validate()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_TryValidate_System_String__">WebRateProviderOptions.TryValidate(out string)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">WebRateProviderOptions.BaseAddress</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HttpTimeout">WebRateProviderOptions.HttpTimeout</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_MaxResponseContentBufferSize">WebRateProviderOptions.MaxResponseContentBufferSize</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_UserAgent">WebRateProviderOptions.UserAgent</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_AllowSynchronousNetworkAccess">WebRateProviderOptions.AllowSynchronousNetworkAccess</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DefaultLookback">WebRateProviderOptions.DefaultLookback</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval">WebRateProviderOptions.RefreshInterval</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">WebRateProviderOptions.HistoryAvailability</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_CurrencyAliases">WebRateProviderOptions.CurrencyAliases</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadStartingLogLevel">WebRateProviderOptions.DownloadStartingLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadCompletedLogLevel">WebRateProviderOptions.DownloadCompletedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadFailedLogLevel">WebRateProviderOptions.DownloadFailedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_ObservationIngestedLogLevel">WebRateProviderOptions.ObservationIngestedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_SynchronousNetworkFetchLogLevel">WebRateProviderOptions.SynchronousNetworkFetchLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+This type derives from <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, which supplies the endpoint base address, the HTTP
+contract, the synchronous-access and look-back behavior, the currency-alias map, and the per-concern log levels. The
+members declared here are XE-specific: the <a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProviderOptions.html#Bodu_Financial_ExchangeRates_XeRateProviderOptions_ChartingRatesPath">ChartingRatesPath</a> queried for a pair, and the two URLs (<a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProviderOptions.html#Bodu_Financial_ExchangeRates_XeRateProviderOptions_AuthBootstrapUrl">AuthBootstrapUrl</a>
+and <a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProviderOptions.html#Bodu_Financial_ExchangeRates_XeRateProviderOptions_AuthScriptBaseUrl">AuthScriptBaseUrl</a>) used to discover the <code>Authorization: Basic</code> token by scanning the script
+chunks the XE website publishes. XE serves a server-determined window per request rather than honoring an explicit
+date range, so the response is range-filtered to the requested dates.
+</p>
+<p>
+Every member carries a working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code> and
+require no configuration for the common case. The dependency-injection package binds this type from configuration
+and a <code>configure</code> delegate.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_XeRateProviderOptions__ctor_" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_XeRateProviderOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.#ctor">
+  XeRateProviderOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Xe/src/Financial.ExchangeRates/XeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProviderOptions.html">XeRateProviderOptions</a> class with the XE.com host as its base
+address and an estimated ten-year rolling history window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public XeRateProviderOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_XeRateProviderOptions__ctor_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The charting endpoint accepts no date bounds - XE returns a server-determined window - so the advertised
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">HistoryAvailability</a> is an estimate of that window (<span class="xref">Bodu.Financial.ExchangeRates.XeRateProviderOptions.EstimatedChartingWindowDays</span>
+days, matching the deepest range the XE currency charts expose) rather than a published contract. Adjust the
+property if the observed window differs.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_AuthBootstrapUrl_" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.AuthBootstrapUrl*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_AuthBootstrapUrl" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.AuthBootstrapUrl">
+  AuthBootstrapUrl
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Xe/src/Financial.ExchangeRates/XeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the page URL whose referenced script chunks are scanned to discover the authorization token. The
+chunk references it carries are resolved against this URL's origin.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Uri AuthBootstrapUrl { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
+    <dd><p>The bootstrap page URL; defaults to <code>https://www.xe.com/currencycharts</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_AuthScriptBaseUrl_" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.AuthScriptBaseUrl*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_AuthScriptBaseUrl" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.AuthScriptBaseUrl">
+  AuthScriptBaseUrl
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Xe/src/Financial.ExchangeRates/XeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the base URL against which lazily-loaded script chunk names, reconstructed from the webpack runtime
+chunk's identifier-to-hash map, are resolved when no bootstrap-referenced chunk yields the token. Must end with
+a trailing slash so relative <code>static/chunks/…</code> names resolve under it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Uri AuthScriptBaseUrl { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
+    <dd><p>The script base URL; defaults to <code>https://www.xe.com/_next/</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_ChartingRatesPath_" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.ChartingRatesPath*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_ChartingRatesPath" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.ChartingRatesPath">
+  ChartingRatesPath
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Xe/src/Financial.ExchangeRates/XeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the relative charting-rates endpoint path. The source-currency and destination-currency codes are
+supplied as the <code>fromCurrency</code> and <code>toCurrency</code> query parameters when the request is issued.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ChartingRatesPath { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The charting-rates path; defaults to <code>api/protected/charting-rates/</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_TryValidateCore_" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.TryValidateCore*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_XeRateProviderOptions_TryValidateCore_System_String__" data-uid="Bodu.Financial.ExchangeRates.XeRateProviderOptions.TryValidateCore(System.String@)">
+  TryValidateCore(out string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Financial.ExchangeRates.Xe/src/Financial.ExchangeRates/XeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Validates the XE-specific options, ensuring the charting-rates path and the two token-acquisition URLs are
+specified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override bool TryValidateCore(out string? error)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>error</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, a message describing the violated invariant; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when every XE-specific invariant holds; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

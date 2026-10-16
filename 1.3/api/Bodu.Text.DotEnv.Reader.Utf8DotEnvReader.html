@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Utf8DotEnvReader Struct
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Utf8DotEnvReader Struct
+ | BODU ">
+      
+      <meta name="description" content="Provides a high-performance, forward-only, allocation-light reader for DotEnv bytes. The reader is a ref struct, so it lives on the stack and cannot be boxed or captured; pass it by ref to share its position with a helper method.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader">
+
+
+
+
+  <h1 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Utf8DotEnvReader Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.DotEnv.html">DotEnv</a>.<a class="xref" href="Bodu.Text.DotEnv.Reader.html">Reader</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.DotEnv.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.DotEnv">Bodu.Text.DotEnv</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs">Utf8DotEnvReader.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a high-performance, forward-only, allocation-light reader for DotEnv bytes. The reader is a
+<code>ref struct</code>, so it lives on the stack and cannot be boxed or captured; pass it by
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref">ref</a> to share its position with a helper method.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct Utf8DotEnvReader</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.tostring">ValueType.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+A DotEnv document is a flat, ordered object of string-valued keys. A call to <a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html#Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_Read">Read()</a> advances to the
+next token and reports it through <a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html#Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_TokenType">TokenType</a>: a synthetic <a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_StartObject">StartObject</a>
+frames the document, each entry surfaces a <a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_PropertyName">PropertyName</a> followed by a
+<a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_String">String</a>, comment lines appear as <a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_Comment">Comment</a> tokens, and a
+closing <a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_EndObject">EndObject</a> ends the document.
+</p>
+<p>
+Key and comment text is exposed verbatim; a string value's quotes are stripped and its escape sequences resolved, so
+<a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html#Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_GetString">GetString()</a> returns the logical value while <a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html#Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueSpan">ValueSpan</a> exposes the raw source bytes.
+</p>
+<example>
+<pre><code class="lang-csharp">ReadOnlySpan&lt;byte&gt; bytes = "export HOST=localhost\nPORT=5432\n"u8;
+var reader = new Utf8DotEnvReader(bytes);
+
+while (reader.Read())
+{
+    if (reader.TokenType == DotEnvTokenType.PropertyName)
+        Console.Write($"{reader.GetString()} = ");
+    else if (reader.TokenType == DotEnvTokenType.String)
+        Console.WriteLine(reader.GetString());
+}</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader__ctor_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.#ctor(System.ReadOnlySpan{System.Byte})">
+  Utf8DotEnvReader(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html">Utf8DotEnvReader</a> struct over the supplied bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Utf8DotEnvReader(ReadOnlySpan&lt;byte&gt; data)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The DotEnv source bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader__ctor_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_DotEnv_Reader_DotEnvReaderOptions_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.Text.DotEnv.Reader.DotEnvReaderOptions)">
+  Utf8DotEnvReader(ReadOnlySpan&lt;byte&gt;, DotEnvReaderOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html">Utf8DotEnvReader</a> struct over the supplied bytes using the
+supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Utf8DotEnvReader(ReadOnlySpan&lt;byte&gt; data, DotEnvReaderOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The DotEnv source bytes.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.DotEnv.Reader.DotEnvReaderOptions.html">DotEnvReaderOptions</a></dt>
+    <dd><p>The reader options controlling optional DotEnv syntax.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_BytesConsumed_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.BytesConsumed*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_BytesConsumed" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.BytesConsumed">
+  BytesConsumed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of bytes consumed so far.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly int BytesConsumed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The read position.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_CurrentDepth_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.CurrentDepth*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_CurrentDepth" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.CurrentDepth">
+  CurrentDepth
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the current object nesting depth.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly int CurrentDepth { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Zero before the document object opens and after it closes; one while inside it.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_CurrentIsExport_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.CurrentIsExport*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_CurrentIsExport" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.CurrentIsExport">
+  CurrentIsExport
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the current property carried an <code>export</code> prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly bool CurrentIsExport { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the current <a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_PropertyName">PropertyName</a> or its
+<a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_String">String</a> value was declared with a leading <code>export</code> keyword.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_LineNumber_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.LineNumber*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_LineNumber" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.LineNumber">
+  LineNumber
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the 1-based line number at which the current token begins.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly int LineNumber { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The line on which the current token begins.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_LineNumber_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A string value that spans lines reports the line of its opening quote, the synthetic
+<a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_StartObject">StartObject</a> reports line 1, and <a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html#Bodu_Text_DotEnv_DotEnvTokenType_EndObject">EndObject</a> reports
+the line at the end of the input. A line ends at a LF, a CR LF pair or a lone CR.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_TokenType_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.TokenType*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_TokenType" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.TokenType">
+  TokenType
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the kind of the current token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly DotEnvTokenType TokenType { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvTokenType.html">DotEnvTokenType</a></dt>
+    <dd><p>The current token kind.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueSpan_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.ValueSpan*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueSpan" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.ValueSpan">
+  ValueSpan
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the raw source content bytes of the current property name, string value, or comment token. For a string
+value with escape sequences the span is the unprocessed source between the value delimiters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly ReadOnlySpan&lt;byte&gt; ValueSpan { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The raw content bytes, or an empty span for structural tokens.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_GetString_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.GetString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_GetString" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.GetString">
+  GetString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes the current property name, string value, or comment token as text, stripping quotes and resolving escape
+sequences for a string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly string GetString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The decoded text.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the current token is not a property name, string value, or comment.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_Read_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.Read*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_Read" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.Read">
+  Read()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Advances the reader to the next token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Read()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a token was read; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> at the end of the document.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvFormatException.html">DotEnvFormatException</a></dt>
+    <dd><p>Thrown when the bytes are not valid DotEnv.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_Skip_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.Skip*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_Skip" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.Skip">
+  Skip()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Skips the value of the current property name. On a property name the reader advances past its value; on any
+other token it does nothing, as <code>Utf8JsonReader.Skip</code> does on a primitive value, so a loop that relies on
+it to move past a comment or a structural token must call <a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html#Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_Read">Read()</a> instead.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Skip()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvFormatException.html">DotEnvFormatException</a></dt>
+    <dd><p>Thrown when the skipped bytes are not valid DotEnv.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_TrySkip_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.TrySkip*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_TrySkip" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.TrySkip">
+  TrySkip()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to skip the current value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TrySkip()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> always, because the reader operates over a complete buffer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.DotEnv.DotEnvFormatException.html">DotEnvFormatException</a></dt>
+    <dd><p>Thrown when the skipped bytes are not valid DotEnv.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueTextEquals_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.ValueTextEquals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.ValueTextEquals(System.ReadOnlySpan{System.Byte})">
+  ValueTextEquals(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares the current token's raw content to the supplied UTF-8 bytes without allocating.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly bool ValueTextEquals(ReadOnlySpan&lt;byte&gt; utf8Text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 bytes to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the token's raw content equals <code class="paramref">utf8Text</code> byte for byte;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueTextEquals_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The comparison is against the raw source span. For a string value that carried escape sequences, compare against
+<a class="xref" href="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html#Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_GetString">GetString()</a> instead.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the current token is not a property name, string value, or comment.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueTextEquals_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.ValueTextEquals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueTextEquals_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.ValueTextEquals(System.ReadOnlySpan{System.Char})">
+  ValueTextEquals(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares the current token's raw content to the UTF-8 encoding of the supplied characters without allocating.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly bool ValueTextEquals(ReadOnlySpan&lt;char&gt; text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The characters to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the token's raw content equals the UTF-8 encoding of <code class="paramref">text</code>;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the current token is not a property name, string value, or comment.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueTextEquals_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.ValueTextEquals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_DotEnv_Reader_Utf8DotEnvReader_ValueTextEquals_System_String_" data-uid="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.ValueTextEquals(System.String)">
+  ValueTextEquals(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.DotEnv/src/Text.DotEnv.Reader/Utf8DotEnvReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares the current token's raw content to the UTF-8 encoding of the supplied string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly bool ValueTextEquals(string? text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to compare against, which may be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the token's raw content equals the UTF-8 encoding of <code class="paramref">text</code>;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the current token is not a property name, string value, or comment.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

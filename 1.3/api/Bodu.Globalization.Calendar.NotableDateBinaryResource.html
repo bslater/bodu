@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>NotableDateBinaryResource Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="NotableDateBinaryResource Class
+ | BODU ">
+      
+      <meta name="description" content="Writes and reads the sealed notable-date binary rule-pack format (.bcal): a compact, integrity-checked, reflection-free encoding of a validated .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource">
+
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_NotableDateBinaryResource" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+NotableDateBinaryResource Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs">NotableDateBinaryResource.PayloadReader.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Writes and reads the sealed notable-date binary rule-pack format (<code>.bcal</code>): a compact, integrity-checked,
+reflection-free encoding of a validated <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class NotableDateBinaryResource</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NotableDateBinaryResource</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a> runs the loader's identifier, range, enumeration, duplicate and
+cross-reference checks on the resource before it encodes anything, and refuses a resource the loader would reject
+with the <a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a> and diagnostics the loader reports, so a resource assembled
+in code is held to the rules a document is. Reading a pack skips parsing and that validation entirely - the trim-
+and AOT-friendly load path - so a pack not produced by <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a>, such as
+one edited by hand, is not revalidated. The format is <em>sealed</em>: it enumerates the engine's strategy,
+recurrence, and duration types exhaustively with one-byte discriminators, carries no type names and no extension
+points, and the reader rejects unknown versions, unknown discriminators, undefined enum values, out-of-range
+references, values a model constructor refuses, truncation, and payload-digest mismatches with
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryFormatException.html">NotableDateBinaryFormatException</a>.
+</p>
+<p>
+Writing is byte-stable: the same resource always produces the same bytes, so build systems can use pack outputs for
+up-to-date checks.
+</p>
+<p>
+A pack is written at format version 1 unless an adjustment scope names a concept's rule (<code>&lt;Rule notableDateRef="…" ruleRef="…" /&gt;</code>),
+which needs version 2. The two versions share one layout; version 2 exists so that a reader predating
+concept-qualified rule references rejects the pack instead of matching the reference against rule identifiers alone.
+The reader accepts both, and a version 1 scope's rule identifier keeps matching that rule in every concept.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Read_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Read*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Read_System_IO_Stream_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Read(System.IO.Stream)">
+  Read(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.Reader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Reads a resource from a stream in the binary rule-pack format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateResource Read(Stream stream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable stream positioned at the start of a pack.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The decoded resource.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Read_System_IO_Stream__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Reading checks the pack's structure, enumeration values, string references and payload digest, and builds each
+value through its model constructor, but does not run the loader's identifier, range, duplicate or
+cross-reference checks, which <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a> ran before encoding. A pack not
+produced by <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_">Write(NotableDateResource, Stream)</a>, such as one edited by hand and given a matching
+digest, is therefore not revalidated; load the document it was compiled from to validate it.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryFormatException.html">NotableDateBinaryFormatException</a></dt>
+    <dd><p>The stream is not a notable-date binary rule pack, declares an unsupported format version, is truncated or
+corrupted, or carries a value outside the sealed format's tables or a model constructor's domain.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Write*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource,System.IO.Stream)">
+  Write(NotableDateResource, Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Writes a resource to a stream in the binary rule-pack format, accepting only the built-in algorithm keys.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Write(NotableDateResource resource, Stream stream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The resource to encode.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The writable stream receiving the pack.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A resource the loader produced passes the checks, unless it was loaded with a custom algorithm registry; write
+such a resource with <a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_">Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry?)</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">resource</code> or <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The resource fails one of the loader's identifier, range, enumeration, duplicate or cross-reference checks, such
+as a concept identifier that is not an identifier, two concepts sharing one, or an algorithm key that is not
+built in; the <a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html#Bodu_Globalization_Calendar_NotableDateValidationException_Diagnostics">Diagnostics</a> are those the loader reports, and
+nothing is written.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>A rule uses a calculation strategy, recurrence strategy, or duration definition outside the sealed set the
+format enumerates, such as a custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> in a resource assembled in code; the
+message names the unsupported type.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Write*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource,System.IO.Stream,Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry)">
+  Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Writes a resource to a stream in the binary rule-pack format, accepting the algorithm keys a registry declares
+as well as the built-in ones.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Write(NotableDateResource resource, Stream stream, INotableDateAlgorithmRegistry? algorithms)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The resource to encode.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The writable stream receiving the pack.</p>
+</dd>
+    <dt><code>algorithms</code> <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a></dt>
+    <dd><p>The custom algorithm registry whose keys the resource's algorithm strategies may name, as the loader accepts
+them, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to accept only the built-in keys.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The checks are those the loader runs on the resource it assembles: each identifier, reference and territory code
+against the pattern the notable-date schema requires of it, and each number the schema bounds against its range
+(<code>BODU-CAL-SCHEMA</code>, or <code>BODU-CAL-VALUE</code> for an adjustment trigger's month), each enumeration value
+outside a strategy or recurrence against the members its type defines (<code>BODU-CAL-ENUM</code>), duplicate concept,
+rule and adjustment-policy identifiers, adjustment and strategy references that do not resolve, inverted year
+bounds, adjustment actions missing their target or handler, and algorithm keys. The registry is not recorded in
+the pack; a reader resolves an algorithm key against the registry its service is given.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">resource</code> or <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The resource fails one of the loader's identifier, range, enumeration, duplicate or cross-reference checks, such
+as a concept identifier that is not an identifier, two concepts sharing one, or an algorithm key that is neither
+built in nor declared by <code class="paramref">algorithms</code>; the
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html#Bodu_Globalization_Calendar_NotableDateValidationException_Diagnostics">Diagnostics</a> are those the loader reports, and nothing is written.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>A rule uses a calculation strategy, recurrence strategy, or duration definition outside the sealed set the
+format enumerates, such as a custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> in a resource assembled in code; the
+message names the unsupported type.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a></div>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.NotableDateBinaryFormatException.html">NotableDateBinaryFormatException</a></div>
+      <div><span><a href="../guides/calendar/binary-rule-packs.html">Binary rule packs (guide)</a></span></div>
+  </div>
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

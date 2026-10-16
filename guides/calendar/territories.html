@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/calendar/territories.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/territories.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -131,7 +131,7 @@ bool isSub = auNsw.IsSubdivision;    // → true
 
 TerritoryCode gb = (TerritoryCode)&quot;GB-SCT&quot;;   // explicit cast - throws on a malformed code
 </code></pre>
-<p><code>TerritoryCode</code> is a value type with full <code>==</code> / <code>!=</code> equality, so two codes parsed from <code>&quot;AU-NSW&quot;</code> and <code>&quot;  au-nsw &quot;</code> compare equal.</p>
+<p><code>TerritoryCode</code> is a value type with full <code>==</code> / <code>!=</code> equality, so two codes parsed from <code>&quot;AU-NSW&quot;</code> and <code>&quot;au-nsw&quot;</code> compare equal.</p>
 <h2 id="parsing">Parsing</h2>
 <p><code>TerritoryCode</code> provides both throwing and non-throwing parsers, plus a list parser for comma-separated input:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
@@ -150,7 +150,7 @@ if (TerritoryCode.TryParse(userInput, out TerritoryCode territory))
 IReadOnlyList&lt;TerritoryCode&gt; territories =
     TerritoryCode.ParseList(&quot;AU-NSW, AU-VIC, NZ&quot;);
 </code></pre>
-<p>The library normalizes whitespace and casing during parsing, so <code>&quot;  au-nsw  &quot;</code> and <code>&quot;AU-NSW&quot;</code> parse to the same value.</p>
+<p>Parsing normalizes casing, so <code>&quot;au-nsw&quot;</code> and <code>&quot;AU-NSW&quot;</code> parse to the same value. Surrounding white space is not accepted - <code>Parse</code> throws <code>FormatException</code> and <code>TryParse</code> returns <code>false</code> for <code>&quot;  au-nsw  &quot;</code> - except that <code>ParseList</code> trims each entry.</p>
 <p>Because the service and extensions accept plain strings, you rarely need to parse explicitly - pass <code>&quot;AU-NSW&quot;</code> directly. Parse when you want to inspect a code's <code>Country</code>, <code>Subdivision</code>, or <code>Parent</code>, or to validate untrusted input before querying.</p>
 <h2 id="containment">Containment</h2>
 <p><img src="../../images/diagrams/calendar-territory-containment.svg" alt="TerritoryCode containment hierarchy"></p>
@@ -247,7 +247,7 @@ bool b = auNsw.Contains(au);    // false - a subdivision does not contain its co
 </code></pre>
 <p>An <code>&lt;Import&gt;</code> with no <code>&lt;Use&gt;</code> imports every concept it defines; a local concept of the same id wins over an imported one. See <a href="rule-authoring.html">Authoring notable date rules</a> for imports and overrides in full.</p>
 <h2 id="querying-composition">Querying composition</h2>
-<p>A query passes a single territory string, and the service returns every occurrence whose scope <strong>contains</strong> that code (plus globally-scoped rules). For Australia:</p>
+<p>A query passes a single territory string, and the service returns every occurrence whose scope <strong>contains</strong> that code (plus globally-scoped rules). Within one concept only the most specific matching rule is used, so a subdivision rule shadows the national rule of the same concept; the national rules below are those of concepts the subdivision does not override. For Australia:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 
 NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
@@ -272,7 +272,7 @@ foreach (string code in territories)
 <p>The containment relation is the right way to model &quot;national rule + a few regional variations&quot;:</p>
 <ul>
 <li>Author the national rule <strong>once</strong> at the country level (<code>&lt;Territory code=&quot;AU&quot; /&gt;</code>).</li>
-<li>For each subdivision that genuinely differs, author a separate concept or rule scoped to that subdivision (<code>&lt;Territory code=&quot;AU-NT&quot; /&gt;</code>), or suppress the national rule for that subdivision with a <code>&lt;RemoveRule&gt;</code> override and add the variant.</li>
+<li>For each subdivision that genuinely differs, author a rule scoped to that subdivision (<code>&lt;Territory code=&quot;AU-NT&quot; /&gt;</code>) in the same concept: it shadows the national rule for that subdivision, because within one concept only the most specific matching rule is used. Author a separate concept instead when both dates should appear. (A <code>&lt;RemoveRule&gt;</code> override removes a rule for every territory, not for one subdivision.)</li>
 </ul>
 <p>Listing the same rule under every subdivision of one country produces duplicate occurrences and is rarely correct - scope it to the country instead. When you need a rule at several subdivisions but not the whole country (e.g. an extra holiday in some AU states only), author one rule per state, each scoped to its subdivision. The <a href="holiday-patterns.html">holiday patterns guide</a> shows worked examples for both shapes.</p>
 <h2 id="data-pack-conventions">Data-pack conventions</h2>
@@ -310,7 +310,7 @@ foreach (string code in territories)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

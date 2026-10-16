@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.IO.Compound - Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.IO.Compound - Core concepts | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/io-compound/concepts.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="boduiocompound---core-concepts">Bodu.IO.Compound - Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/io-compound/index.html">guides</a>, and refer back whenever a term feels imprecise.</p>
+<p><code>Bodu.IO.Compound</code> is part of the <strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O</a></strong> topic - the container tier beneath the format readers. For the high-level shape of the library, start with the <a href="index.html">introduction</a>.</p>
+<h2 id="compound-file-cfb">Compound file (CFB)</h2>
+<p>A <strong>compound file</strong> - also called OLE2 structured storage or Compound File Binary (CFB) - is a single physical file that embeds a small hierarchical file system. It begins with an eight-byte signature (<code>D0 CF 11 E0 A1 B1 1A E1</code>), followed by a 512-byte header, allocation tables, a directory, and a series of fixed-size sectors holding the actual bytes. Legacy Microsoft Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) are compound files. <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> parses the container and exposes its hierarchy.</p>
+<p>The format comes in two versions, distinguished by sector size: <strong>version 3</strong> uses 512-byte sectors, <strong>version 4</strong> uses 4096-byte sectors. The mini sector size is fixed at 64 bytes in both. <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a> selects the version when <em>writing</em>; the reader accepts either and reads the size from the header.</p>
+<h2 id="header">Header</h2>
+<p>The header is the 512-byte preamble that fixes the layout constants the rest of the reader depends on. It carries the signature, a little-endian byte-order marker (<code>FFFE</code>), the sector and mini-sector shifts (<code>9</code> ⇒ 512, <code>12</code> ⇒ 4096; the mini-sector shift is always <code>6</code> ⇒ 64), the <strong>mini-stream cutoff</strong> (the size below which a stream lives in the mini-stream), the first sector of the directory chain, the first mini-FAT sector, and the start of the <strong>DIFAT</strong> (double-indirect FAT) - including its first 109 entries stored inline. Every field is read at its specification offset; a wrong byte-order marker, an unsupported sector shift, or a file shorter than 512 bytes is rejected as a malformed header. The reader takes the mini-stream cutoff as 4096 bytes, the only value [MS-CFB] permits, whatever the header declares; only the <code>Strict</code> <a href="#validation-level">validation level</a> rejects a header that declares another value, or that breaks one of the other fixed fields.</p>
+<h2 id="storage-and-stream">Storage and stream</h2>
+<p>The container's directory is a tree of two node kinds, distinguished by the <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a> recorded in each entry:</p>
+<ul>
+<li>A <strong>storage</strong> (<a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a>, the COM <code>IStorage</code>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryType.html#Bodu_IO_Compound_CompoundEntryType_Storage">Storage</a>) is a named container of child storages and streams - a folder.</li>
+<li>A <strong>stream</strong> (<a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a>, the COM <code>IStream</code>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryType.html#Bodu_IO_Compound_CompoundEntryType_Stream">Stream</a>) is a named, file-like leaf carrying an opaque byte payload - a file.</li>
+</ul>
+<p>The single <strong>root storage</strong> (<a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_RootStorage">RootStorage</a>) anchors the tree; it is distinguished by a <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryType.html#Bodu_IO_Compound_CompoundEntryType_RootStorage">RootStorage</a> entry type and conventionally named <code>Root Entry</code>. It is special in one further way: it owns the mini-stream (see below), so its own start sector and size describe that mini-stream rather than a payload of its own.</p>
+<p>Lookups are <strong>scoped to a storage's direct children</strong> - there is no path syntax; you descend one storage at a time. Names are matched with the <strong>case-insensitive</strong> compound-file relationship: two names are equal when their UTF-16 code units match after an invariant uppercase conversion, so <code>Workbook</code> and <code>WORKBOOK</code> denote the same entry. Two streams that share a name under <em>different</em> storages remain distinct, because the comparison only ever runs within one parent's children.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>The comparison is case-<em>insensitive</em>, not ordinal. Office stream names happen to have a fixed canonical casing, so an ordinal <code>HashSet&lt;string&gt;</code> over enumerated names works in practice - but the container itself will resolve <code>Workbook</code> from a request for <code>workbook</code>.</p>
+</div>
+<h2 id="entry-names">Entry names</h2>
+<p>A directory entry stores its name in a fixed 64-byte UTF-16 field preceded by a two-byte length. The length counts <em>bytes including the terminating null</em>, so the maximum name is <strong>31 characters</strong> (<code>64 / 2 − 1</code>); an entry whose length is odd or above 64 is malformed, and is skipped, or rejected at the <code>Strict</code> <a href="#validation-level">validation level</a>. Names are surfaced verbatim, including the control prefixes some Office streams carry - the <code>\x05</code> (<code>U+0005</code>) prefix on the <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code> streams, and the <code>__substg1.0_</code> / <code>__attach_</code> prefixes used by <code>.msg</code> files - so a lookup must pass the exact prefixed name.</p>
+<h2 id="sector-fat-and-difat">Sector, FAT, and DIFAT</h2>
+<p>A stream's payload is not stored contiguously; it is split into fixed-size <strong>sectors</strong> and linked into a <strong>sector chain</strong> by the <strong>file-allocation table (FAT)</strong>. The FAT is itself an array of 32-bit sector identifiers - <code>FAT[n]</code> gives the next sector after sector <code>n</code>, and the chain terminates at the end-of-chain sentinel (<code>0xFFFFFFFE</code>). Other reserved sentinels mark free sectors (<code>0xFFFFFFFF</code>), FAT sectors, and DIFAT sectors. The reader walks the chain to assemble the payload, guarding against cycles (a chain longer than the FAT) and out-of-range identifiers.</p>
+<p>The FAT can outgrow what the header holds inline. The <strong>DIFAT</strong> (double-indirect FAT) is the index of FAT sectors: the header stores the first 109 entries, and any overflow is chained through dedicated DIFAT sectors. The reader assembles the complete FAT from the inline entries plus the DIFAT chain when it opens the file. [MS-CFB] ends the DIFAT chain with ENDOFCHAIN; every level but <code>Strict</code> also reads a chain that ends in FREESECT or DIFSECT as ending there. A header whose Number of DIFAT Sectors is zero has no DIFAT chain, whatever its First DIFAT Sector Location holds. The header's Number of FAT Sectors and Number of DIFAT Sectors are checked against the tables only at <code>Strict</code>; the other levels follow the DIFAT itself.</p>
+<p>Streams smaller than the <strong>mini-stream cutoff</strong> (4096 bytes) are not given full sectors. Instead they live inside a single <strong>mini-stream</strong> - a regular-sector chain owned by the root storage - subdivided into 64-byte <strong>mini sectors</strong> and chained by a separate <strong>mini-FAT</strong>. This keeps a file full of tiny streams from wasting a full sector each. The split is an implementation detail the public API hides - you read bytes, not sectors - but it is why <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> materialises a small stream whole even under a streaming file, while a large stream is walked sector by sector.</p>
+<h2 id="directory">Directory</h2>
+<p>The <strong>directory</strong> is a chain of fixed <strong>128-byte entries</strong>, one per node, indexed by a zero-based <strong>stream identifier (SID)</strong> - entry 0 is always the root storage. Each entry records the node's name, type, red-black colour, the SIDs of its left sibling, right sibling, and child-tree root, its class id, state bits, creation and modified <code>FILETIME</code> timestamps, its start sector, and its payload size. A zero name length marks an unused (free) slot.</p>
+<p>The children of a storage are not a flat list: they are arranged as a <strong>red-black tree</strong> keyed by the compound-file name relationship (shorter names sort first, then by uppercased code unit). The reader performs an in-order traversal of that tree to recover the children in <strong>canonical (directory) order</strong> - which is the order every enumerate API yields. The red-black colour is surfaced on <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html#Bodu_IO_Compound_CompoundEntryInfo_Color">Color</a> (a <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryColor.html">CompoundEntryColor</a>) for diagnostic completeness; it is not needed to navigate.</p>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a> is the immutable, public snapshot of a directory entry returned by the enumerate APIs and by <code>Stat</code>. It is the managed counterpart of the COM <code>STATSTG</code> structure. The two timestamps are surfaced as nullable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a> values: a zero or out-of-range <code>FILETIME</code> (which stream entries conventionally record) becomes <code>null</code>.</p>
+<h2 id="buffered-vs-streaming">Buffered vs streaming</h2>
+<p>A compound file can be held two ways, chosen by the <code>buffered</code> flag on <code>CompoundFile.Open</code> or, equivalently, by a <a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html">CompoundReadStrategy</a> on <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html#Bodu_IO_Compound_CompoundFileOptions_ReadStrategy">ReadStrategy</a>:</p>
+<ul>
+<li><strong>Buffered</strong> (<a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html#Bodu_IO_Compound_CompoundReadStrategy_Buffered">Buffered</a>, the default) reads the whole source into memory at open time. Access never touches the original source afterward, the instance is read-only and safe to share across threads, and the source can be closed immediately.</li>
+<li><strong>Streaming</strong> (<a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html#Bodu_IO_Compound_CompoundReadStrategy_Streaming">Streaming</a>, <code>buffered: false</code>) reads sectors on demand from a seekable source, bounding memory for large files. The source must stay open and unmodified for the instance's lifetime, and reads are serialised against the shared source position - concurrent, but not parallel.</li>
+<li><strong>Auto</strong> (<a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html#Bodu_IO_Compound_CompoundReadStrategy_Auto">Auto</a>) buffers a small seekable source and streams a large one, comparing the length of the container, from the source's position to its end, against <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html#Bodu_IO_Compound_CompoundFileOptions_MaxBufferedBytes">MaxBufferedBytes</a> (64 MiB by default). It is only reachable through the options overload.</li>
+</ul>
+<p>The choice is invisible to a <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> cursor's callers: the same <code>Read</code> / <code>Seek</code> behaviour applies either way, only the memory profile differs. Note that even under a streaming file, a stream <em>below the mini-stream cutoff</em> is materialised whole rather than walked, because its bytes live in the in-memory mini-stream.</p>
+<h2 id="stream-cursor">Stream cursor</h2>
+<p>A <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> obtained from a read-only file is a standard read-only, seekable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> - <code>CanRead</code> and <code>CanSeek</code> are <code>true</code>, <code>CanWrite</code> is <code>false</code>, and <code>Write</code> / <code>SetLength</code> throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>. Because it is a <code>Stream</code>, it composes with the BCL surfaces that consume one (<code>BinaryReader</code>, <code>StreamReader</code>, <code>CopyTo</code>, <code>ReadExactly</code>). Seeking past the end is permitted (the <code>Stream</code> contract); a subsequent read simply returns zero. <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_AsMemory">AsMemory()</a> returns a whole-payload view independent of <code>Position</code> (no copy for a buffered stream; a full read for a streaming one), and <code>ReadAllBytes</code> copies the whole payload into a fresh array; prefer chunked <code>Read</code> for large streaming payloads. A single cursor is not safe for concurrent use because its <code>Position</code> advances as it reads - open one cursor per reader.</p>
+<p>A cursor opened from a <em>writable</em> file is the inverse: it is a growable in-memory buffer whose <code>CanWrite</code> is <code>true</code>, and its edits are staged until <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called. Writing is covered in the <a href="../../guides/io-compound/authoring-compound-files.html">authoring guide</a>; the rest of this documentation set is read-focused.</p>
+<h2 id="property-set">Property set</h2>
+<p>A <strong>property set</strong> is an OLE metadata stream that maps integer property IDs to typed values (strings, integers, booleans, <code>FILETIME</code> timestamps), grouped into code-paged sections. The two well-known ones carry authored document metadata: <code>\x05SummaryInformation</code> (title, author, timestamps, page/word counts) and <code>\x05DocumentSummaryInformation</code> (category, slide/line counts, and more). <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a> and <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a> are typed views that translate the well-known IDs into named, nullable properties; <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> is the raw map underneath.</p>
+<h2 id="validation-level">Validation level</h2>
+<p>How strictly a malformed container is rejected is governed by <a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a>, set through <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html#Bodu_IO_Compound_CompoundFileOptions_ValidationLevel">ValidationLevel</a>. Every level enforces the memory-safety invariants needed to parse without faulting - the signature, byte-order marker, sector sizes, allocation-table bounds, and the presence of a root storage are <em>always</em> validated. A sector that begins at or past the end of the file is <code>SectorOutOfRange</code> at <code>Strict</code> and <code>Compatible</code>, and reads as zero at <code>Minimal</code>. A file may end inside its final sector, as [MS-CFB] 2.3 allows, when it holds every byte a structure there declares: a stream's bytes up to its size, the directory entries its tree reaches, and every byte of a FAT, DIFAT or mini FAT sector. A declared byte the file lacks is <code>TruncatedFile</code> at <code>Strict</code> and <code>Compatible</code>, and reads as zero at <code>Minimal</code> (an allocation-table entry as FREESECT). The level controls only how the reader responds to the remaining, recoverable inconsistencies:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html#Bodu_IO_Compound_CompoundValidationLevel_Strict">Strict</a></td>
+<td>Rejects every non-conformant condition, including a header field that breaks a value [MS-CFB] fixes (a non-zero class id or reserved byte, a major version other than 3 with 512-byte sectors or 4 with 4096-byte sectors, a directory sector count other than zero in version 3 or the directory's length in version 4, a mini-stream cutoff other than 4096), allocation tables that break [MS-CFB] anywhere, even where no chain the reader follows needs them (a header FAT or DIFAT sector count that disagrees with the tables, a FAT or DIFAT sector not marked as one in the FAT, a DIFAT chain that does not end in ENDOFCHAIN, a FAT entry past the end of the file that is not free, a sector shared by two chains), individually malformed directory entries (bad name length or entry type), a directory entry that breaks another rule of [MS-CFB] 2.6 (a name without its terminating null, a root not named <code>Root Entry</code> or with a creation time, a stream with a class id or a time, a storage with a start sector or a non-zero size, two consecutive red nodes, an out-of-range colour byte), and unsorted or duplicated siblings.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html#Bodu_IO_Compound_CompoundValidationLevel_Compatible">Compatible</a></td>
+<td>The default. Rejects structural corruption - allocation-table cycles, out-of-range or short sector chains, cyclic directory links - but tolerates an individually malformed directory entry (a name length that is odd or above 64, an unknown entry type) by skipping it and pruning the sibling or child link that reaches it, with the entries beneath it, reads a name that lacks its terminating null up to its declared length, and ignores the header's FAT and DIFAT sector counts, following the DIFAT itself.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html#Bodu_IO_Compound_CompoundValidationLevel_Minimal">Minimal</a></td>
+<td>Recovers where it can: a cyclic, out-of-range, or short chain stops and yields the data collected so far; a cyclic directory link prunes the offending subtree; a short chain, or a sector that lies past the end of the file, is zero-padded to the declared size - none of these throw. The stricter levels reject a stream whose chain is shorter than its declared size when it is opened (<code>StreamChainTooShort</code>), through either read strategy. Like <code>Compatible</code>, it ignores the header's FAT and DIFAT sector counts.</td>
+</tr>
+</tbody>
+</table>
+<p>The parameterless <code>Open</code> / <code>OpenRead</code> overloads use <code>Compatible</code>. Pass a <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a> to choose another level.</p>
+<h2 id="errors">Errors</h2>
+<p>A malformed container raises <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> at the <code>Compatible</code> and <code>Strict</code> levels. Beyond its message, the exception carries a message-independent <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileError.html">CompoundFileError</a> on its <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html#Bodu_IO_Compound_CompoundFileFormatException_Category">Category</a> property - <code>InvalidSignature</code>, <code>TruncatedFile</code>, <code>SectorOutOfRange</code>, <code>FatCycle</code>, <code>InvalidMiniFat</code>, <code>StreamChainTooShort</code>, <code>DirectoryCycle</code>, <code>InvalidRootStorage</code>, <code>InvalidPropertySet</code>, and more - which is the stable way to reason about <em>why</em> a file was rejected (useful when testing a reader against a corpus of deliberately broken files). All compound-file exceptions derive from the common base <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileException.html">CompoundFileException</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileException.html">CompoundFileException</a></td>
+<td>The base type for every compound-file failure; catch it to handle them uniformly.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></td>
+<td>The content is not a well-formed compound file, or a stream's sector chain is malformed. Its <code>Category</code> classifies the failure.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundStreamNotFoundException.html">CompoundStreamNotFoundException</a></td>
+<td>A named stream or storage was requested via the throwing <code>OpenStream</code> / <code>OpenStorage</code> and does not exist; its <code>StreamName</code> names the missing entry. The <code>Try*</code> forms return <code>false</code> instead.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install + minimal samples.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - the headline types and scenarios.</li>
+<li><strong><a href="../../guides/io-compound/index.html">Bodu.IO.Compound guides</a></strong> - the recipe-style walk-throughs.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

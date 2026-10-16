@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_SDBM" data-uid="Bodu.IO.Hashing.SDBM" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 SDBM Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ SDBM Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs">SDBM.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs">SDBM.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a 32-bit non-cryptographic hash using the SDBM algorithm popularized by the public-domain NDBM database
@@ -320,7 +320,7 @@ workloads prefer <a class="xref" href="Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a>
 better distribution on inputs longer than ~16 bytes).
 </p>
 <p>
-<strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.
+<strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in big-endian byte order.
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.getcurrenthash#system-io-hashing-noncryptographichashalgorithm-getcurrenthash">GetCurrentHash()</a> is non-destructive; instances are
 not thread-safe.
 </p>
@@ -345,7 +345,7 @@ byte[] digest = sdbm.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dbm-key"));
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_SDBM__ctor" data-uid="Bodu.IO.Hashing.SDBM.#ctor">
   SDBM()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -380,7 +380,7 @@ byte[] digest = sdbm.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dbm-key"));
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_SDBM_Append_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.SDBM.Append(System.ReadOnlySpan{System.Byte})">
   Append(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -417,7 +417,7 @@ byte[] digest = sdbm.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dbm-key"));
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_SDBM_GetCurrentHashCore_System_Span_System_Byte__" data-uid="Bodu.IO.Hashing.SDBM.GetCurrentHashCore(System.Span{System.Byte})">
   GetCurrentHashCore(Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -454,7 +454,7 @@ byte[] digest = sdbm.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dbm-key"));
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_SDBM_Reset" data-uid="Bodu.IO.Hashing.SDBM.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.IO.Hashing/src/IO.Hashing/SDBM.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -507,7 +507,7 @@ byte[] digest = sdbm.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dbm-key"));
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

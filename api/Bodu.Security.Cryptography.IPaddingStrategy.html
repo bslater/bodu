@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_IPaddingStrategy" data-uid="Bodu.Security.Cryptography.IPaddingStrategy" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 IPaddingStrategy Interface
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ IPaddingStrategy Interface
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs">IPaddingStrategy.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs">IPaddingStrategy.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Defines methods for applying and removing padding to data blocks in block cipher operations.</p>
@@ -169,8 +169,9 @@ in accordance with the scheme’s rules.
 length-recoverable padding under a confidentiality-only mode (CBC, ECB). Pick <a class="xref" href="Bodu.Security.Cryptography.Iso7816_4Padding.html">Iso7816_4Padding</a> when
 interoperating with smartcard / EMV / ISO crypto tooling. Pick <a class="xref" href="Bodu.Security.Cryptography.ZeroPadding.html">ZeroPadding</a> only when the plaintext
 format itself encodes its length (so the trailing zeros can be discarded by the application layer) - and prefer one
-of the self-describing schemes otherwise. <a class="xref" href="Bodu.Security.Cryptography.NoPadding.html">NoPadding</a> is appropriate when the surrounding mode handles
-alignment itself (CTR, CTS, AEAD modes).
+of the self-describing schemes otherwise. <a class="xref" href="Bodu.Security.Cryptography.NoPadding.html">NoPadding</a> is appropriate when the input is already
+block-aligned: it rejects any other length, whatever the mode. Modes that accept any length (CTR and CTS driven
+directly, the AEAD modes) need no padding strategy at all.
 </p>
 <p>
 Most callers go through <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.padding">Padding</a> (which dispatches via
@@ -190,7 +191,7 @@ Implementations are stateless and safe to share across threads.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IPaddingStrategy_StripsPaddingOnUnpad" data-uid="Bodu.Security.Cryptography.IPaddingStrategy.StripsPaddingOnUnpad">
   StripsPaddingOnUnpad
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -237,7 +238,7 @@ during decryption so that padding validation and removal can happen at the strea
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IPaddingStrategy_Pad_System_ReadOnlySpan_System_Byte__System_Int32_" data-uid="Bodu.Security.Cryptography.IPaddingStrategy.Pad(System.ReadOnlySpan{System.Byte},System.Int32)">
   Pad(ReadOnlySpan&lt;byte&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -276,8 +277,12 @@ during decryption so that padding validation and removal can happen at the strea
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p>Thrown if <code class="paramref">blockSize</code> is less than or equal to zero.</p>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>Thrown if <code class="paramref">blockSize</code> is not a positive multiple of 8.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown by a strategy that adds no padding, such as <a class="xref" href="Bodu.Security.Cryptography.NoPadding.html">NoPadding</a>, if the byte length of
+<code class="paramref">input</code> is not a multiple of <code class="paramref">blockSize</code> / 8.</p>
 </dd>
   </dl>
 
@@ -290,7 +295,7 @@ during decryption so that padding validation and removal can happen at the strea
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IPaddingStrategy_Unpad_System_ReadOnlySpan_System_Byte__System_Int32_" data-uid="Bodu.Security.Cryptography.IPaddingStrategy.Unpad(System.ReadOnlySpan{System.Byte},System.Int32)">
   Unpad(ReadOnlySpan&lt;byte&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Security.Cryptography/src/Security.Cryptography/IPaddingStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -329,8 +334,12 @@ during decryption so that padding validation and removal can happen at the strea
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown if the input does not conform to the expected padding scheme or its byte length is not a multiple of
-<code class="paramref">blockSize</code> / 8.</p>
+    <dd><p>Thrown by a strategy that strips padding if <code class="paramref">input</code> is empty or its byte length is not a
+multiple of <code class="paramref">blockSize</code> / 8.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>Thrown if <code class="paramref">blockSize</code> is not a positive multiple of 8, or if the padding bytes do not conform
+to the scheme.</p>
 </dd>
   </dl>
 
@@ -365,7 +374,7 @@ during decryption so that padding validation and removal can happen at the strea
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

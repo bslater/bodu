@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Using HKDF | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Using HKDF | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/cryptography/hkdf.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="using-hkdf">Using HKDF</h1>
+
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Hkdf.html">Hkdf</a> is the HMAC-based Extract-and-Expand Key Derivation Function of RFC 5869. It turns input keying material that is merely <em>high-entropy</em> - a Diffie-Hellman shared secret, a KEM output, a master key - into one or more cryptographically strong, fixed-length keys, each bound to an application-specific context. Reach for it whenever you have a strong but non-uniform secret and need usable symmetric key material; for <em>low</em>-entropy inputs such as passwords, use a memory-hard KDF instead (<a href="argon2.html">Argon2</a> or <a href="scrypt.html">scrypt</a>).</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The platform already ships <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hkdf">HKDF</a>, and its surface is interchangeable with this type - prefer the BCL implementation where it covers your need. <code>Bodu</code>'s <code>Hkdf</code> exists to give the rest of the library a self-contained HKDF (it backs the HPKE labeled KDF). It is not independently audited and offers best-effort, not guaranteed, side-channel resistance.</p>
+</div>
+<h2 id="the-two-stages">The two stages</h2>
+<p>HKDF is two steps that you can call separately or together:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Extract</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Hkdf.html#Bodu_Security_Cryptography_Hkdf_Extract_System_Security_Cryptography_HashAlgorithmName_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">Extract(HashAlgorithmName, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a></td>
+<td>Condense the input keying material (with an optional salt) into a pseudorandom key (PRK) of one hash length.</td>
+</tr>
+<tr>
+<td>Expand</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Hkdf.html#Bodu_Security_Cryptography_Hkdf_Expand_System_Security_Cryptography_HashAlgorithmName_System_ReadOnlySpan_System_Byte__System_Int32_System_ReadOnlySpan_System_Byte__">Expand(HashAlgorithmName, ReadOnlySpan&lt;byte&gt;, int, ReadOnlySpan&lt;byte&gt;)</a></td>
+<td>Stretch the PRK into output keying material of any length, bound to an optional <code>info</code> context.</td>
+</tr>
+<tr>
+<td>Both</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Hkdf.html#Bodu_Security_Cryptography_Hkdf_DeriveKey_System_Security_Cryptography_HashAlgorithmName_System_ReadOnlySpan_System_Byte__System_Int32_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">DeriveKey(HashAlgorithmName, ReadOnlySpan&lt;byte&gt;, int, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a></td>
+<td>Extract then Expand in one call - the common case.</td>
+</tr>
+</tbody>
+</table>
+<p>The supported hash algorithms are SHA-1, SHA-256, SHA-384, and SHA-512; any other <code>HashAlgorithmName</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>. The PRK is one hash length long (32 bytes for SHA-256), and the maximum output of a single Expand is <code>255 × HashLen</code> bytes - requesting more throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>. SHA-256 is the right default; SHA-1 is accepted only for interoperating with legacy schemes that mandate it, not for new designs.</p>
+<h2 id="pattern-1---derive-a-key-in-one-call">Pattern 1 - derive a key in one call</h2>
+<p><code>DeriveKey</code> is the method you want most of the time:</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] sharedSecret = GetSharedSecret();   // high-entropy, but not uniform
+
+byte[] sessionKey = Hkdf.DeriveKey(
+    HashAlgorithmName.SHA256,
+    inputKeyingMaterial: sharedSecret,
+    outputLength: 32,
+    salt: salt,                            // optional, non-secret; binds the derivation
+    info: &quot;myapp v1 traffic key&quot;u8);       // optional context / label
+
+CryptographicOperations.ZeroMemory(sharedSecret);   // wipe the raw secret once stretched
+</code></pre>
+<p>The <code>salt</code> and <code>info</code> matter: a salt strengthens extraction when the input is structured, and a distinct <code>info</code> ensures the same secret yields <em>different</em> keys for different purposes (a key, a nonce, a MAC key) without re-running the agreement.</p>
+<h2 id="pattern-2---extract-once-expand-many">Pattern 2 - extract once, expand many</h2>
+<p>When you derive several independent keys from one secret, extract a single PRK and expand it repeatedly with different <code>info</code> labels:</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] prk = Hkdf.Extract(HashAlgorithmName.SHA256, inputKeyingMaterial: sharedSecret, salt: salt);
+
+byte[] encryptionKey = Hkdf.Expand(HashAlgorithmName.SHA256, prk, 32, info: &quot;encrypt&quot;u8);
+byte[] macKey        = Hkdf.Expand(HashAlgorithmName.SHA256, prk, 32, info: &quot;mac&quot;u8);
+
+CryptographicOperations.ZeroMemory(prk);
+</code></pre>
+<h2 id="pattern-3---span-destinations-allocation-free">Pattern 3 - span destinations (allocation-free)</h2>
+<p>Every operation has an overload that writes into a caller-supplied span, so a key can be derived into a pooled or stack buffer without an intermediate array:</p>
+<pre><code class="lang-csharp">Span&lt;byte&gt; key = stackalloc byte[32];
+Hkdf.DeriveKey(HashAlgorithmName.SHA256, sharedSecret, key, salt, info: &quot;traffic&quot;u8);
+// ... use key ...
+key.Clear();
+</code></pre>
+<h2 id="what-hkdf-is-not">What HKDF is not</h2>
+<ul>
+<li><strong>Not a password hash.</strong> HKDF is fast by design. Never feed it a password or PIN - use <a href="argon2.html">Argon2id</a> or <a href="scrypt.html">scrypt</a>, which are deliberately slow and memory-hard.</li>
+<li><strong>Not an authenticator.</strong> HKDF derives keys; it does not protect integrity. Authenticate with an AEAD or a MAC.</li>
+<li><strong>Not a source of entropy.</strong> It cannot manufacture randomness - the security of its output is bounded by the entropy of the input keying material.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="key-agreement-x25519.html">Key agreement with X25519</a> - the canonical source of a shared secret to feed into HKDF.</li>
+<li><a href="hpke.html">Hybrid public key encryption with HPKE</a> - builds the labeled HKDF of RFC 9180 on top of this primitive.</li>
+<li><a href="argon2.html">Using Argon2</a> / <a href="scrypt.html">Using scrypt</a> - KDFs for low-entropy (password) inputs.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Hkdf.html">Hkdf</a> - API reference.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

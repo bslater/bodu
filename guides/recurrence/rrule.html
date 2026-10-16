@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/recurrence/rrule.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/recurrence/rrule.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,10 +89,7 @@
 
 <p><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> is an immutable RFC 5545 <code>RRULE</code>: a base <code>FREQ</code> refined by <code>INTERVAL</code>, bounded by <code>COUNT</code> or <code>UNTIL</code>, and filtered by the <code>BY*</code> rule parts. The rule carries <strong>no start of its own</strong> - the series start (<code>DTSTART</code>) is passed to every occurrence query - so one parsed rule can be applied to any number of series. It parses from text, renders back to canonical text, compares by value, and answers <code>GetNextOccurrence</code> / <code>GetPreviousOccurrence</code> over both <code>DateTime</code> and <code>DateTimeOffset</code>.</p>
 <p>This page is the per-form reference. For the &quot;which form&quot; decision and the due-ness recipe every form shares, start at the <a href="index.html">recurrence overview</a>; for the vocabulary (<em>occurrence</em>, <em>inclusive boundary</em>, <em>frequency period</em>) see <a href="../../docs/recurrence/concepts.html">Core concepts</a>.</p>
-<div class="NOTE">
-<h5>Note</h5>
-<p>Occurrence enumeration supports <code>DAILY</code>, <code>WEEKLY</code>, <code>MONTHLY</code>, and <code>YEARLY</code>. A rule with a sub-daily frequency (<code>SECONDLY</code>, <code>MINUTELY</code>, <code>HOURLY</code>) still parses and round-trips, but every occurrence query on it throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> - the message reads &quot;The recurrence frequency 'Hourly' is not supported; sub-daily frequencies are a planned follow-on.&quot; Time-of-day within a daily-or-coarser rule is fully supported through <code>BYHOUR</code> / <code>BYMINUTE</code> / <code>BYSECOND</code>.</p>
-</div>
+<p>Every frequency enumerates, from <code>SECONDLY</code> to <code>YEARLY</code>. At <code>DAILY</code> and coarser, <code>BYHOUR</code> / <code>BYMINUTE</code> / <code>BYSECOND</code> place occurrences within each day; the sub-daily frequencies are covered in <a href="#sub-daily-frequencies">Sub-daily frequencies</a>.</p>
 <h2 id="pattern-1---parse-inspect-and-format">Pattern 1 - parse, inspect, and format</h2>
 <p><code>Parse</code> accepts the bare rule text or the text with its <code>RRULE:</code> property prefix, in any case. The typed parts expose every component; the <code>BY*</code> lists are <code>IReadOnlyList&lt;int&gt;</code> (or <code>IReadOnlyList&lt;WeekDayNum&gt;</code> for <code>BYDAY</code>) and are empty when the part is absent.</p>
 <!-- compile -->
@@ -134,7 +131,8 @@ bool ok2 = RecurrenceRule.TryParse(&quot;FREQ=DAILY&quot;.AsSpan(), provider: nu
 <h2 id="pattern-3---build-a-rule-fluently">Pattern 3 - build a rule fluently</h2>
 <p><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html">RecurrenceRuleBuilder</a> is the code-first alternative to text. It is constructed with the frequency; every other method returns the same builder so calls chain, and <code>Build()</code> produces the immutable rule. The builder can be reused after <code>Build()</code>, and each <code>By*</code> call <strong>replaces</strong> the values previously supplied for that part rather than appending.</p>
 <!-- compile -->
-<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+<pre><code class="lang-csharp">using Bodu;
+using Bodu.Globalization.Recurrence;
 
 RecurrenceRule lastFriday = new RecurrenceRuleBuilder(RecurrenceFrequency.Monthly)
     .WithInterval(1)
@@ -149,6 +147,13 @@ RecurrenceRule weekdays = new RecurrenceRuleBuilder(RecurrenceFrequency.Weekly)
     .WithUntil(new DateTime(2026, 12, 31, 0, 0, 0, DateTimeKind.Utc))
     .Build();
 // FREQ=WEEKLY;UNTIL=20261231T000000Z;BYDAY=MO,FR;WKST=SU
+
+RecurrenceRule quarterEnds = new RecurrenceRuleBuilder(RecurrenceFrequency.Daily)
+    .ByMonth(MonthSet.Parse(&quot;3,6,9,12&quot;))               // the calendar value sets from Bodu.Core
+    .ByMonthDay(DayOfMonthSet.Parse(&quot;28-31&quot;))
+    .ByDay(DayOfWeekSet.Weekdays)                      // written Monday first
+    .Build();
+// FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;BYMONTHDAY=28,29,30,31;BYMONTH=3,6,9,12
 
 bool same = lastFriday.Equals(RecurrenceRule.Parse(&quot;FREQ=MONTHLY;COUNT=12;BYDAY=-1FR&quot;));   // true
 </code></pre>
@@ -187,14 +192,29 @@ bool same = lastFriday.Equals(RecurrenceRule.Parse(&quot;FREQ=MONTHLY;COUNT=12;B
 <td>0-60</td>
 </tr>
 <tr>
+<td><code>BySecond(SecondSet)</code></td>
+<td><code>BYSECOND</code></td>
+<td>a non-empty set; the leap second 60 needs the <code>int</code> overload</td>
+</tr>
+<tr>
 <td><code>ByMinute(params int[])</code></td>
 <td><code>BYMINUTE</code></td>
 <td>0-59</td>
 </tr>
 <tr>
+<td><code>ByMinute(MinuteSet)</code></td>
+<td><code>BYMINUTE</code></td>
+<td>a non-empty set</td>
+</tr>
+<tr>
 <td><code>ByHour(params int[])</code></td>
 <td><code>BYHOUR</code></td>
 <td>0-23</td>
+</tr>
+<tr>
+<td><code>ByHour(HourSet)</code></td>
+<td><code>BYHOUR</code></td>
+<td>a non-empty set</td>
 </tr>
 <tr>
 <td><code>ByDay(params WeekDayNum[])</code></td>
@@ -207,9 +227,19 @@ bool same = lastFriday.Equals(RecurrenceRule.Parse(&quot;FREQ=MONTHLY;COUNT=12;B
 <td>convenience for ordinal <code>0</code></td>
 </tr>
 <tr>
+<td><code>ByDay(DayOfWeekSet)</code></td>
+<td><code>BYDAY</code></td>
+<td>a non-empty set; ordinal <code>0</code>, written Monday first</td>
+</tr>
+<tr>
 <td><code>ByMonthDay(params int[])</code></td>
 <td><code>BYMONTHDAY</code></td>
 <td>±1…±31, never 0</td>
+</tr>
+<tr>
+<td><code>ByMonthDay(DayOfMonthSet)</code></td>
+<td><code>BYMONTHDAY</code></td>
+<td>a non-empty set of 1-31; days counted from the end need the <code>int</code> overload</td>
 </tr>
 <tr>
 <td><code>ByYearDay(params int[])</code></td>
@@ -227,6 +257,11 @@ bool same = lastFriday.Equals(RecurrenceRule.Parse(&quot;FREQ=MONTHLY;COUNT=12;B
 <td>1-12</td>
 </tr>
 <tr>
+<td><code>ByMonth(MonthSet)</code></td>
+<td><code>BYMONTH</code></td>
+<td>a non-empty set</td>
+</tr>
+<tr>
 <td><code>BySetPos(params int[])</code></td>
 <td><code>BYSETPOS</code></td>
 <td>±1…±366, never 0</td>
@@ -234,7 +269,8 @@ bool same = lastFriday.Equals(RecurrenceRule.Parse(&quot;FREQ=MONTHLY;COUNT=12;B
 </tbody>
 </table>
 <p><code>WithCount</code> and <code>WithUntil</code> are mutually exclusive: supplying one clears the other, matching the RFC rule that <code>COUNT</code> and <code>UNTIL</code> cannot both appear. Out-of-range values throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> at the call, not at <code>Build()</code>.</p>
-<p><a class="xref" href="../../api/Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a> is a <code>readonly record struct (int Ordinal, DayOfWeek Day)</code>. <code>Ordinal</code> <code>0</code> means every occurrence of the day (<code>IsEveryOccurrence</code> is <code>true</code>); a positive ordinal counts from the start of the frequency period and a negative one from its end, so <code>2TU</code> is the second Tuesday of the month in a <code>MONTHLY</code> rule and the second Tuesday of the <em>year</em> in a <code>YEARLY</code> rule. A <code>+</code> sign is accepted on input (<code>+1MO</code>) and dropped on output (<code>1MO</code>).</p>
+<p>The overloads that take a <a href="../core/calendar-value-sets.html">calendar value set</a> write the set's values in ascending order, and <code>BYDAY</code> Monday first, whatever order the set was built in, so <code>DayOfWeekSet.Weekdays</code> builds <code>BYDAY=MO,TU,WE,TH,FR</code>. An empty set throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> naming the part: a part that is present selects at least one value, and a part left unset places no limit.</p>
+<p><a class="xref" href="../../api/Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a> is a <code>readonly record struct (int Ordinal, DayOfWeek Day)</code>. <code>Ordinal</code> <code>0</code> means every occurrence of the day (<code>IsEveryOccurrence</code> is <code>true</code>); a positive ordinal counts from the start of the frequency period and a negative one from its end, so <code>2TU</code> is the second Tuesday of the month in a <code>MONTHLY</code> rule and the second Tuesday of the <em>year</em> in a <code>YEARLY</code> rule. A <code>+</code> sign is accepted on input (<code>+1MO</code>) and dropped on output (<code>1MO</code>). An entry's <code>ToString()</code> returns that same token, so <code>new WeekDayNum(-1, DayOfWeek.Friday)</code> prints as <code>-1FR</code>.</p>
 <h2 id="pattern-4---enumerate-occurrences">Pattern 4 - enumerate occurrences</h2>
 <p><code>GetOccurrences(start)</code> yields the series in ascending order, each value preserving the <code>Kind</code> of <code>start</code>. The sequence is bounded when the rule declares <code>COUNT</code> or <code>UNTIL</code>; otherwise it continues to the end of the representable calendar, so bound it with <code>Take</code> or use the windowed overload. Membership depends only on the rule and the start - never on a window - so the two overloads always agree.</p>
 <!-- compile -->
@@ -274,7 +310,7 @@ DateTime? never   = RecurrenceRule.Parse(&quot;FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=
     .GetNextOccurrence(start, start);                                                // null - 30 February never exists
 </code></pre>
 <p>Both searches are bounded by the end of the representable calendar (year 9999), so a rule that can never match answers <code>null</code> rather than scanning forever.</p>
-<p>The <code>DateTimeOffset</code> overloads expand the rule on the <strong>wall-clock time of the start</strong> and reattach the start's offset to every result; the library performs no offset conversion and never consults the machine time zone. A start of <code>2026-01-05 09:00 +10:00</code> with <code>FREQ=DAILY</code> answers <code>2026-01-06 09:00 +10:00</code> for any <code>after</code> on 5 January, whatever offset <code>after</code> carries:</p>
+<p>The <code>DateTimeOffset</code> overloads expand the rule on the <strong>wall-clock time of the start</strong> and attach the start's offset to every result. <code>after</code>, <code>before</code> and the window bounds are compared as absolute instants, so the offset they are written in never changes the offset of the answer, and the machine time zone is never consulted. A start of <code>2026-01-05 09:00 +10:00</code> with <code>FREQ=DAILY</code> answers <code>2026-01-06 09:00 +10:00</code> for any <code>after</code> from 09:00 on 5 January up to, but not including, 09:00 on 6 January (+10:00), whichever offset <code>after</code> is written in:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
 
@@ -284,6 +320,7 @@ var afterUtc = new DateTimeOffset(2026, 1, 5, 0, 0, 0, TimeSpan.Zero);
 DateTimeOffset? next = RecurrenceRule.Parse(&quot;FREQ=DAILY&quot;).GetNextOccurrence(start, afterUtc);
 // 2026-01-06 09:00 +10:00
 </code></pre>
+<p>An occurrence whose instant at the start's offset lies outside the range of <code>DateTimeOffset</code>, which can happen only within a day of 9999-12-31, is never returned: <code>GetNextOccurrence</code> answers <code>null</code>, <code>GetPreviousOccurrence</code> passes over it, and both <code>GetOccurrences</code> overloads end at the last representable occurrence, as <code>CronExpression</code> and <code>AnchoredInterval</code> do.</p>
 <p>Daylight-saving transitions are the caller's concern - see <a href="scheduling-host.html">Hosting schedules</a> for converting at the host boundary.</p>
 <h2 id="pattern-6---last-working-day-of-the-month">Pattern 6 - last working day of the month</h2>
 <p><code>BYDAY</code> lists the weekdays; <code>BYSETPOS=-1</code> selects the last candidate in each monthly period:</p>
@@ -354,6 +391,31 @@ DateTime[] missed = nightly
 bool isDue = lastRun &lt; nightly.GetPreviousOccurrence(seriesStart, resumedAt, inclusive: true);   // true
 </code></pre>
 <p>The <a href="scheduling-host.html">Hosting schedules</a> guide turns this into a reproducible loop over a <code>TimeProvider</code>.</p>
+<h2 id="sub-daily-frequencies">Sub-daily frequencies</h2>
+<p>At <code>HOURLY</code>, <code>MINUTELY</code>, and <code>SECONDLY</code> each frequency period is a single hour, minute, or second, and the <em>n</em>th period begins <em>n</em> × <code>INTERVAL</code> of them after the one that holds the start. <code>BYMINUTE</code> and <code>BYSECOND</code> expand an hourly period, and <code>BYSECOND</code> a minutely one, each defaulting to the start's own minute and second. <code>BYHOUR</code>, and the finer parts the frequency does not expand, limit which periods produce occurrences, as do <code>BYMONTH</code>, <code>BYMONTHDAY</code>, <code>BYYEARDAY</code>, and the <code>BYDAY</code> weekdays. <code>BYSETPOS</code> selects within each period.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var start = new DateTime(1997, 9, 2, 9, 0, 0);
+
+// RFC 5545: &quot;Every 15 minutes for 6 occurrences&quot;.
+DateTime[] quarterHours = RecurrenceRule.Parse(&quot;FREQ=MINUTELY;INTERVAL=15;COUNT=6&quot;)
+    .GetOccurrences(start).ToArray();
+// 09:00, 09:15, 09:30, 09:45, 10:00, 10:15
+
+// RFC 5545: &quot;Every 20 minutes from 9:00 AM to 4:40 PM every day&quot;. BYHOUR limits the minutely
+// periods; FREQ=DAILY;BYHOUR=9,10,11,12,13,14,15,16;BYMINUTE=0,20,40 gives the same occurrences.
+DateTime[] workingDay = RecurrenceRule.Parse(&quot;FREQ=MINUTELY;INTERVAL=20;BYHOUR=9,10,11,12,13,14,15,16&quot;)
+    .GetOccurrences(start).Take(25).ToArray();
+// 2 September 09:00, 09:20, ... 16:40, then 3 September 09:00
+
+// Every fifth hour reaches midnight or noon once every 60 hours.
+DateTime[] midnightOrNoon = RecurrenceRule.Parse(&quot;FREQ=HOURLY;INTERVAL=5;BYHOUR=0,12&quot;)
+    .GetOccurrences(new DateTime(2026, 1, 1)).Take(4).ToArray();
+// 2026-01-01 00:00, 2026-01-03 12:00, 2026-01-06 00:00, 2026-01-08 12:00
+</code></pre>
+<p>A limit holds for a whole period, so enumeration passes from a rejected period straight to the next one that can pass: the next day or month for a date limit, and for a time limit the next period whose time of day the rule allows, found arithmetically rather than by stepping through the periods between. A rule whose interval never reaches an allowed time of day, such as <code>FREQ=MINUTELY;INTERVAL=15;BYMINUTE=10</code> from 09:00, has no occurrences, and its queries answer <code>null</code> at once. Where RFC 5545 leaves room, a <code>BYDAY</code> ordinal has no meaning below <code>MONTHLY</code> and is ignored (<code>BYDAY=1SA</code> is every Saturday), <code>BYWEEKNO</code>, which the RFC allows only with <code>YEARLY</code>, is ignored, and a <code>BYSECOND</code> value of 60, the leap second, stands for second 59.</p>
+<p>The periods count from the series start in its wall clock. For a cadence measured from an instant that moves, such as &quot;every 4 hours after the last completed run&quot;, use an <a href="anchored-intervals.html">anchored interval</a>, whose anchor is passed to each query and is not itself an occurrence.</p>
 <h2 id="where-implementations-disagree">Where implementations disagree</h2>
 <p>Recurrence libraries diverge on a handful of <code>BY*</code> interactions. Each statement below is what <em>this</em> library does, with the output the sample produced.</p>
 <p><strong>Invalid generated dates are skipped, never clamped.</strong> <code>FREQ=MONTHLY</code> from 31 January yields 31 March, 31 May, 31 July, 31 August - months without a 31st are omitted rather than rolled back to the 30th. RFC 5545 requires this; it is also the single most common false bug report against recurrence libraries.</p>
@@ -415,6 +477,8 @@ DateTime[] sundayWeeks = RecurrenceRule.Parse(&quot;FREQ=WEEKLY;INTERVAL=2;BYDAY
 // 2026-01-04 Sun, 2026-01-06 Tue, 2026-01-18 Sun, 2026-01-20 Tue   (Sunday opens a Sun-Sat week)
 </code></pre>
 <p>The builder's <code>WithWeekStart</code> sets the same part.</p>
+<h2 id="query-cost">Query cost</h2>
+<p><code>GetNextOccurrence</code>, <code>GetPreviousOccurrence</code>, and the windowed <code>GetOccurrences(start, from, to)</code> begin at the frequency period that holds the instant they are given rather than at the series start, so a rule anchored decades ago answers as quickly as one anchored yesterday, with the answer that enumerating from the start gives. A rule with <code>COUNT</code> is the exception: the occurrences before a period decide how many it may still produce, so its queries enumerate from the start and cost in proportion to the occurrences before the query. Where the end of a long series is known as an instant, <code>UNTIL</code> keeps its queries local. At the sub-daily frequencies the search also passes over the days and times of day the rule rejects without visiting the periods between them, and over the long empty stretches of a day's times in a few steps, so neither the age of the series nor the distance between its occurrences decides a query's cost: a quarter-hourly rule anchored in 1990 and <code>FREQ=SECONDLY;BYHOUR=9;BYMINUTE=30;BYSECOND=0</code>, one second a day since 2000, each answer in a fraction of a microsecond.</p>
 <h2 id="value-equality">Value equality</h2>
 <p><code>RecurrenceRule</code> implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable&lt;T&gt;</a>: two rules are equal when every component - frequency, interval, count, until, week start, and every <code>BY*</code> list <em>in source order</em> - is equal. <code>Parse(rule.ToString())</code> is always equal to <code>rule</code>, so persisting the canonical text and comparing on reload is a reliable change detector. Note that <code>BYDAY=MO,FR</code> and <code>BYDAY=FR,MO</code> produce identical occurrences but are <strong>not</strong> equal values; canonicalise the text with <code>ToString()</code> before comparing if source order should not matter. <code>GetHashCode</code> is consistent with <code>Equals</code>.</p>
 <h2 id="api-summary">API summary</h2>
@@ -495,7 +559,7 @@ DateTime[] sundayWeeks = RecurrenceRule.Parse(&quot;FREQ=WEEKLY;INTERVAL=2;BYDAY
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -8,7 +8,7 @@
       <meta name="title" content="ConfigurationKeyMapping Enum
  | BODU ">
       
-      <meta name="description" content="Selects how raw configuration keys are mapped to the colon-delimited logical keys used by the resolved view and by Microsoft.Extensions.Configuration.">
+      <meta name="description" content="Selects how raw configuration keys are mapped to the logical keys used by the resolved view: colon-delimited, as Microsoft.Extensions.Configuration expects, or, under , kept as written.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -94,7 +94,7 @@
 
   <h1 id="Bodu_Text_Configuration_ConfigurationKeyMapping" data-uid="Bodu.Text.Configuration.ConfigurationKeyMapping" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ConfigurationKeyMapping Enum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKeyMapping.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKeyMapping.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -103,13 +103,13 @@ ConfigurationKeyMapping Enum
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKeyMapping.cs">ConfigurationKeyMapping.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKeyMapping.cs">ConfigurationKeyMapping.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Selects how raw configuration keys are mapped to the colon-delimited logical keys used by the resolved view and by
-<code>Microsoft.Extensions.Configuration</code>.</p>
+  <div class="markdown summary"><p>Selects how raw configuration keys are mapped to the logical keys used by the resolved view: colon-delimited, as
+<code>Microsoft.Extensions.Configuration</code> expects, or, under <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_Identity">Identity</a>, kept as written.</p>
 </div>
 
   <div class="codewrapper">
@@ -181,13 +181,16 @@ ConfigurationKeyMapping Enum
 </dd>
     <dt id="Bodu_Text_Configuration_ConfigurationKeyMapping_Colon" data-bodu-frameworks="net8.0 net10.0"><code>Colon = 1</code></dt>
   
-  <dd><p>File keys already use colon segment separators (<code>logging:level:default</code>) and are emitted as-is. Provided
-for callers whose input already matches the MEC logical key shape.</p>
+  <dd><p>Intended for file keys that already use colon segment separators (<code>logging:level:default</code>), the MEC logical
+key shape. It currently behaves exactly as <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_DotToColon">DotToColon</a>: a key is split on every configured
+separator, dots included, and its segments are joined with colons.</p>
 </dd>
     <dt id="Bodu_Text_Configuration_ConfigurationKeyMapping_Identity" data-bodu-frameworks="net8.0 net10.0"><code>Identity = 2</code></dt>
   
-  <dd><p>File keys are emitted unchanged. The logical configuration key equals the raw key. Use this when integrating
-with sources that use a custom segment convention.</p>
+  <dd><p>File keys are not split into segments, so their dots and colons stay as written, and the logical configuration
+key equals the raw key with the whitespace at its ends trimmed, lowercased when
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html#Bodu_Text_Configuration_ConfigurationKeyOptions_LowercaseKeys">LowercaseKeys</a> is set. Use this when integrating with sources that use a
+custom segment convention; the <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html#Bodu_Text_Configuration_ConfigurationProfile_EditorConfigCompatible">EditorConfigCompatible</a> presets use it.</p>
 </dd>
   </dl>
 
@@ -198,7 +201,7 @@ forms; v1 deliberately keeps the surface area small.</p>
 <example>
 <pre><code class="lang-csharp">// "logging.level" under each mapping:
 //   DotToColon -&gt; "logging:level" (dots and colons both address it)
-//   Colon      -&gt; "logging:level" (colon canonical form only)
+//   Colon      -&gt; "logging:level" (currently the same as DotToColon)
 //   Identity   -&gt; "logging.level" (verbatim)
 var keyOptions = new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping.DotToColon };</code></pre>
 </example>
@@ -230,7 +233,7 @@ var keyOptions = new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

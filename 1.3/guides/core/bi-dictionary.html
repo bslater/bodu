@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bidirectional dictionary | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bidirectional dictionary | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/core/bi-dictionary.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="bidirectional-dictionary">Bidirectional dictionary</h1>
+
+<p><code>BiDictionary&lt;TKey, TValue&gt;</code> is a bidirectional one-to-one map: every key maps to exactly one value <strong>and</strong> every value maps back to exactly one key. It is the .NET analogue of Guava's <code>BiMap</code>, Python's <code>bidict</code>, and Apache Commons' <code>BidiMap</code> - a hash-based dictionary that maintains a second, inverse index so that looking up a key <em>by its value</em> (<code>TryGetKey</code>, <code>ContainsValue</code>, <code>RemoveValue</code>) is O(1) rather than a linear scan.</p>
+<p>It fits mappings that are genuinely one-to-one - ISO codes to numbers, identifiers to display names, enum-like wire values to domain values - where you need to translate in both directions. When one key maps to <em>many</em> values, reach for <a href="multi-value-dictionary.html"><code>MultiValueDictionary&lt;TKey, TValue&gt;</code></a> instead.</p>
+<p>A few contract points worth keeping in mind:</p>
+<ul>
+<li>Both type parameters are constrained to <code>notnull</code> - values act as lookup keys in the inverse index, so <code>null</code> values cannot be indexed and are rejected at run time just as <code>null</code> keys are.</li>
+<li>Duplicate <strong>keys</strong> follow the standard <code>Dictionary&lt;TKey, TValue&gt;</code> contract: <code>Add</code> throws, the indexer re-binds.</li>
+<li>Duplicate <strong>values</strong> are a conflict resolved by the <code>BiDictionaryDuplicateValuePolicy</code> chosen at construction: <code>Throw</code> (the default, Guava <code>BiMap.put</code> semantics) rejects the operation; <code>Replace</code> (Guava <code>forcePut</code>) evicts the previous binding - the key that held the value is removed.</li>
+<li>Both comparers are injectable: <code>KeyComparer</code> governs the forward index, <code>ValueComparer</code> the inverse index.</li>
+<li>Enumeration order is unspecified (the same non-contractual, insertion-biased order as <code>Dictionary&lt;TKey, TValue&gt;</code>); do not rely on it.</li>
+</ul>
+<h2 id="pattern-1---translate-in-both-directions">Pattern 1 - translate in both directions</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var codes = new BiDictionary&lt;string, int&gt;();
+codes.Add(&quot;AU&quot;, 36);
+codes.Add(&quot;NZ&quot;, 554);
+codes.Add(&quot;BR&quot;, 76);
+
+int numeric = codes[&quot;AU&quot;];                    // 36 - forward lookup
+
+codes.TryGetKey(554, out string? alpha);      // &quot;NZ&quot; - O(1) inverse lookup
+bool bound = codes.ContainsValue(76);         // true - O(1), no scan
+codes.RemoveValue(36);                        // removes the pair (&quot;AU&quot;, 36)
+</code></pre>
+<h2 id="pattern-2---the-live-inverse-view">Pattern 2 - the live <code>Inverse</code> view</h2>
+<p><code>Inverse</code> exposes the reversed mapping as a <code>BiDictionary&lt;TValue, TKey&gt;</code> <strong>view sharing the same storage</strong> - not a copy. Mutations through either view are immediately visible through the other, and <code>Inverse.Inverse</code> returns the original instance (reference-equal):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var codes = new BiDictionary&lt;string, int&gt;();
+codes.Add(&quot;AU&quot;, 36);
+
+BiDictionary&lt;int, string&gt; byNumber = codes.Inverse;
+byNumber.Add(554, &quot;NZ&quot;);                      // mutate through the view…
+
+bool present = codes.ContainsKey(&quot;NZ&quot;);       // …visible through the original
+object same = codes.Inverse.Inverse;          // reference-equal to codes
+</code></pre>
+<p>Through the inverse view, keys and values swap roles - the view's <code>KeyComparer</code> is the original's <code>ValueComparer</code> and vice versa - and the shared duplicate-value policy governs conflicts on the value side of whichever view is being mutated. The invariant is the same in both directions: the mapping stays one-to-one.</p>
+<h2 id="pattern-3---choosing-the-duplicate-value-policy">Pattern 3 - choosing the duplicate-value policy</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+// Throw (default): a value bound to a different key is rejected.
+var strict = new BiDictionary&lt;string, int&gt;();
+strict.Add(&quot;a&quot;, 1);
+// strict.Add(&quot;b&quot;, 1);      // throws ArgumentException - 1 is bound to &quot;a&quot;
+strict.TryAdd(&quot;b&quot;, 1);      // returns false; nothing changes
+
+// Replace: the previous binding holding the value is evicted.
+var forced = new BiDictionary&lt;string, int&gt;(BiDictionaryDuplicateValuePolicy.Replace);
+forced.Add(&quot;a&quot;, 1);
+forced.Add(&quot;b&quot;, 1);         // evicts (&quot;a&quot;, 1); &quot;a&quot; is gone
+bool hasA = forced.ContainsKey(&quot;a&quot;);   // false
+</code></pre>
+<p>The indexer setter follows the same policy for value conflicts. Re-binding an existing key through the indexer always cleans up the old value's inverse entry, and re-assigning a key its own current value is never a conflict.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>BiDictionary&lt;TKey, TValue&gt;</code> is not thread-safe. Concurrent reads and writes - including through the <code>Inverse</code> view - require external synchronization. Enumerator invalidation matches the BCL dictionary: adding an entry through either view invalidates active enumerators.</p>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a> - the full API surface.</li>
+<li><a href="multi-value-dictionary.html">Multi-value dictionary</a> - one key to many values when the mapping is not one-to-one.</li>
+<li><a href="sequenced-dictionary.html">Sequenced dictionary</a> - a dictionary with a stable, contractual iteration order.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide across the namespace.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> - namespaces, headline types, scenarios.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

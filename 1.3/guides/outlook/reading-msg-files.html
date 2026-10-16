@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Reading .msg files | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Reading .msg files | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/outlook/reading-msg-files.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="reading-msg-files">Reading <code>.msg</code> files</h1>
+
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a> is the session type: open it over a file path or a stream, read what you need through the conveniences or the raw property surface, and dispose it when done. The session owns the compound-file container and, unless you opt out with <code>leaveOpen</code>, the source stream.</p>
+<h2 id="open-a-message-and-read-the-common-fields">Open a message and read the common fields</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var message = OutlookMessage.OpenRead(&quot;invoice.msg&quot;);
+
+Console.WriteLine(message.Subject);
+Console.WriteLine(message.SenderName);
+Console.WriteLine(message.SenderEmailAddress);
+Console.WriteLine(message.SentTime);
+Console.WriteLine(message.BodyText);
+</code></pre>
+<p>Every convenience is nullable and returns <code>null</code> when the message does not carry the underlying property - real-world messages omit fields freely.</p>
+<h2 id="sniff-before-opening">Sniff before opening</h2>
+<p><code>IsMsgFile</code> checks that a stream is an OLE2 compound file whose root carries the message property stream, restoring the stream position afterwards. The conventional root class identifier is <em>not</em> required - real-world writers frequently omit it.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using FileStream stream = File.OpenRead(&quot;maybe-a-message.bin&quot;);
+if (OutlookMessage.IsMsgFile(stream))
+{
+    using var message = OutlookMessage.OpenRead(stream, leaveOpen: true);
+    Console.WriteLine(message.Subject);
+}
+</code></pre>
+<h2 id="recipients-and-attachments">Recipients and attachments</h2>
+<p>Recipients and attachments are materialized lazily from their indexed child storages, in index order.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var message = OutlookMessage.OpenRead(&quot;invoice.msg&quot;);
+
+foreach (OutlookRecipient recipient in message.Recipients)
+    Console.WriteLine($&quot;{recipient.RecipientType}: {recipient.DisplayName} &lt;{recipient.EmailAddress}&gt;&quot;);
+
+foreach (OutlookAttachment attachment in message.Attachments)
+{
+    if (attachment.Method == OutlookAttachmentMethod.ByValue)
+    {
+        using Stream content = attachment.OpenContentStream();
+        using FileStream target = File.Create(attachment.FileName ?? &quot;attachment.bin&quot;);
+        content.CopyTo(target);
+    }
+    else if (attachment.Method == OutlookAttachmentMethod.EmbeddedMessage)
+    {
+        OutlookMessage nested = attachment.OpenMessage();
+        Console.WriteLine($&quot;attached message: {nested.Subject}&quot;);
+    }
+}
+</code></pre>
+<p>A nested message shares the root session's container and named-property mapping: disposing it is a no-op, and once the root session is disposed every member of the nested message, its decoded properties included, throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</p>
+<h2 id="bodies">Bodies</h2>
+<p>Three body conveniences cover the forms a message stores:</p>
+<ul>
+<li><code>BodyText</code> - the plain-text <code>PidTagBody</code>.</li>
+<li><code>BodyHtml</code> - the <code>PidTagHtml</code> payload, decoded through the message's internet code page.</li>
+<li><code>BodyRtf</code> - the <code>PidTagRtfCompressed</code> payload, decompressed per MS-OXRTFCP. Set <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessageReaderOptions.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_DecompressRtf">DecompressRtf</a> to <code>false</code> to suppress the decompression; the raw payload stays reachable through the property collection.</li>
+</ul>
+<h2 id="validation-levels">Validation levels</h2>
+<p><code>Open</code> accepts <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessageReaderOptions.html">OutlookMessageReaderOptions</a>, whose <code>ValidationLevel</code> reuses the container's <a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a>:</p>
+<ul>
+<li><strong>Compatible</strong> (default) - malformed properties are omitted and decoding continues; the tolerance real-world messages need.</li>
+<li><strong>Strict</strong> - structural problems (a missing value stream, a misaligned property stream, inconsistent recipient/attachment counts) throw <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a>.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

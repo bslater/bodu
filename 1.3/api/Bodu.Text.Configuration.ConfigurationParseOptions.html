@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ConfigurationParseOptions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ConfigurationParseOptions Class
+ | BODU ">
+      
+      <meta name="description" content="Controls how a configuration document is parsed: comment handling, duplicate handling, diagnostic routing, length limits, and the key mapping options.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text.Configuration.ConfigurationParseOptions">
+
+
+
+
+  <h1 id="Bodu_Text_Configuration_ConfigurationParseOptions" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ConfigurationParseOptions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationParseOptions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.Presets.cs">ConfigurationParseOptions.Presets.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Controls how a configuration document is parsed: comment handling, duplicate handling, diagnostic routing, length
+limits, and the key mapping options.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ConfigurationParseOptions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ConfigurationParseOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationParseOptions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+The options bag is a profile-grouped set of <code>init</code>-only properties. Start from a named preset that matches the
+hosting flavor - <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_Bodu">Bodu</a> for the default Bodu Text Configuration semantics,
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_EditorConfigCompatible">EditorConfigCompatible</a> for EditorConfig alignment, <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_Strict">Strict</a> for fail-fast behavior, or
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_Relaxed">Relaxed</a> for lenient parsing - and override the specific properties that need to differ. Use
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a> when the profile is data-driven (for example, read from configuration).
+</p>
+<p>
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_DiagnosticMode">DiagnosticMode</a> is the most consequential knob. In <a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Throw">Throw</a>
+the reader raises <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a> on the first recoverable error; in
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Collect">Collect</a> the parser drives through the document and reports every
+recoverable issue via the parse result's <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseResult.html#Bodu_Text_Configuration_ConfigurationParseResult_Diagnostics">Diagnostics</a> list. Pair the latter
+with <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_">ParseWithDiagnostics(string, ConfigurationParseOptions?)</a>.
+</p>
+<p>
+Key shape is delegated to <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_KeyOptions">KeyOptions</a>. Sharing one configured <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a>
+instance between parse and <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a> keeps the parsed model and the resolved view's
+lookups consistent. Instances are safe to cache and share across threads because every property is <code>init</code>-only.
+</p>
+<p>
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_Profile">Profile</a> only labels the option set. The individual properties carry the behavior, so start from a
+preset or <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a> to select a profile, and set every property that the variation
+needs.
+</p>
+<example>
+<pre><code class="lang-csharp">// Strict structure, but collect every diagnostic instead of failing fast. The properties, not Profile, select the
+// behaviour, so the variation states each of the Strict preset's choices.
+var options = new ConfigurationParseOptions
+{
+    Profile              = ConfigurationProfile.Strict,
+    InlineCommentMode    = ConfigurationInlineCommentMode.Disabled,
+    DuplicateKeyMode     = DuplicateKeyPolicy.Disallowed,
+    DuplicateSectionMode = IniDuplicateSectionBehavior.Disallowed,
+    SectionHeaderMode    = ConfigurationSectionHeaderMode.Strict,
+    DiagnosticMode       = ConfigurationDiagnosticMode.Collect,
+};
+
+ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(text, options);
+foreach (ConfigurationDiagnostic d in result.Diagnostics)
+    Console.WriteLine(d);</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions__ctor_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions__ctor" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.#ctor">
+  ConfigurationParseOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationParseOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_AllowKeyOnlyProperties_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.AllowKeyOnlyProperties*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_AllowKeyOnlyProperties" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.AllowKeyOnlyProperties">
+  AllowKeyOnlyProperties
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether key-only properties (lines with no <code>=</code>) are permitted.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowKeyOnlyProperties { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when key-only lines are permitted; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The default is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Bodu*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_Bodu" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Bodu">
+  Bodu
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for the default Bodu profile:
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationInlineCommentMode.html#Bodu_Text_Configuration_ConfigurationInlineCommentMode_WhitespaceIntroduced">WhitespaceIntroduced</a> inline comments,
+<a class="xref" href="Bodu.Text.Configuration.DuplicateKeyPolicy.html#Bodu_Text_Configuration_DuplicateKeyPolicy_LastWins">LastWins</a> duplicates, <a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html#Bodu_Text_Configuration_IniDuplicateSectionBehavior_Preserve">Preserve</a>
+sections, and throw-on-error diagnostics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationParseOptions Bodu { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>A cached default options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_DefaultEncoding_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DefaultEncoding*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_DefaultEncoding" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DefaultEncoding">
+  DefaultEncoding
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the encoding to assume when loading a configuration document from a byte stream without a byte order mark.
+The default is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Encoding DefaultEncoding { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The default encoding.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_DiagnosticMode_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DiagnosticMode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_DiagnosticMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DiagnosticMode">
+  DiagnosticMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the diagnostic routing mode that controls whether recoverable errors throw, are collected on the document,
+or are silently ignored.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationDiagnosticMode DiagnosticMode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html">ConfigurationDiagnosticMode</a></dt>
+    <dd><p>The selected diagnostic mode.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_DuplicateKeyMode_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DuplicateKeyMode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_DuplicateKeyMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DuplicateKeyMode">
+  DuplicateKeyMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the duplicate key handling mode used by the reader.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DuplicateKeyPolicy DuplicateKeyMode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.DuplicateKeyPolicy.html">DuplicateKeyPolicy</a></dt>
+    <dd><p>The selected duplicate key mode.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_DuplicateSectionMode_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DuplicateSectionMode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_DuplicateSectionMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DuplicateSectionMode">
+  DuplicateSectionMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the duplicate section handling mode used by the reader.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IniDuplicateSectionBehavior DuplicateSectionMode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a></dt>
+    <dd><p>The selected duplicate section mode.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_EditorConfigCompatible_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.EditorConfigCompatible*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_EditorConfigCompatible" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.EditorConfigCompatible">
+  EditorConfigCompatible
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for the EditorConfig-compatible profile: inline comments disabled, duplicates
+last-wins, preserve duplicate sections, throw-on-error diagnostics, and the
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_Identity">Identity</a> key mapping with keys lowercased, so a key is kept as written,
+its dots and colons included, and reads as EditorConfig lowercases it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationParseOptions EditorConfigCompatible { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>A cached EditorConfig-compatible options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_InlineCommentMode_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.InlineCommentMode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_InlineCommentMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.InlineCommentMode">
+  InlineCommentMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the inline comment handling mode used by the reader.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationInlineCommentMode InlineCommentMode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationInlineCommentMode.html">ConfigurationInlineCommentMode</a></dt>
+    <dd><p>The selected inline comment mode.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_KeyOptions_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.KeyOptions*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_KeyOptions" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.KeyOptions">
+  KeyOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the key options used to split raw keys into segments and map them to the configuration key shape.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationKeyOptions KeyOptions { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a></dt>
+    <dd><p>The selected key options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_MaxKeyLength_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.MaxKeyLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_MaxKeyLength" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.MaxKeyLength">
+  MaxKeyLength
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the maximum permitted length of an individual key, in characters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxKeyLength { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A positive key-length cap.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_MaxLineLength_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.MaxLineLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_MaxLineLength" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.MaxLineLength">
+  MaxLineLength
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the maximum permitted length of an individual line, in characters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxLineLength { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A positive line-length cap.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_Profile_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Profile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_Profile" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Profile">
+  Profile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the profile this option set was created from. The default is <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html#Bodu_Text_Configuration_ConfigurationProfile_Bodu">Bodu</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationProfile Profile { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html">ConfigurationProfile</a></dt>
+    <dd><p>The profile the option set is labeled with.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationParseOptions_Profile_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The property is informational: the parser does not read it, and setting it changes no other property. Use
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a> or a preset to select a profile's behavior.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_Relaxed_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Relaxed*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_Relaxed" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Relaxed">
+  Relaxed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for permissive parsing of user-authored files: inline comments enabled, duplicates
+last-wins, preserve duplicate sections, and collect-on-error diagnostics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationParseOptions Relaxed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>A cached relaxed options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_SectionHeaderMode_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.SectionHeaderMode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_SectionHeaderMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.SectionHeaderMode">
+  SectionHeaderMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the section-header trailing-content handling mode used by the reader. The default,
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationSectionHeaderMode.html#Bodu_Text_Configuration_ConfigurationSectionHeaderMode_Lenient">Lenient</a>, accepts trailing words silently and matches the
+historical Bodu profile; the EditorConfig-compatible and strict presets use
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationSectionHeaderMode.html#Bodu_Text_Configuration_ConfigurationSectionHeaderMode_Strict">Strict</a> instead.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationSectionHeaderMode SectionHeaderMode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationSectionHeaderMode.html">ConfigurationSectionHeaderMode</a></dt>
+    <dd><p>The selected section-header mode.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_Strict_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Strict*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_Strict" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Strict">
+  Strict
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for strict, deterministic parsing intended for generated files: inline comments
+disabled, duplicate keys rejected, duplicate sections rejected, throw-on-error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationParseOptions Strict { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>A cached strict options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_TrimKeysAndValues_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.TrimKeysAndValues*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_TrimKeysAndValues" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.TrimKeysAndValues">
+  TrimKeysAndValues
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether keys and values should be trimmed of leading and trailing whitespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TrimKeysAndValues { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the parser trims; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The default is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, matching EditorConfig.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationParseOptions_For_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.For*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationParseOptions_For_Bodu_Text_Configuration_ConfigurationProfile_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.For(Bodu.Text.Configuration.ConfigurationProfile)">
+  For(ConfigurationProfile)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationParseOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the canonical option set for the specified profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationParseOptions For(ConfigurationProfile profile)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profile</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html">ConfigurationProfile</a></dt>
+    <dd><p>The profile to materialize.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>An options instance configured for <code class="paramref">profile</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">profile</code> is not a defined value.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

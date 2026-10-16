@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/calendar/identity-and-resolution.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/identity-and-resolution.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="rule-identity-priority-and-observed-date-resolution">Rule identity, priority, and observed-date resolution</h1>
 
-<p>This guide covers the resolution semantics an author needs once a rule set grows beyond a handful of fixed dates: how occurrences are <em>identified</em>, how <em>priority</em> arbitrates same-day collisions, how the resource's <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> settles duplicates and collisions, and how the <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a> / <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> pair governs observed-date range inclusion.</p>
+<p>This guide covers the resolution semantics an author needs once a rule set grows beyond a handful of fixed dates: how occurrences are <em>identified</em>, how <em>priority</em> arbitrates same-day collisions under the resource's <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a>, how duplicate identifiers are settled, and how <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a> decides which observed dates a range query returns. Three of the policy's settings - <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a>, the span collision policy, and <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> - are <strong>reserved</strong>: a document may set them and they are stored, but the engine does not apply them yet (<a href="https://github.com/bslater/bodu/issues/1119">#1119</a> tracks implementing them). Each section below says what happens instead.</p>
 <p>For the element-by-element reference, see <a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a>. For the end-to-end materialisation flow, see <a href="resolution-pipeline.html">The resolution pipeline</a>.</p>
 <hr>
 <h2 id="rule-identity">Rule identity</h2>
@@ -145,7 +145,7 @@ IReadOnlyList&lt;NotableDate&gt; easters =
 <li><a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a> - <em>what</em> to do with the colliding set.</li>
 <li><a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a> - <em>which</em> priority wins when the policy needs a winner.</li>
 </ul>
-<p><code>PriorityDirection</code> is <code>HigherWins</code> (default) or <code>LowerWins</code>; it tells the engine whether a larger or smaller <code>Priority</code> value is the more important one. For a <strong>single-day</strong> query, every occurrence that <em>covers</em> that day - including a multi-day span that started earlier - is arbitrated together.</p>
+<p><code>PriorityDirection</code> is <code>HigherWins</code> (default) or <code>LowerWins</code>; it tells the engine whether a larger or smaller <code>Priority</code> value is the more important one. Occurrences are arbitrated together when they share the same emitted <code>Date</code>; a multi-day span that began on an earlier day is not part of that group, even though a single-day query for a day it covers returns it.</p>
 <h3 id="collision-policies">Collision policies</h3>
 <table>
 <thead>
@@ -173,7 +173,7 @@ IReadOnlyList&lt;NotableDate&gt; easters =
 </tr>
 </tbody>
 </table>
-<p>Same-day collisions are governed by <code>SameDayCollisionPolicy</code> and overlapping multi-day spans by <code>SpanCollisionPolicy</code> - two <strong>independent</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a> knobs on the same resource, both defaulting to <code>KeepAll</code>. Single-day events that share one day are reconciled by <code>SameDayCollisionPolicy</code>; multi-day occurrences whose <code>[Date, EndDate]</code> ranges overlap are reconciled by <code>SpanCollisionPolicy</code>. The policies are authored on the resource's <code>&lt;ResolutionPolicy&gt;</code> element:</p>
+<p>Collisions are governed by <code>SameDayCollisionPolicy</code>, a <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a> that defaults to <code>KeepAll</code> and applies to occurrences sharing an emitted <code>Date</code>. Each date is settled over every occurrence emitted on it, whatever range is queried: a multi-day occurrence competes only on its emitted date, and if it loses there it is absent from every query its <code>[Date, EndDate]</code> span reaches into, including one whose window starts after that date. A window's result is therefore the same as a wider resolution's result restricted to the window. The resource also carries a <code>SpanCollisionPolicy</code> of the same type, which settles multi-day occurrences whose <code>[Date, EndDate]</code> ranges overlap once the same-day groups are settled; see <a href="#overlapping-spans">Overlapping spans</a> below. The policies are authored on the resource's <code>&lt;ResolutionPolicy&gt;</code> element:</p>
 <pre><code class="lang-xml">&lt;ResolutionPolicy duplicatePolicy=&quot;KeepFirst&quot;
                   sameDayCollisionPolicy=&quot;HighestPriorityOnly&quot;
                   spanCollisionPolicy=&quot;KeepAll&quot;
@@ -181,7 +181,7 @@ IReadOnlyList&lt;NotableDate&gt; easters =
                   observedDateRangePolicy=&quot;ObservedOccurrenceControlsInclusion&quot;
                   workingDays=&quot;0111110&quot; /&gt;   &lt;!-- Sunday-first; Mon-Fri working --&gt;
 </code></pre>
-<p>The runtime <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> carries these as <code>SameDayCollisionPolicy</code>, <code>SpanCollisionPolicy</code>, <code>PriorityDirection</code>, <code>DuplicatePolicy</code>, <code>ObservedDateRangePolicy</code>, a <code>WorkingWeek</code> (a <code>Bodu.Core</code> <code>WeekPattern</code>), and a <code>CategoryPrecedence</code> list; <code>ResolutionPolicy.Default</code> is the all-defaults instance (<code>DuplicatePolicy.Error</code>, <code>CollisionPolicy.KeepAll</code> on both axes, <code>PriorityDirection.HigherWins</code>, Monday-Friday working week).</p>
+<p>The runtime <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> carries these as <code>SameDayCollisionPolicy</code>, <code>SpanCollisionPolicy</code>, <code>PriorityDirection</code>, <code>DuplicatePolicy</code>, <code>ObservedDateRangePolicy</code>, a <code>WorkingWeek</code> (a <code>Bodu.Core</code> <code>DayOfWeekSet</code>), and a <code>CategoryPrecedence</code> list; <code>ResolutionPolicy.Default</code> is the all-defaults instance (<code>DuplicatePolicy.Error</code>, <code>CollisionPolicy.KeepAll</code> on both axes, <code>PriorityDirection.HigherWins</code>, Monday-Friday working week).</p>
 <h3 id="category-precedence-categorypriority">Category precedence (<code>CategoryPriority</code>)</h3>
 <p><code>CollisionPolicy.CategoryPriority</code> ranks colliding occurrences by <strong>category</strong> first and only falls back to <code>Priority</code> within a category. The ranking is the resource's <code>CategoryPrecedence</code> list - authored as a <code>&lt;CategoryPrecedence&gt;</code> child of <code>&lt;ResolutionPolicy&gt;</code> whose <code>&lt;Category value=&quot;…&quot;/&gt;</code> entries are ordered most-important-first:</p>
 <pre><code class="lang-xml">&lt;ResolutionPolicy sameDayCollisionPolicy=&quot;CategoryPriority&quot; priorityDirection=&quot;HigherWins&quot;&gt;
@@ -213,37 +213,54 @@ var service = new NotableDateService(resource, new NotableDateServiceOptions
     CollisionResolver = new HighestPriorityResolver(),
 });
 </code></pre>
-<p>The collaborator slots (<code>Algorithms</code>, <code>CollisionResolver</code>, <code>Handlers</code>, <code>TriggerHandlers</code>, <code>Providers</code>) live on <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a>, not as positional constructor parameters. The resolver is consulted <strong>only</strong> when a <code>CollisionPolicy</code> resolves to <code>Custom</code>; for the built-in policies the engine settles the day itself.</p>
+<p>The collaborator slots (<code>Algorithms</code>, <code>CollisionResolver</code>, <code>Handlers</code>, <code>TriggerHandlers</code>, <code>Providers</code>) live on <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a>, not as positional constructor parameters. The resolver is consulted <strong>only</strong> when a <code>CollisionPolicy</code> resolves to <code>Custom</code>; for the built-in policies the engine settles the day itself. One resolver serves both policies: for a same-day group it receives the shared emitted date, and for an overlap chain under <code>SpanCollisionPolicy=&quot;Custom&quot;</code> it receives the chain's earliest emitted date. Without a resolver, <code>Custom</code> keeps every occurrence of the group.</p>
+<h3 id="overlapping-spans">Overlapping spans</h3>
+<p><code>SpanCollisionPolicy</code> settles occurrences that overlap without sharing an emitted date: a five-day festival from 1 June and a public holiday on 3 June, say. It applies after the same-day groups are settled, to every <em>chain</em> of surviving occurrences connected through overlapping <code>[Date, EndDate]</code> spans that holds at least one multi-day occurrence. A chain is the whole connected run, not each overlapping pair: if A overlaps B and B overlaps C, then A, B and C form one group even when A and C do not touch. A chain is ranked as a same-day group is (<code>HighestPriorityOnly</code> keeps the best priority, <code>CategoryPriority</code> the best category and then the best priority, <code>Custom</code> defers to the resolver with the chain's earliest emitted date), and <code>KeepAll</code>, the default, keeps every overlapping occurrence. Occurrences that overlap only by sharing their emitted date, none of them multi-day, are left to <code>SameDayCollisionPolicy</code>.</p>
+<pre><code class="lang-xml">&lt;ResolutionPolicy spanCollisionPolicy=&quot;CategoryPriority&quot; /&gt;
+&lt;!-- The 3 June public holiday outranks the cultural festival that spans it, so a June query returns the holiday alone. --&gt;
+</code></pre>
+<p>A chain is settled whole, whatever window is queried, so a window's result is still a wider resolution's result restricted to the window. A query gathers the occurrences of one civil year either side of its window; while a chain that reaches the window may continue into a year it has not gathered, it widens what it gathers one civil year at a time on that side, up to ten civil years beyond the one-year margin. A chain that never ends, such as a weekly rule whose <code>durationDays</code> is at least its interval, is still open at that limit and is settled over what was gathered, so an occurrence more than eleven civil years from the window takes no part in it. The resolver is consulted only for a group that can reach the result: a same-day group whose chain holds an occurrence the window includes, or such a chain.</p>
 <hr>
-<h2 id="duplicate-reconciliation">Duplicate reconciliation</h2>
-<p>Distinct from a <em>collision</em> (two different rules on one day), a <em>duplicate</em> is the same occurrence appearing more than once - most often when an import and a local concept both contribute the same rule, or two <code>&lt;Import&gt;</code> paths reach the same catalogue. <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a> reconciles them:</p>
+<h2 id="duplicate-identifiers">Duplicate identifiers</h2>
+<p>Distinct from a <em>collision</em> (two different rules on one day), a <em>duplicate</em> is two declarations with the same identity - most often when an import and a local concept both contribute the same concept, or two <code>&lt;Import&gt;</code> paths reach the same catalogue.</p>
+<p>The document's <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a> settles the concepts and rules the loaded document declares, when it is loaded, in document order, before its imports are composed and its overrides applied:</p>
 <table>
 <thead>
 <tr>
-<th><code>DuplicatePolicy</code></th>
-<th>Behaviour</th>
+<th><code>duplicatePolicy</code></th>
+<th>Two concepts with one <code>id</code></th>
+<th>Two rules with one <code>id</code> in a concept</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>Error</code> <em>(default)</em></td>
-<td>Duplicate occurrences are treated as an authoring error.</td>
+<td>Load error <code>BODU-CAL-DUP-ND</code>.</td>
+<td>Load error <code>BODU-CAL-DUP-RULE</code>.</td>
 </tr>
 <tr>
 <td><code>KeepFirst</code></td>
-<td>The first occurrence is kept; later duplicates are dropped.</td>
+<td>The first declaration is kept, at its own position; the later one is discarded with its rules.</td>
+<td>The first is kept; the later one is discarded.</td>
 </tr>
 <tr>
 <td><code>KeepLast</code></td>
-<td>The last occurrence is kept.</td>
+<td>The last declaration is kept, at its own position; the earlier one is discarded with its rules.</td>
+<td>The last is kept; the earlier one is discarded.</td>
 </tr>
 <tr>
 <td><code>Merge</code></td>
-<td>Duplicates are merged into a single occurrence.</td>
+<td>The later declaration's rules are appended to the first declaration, whose own fields (display name, category, defaults, tags) win.</td>
+<td>Load error <code>BODU-CAL-DUP-RULE</code>, whether the rules were declared in one concept or brought together by the merge.</td>
 </tr>
 </tbody>
 </table>
-<p>Because local concepts already win over imported ones of the same id at load time, <code>DuplicatePolicy</code> is the safety net for the cases that survive that rule rather than the primary composition mechanism.</p>
+<p>A policy that settles duplicates reports nothing. Its reach is the loaded document's own declarations, and nothing else:</p>
+<ul>
+<li>Across imports, the first import that supplies a concept wins and later imports of the same id are skipped, and a local concept replaces an imported concept with the same id, under every policy.</li>
+<li>An imported document's own <code>duplicatePolicy</code> is not applied: two rules that share an id in an imported concept stay <code>BODU-CAL-DUP-RULE</code>.</li>
+<li>An <code>&lt;AddRule&gt;</code> override whose rule id already exists in its target concept is <code>BODU-CAL-DUP-RULE</code> under every policy, an authoring error like a <code>&lt;PatchRule&gt;</code> that names a missing rule. Overrides apply to the concept the policy keeps.</li>
+</ul>
 <hr>
 <h2 id="observed-dates-and-range-inclusion">Observed dates and range inclusion</h2>
 <p>When an adjustment policy shifts a date (for example rolling a Saturday holiday to Monday), two independent decisions apply: <em>what the policy emits</em>, and <em>which emitted occurrence controls range-query inclusion</em>.</p>
@@ -280,45 +297,45 @@ var service = new NotableDateService(resource, new NotableDateServiceOptions
 </tbody>
 </table>
 <p><code>EmissionMode</code> is a property of the <em>adjustment policy</em>, authored per policy in <code>&lt;Emission&gt;</code> - it is not a service-wide option and not a per-query argument. See <a href="adjustment-rules.html">Observance adjustment rules</a>.</p>
-<h3 id="which-date-controls-inclusion---observeddaterangepolicy">Which date controls inclusion - <code>ObservedDateRangePolicy</code></h3>
-<p>For a range query, the resource-level <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> decides which date of an occurrence must fall inside the window for it to be returned:</p>
+<h3 id="which-date-controls-inclusion">Which date controls inclusion</h3>
+<p>The resource-level <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> decides which span of an occurrence a range query tests against the window:</p>
 <table>
 <thead>
 <tr>
-<th><code>ObservedDateRangePolicy</code></th>
-<th>An occurrence is included when …</th>
+<th><code>observedDateRangePolicy</code></th>
+<th>An occurrence is included when</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>ObservedOccurrenceControlsInclusion</code> <em>(default)</em></td>
-<td>its observed <code>Date</code> falls inside the range.</td>
+<td>its emitted span, <code>Date</code> through <code>Date + DurationDays - 1</code>, meets the window.</td>
 </tr>
 <tr>
 <td><code>ActualOccurrenceControlsInclusion</code></td>
-<td>its nominal <code>ActualDate</code> falls inside the range.</td>
+<td>its actual span, <code>ActualDate</code> through <code>ActualDate + DurationDays - 1</code>, meets the window.</td>
 </tr>
 <tr>
 <td><code>BothOccurrencesControlInclusion</code></td>
-<td>either its observed or its nominal date falls inside the range.</td>
+<td>either span meets the window.</td>
 </tr>
 </tbody>
 </table>
-<p>This is what makes range results stable: a holiday whose substitute rolls just outside the queried window is included or excluded by a deliberate, resource-level rule rather than by accident. The single-day result for a given day is independent of any wider query window.</p>
+<p>Under the default, a holiday whose substitute rolls just outside the window is not returned, while its actual occurrence is returned only when the policy emits it (<code>ActualAndObserved</code>) and it falls inside the window. Under <code>ActualOccurrenceControlsInclusion</code>, the same holiday is returned by a window that holds its actual date, as the emitted occurrence with its observed <code>Date</code>. The policy applies to <code>Resolve(DateRange)</code> and everything built on it: by-year and single-day queries, the working-day extensions (so under the actual policy a moved holiday makes its actual day the non-working one, and leaves its observed day a working day unless something else claims it) and the caching decorator. Collision groups stay keyed by the emitted date, so an occurrence that loses its emitted day's collision is absent whichever span would include it, and the actual and observed occurrences an <code>ActualAndObserved</code> policy emits, which share their actual date, enter and leave an actual-controlled window together. Whatever the policy, the single-day result for a given day is independent of any wider query window.</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 
 // Late-December window in 2027, when Christmas (Sat 25th) is observed Mon 27th.
 var window = new DateRange(new DateOnly(2027, 12, 26), new DateOnly(2027, 12, 31));
 IReadOnlyList&lt;NotableDate&gt; dates = service.Resolve(window, &quot;AU&quot;);
-// Under the default ObservedOccurrenceControlsInclusion the observed 27 Dec occurrence
-// is inside the window and is returned; the nominal 25 Dec falls outside it.
+// The observed 27 Dec occurrence is inside the window and is returned; the nominal
+// 25 Dec falls outside it.
 </code></pre>
 <blockquote>
-<p>Emission and range inclusion are two separate concerns: <em>emission</em> is authored per adjustment policy (<code>EmissionMode</code>), and <em>range inclusion</em> is authored once per resource (<code>ObservedDateRangePolicy</code>).</p>
+<p>Emission is authored per adjustment policy (<code>EmissionMode</code>); the resource-level <code>ObservedDateRangePolicy</code> decides which span of each emitted occurrence controls range inclusion.</p>
 </blockquote>
 <hr>
 <h2 id="validating-a-rule-set">Validating a rule set</h2>
-<p>Identity collisions, dangling references, and unknown algorithm keys are caught at <strong>load</strong> time, not at query time. <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a> validates the assembled resource and throws a <code>NotableDateValidationException</code> on any error-severity finding; its <code>Diagnostics</code> collection reports every duplicate id, missing or ambiguous <code>&lt;OffsetFromRule&gt;</code> / <code>ReplaceWithRule</code> reference, reference cycle, and unregistered algorithm key (<code>BODU-CAL-ALGORITHM</code>) - all errors; see <a href="validation-diagnostics.html">Calendar validation diagnostics</a> for the code catalogue. See <a href="resolution-pipeline.html#stage-5---semantic-validation">The resolution pipeline - semantic validation</a>:</p>
+<p>Identity collisions, dangling references, and unknown algorithm keys are caught at <strong>load</strong> time, not at query time. <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a> validates the assembled resource and throws a <code>NotableDateValidationException</code> on any error-severity finding; its <code>Diagnostics</code> collection reports every duplicate id, missing or ambiguous <code>&lt;OffsetFromRule&gt;</code> / <code>ReplaceWithRule</code> reference, and unregistered algorithm key (<code>BODU-CAL-ALGORITHM</code>) - all errors; see <a href="validation-diagnostics.html">Calendar validation diagnostics</a> for the code catalogue. A circular chain of rule references is not reported: it is broken when the dates are resolved, and the rule caught in it produces no occurrence. See <a href="resolution-pipeline.html#stage-5---semantic-validation">The resolution pipeline - semantic validation</a>:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 
 try
@@ -358,7 +375,7 @@ catch (NotableDateValidationException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

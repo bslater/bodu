@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/getting-started.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/getting-started.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -91,12 +91,12 @@
 <p>If you only need a single library, jump straight to its section below - each one ends with links to its dedicated <strong>Introduction</strong>, <strong>Getting started</strong>, and <strong>Guides</strong> pages.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>The <strong>.NET 8 SDK</strong> - every runtime package in the solution targets <code>net8.0</code>. (The one exception is the build-time <code>Bodu.Globalization.Calendar.Build</code> MSBuild task package, which targets <code>netstandard2.0</code> so it loads inside any MSBuild host.)</li>
+<li>The <strong>.NET 8 SDK</strong> or later - every runtime package in the solution targets <code>net8.0</code> and <code>net10.0</code>. (The one exception is the build-time <code>Bodu.Globalization.Calendar.Build</code> MSBuild task package, which targets <code>netstandard2.0</code> so it loads inside any MSBuild host.)</li>
 </ul>
 <pre><code class="lang-bash">dotnet --version
 </code></pre>
 <h2 id="install">Install</h2>
-<p>Each package is versioned and released independently; install only the ones you need. <code>Bodu.Core</code> is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages - <code>Bodu.Financial</code> on <code>Bodu.Numerics</code>, <code>Bodu.Formats.Excel.Binary</code> on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>, <code>Bodu.IO.Pst</code> on <code>Bodu.Collections</code>, every serializer on <code>Bodu.Text.Serialization</code> - and NuGet resolves those transitively too; the <a href="package-matrix.html">package matrix</a> lists each package's dependencies.</p>
+<p>Each package installs independently; install only the ones you need. The packages version together, though: every Stable package ships at 1.3.0 and every Preview or Experimental package at 0.7.2, so keep your <code>Bodu.*</code> references on matching versions - <a href="versioning-and-support.html">Versioning, stability, and support</a> explains the two streams. <code>Bodu.Core</code> is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages - <code>Bodu.Financial</code> on <code>Bodu.Numerics</code>, <code>Bodu.Formats.Excel.Binary</code> on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>, <code>Bodu.IO.Pst</code> on <code>Bodu.Collections</code>, every serializer on <code>Bodu.Text.Serialization</code> - and NuGet resolves those transitively too; the <a href="package-matrix.html">package matrix</a> lists each package's dependencies.</p>
 <pre><code class="lang-bash"># Core Foundations
 dotnet add package Bodu.Core
 dotnet add package Bodu.Collections
@@ -147,16 +147,16 @@ dotnet add package Bodu.Formats.Outlook.Pst
 <h2 id="core-foundations">Core Foundations</h2>
 <p>The foundation of the suite - see the <strong><a href="topics/core-foundations.html">Core Foundations overview</a></strong> for how every other topic builds on it.</p>
 <h3 id="boducore">Bodu.Core</h3>
-<p><strong>Bodu.Core</strong> is the foundation package - the <code>WeekPattern</code> value type, pooled buffers, async coordination primitives, railway outcomes (<code>Option&lt;T&gt;</code> / <code>Result&lt;T&gt;</code>), and date / numeric / span extensions sitting on a centralized <code>ThrowHelper</code>. It is the one package every other Bodu library depends on.</p>
+<p><strong>Bodu.Core</strong> is the foundation package - the calendar value sets (<code>DayOfWeekSet</code>, <code>MonthSet</code>, <code>HourSet</code>, ...), pooled buffers, async coordination primitives, railway outcomes (<code>Option&lt;T&gt;</code> / <code>Result&lt;T&gt;</code>), and date / numeric / span extensions sitting on a centralized <code>ThrowHelper</code>. It is the one package every other Bodu library depends on.</p>
 <pre><code class="lang-csharp">using Bodu;
 
-WeekPattern weekdays = WeekPattern.Parse(&quot;_MTWTF_&quot;);
-WeekPattern weekend  = WeekPattern.Parse(&quot;S_____S&quot;);
-WeekPattern allDays  = weekdays | weekend;
+DayOfWeekSet weekdays = DayOfWeekSet.Parse(&quot;_MTWTF_&quot;);
+DayOfWeekSet weekend  = DayOfWeekSet.Parse(&quot;S_____S&quot;);
+DayOfWeekSet allDays  = weekdays | weekend;
 
 bool monday = weekdays.Contains(DayOfWeek.Monday); // true
 </code></pre>
-<p><code>WeekPattern</code> is an immutable 7-bit bitmask value type for sets of days of the week - compose with the bitwise operators, parse from compact text, and enumerate the selected days in order.</p>
+<p><code>DayOfWeekSet</code> is an immutable set of days of the week - compose with the set operators, parse from compact text, and enumerate the selected days in order. <code>MonthSet</code>, <code>DayOfMonthSet</code>, <code>HourSet</code>, <code>MinuteSet</code>, and <code>SecondSet</code> do the same for the other calendar fields.</p>
 <p>→ <strong><a href="core/index.html">Introduction</a></strong> · <strong><a href="core/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/core/index.html">Guides</a></strong></p>
 <h3 id="boducollections">Bodu.Collections</h3>
 <p><strong>Bodu.Collections</strong> is the specialized collection catalogue (it depends on <code>Bodu.Core</code>; the namespaces are unchanged) - fixed-capacity rings, policy-driven caches with TTL expiry, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches.</p>
@@ -175,18 +175,19 @@ int oldest = buffer.Dequeue(); // 2
 <p><code>CircularBuffer&lt;T&gt;</code> is a fixed-capacity FIFO collection. With <code>allowOverwrite: true</code> it silently drops the oldest item when full; with <code>allowOverwrite: false</code> it throws instead.</p>
 <p>→ <strong><a href="collections/index.html">Introduction</a></strong> · <strong><a href="collections/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/core/index.html">Guides</a></strong></p>
 <h3 id="boducollectionsconcurrent">Bodu.Collections.Concurrent</h3>
-<p><strong>Bodu.Collections.Concurrent</strong> ships the thread-safe members of the catalogue (it depends on <code>Bodu.Collections</code>) - the lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> and the lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, both with snapshot enumeration that never throws on concurrent modification, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache with all six eviction policies, optional TTL, and single-flight <code>GetOrAdd</code>.</p>
+<p><strong>Bodu.Collections.Concurrent</strong> ships the thread-safe members of the catalogue (it depends on <code>Bodu.Collections</code>) - the lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code>, which enumerates a snapshot, the lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, which enumerates weakly consistently (neither throws on concurrent modification), the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache with all six eviction policies, optional TTL, and single-flight <code>GetOrAdd</code>, and the read-optimized <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code>, whose reads take no lock.</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
 
 var seen = new ConcurrentHashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
+string[] correlationIds = [&quot;order-1&quot;, &quot;order-2&quot;, &quot;ORDER-1&quot;];
 
-Parallel.ForEach(events, e =&gt;
+Parallel.ForEach(correlationIds, id =&gt;
 {
-    if (seen.Add(e.CorrelationId))   // true only for the first arrival
-        ProcessFirstOccurrence(e);
+    if (seen.Add(id))   // true only for the first arrival of each id
+        Console.WriteLine($&quot;first: {id}&quot;);
 });
 </code></pre>
-<p><code>Contains</code> is lock-free - readers never block writers - and disjoint writers proceed in parallel across independently locked bucket regions.</p>
+<p>Every operation on the set is lock-free: <code>Add</code>, <code>Remove</code>, and <code>Contains</code> never take a lock or wait for another thread. Its enumeration is weakly consistent rather than a snapshot - it sees every element present for the whole walk, may or may not see one added or removed during it, and never throws.</p>
 <p>→ <strong><a href="collections-concurrent/index.html">Introduction</a></strong> · <strong><a href="collections-concurrent/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/core/concurrent-collections.html">Guides</a></strong></p>
 <h3 id="bodutext">Bodu.Text</h3>
 <p>The <strong><code>Bodu.Text</code></strong> namespace - shipped in the <code>Bodu.Core</code> package - adds the ergonomic, allocation-aware surface the BCL leaves out on top of <code>System.Text.Encoding</code> - byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. (For binary-to-text codecs such as Base64, reach for <code>Bodu.Text.Encoding</code> below.)</p>
@@ -219,11 +220,11 @@ using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
 
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);   // not IDisposable: nothing to release
 crc.Append(data);
 string hex = Convert.ToHexString(crc.GetCurrentHash());
 </code></pre>
-<p>Swap <code>CRC32_ISOHDLC</code> for any of the 113 entries in the <a href="../guides/io-hashing/crc-catalogue.html">CRC catalogue</a>, or pick a fingerprint (<code>Fnv1a64</code>, <code>CityHash64</code>, <code>MurmurHash3_128</code>) for hash-table use.</p>
+<p>Swap <code>CRC32_ISOHDLC</code> for any of the 112 named standards in the <a href="../guides/io-hashing/crc-catalogue.html">CRC catalogue</a>, or pick a fingerprint (<code>Fnv1a64</code>, <code>CityHash64</code>, <code>MurmurHash3_128</code>) for hash-table use.</p>
 <p>→ <strong><a href="io-hashing/index.html">Introduction</a></strong> · <strong><a href="io-hashing/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/io-hashing/index.html">Guides</a></strong></p>
 <h3 id="bodusecuritycryptography">Bodu.Security.Cryptography</h3>
 <p><strong>Bodu.Security.Cryptography</strong> provides cryptographic primitives with a formal adversary model - block ciphers, AEAD modes, keyed hashes, and cryptographic digests - all on the standard <code>SymmetricAlgorithm</code> / <code>HashAlgorithm</code> contracts, so they drop into any code that already speaks .NET cryptography.</p>
@@ -274,8 +275,9 @@ foreach (DateTime occurrence in rule.GetOccurrences(start, new DateTime(2026, 2,
 <h2 id="text--serialization">Text &amp; Serialization</h2>
 <p>Three different jobs that all sound like &quot;text&quot; - see the <strong><a href="topics/text-and-serialization.html">Text &amp; Serialization overview</a></strong> for the codec / document-format / serializer disambiguation.</p>
 <h3 id="bodutextencoding">Bodu.Text.Encoding</h3>
-<p><strong>Bodu.Text.Encoding</strong> is a library of binary-to-text encoders - Base16, Base32, Base64, Base58, and Base85 - each with span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming, and a unified <code>IBinaryEncoding</code> interface for runtime-pluggable selection.</p>
-<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+<p><strong>Bodu.Text.Encoding</strong> is a library of binary-to-text encoders - Base16, Base32, Base64, Base58, and Base85, plus Base45, Base62, and Bech32 - with span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming, and a unified <code>IBinaryEncoding</code> interface for runtime-pluggable selection, alongside the percent-encoding and quoted-printable text escapes.</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Text.Encoding;
 
 byte[] digest = SHA256.HashData(&quot;hello&quot;u8.ToArray());
 
@@ -286,7 +288,10 @@ string base64   = Base64.Encode(digest);                                    // R
 string urlSafe  = Base64.Encode(digest, Base64Variant.UrlSafe);             // RFC 4648 §5 (no padding)
 </code></pre>
 <p>Pick the encoding from configuration at runtime via the unified interface:</p>
-<pre><code class="lang-csharp">IBinaryEncoding encoding = BinaryEncodings.Get(&quot;base64-urlsafe&quot;);
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] rawBytes = [0xFB, 0xFF, 0x01];
+IBinaryEncoding encoding = BinaryEncodings.Get(&quot;base64-urlsafe&quot;);
 string token = encoding.Encode(rawBytes);
 byte[] back  = encoding.Decode(token);
 </code></pre>
@@ -303,13 +308,14 @@ var filter = TextFilter.Parse(
     &quot;!*debug*&quot;,     // '!' flips the pattern to an exclude
 ]);
 
+string[] lines = [&quot;error: disk full&quot;, &quot;warn: retrying&quot;, &quot;info: started&quot;, &quot;error-debug: trace&quot;];
 var kept = filter.FilterToList(lines);       // bulk filtering, source order preserved
 var why  = filter.Evaluate(&quot;error-debug&quot;);   // → Excluded, decided by &quot;!*debug*&quot;
 </code></pre>
 <p>→ <strong><a href="text-filtering/index.html">Introduction</a></strong> · <strong><a href="text-filtering/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/text-filtering/index.html">Guides</a></strong></p>
 <h3 id="bodutextformats">Bodu.Text.Formats</h3>
 <p><strong>Bodu.Text.Formats</strong> parses and emits self-framing serialization formats - Delimited (CSV / TSV), DotEnv, and Ini - each through a strongly-typed value model and a span- and stream-friendly codec with <code>Try*</code> overloads.</p>
-<pre><code class="lang-csharp">using Bodu.Text.Ini;
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Nodes;
 
 IniObject config = IniNode.Parse(&quot;&quot;&quot;
     ; connection settings
@@ -320,22 +326,22 @@ IniObject config = IniNode.Parse(&quot;&quot;&quot;
 
 config[&quot;database&quot;].AsObject()[&quot;port&quot;].AsValue().Value = &quot;5433&quot;;
 
-string text = config.ToString();   // comments and ordering preserved
+string text = config.ToString();   // the comment line and the entry order survive
 </code></pre>
-<p>The parsed model retains comments, ordering, and whitespace, so a <code>Parse</code> → mutate → <code>Format</code> cycle round-trips the source. The Delimited and DotEnv namespaces follow the same <code>Parse</code> / <code>Format</code> shape.</p>
+<p>The INI tree keeps comment lines and the order of sections and entries, so a <code>Parse</code> → mutate → <code>ToString</code> cycle preserves the document's shape. It does not keep inline comments or the source's spacing: the writer emits <code>key=value</code>, so <code>host = localhost</code> comes back as <code>host=localhost</code>. The Delimited and DotEnv trees share the same <code>Parse</code> / <code>ToString</code> (or <code>ToUtf8Bytes</code>) shape but carry no comments.</p>
 <p>→ <strong><a href="formats/index.html">Introduction</a></strong> · <strong><a href="formats/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/formats/index.html">Guides</a></strong></p>
 <h3 id="bodutextbencode-bodutexttoml-and-bodutextyaml-serializers">Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml (serializers)</h3>
 <p><strong>Bodu.Text.Bencode</strong>, <strong>Bodu.Text.Toml</strong>, and <strong>Bodu.Text.Yaml</strong> are three libraries that map your own types to and from a format. They share the <code>Bodu.Text.Serialization</code> engine and a <code>System.Text.Json</code>-aligned shape, and each ships a serializer, two document object models, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair.</p>
 <pre><code class="lang-csharp">using Bodu.Text.Toml;
+
+string toml = TomlSerializer.Serialize(new ServerConfig { Host = &quot;localhost&quot;, Port = 8080 });
+ServerConfig config = TomlSerializer.Deserialize&lt;ServerConfig&gt;(toml);
 
 public sealed class ServerConfig
 {
     public string Host { get; set; } = &quot;&quot;;
     public int Port { get; set; }
 }
-
-string toml = TomlSerializer.Serialize(new ServerConfig { Host = &quot;localhost&quot;, Port = 8080 });
-ServerConfig config = TomlSerializer.Deserialize&lt;ServerConfig&gt;(toml);
 </code></pre>
 <p>Swap <code>Toml</code> for <code>Bencode</code> (and <code>string</code> for <code>byte[]</code>) for the Bencode equivalent, or for <code>Yaml</code> for a YAML document. Bencode (BEP 3) object mapping lives here, not in <code>Bodu.Text.Formats</code>.</p>
 <p>→ <strong><a href="serialization/index.html">Introduction</a></strong> · <strong><a href="serialization/bencode/index.html">Bencode</a></strong> · <strong><a href="serialization/toml/index.html">TOML</a></strong> · <strong><a href="serialization/yaml/index.html">YAML</a></strong> · <strong><a href="../guides/serialization/index.html">Guides</a></strong></p>
@@ -379,7 +385,7 @@ string? indentSize = config[&quot;format:indent:size&quot;];
 <h2 id="numerics--financial">Numerics &amp; Financial</h2>
 <p>Exact arithmetic and the monetary primitives built on it - see the <strong><a href="topics/numerics-and-financial.html">Numerics &amp; Financial overview</a></strong> for how <code>Money</code> rides on <code>Fraction&lt;BigInteger&gt;</code>.</p>
 <h3 id="bodunumerics">Bodu.Numerics</h3>
-<p><strong>Bodu.Numerics</strong> ships two generic-math value types - <code>Fraction&lt;T&gt;</code> for exact rational arithmetic and <code>Interval&lt;T&gt;</code> for bounded intervals - both built on <code>INumber&lt;T&gt;</code> so they compose with any generic-math algorithm.</p>
+<p><strong>Bodu.Numerics</strong> ships generic-math value types - <code>Fraction&lt;T&gt;</code> for exact rational arithmetic, <code>BigDecimal</code> for arbitrary-precision decimals, <code>Complex&lt;T&gt;</code> for complex numbers over any IEEE 754 type, and <code>Interval&lt;T&gt;</code> (with <code>DiscreteInterval&lt;T&gt;</code> and <code>IntervalSet&lt;T&gt;</code>) for bounded intervals - plus single-pass statistics aggregates such as <code>RunningStatistics&lt;T&gt;</code>. The value types implement the generic-math interfaces, so they compose with any generic-math algorithm.</p>
 <pre><code class="lang-csharp">using Bodu.Numerics;
 
 Fraction&lt;int&gt; total = Fraction&lt;int&gt;.Create(1, 3) + Fraction&lt;int&gt;.Create(2, 3); // 1/1
@@ -404,7 +410,9 @@ Money&lt;AUD&gt; typed = new Money&lt;AUD&gt;(125.50m);
 </code></pre>
 <p>Mixing currencies on the typed form is a compile error; on the runtime form it throws. For service registration, the companion <strong>Bodu.Financial.DependencyInjection</strong> package wires currency lookup and monetary services into an <code>IServiceCollection</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Financial;
+using Microsoft.Extensions.DependencyInjection;
 
+var services = new ServiceCollection();
 services.AddFinancialService();
 </code></pre>
 <p>→ <strong><a href="financial/index.html">Introduction</a></strong> · <strong><a href="financial/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/financial/index.html">Guides</a></strong></p>
@@ -441,7 +449,7 @@ while (reader.Read())
     Console.WriteLine($&quot;{reader.RecordType,-14} id=0x{reader.RecordId:X4} length={reader.RecordLength}&quot;);
 </code></pre>
 <p><code>BiffReaderState</code> resumes framing across buffers, <code>BiffSstReader</code> walks the shared string table over its <code>CONTINUE</code> records, and <code>BiffWriter</code> emits BIFF5 or BIFF8 records. There is no container dependency and no workbook model - that is the next package up.</p>
-<p>→ <strong><a href="io-biff/index.html">Introduction</a></strong> · <strong><a href="io-biff/getting-started.html">Getting started</a></strong></p>
+<p>→ <strong><a href="io-biff/index.html">Introduction</a></strong> · <strong><a href="io-biff/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/io-biff/index.html">Guides</a></strong></p>
 <h3 id="boduformatsexcelbinary">Bodu.Formats.Excel.Binary</h3>
 <p><strong>Bodu.Formats.Excel.Binary</strong> is the read-only workbook reader over those two layers: raw worksheet cell values - strings, numbers, booleans, errors, and a formula cell's cached result - with each sheet's declared used range. No formula evaluation, no styling.</p>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
@@ -466,7 +474,7 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
 <p><code>EnumerateNodes()</code> walks the node B-tree, and each <code>PstNode</code> offers its raw bytes, its subnodes, and the two LTP views - <code>ReadPropertyContext()</code> and <code>ReadTableContext()</code>.</p>
 <p>→ <strong><a href="io-pst/index.html">Introduction</a></strong> · <strong><a href="io-pst/getting-started.html">Getting started</a></strong> · <strong><a href="../guides/io-pst/index.html">Guides</a></strong></p>
 <h3 id="boduformatsoutlook">Bodu.Formats.Outlook</h3>
-<p><strong>Bodu.Formats.Outlook</strong> is the shared MAPI value model; <strong>Bodu.Formats.Outlook.Msg</strong> reads a <code>.msg</code> message over <code>Bodu.IO.Compound</code>, and <strong>Bodu.Formats.Outlook.Pst</strong> reads a <code>.pst</code> mail store over <code>Bodu.IO.Pst</code>. Both are read-only and both surface the same recipient, attachment, and body types.</p>
+<p><strong>Bodu.Formats.Outlook</strong> is the shared MAPI value model; <strong>Bodu.Formats.Outlook.Msg</strong> reads a <code>.msg</code> message over <code>Bodu.IO.Compound</code>, and <strong>Bodu.Formats.Outlook.Pst</strong> reads a <code>.pst</code> mail store over <code>Bodu.IO.Pst</code>. Both are read-only. They share the MAPI value model and the <code>OutlookRecipient</code> type, and expose similar attachment and body members: the <code>.msg</code> reader's attachments are <code>OutlookAttachment</code>, the <code>.pst</code> reader's <code>OutlookMailAttachment</code>, and each message type carries its own <code>BodyText</code> / <code>BodyHtml</code> / <code>BodyRtf</code>.</p>
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 
 using var message = OutlookMessage.OpenRead(&quot;invoice.msg&quot;);
@@ -507,7 +515,7 @@ foreach (OutlookAttachment attachment in message.Attachments)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

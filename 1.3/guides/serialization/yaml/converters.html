@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Writing converters | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Writing converters | BODU ">
+      
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/serialization/yaml/converters.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="writing-converters">Writing converters</h1>
+
+<p>A converter customizes how a single type is read and written: derive <code>YamlConverter&lt;T&gt;</code> (<a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a>) and read or write values through the format's reader and writer. A YAML converter reads through <a class="xref" href="../../../api/Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> and writes through <a class="xref" href="../../../api/Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a>:</p>
+<pre><code class="lang-csharp">public abstract T Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options);
+public abstract void Write(Utf8YamlWriter writer, T value, YamlSerializerOptions options);
+</code></pre>
+<p>The reader is a token cursor over an already-composed tree - YAML's anchors, aliases, and merge keys are resolved during the parse, so a converter never sees an alias token. On entry the reader is positioned on the first token of the value; on return it must be positioned on the value's last token (the scalar itself, or the container's end token). The sibling libraries (<a href="../toml/index.html">TOML</a>, <a href="../bencode/index.html">Bencode</a>) follow the identical pattern with their own prefix and reader/writer types. The set of converters the library already ships - and therefore the types you never need to write one for - is listed in the <a href="builtin-converters.html">built-in converter catalog</a>.</p>
+<h2 id="pattern-1---a-value-type-as-a-single-scalar">Pattern 1 - A value type as a single scalar</h2>
+<p>A converter that stores a <code>Point</code> as an <code>&quot;x,y&quot;</code> string scalar:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Reader;
+using Bodu.Text.Yaml.Serialization;
+using Bodu.Text.Yaml.Writer;
+
+public sealed class PointConverter : YamlConverter&lt;Point&gt;
+{
+    public override Point Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options)
+    {
+        string[] parts = reader.GetString().Split(',');
+        return new Point(
+            int.Parse(parts[0], CultureInfo.InvariantCulture),
+            int.Parse(parts[1], CultureInfo.InvariantCulture));
+    }
+
+    public override void Write(Utf8YamlWriter writer, Point value, YamlSerializerOptions options) =&gt;
+        writer.WriteString($&quot;{value.X},{value.Y}&quot;);
+}
+</code></pre>
+<h2 id="pattern-2---register-it">Pattern 2 - Register it</h2>
+<p>Two ways, highest precedence first:</p>
+<pre><code class="lang-csharp">// On a member or type:
+public sealed class Shape
+{
+    [Converter(typeof(PointConverter))]
+    public Point Origin { get; set; }
+}
+
+// Or on the options:
+var options = new YamlSerializerOptions();
+options.Converters.Add(new PointConverter());
+
+string yaml = YamlSerializer.Serialize(new Shape { Origin = new Point(1, 2) }, options);
+// Origin: 1,2
+</code></pre>
+<p>Register options-level converters before the options are first used - an options instance freezes on first use (or eagerly via <code>MakeReadOnly()</code>), and later mutation of <code>Converters</code> throws.</p>
+<h2 id="pattern-3---understand-resolution-order">Pattern 3 - Understand resolution order</h2>
+<p>For a given type the serializer selects a converter by checking, in order:</p>
+<ol>
+<li>a member-level converter attribute (<code>[Converter(...)]</code>);</li>
+<li>a type-level converter attribute;</li>
+<li>the first matching converter in <code>options.Converters</code>;</li>
+<li>the built-in converters.</li>
+</ol>
+<p>The first match wins, and the result is cached on the options. <code>CanConvert</code> defaults to an <strong>exact</strong> type check - <code>typeof(T) == typeToConvert</code> - so a <code>YamlConverter&lt;Animal&gt;</code> does not apply to a <code>Dog</code> subclass; override <code>CanConvert</code> (or use a factory, Pattern 4) to cover a hierarchy.</p>
+<h2 id="pattern-4---serve-a-family-of-types">Pattern 4 - Serve a family of types</h2>
+<p>To convert an open generic or a whole category of types, derive <code>YamlConverterFactory</code> (<a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>), return <code>true</code> from <code>CanConvert</code> for the family, and build the concrete converter in <code>CreateConverter</code>. This is the same pattern the built-in nullable, enum, collection, and dictionary converters - and the public <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlStringEnumConverter.html">YamlStringEnumConverter</a> - use:</p>
+<pre><code class="lang-csharp">public sealed class MoneyConverterFactory : YamlConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) =&gt;
+        typeToConvert.IsGenericType &amp;&amp; typeToConvert.GetGenericTypeDefinition() == typeof(Money&lt;&gt;);
+
+    public override YamlConverter CreateConverter(Type typeToConvert, YamlSerializerOptions options) =&gt;
+        (YamlConverter)Activator.CreateInstance(
+            typeof(MoneyConverter&lt;&gt;).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
+}
+</code></pre>
+<p>The factory itself never reads or writes a value: the serializer calls <code>CanConvert</code> to decide whether the factory applies, then <code>CreateConverter</code> once per closed type and caches the result.</p>
+<h2 id="pattern-5---a-type-read-from-a-mapping">Pattern 5 - A type read from a mapping</h2>
+<p>A converter is not limited to scalars: read a mapping by walking the reader's tokens, and write one by bracketing <code>WriteStartMapping</code> / <code>WriteEndMapping</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Reader;
+using Bodu.Text.Yaml.Serialization;
+using Bodu.Text.Yaml.Writer;
+
+public readonly record struct GeoPoint(double Latitude, double Longitude);
+
+public sealed class GeoPointConverter : YamlConverter&lt;GeoPoint&gt;
+{
+    public override GeoPoint Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options)
+    {
+        if (reader.TokenType != YamlTokenType.StartMapping)
+            throw new YamlSerializationException($&quot;Expected a mapping but found '{reader.TokenType}'.&quot;);
+
+        double lat = 0, lon = 0;
+        while (reader.Read() &amp;&amp; reader.TokenType != YamlTokenType.EndMapping)
+        {
+            string key = reader.GetString();
+            reader.Read();
+            if (key == &quot;lat&quot;) lat = reader.GetDouble();
+            else if (key == &quot;lon&quot;) lon = reader.GetDouble();
+            else reader.Skip();
+        }
+
+        return new GeoPoint(lat, lon);
+    }
+
+    public override void Write(Utf8YamlWriter writer, GeoPoint value, YamlSerializerOptions options)
+    {
+        writer.WriteStartMapping();
+        writer.WritePropertyName(&quot;lat&quot;);
+        writer.WriteDouble(value.Latitude);
+        writer.WritePropertyName(&quot;lon&quot;);
+        writer.WriteDouble(value.Longitude);
+        writer.WriteEndMapping();
+    }
+}
+</code></pre>
+<pre><code class="lang-yaml">lat: 51.5
+lon: -0.12
+</code></pre>
+<p>The writer's surface is <code>WriteStartMapping</code> / <code>WriteEndMapping</code>, <code>WriteStartSequence</code> / <code>WriteEndSequence</code>, <code>WritePropertyName(string)</code>, and the scalar writers <code>WriteString</code> / <code>WriteInteger</code> / <code>WriteDouble</code> / <code>WriteBoolean</code> / <code>WriteNull</code>. It emits block-style collections; an empty container falls back to flow <code>[]</code> / <code>{}</code>.</p>
+<h2 id="built-in-enum-converters">Built-in enum converters</h2>
+<p>For enums you usually do not need a hand-written converter. The library ships a string-enum converter (member names) and a number-enum converter; reference them from a <code>[Converter]</code> attribute on a member, property, or the enumeration itself, or register one on the options.</p>
+<p>On the enumeration itself, use the generic string-enum form (<a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlStringEnumConverter-1.html">YamlStringEnumConverter&lt;TEnum&gt;</a>), optionally renaming individual members:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">[Converter(typeof(YamlStringEnumConverter&lt;Status&gt;))]
+public enum Status
+{
+    Active,
+
+    [StringEnumMemberName(&quot;on-hold&quot;)]
+    OnHold,
+}
+
+// Status.OnHold serializes as: Status: on-hold
+</code></pre>
+<p>On a single member, the generic number-enum form (<a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlNumberEnumConverter-1.html">YamlNumberEnumConverter&lt;TEnum&gt;</a>) writes the underlying value instead:</p>
+<pre><code class="lang-csharp">public sealed class WorkItem
+{
+    [Converter(typeof(YamlNumberEnumConverter&lt;Priority&gt;))]
+    public Priority Priority { get; set; }
+}
+
+// Priority.High (underlying value 2) serializes as: Priority: 2
+</code></pre>
+<p>To cover <em>every</em> enumeration in one registration, add the non-generic string-enum factory (<a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlStringEnumConverter.html">YamlStringEnumConverter</a>) to the options, optionally with a naming policy:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var options = new YamlSerializerOptions();
+options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+
+// Status.OnHold now serializes as on_hold everywhere.
+</code></pre>
+<p>With <code>allowIntegerValues: false</code>, as above, the converter reads names only, as System.Text.Json's <code>JsonStringEnumConverter</code> does from .NET 9: an integer scalar raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>, and so does any other scalar that is not a wire name and whose text holds an integer in any of its comma-separated parts, such as <code>&quot;2&quot;</code> or <code>Read, 2</code>; a float scalar such as <code>2.0</code> never binds. It also refuses to write a value that is neither a member nor a combination of defined flags, such as <code>(Status)99</code>, and raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> rather than writing decimal text it could not read back. The default handling, and a converter created with <code>allowIntegerValues: true</code>, bind an integer scalar and a scalar whose text is an integer, and write such a value as its decimal text.</p>
+<p>The generic forms expose a public parameterless constructor, which is what makes them usable from a <code>[Converter]</code> attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter. The string-enum converters write names whatever <code>WriteEnumsAsStrings</code> says, as System.Text.Json's <code>JsonStringEnumConverter</code> does, and the number-enum converter writes integers. Without any of these, the default enum handling still honors <code>[StringEnumMemberName]</code> and the <code>WriteEnumsAsStrings</code> flag (see the <a href="builtin-converters.html">built-in converter catalog</a>).</p>
+<h2 id="pattern-6---fail-clearly-on-malformed-data">Pattern 6 - Fail clearly on malformed data</h2>
+<p>By the time <code>Read</code> runs, the document has already parsed - a syntactically malformed document raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a> before any converter is consulted. What a converter must handle is a <em>well-formed value that does not fit</em>: the wrong token kind, or text that does not parse into the target type. Signal that by throwing <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> - the same type the built-in converters throw, so callers need one catch clause. Hardening the <code>PointConverter</code> from Pattern 1:</p>
+<pre><code class="lang-csharp">public override Point Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options)
+{
+    if (reader.TokenType != YamlTokenType.String)
+        throw new YamlSerializationException($&quot;Expected a string but found '{reader.TokenType}'.&quot;);
+
+    string text = reader.GetString();
+    string[] parts = text.Split(',');
+
+    if (parts.Length != 2
+        || !int.TryParse(parts[0], CultureInfo.InvariantCulture, out int x)
+        || !int.TryParse(parts[1], CultureInfo.InvariantCulture, out int y))
+    {
+        throw new YamlSerializationException($&quot;The value '{text}' is not a valid Point ('x,y').&quot;);
+    }
+
+    return new Point(x, y);
+}
+</code></pre>
+<p>Check the kind through <code>reader.TokenType</code> before calling a typed getter, and prefer <code>TryParse</code> plus an explicit throw over letting a <code>FormatException</code> escape. Do not throw <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a> from a converter - that type is reserved for syntactically invalid documents.</p>
+<h2 id="design-notes---statelessness-and-caching">Design notes - statelessness and caching</h2>
+<p><strong>Write converters stateless.</strong> The serializer resolves the converter for a type once, caches the result on the options instance, and reuses that single converter for every subsequent value - across calls and threads. Keep configuration in <code>readonly</code> fields set at construction, and derive everything else from the <code>reader</code> / <code>value</code> / <code>options</code> the serializer passes in.</p>
+<p><strong>Options freeze on first use.</strong> A <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a> instance becomes read-only the first time it is used - or eagerly via <code>MakeReadOnly()</code> - and then caches resolved converters and type metadata. Two consequences: reuse one options instance (fresh options per call discards the caches and repeats the reflection), and register every converter before first use (later <code>Converters</code> mutation throws).</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="builtin-converters.html">Built-in converter catalog</a> - the types that already have a converter, so you do not rewrite a provisioned one.</li>
+<li><a href="attributes.html">Mapping attributes</a> - the declarative layer (<code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Converter]</code>, naming policies, options flags) that covers shaping short of a converter.</li>
+<li><a href="using.html">Using YAML</a> - the per-format walk-through, including the reader/writer seam and error handling.</li>
+<li><a href="../../../docs/serialization/yaml/concepts.html">Bodu.Text.Yaml core concepts</a> - converter resolution and options caching in the family vocabulary.</li>
+<li><a href="../index.html">Bodu serializer guides</a> and the <a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a>.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

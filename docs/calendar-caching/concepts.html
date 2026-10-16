@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/calendar-caching/concepts.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/calendar-caching/concepts.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -133,10 +133,13 @@ computed.</p>
 </tbody>
 </table>
 <p>A query is always decomposed into whole years. A single day, a sub-year range, and a multi-year range all resolve
-through the same per-year entries; the assembled occurrences are then clipped to the requested window by their
-emitted <code>Date</code>. The unit is deliberately coarse: resolving one year is a pure function of resource, territory, and
-year, and a single-day query for a cached year costs a cache read rather than a recompute. A year that yields no
-occurrences is still a valid, cacheable entry - it records that the year <em>was</em> computed.</p>
+through the same per-year entries; the assembled occurrences are then clipped to the requested window by their span,
+as the engine selects them: an occurrence is kept when any day from its emitted <code>Date</code> to its <code>EndDate</code> falls in the
+window. A year's entry holds every occurrence in effect during the year, so a multi-day occurrence that runs over the
+new year is held by both years' entries, and a range spanning both returns it once. The unit is deliberately coarse:
+resolving one year is a pure function of resource, territory, and year, and a single-day query for a cached year
+costs a cache read rather than a recompute. A year that yields no occurrences is still a valid, cacheable entry - it
+records that the year <em>was</em> computed.</p>
 <p>A <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a> is never part of the key. The filtered <code>Resolve</code> overloads
 apply the filter to the assembled unfiltered result, so every filter shares the same cached years.</p>
 <h2 id="hit-miss-coalesced-flight-and-refresh-ahead">Hit, miss, coalesced flight, and refresh-ahead</h2>
@@ -197,11 +200,11 @@ time-to-live. The token comes from one of two places:</p>
 <tbody>
 <tr>
 <td>An <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a> (<code>versionSource</code>)</td>
-<td><code>&quot;&lt;ResourceId&gt;\|&lt;SchemaVersion&gt;\|&lt;generation&gt;&quot;</code>, where the generation increments every time the provider's <code>Current</code> reference changes. A <a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a><code>.Reload(...)</code> therefore invalidates every cached year on the next query, even when the new resource carries the same identifier. Under DI this provider is picked up automatically when <code>AddReloadableNotableDateService</code> registered it.</td>
+<td><code>&quot;&lt;ResourceId&gt;\|&lt;SchemaVersion&gt;\|&lt;generation&gt;&quot;</code>, where the generation increments every time the provider's <code>Current</code> reference changes. A <a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a><code>.Reload(...)</code> therefore invalidates every cached year on the next query, even when the new resource carries the same identifier. Under DI this provider is picked up automatically when <code>AddReloadableNotableDateService</code> registered it. The generation is counted per decorator from 1, so the token is local to a process: processes sharing a file, SQLite or distributed cache do not agree on it, and a reload in one prunes the entries the others wrote.</td>
 </tr>
 <tr>
 <td>No provider</td>
-<td><code>NotableDateCachingOptions.ResourceVersion</code>, or a built-in default token when that is <code>null</code>. Set it to the data version of the resource and bump it after a data update.</td>
+<td><code>NotableDateCachingOptions.ResourceVersion</code>, or a built-in default token when that is <code>null</code>. Set it to the data version of the resource and bump it after a data update. This is the form to use when several processes share one cache.</td>
 </tr>
 </tbody>
 </table>
@@ -329,10 +332,13 @@ reported (<code>EventId 4604</code>), and the next successful write repairs it.<
 </tr>
 </tbody>
 </table>
-<p>The abstract storage seam (<code>ReadEntries</code> / <code>WriteEntries</code>) is <code>protected internal</code>, opened to the companion SQLite
-and distributed packages. A backend outside the family implements the public
-<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> contract directly, as
-<code>NullNotableDateCache</code> does - see <a href="getting-started.html#implement-a-custom-cache">Getting started</a>.</p>
+<p>The abstract storage seam (<code>ReadEntries</code> / <code>WriteEntries</code>) is <code>protected internal</code>, so a backend in any assembly
+can derive from <code>NotableDateCacheBase&lt;TOptions&gt;</code>, as the companion SQLite and distributed packages do; a third-party
+backend overrides the seam with <code>protected override</code>. A backend can instead implement the public
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> contract directly, as <code>NullNotableDateCache</code> does - see
+<a href="getting-started.html#implement-a-custom-cache">Getting started</a> and
+<a href="../../guides/calendar/caching/custom-backend.html">Writing a cache backend</a>. <code>FileNotableDateCacheBase</code> is the
+exception: its serialization members are <code>private protected</code>, so only the shipped TOML and JSON caches derive from it.</p>
 <h2 id="observability">Observability</h2>
 <p><strong>Logs.</strong> The decorator logs each hit and miss at the levels set on
 <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions.html">NotableDateCachingOptions</a> - <code>CacheHitLogLevel</code> and <code>CacheMissLogLevel</code>,
@@ -494,7 +500,7 @@ from an injected <code>TimeProvider</code> (<code>TimeProvider.System</code> by 
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Xml.Linq Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Xml.Linq Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Xml.Linq.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Xml.Linq">
+
+
+  <h1 id="Bodu_Xml_Linq" data-uid="Bodu.Xml.Linq" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Xml.Linq Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Xml.Linq</strong> is a small LINQ-to-XML helper namespace in <code>Bodu.Core</code>. Reach for it when a document declares a default namespace and you want to look up child elements by local name, instead of qualifying every <code>Element</code> / <code>Elements</code> call with that namespace.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Xml.Linq.XmlNamespaceResolver.html">XmlNamespaceResolver</a> - captures the namespace of a root <code>XElement</code> once and exposes <code>Element</code>, <code>Elements</code>, and <code>Name</code> helpers that qualify a local name with it. It holds no prefix map and implements no interface.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Xml.Linq;
+using Bodu.Xml.Linq;
+
+XDocument doc = XDocument.Parse(
+    &quot;&lt;library xmlns='urn:books'&gt;&lt;book id='1'&gt;&lt;title&gt;Foundation&lt;/title&gt;&lt;/book&gt;&lt;/library&gt;&quot;);
+
+var ns = new XmlNamespaceResolver(doc.Root!);
+
+XElement? book  = ns.Element(doc.Root!, &quot;book&quot;);
+XElement? title = ns.Element(book!, &quot;title&quot;);
+Console.WriteLine(title?.Value);               // Foundation
+Console.WriteLine(book!.Attribute(&quot;id&quot;)?.Value); // 1 - unprefixed attributes are in no namespace
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>One namespace per resolver.</strong> The resolver keeps only the root element's namespace (<code>XNamespace.None</code> when the root has none); it is fixed for the lifetime of the instance. Create a separate resolver for each namespace a document uses.</li>
+<li><strong>Elements, not attributes.</strong> An unprefixed attribute belongs to no namespace even under a default namespace, so look it up by plain name; use <code>Name</code> for an attribute only when the attribute is explicitly qualified with the resolver's namespace.</li>
+<li><strong>See also:</strong> the <a href="../docs/core/index.html">Bodu.Core introduction</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Xml.Linq.XmlNamespaceResolver.html">XmlNamespaceResolver</a></dt>
+      <dd><p>Resolves child <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.xml.linq.xelement">XElement</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.xml.linq.xname">XName</a> instances against the default XML namespace of a
+supplied root element, removing the need to qualify every lookup with an inline namespace prefix.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

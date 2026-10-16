@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 OutlookMailStoreReaderOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ OutlookMailStoreReaderOptions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Formats.html">Formats</a>.<a class="xref" href="Bodu.Formats.Outlook.html">Outlook</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Formats.Outlook.Pst.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Formats.Outlook.Pst">Bodu.Formats.Outlook.Pst</a> <span class="bodu-package-version">0.7.1</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Formats.Outlook.Pst">Bodu.Formats.Outlook.Pst</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs">OutlookMailStoreReaderOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs">OutlookMailStoreReaderOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Controls how an <a class="xref" href="Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> reads its PST container and decodes message content.</p>
@@ -188,7 +188,7 @@ OutlookMailStoreReaderOptions Class
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions__ctor" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.#ctor">
   OutlookMailStoreReaderOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -222,11 +222,12 @@ OutlookMailStoreReaderOptions Class
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_BlockCacheSize" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.BlockCacheSize">
   BlockCacheSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the decoded page/block cache budget of the underlying container session, in entries.</p>
+  <div class="markdown level1 summary"><p>Gets the entry budget of each of the underlying container session's two caches, one of decoded pages and one of
+decoded block payloads.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -241,7 +242,7 @@ OutlookMailStoreReaderOptions Class
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The cache entry budget; <code>256</code> by default. <code>0</code> disables caching entirely.</p>
+    <dd><p>The entry budget of each cache; <code>256</code> by default. <code>0</code> disables caching entirely.</p>
 </dd>
   </dl>
 
@@ -265,7 +266,7 @@ OutlookMailStoreReaderOptions Class
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_DecompressRtf" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.DecompressRtf">
   DecompressRtf
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -303,7 +304,7 @@ through the body conveniences.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_MaxDecompressedRtfBytes" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.MaxDecompressedRtfBytes">
   MaxDecompressedRtfBytes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -350,7 +351,7 @@ through the body conveniences.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_MaxEmbeddedMessageDepth" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.MaxEmbeddedMessageDepth">
   MaxEmbeddedMessageDepth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -398,7 +399,7 @@ level, so a crafted subnode graph cannot drive a recursive consumer off its stac
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_MaxInlineAttachmentBytes" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes">
   MaxInlineAttachmentBytes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -450,7 +451,7 @@ validation rule: it does not vary with <a class="xref" href="Bodu.Formats.Outloo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_MaxNodeDataLength" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.MaxNodeDataLength">
   MaxNodeDataLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -489,12 +490,68 @@ single property value, attachment payload, or table the store decodes at once.</
   </section>
 
 
+  <a id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_OmitUnresolvableValues_" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.OmitUnresolvableValues*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_OmitUnresolvableValues" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.OmitUnresolvableValues">
+  OmitUnresolvableValues
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether a property value whose reference into the container does not resolve is omitted
+from its object rather than failing the read.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool OmitUnresolvableValues { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to omit such a value and keep decoding the rest of the object; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>,
+the default, to raise <a class="xref" href="Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_OmitUnresolvableValues_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+A value's reference does not resolve when it names a heap item or a subnode the container does not hold, or when
+a fixed-width value is shorter than its type. By default each is container corruption that fails the folder,
+message, attachment or recipient list it belongs to, at every validation level. With this option the value is
+left out and the rest of the object stays readable, so a damaged message still yields its subject, sender, dates
+and bodies: the option is for recovering mail from a damaged store. It sets
+<a class="xref" href="Bodu.IO.Pst.PstFileOptions.html#Bodu_IO_Pst_PstFileOptions_OmitUnresolvableValues">OmitUnresolvableValues</a> on the container.
+</p>
+<p>
+The option is independent of <a class="xref" href="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValidationLevel">ValidationLevel</a> and covers individual values only; a fault in a
+heap, table or subnode tree still fails the read. Each omitted value is reported to
+<a class="xref" href="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValueOmittedCallback">ValueOmittedCallback</a>. An omitted attachment data property leaves a by-value attachment without
+its payload, so <a class="xref" href="Bodu.Formats.Outlook.OutlookMailAttachment.html#Bodu_Formats_Outlook_OutlookMailAttachment_OpenContentStream">OpenContentStream()</a> raises
+<a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> for it, as for any by-value attachment without data.
+</p>
+</div>
+
+
+
+  </section>
+
+
   <a id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValidationLevel_" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValidationLevel*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValidationLevel" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValidationLevel">
   ValidationLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -520,6 +577,56 @@ single property value, attachment payload, or table the store decodes at once.</
 
 
 
+
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValueOmittedCallback_" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValueOmittedCallback" data-uid="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback">
+  ValueOmittedCallback
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStoreReaderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the callback the reader invokes for each property value it omits from an object it decodes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Action&lt;OutlookOmittedValue&gt;? ValueOmittedCallback { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Formats.Outlook.OutlookOmittedValue.html">OutlookOmittedValue</a>&gt;</dt>
+    <dd><p>The callback, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the default, to report nothing.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValueOmittedCallback_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The reader omits a value whose reference does not resolve when <a class="xref" href="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_OmitUnresolvableValues">OmitUnresolvableValues</a> is set, and
+a value it cannot decode as its MAPI type under <a class="xref" href="Bodu.IO.Pst.PstValidationLevel.html#Bodu_IO_Pst_PstValidationLevel_Compatible">Compatible</a> and
+<a class="xref" href="Bodu.IO.Pst.PstValidationLevel.html#Bodu_IO_Pst_PstValidationLevel_Minimal">Minimal</a>; <a class="xref" href="Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_Reason">Reason</a> says which. The callback
+covers the store's, folders', messages' and attachments' properties, recipient rows, and the name-to-id map.
+</p>
+<p>
+The reader decodes each object once, on first access to its properties or recipients, and invokes the callback
+synchronously from that access, on the calling thread. An exception the callback throws propagates to that
+caller and leaves the object undecoded.
+</p>
+</div>
 
 
 
@@ -553,7 +660,7 @@ single property value, attachment payload, or table the store decodes at once.</
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

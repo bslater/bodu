@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Yaml_YamlSerializer" data-uid="Bodu.Text.Yaml.YamlSerializer" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 YamlSerializer Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ YamlSerializer Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Yaml.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs">YamlSerializer.Read.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs">YamlSerializer.Read.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides static methods to serialize objects to YAML and deserialize YAML to objects, in the manner of
@@ -163,8 +163,9 @@ YamlSerializer Class
 
   <h2 id="Bodu_Text_Yaml_YamlSerializer_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>The serializer maps public properties (and optionally fields) of plain CLR types, the built-in scalar and collection
-types, dictionaries keyed by string, and enumerations. Mapping is driven by converters resolved through
-<a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_GetConverter_System_Type_">GetConverter(Type)</a> over the shared serialization metadata; custom behaviour is
+types, dictionaries keyed by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, a fixed-width integer type, an enumeration, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>, and enumerations. Mapping is driven by converters resolved through
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_GetConverter_System_Type_">GetConverter(Type)</a> over the shared serialization metadata; custom behavior is
 supplied through <a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a> instances registered on <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>.</p>
 </div>
 
@@ -178,7 +179,7 @@ supplied through <a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverte
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_Deserialize_System_ReadOnlySpan_System_Byte__System_Type_Bodu_Text_Yaml_YamlSerializerOptions_" data-uid="Bodu.Text.Yaml.YamlSerializer.Deserialize(System.ReadOnlySpan{System.Byte},System.Type,Bodu.Text.Yaml.YamlSerializerOptions)">
   Deserialize(ReadOnlySpan&lt;byte&gt;, Type, YamlSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -187,7 +188,8 @@ supplied through <a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverte
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML deserialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static object? Deserialize(ReadOnlySpan&lt;byte&gt; utf8Yaml, Type returnType, YamlSerializerOptions? options = null)</code></pre>
   </div>
 
@@ -226,6 +228,9 @@ public static object? Deserialize(ReadOnlySpan&lt;byte&gt; utf8Yaml, Type return
     <dt><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a></dt>
     <dd><p>The source is not valid YAML.</p>
 </dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The source is valid YAML, but cannot be bound to <code class="paramref">returnType</code>.</p>
+</dd>
   </dl>
 
 
@@ -237,7 +242,7 @@ public static object? Deserialize(ReadOnlySpan&lt;byte&gt; utf8Yaml, Type return
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Yaml_YamlSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Yaml.YamlSerializer.DeserializeAsync``1(System.IO.Stream,Bodu.Text.Yaml.YamlSerializerOptions,System.Threading.CancellationToken)">
   DeserializeAsync&lt;T&gt;(Stream, YamlSerializerOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -247,7 +252,8 @@ its end.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML deserialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static ValueTask&lt;T?&gt; DeserializeAsync&lt;T&gt;(Stream source, YamlSerializerOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
@@ -300,6 +306,9 @@ the stream, not to the parse and bind that follow.</p>
     <dt><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a></dt>
     <dd><p>The stream contents are not valid YAML.</p>
 </dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The stream contents are valid YAML, but cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
   </dl>
 
 
@@ -311,7 +320,7 @@ the stream, not to the parse and bind that follow.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Yaml_YamlSerializerOptions_" data-uid="Bodu.Text.Yaml.YamlSerializer.Deserialize``1(System.IO.Stream,Bodu.Text.Yaml.YamlSerializerOptions)">
   Deserialize&lt;T&gt;(Stream, YamlSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -320,7 +329,8 @@ the stream, not to the parse and bind that follow.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML deserialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static T? Deserialize&lt;T&gt;(Stream source, YamlSerializerOptions? options = null)</code></pre>
   </div>
 
@@ -369,6 +379,9 @@ input rather than parsing incrementally, so peak memory includes the entire docu
     <dt><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a></dt>
     <dd><p>The stream contents are not valid YAML.</p>
 </dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The stream contents are valid YAML, but cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
   </dl>
 
 
@@ -380,7 +393,7 @@ input rather than parsing incrementally, so peak memory includes the entire docu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_Deserialize__1_System_ReadOnlySpan_System_Byte__Bodu_Text_Yaml_YamlSerializerOptions_" data-uid="Bodu.Text.Yaml.YamlSerializer.Deserialize``1(System.ReadOnlySpan{System.Byte},Bodu.Text.Yaml.YamlSerializerOptions)">
   Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, YamlSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -389,7 +402,8 @@ input rather than parsing incrementally, so peak memory includes the entire docu
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML deserialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static T? Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt; utf8Yaml, YamlSerializerOptions? options = null)</code></pre>
   </div>
 
@@ -428,6 +442,9 @@ public static T? Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt; utf8Yaml, YamlSer
     <dt><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a></dt>
     <dd><p>The source is not valid YAML.</p>
 </dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The source is valid YAML, but cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
   </dl>
 
 
@@ -439,7 +456,7 @@ public static T? Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt; utf8Yaml, YamlSer
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_Deserialize__1_System_String_Bodu_Text_Yaml_YamlSerializerOptions_" data-uid="Bodu.Text.Yaml.YamlSerializer.Deserialize``1(System.String,Bodu.Text.Yaml.YamlSerializerOptions)">
   Deserialize&lt;T&gt;(string, YamlSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.Read.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -448,7 +465,8 @@ public static T? Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt; utf8Yaml, YamlSer
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML deserialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static T? Deserialize&lt;T&gt;(string yaml, YamlSerializerOptions? options = null)</code></pre>
   </div>
 
@@ -490,6 +508,9 @@ public static T? Deserialize&lt;T&gt;(string yaml, YamlSerializerOptions? option
     <dt><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a></dt>
     <dd><p>The source is not valid YAML.</p>
 </dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The source is valid YAML, but cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
   </dl>
 
 
@@ -501,7 +522,7 @@ public static T? Deserialize&lt;T&gt;(string yaml, YamlSerializerOptions? option
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_Serialize_System_Object_System_Type_Bodu_Text_Yaml_YamlSerializerOptions_" data-uid="Bodu.Text.Yaml.YamlSerializer.Serialize(System.Object,System.Type,Bodu.Text.Yaml.YamlSerializerOptions)">
   Serialize(object?, Type, YamlSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -510,7 +531,8 @@ public static T? Deserialize&lt;T&gt;(string yaml, YamlSerializerOptions? option
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML serialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static string Serialize(object? value, Type inputType, YamlSerializerOptions? options = null)</code></pre>
   </div>
 
@@ -546,6 +568,21 @@ public static string Serialize(object? value, Type inputType, YamlSerializerOpti
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p><code class="paramref">inputType</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>A string or key in the value contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>No converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A type maps more than one member to the same YAML key, or a converter attribute or converter factory is
+misconfigured.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The value cannot be represented in YAML: it holds a reference cycle, nests deeper than
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_MaxDepth">MaxDepth</a>, maps more than one dictionary or extension-data entry to the same
+key, or holds an enumeration value that its converter refuses to write.</p>
+</dd>
   </dl>
 
 
@@ -557,7 +594,7 @@ public static string Serialize(object? value, Type inputType, YamlSerializerOpti
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_Yaml_YamlSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Yaml.YamlSerializer.SerializeAsync``1(System.IO.Stream,``0,Bodu.Text.Yaml.YamlSerializerOptions,System.Threading.CancellationToken)">
   SerializeAsync&lt;T&gt;(Stream, T, YamlSerializerOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -566,7 +603,8 @@ public static string Serialize(object? value, Type inputType, YamlSerializerOpti
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML serialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static ValueTask SerializeAsync&lt;T&gt;(Stream destination, T value, YamlSerializerOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
@@ -617,7 +655,20 @@ rendered document. Cancellation applies to the final write, not to the serializa
     <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when <code class="paramref">destination</code> does not support writing.</p>
+    <dd><p>Thrown when <code class="paramref">destination</code> does not support writing, or when a string or key in the value
+contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>No converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A type maps more than one member to the same YAML key, or a converter attribute or converter factory is
+misconfigured.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The value cannot be represented in YAML: it holds a reference cycle, nests deeper than
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_MaxDepth">MaxDepth</a>, maps more than one dictionary or extension-data entry to the same
+key, or holds an enumeration value that its converter refuses to write.</p>
 </dd>
   </dl>
 
@@ -630,7 +681,7 @@ rendered document. Cancellation applies to the final write, not to the serializa
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_Yaml_YamlSerializerOptions_" data-uid="Bodu.Text.Yaml.YamlSerializer.Serialize``1(System.Buffers.IBufferWriter{System.Byte},``0,Bodu.Text.Yaml.YamlSerializerOptions)">
   Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, T, YamlSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -639,7 +690,8 @@ rendered document. Cancellation applies to the final write, not to the serializa
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML serialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static void Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt; destination, T value, YamlSerializerOptions? options = null)</code></pre>
   </div>
 
@@ -675,6 +727,21 @@ public static void Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt; destination, T v
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>A string or key in the value contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>No converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A type maps more than one member to the same YAML key, or a converter attribute or converter factory is
+misconfigured.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The value cannot be represented in YAML: it holds a reference cycle, nests deeper than
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_MaxDepth">MaxDepth</a>, maps more than one dictionary or extension-data entry to the same
+key, or holds an enumeration value that its converter refuses to write.</p>
+</dd>
   </dl>
 
 
@@ -686,7 +753,7 @@ public static void Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt; destination, T v
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_YamlSerializer_Serialize__1___0_Bodu_Text_Yaml_YamlSerializerOptions_" data-uid="Bodu.Text.Yaml.YamlSerializer.Serialize``1(``0,Bodu.Text.Yaml.YamlSerializerOptions)">
   Serialize&lt;T&gt;(T, YamlSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -695,7 +762,8 @@ public static void Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt; destination, T v
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML serialization may require types that trimming cannot statically determine.&quot;)]
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;YAML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;YAML serialization and deserialization construct converters for enumeration, integer, collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
 public static string Serialize&lt;T&gt;(T value, YamlSerializerOptions? options = null)</code></pre>
   </div>
 
@@ -729,6 +797,24 @@ public static string Serialize&lt;T&gt;(T value, YamlSerializerOptions? options 
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>A string or key in the value contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>No converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A type maps more than one member to the same YAML key, or a converter attribute or converter factory is
+misconfigured.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></dt>
+    <dd><p>The value cannot be represented in YAML: it holds a reference cycle, nests deeper than
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_MaxDepth">MaxDepth</a>, maps more than one dictionary or extension-data entry to the same
+key, or holds an enumeration value that its converter refuses to write.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -761,7 +847,7 @@ public static string Serialize&lt;T&gt;(T value, YamlSerializerOptions? options 
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

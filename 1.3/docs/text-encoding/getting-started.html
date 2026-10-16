@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.Encoding - Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.Encoding - Getting started | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/text-encoding/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="bodutextencoding---getting-started">Bodu.Text.Encoding - Getting started</h1>
+
+<p>Unfamiliar with terms like <em>alphabet</em>, <em>terminal quantum</em>, <em>padding</em>, or <em>variant</em>? Read <a href="concepts.html">Core concepts</a>
+first.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Text.Encoding
+</code></pre>
+<p>Targets <code>net8.0</code> and <code>net10.0</code>. The package has a single dependency on <code>Bodu.Core</code> for shared throw-helpers; no external NuGet
+references.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="encode-a-hash-digest-as-hex">Encode a hash digest as hex</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] digest = SHA256.HashData(&quot;hello&quot;u8.ToArray());
+
+string lower = Base16.Encode(digest);                                   // canonical Bodu form: lower case, no decoration
+string upper = Base16.Encode(digest, BaseFormattingOptions.UpperCase);  // RFC 4648 §8 canonical case
+string dump  = Base16.Encode(digest, BaseFormattingOptions.UpperCase
+                                   | BaseFormattingOptions.InsertSpacing
+                                   | BaseFormattingOptions.IncludePrefix);
+// dump → &quot;0x2C F2 4D BA 5F B0 A3 0E 26 E8 3B 2A C5 B9 E2 9E 1B 16 1E 5C 1F A7 42 5E 73 04 33 62 93 8B 98 24&quot;
+</code></pre>
+<h3 id="decode-a-jwt-token-segment">Decode a JWT token segment</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// JWT segments are URL-safe Base64 without padding.
+string headerSegment = &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9&quot;;
+
+byte[] headerBytes = Base64.Decode(
+    headerSegment,
+    Base64Variant.UrlSafe,
+    BaseFormatStyles.AllowMissingPadding);
+
+string json = System.Text.Encoding.UTF8.GetString(headerBytes);
+// json → &quot;{\&quot;alg\&quot;:\&quot;HS256\&quot;,\&quot;typ\&quot;:\&quot;JWT\&quot;}&quot;
+</code></pre>
+<h3 id="format-a-totp-secret-for-a-user">Format a TOTP secret for a user</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] secret = RandomNumberGenerator.GetBytes(20); // 160-bit shared secret
+
+// Google Authenticator-friendly Base32, no padding, no whitespace.
+string display = Base32.Encode(
+    secret,
+    Base32Variant.Standard,
+    BaseFormattingOptions.OmitPadding);
+</code></pre>
+<h3 id="read-a-bitcoin-address">Read a Bitcoin address</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] payload = Base58.Decode(&quot;1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa&quot;); // the genesis block's address
+// payload[0] == 0x00 → mainnet P2PKH version byte
+// payload[1..21]    → 20-byte HASH160 of the public key
+// payload[21..25]   → 4-byte double-SHA256 checksum (Base58Check)
+</code></pre>
+<h3 id="decode-without-throwing">Decode without throwing</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] buffer = new byte[256];
+if (Base16.TryDecode(userInput.AsSpan(), buffer, out int bytesWritten))
+{
+    var actual = buffer.AsSpan(0, bytesWritten);
+    // success
+}
+else
+{
+    // malformed input - show an error
+}
+</code></pre>
+<h3 id="stream-decode-hex-from-a-network-buffer">Stream-decode hex from a network buffer</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+using System.Buffers;
+
+while (TryReadChunk(out ReadOnlySpan&lt;byte&gt; utf8Hex, out bool isFinal))
+{
+    OperationStatus status = Base16.DecodeFromUtf8(
+        utf8Hex,
+        outputBuffer,
+        out int consumed,
+        out int written,
+        BaseFormatStyles.None,
+        isFinalBlock: isFinal);
+
+    switch (status)
+    {
+        case OperationStatus.Done:           // chunk fully decoded
+        case OperationStatus.NeedMoreData:   // pull more bytes and continue
+            break;
+        case OperationStatus.DestinationTooSmall:
+            // grow output buffer
+            break;
+        case OperationStatus.InvalidData:
+            throw new FormatException(&quot;Bad hex&quot;);
+    }
+}
+</code></pre>
+<h3 id="pick-an-encoding-from-configuration-at-runtime">Pick an encoding from configuration at runtime</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+string encodingName = configuration[&quot;TokenEncoding&quot;]; // e.g. &quot;base64-urlsafe&quot; or &quot;base32-crockford&quot;
+IBinaryEncoding encoding = BinaryEncodings.Get(encodingName);
+
+string token   = encoding.Encode(rawBytes);
+byte[] decoded = encoding.Decode(token);
+</code></pre>
+<h3 id="fluent-extension-methods">Fluent extension methods</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] data = { 0xDE, 0xAD, 0xBE, 0xEF };
+
+string hex      = data.ToBase16String();
+string base32   = data.ToBase32String();
+string base64   = data.ToBase64String();
+string base58   = data.ToBase58String();
+string ascii85  = data.ToBase85String();
+
+byte[] backFromHex = hex.FromBase16String();
+</code></pre>
+<h3 id="encode-a-qr-code-payload-with-base45">Encode a QR-code payload with Base45</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// RFC 9285 - the encoding the EU Digital COVID Certificate carries in a QR code.
+byte[] payload = &quot;Hello!!&quot;u8.ToArray();
+string base45 = Base45.Encode(payload);   // &quot;%69 VD92EX0&quot;
+
+byte[] back = Base45.Decode(base45);
+</code></pre>
+<h3 id="generate-a-compact-identifier-with-base62">Generate a compact identifier with Base62</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// URL-safe, no special characters - ideal for short links and slugs.
+byte[] random = RandomNumberGenerator.GetBytes(16);
+string id = Base62.Encode(random);
+
+byte[] bytes = Base62.Decode(id);
+</code></pre>
+<h3 id="encode-a-guid-as-a-compact-token">Encode a GUID as a compact token</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// Each core family (Base16/32/58/64/85) encodes a Guid directly - no manual 16-byte buffer.
+Guid id = Guid.NewGuid();
+
+string b58 = Base58.Encode(id);                  // ~22 chars, no 0/O/I/l ambiguity
+string b64 = Base64.Encode(id, Base64Variant.UrlSafe); // 22 chars, URL-safe, unpadded
+
+Guid back = Base58.DecodeGuid(b58);              // FormatException unless it decodes to 16 bytes
+bool ok   = Base64.TryDecodeGuid(b64, out Guid parsed,
+                Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+</code></pre>
+<h3 id="encode-an-address-with-bech32--bech32m">Encode an address with Bech32 / Bech32m</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// Bech32 carries a human-readable part (HRP), the data, and a checksum together.
+// EncodeFromBytes / DecodeToBytes repack 8-bit bytes to and from the 5-bit data part.
+byte[] program = Base16.Decode(&quot;751e76e8199196d454941c45d1b3a323f1433bd6&quot;);
+string address = Bech32.EncodeFromBytes(&quot;bc&quot;, program, Bech32Encoding.Bech32m);
+
+Bech32.DecodeToBytes(address, out string hrp, out byte[] data, out Bech32Encoding scheme);
+// hrp == &quot;bc&quot;; data == program; scheme == Bech32Encoding.Bech32m
+
+// Non-throwing form reports which scheme validated the checksum.
+if (Bech32.TryDecodeToBytes(address, out string? hrp2, out byte[]? data2, out Bech32Encoding scheme2))
+{
+    // hrp2 / data2 are non-null; scheme2 tells Bech32 from Bech32m
+}
+</code></pre>
+<h3 id="protect-a-payload-with-a-checksum-base58check">Protect a payload with a checksum (Base58Check)</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+string encoded = Base58Check.Encode(payload);   // payload + 4-byte double-SHA-256 checksum
+byte[] decoded = Base58Check.Decode(encoded);   // verifies the checksum, then strips it
+</code></pre>
+<h3 id="encode-a-git-binary-patch-payload-base85-git">Encode a Git binary-patch payload (Base85 Git)</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// Compact, self-delimiting - round-trips without external metadata.
+string compact = Base85.Encode(&quot;hello&quot;u8.ToArray(), Base85Variant.GitCompact);   // &quot;Xk~0{Zv&quot;
+byte[] back    = Base85.Decode(compact, Base85Variant.GitCompact);
+
+// Exact Git line primitive - always five characters per group; caller tracks the length.
+string padded  = Base85.EncodeGitPadded(new byte[] { 0x01 });             // &quot;0RR91&quot;
+byte[] bytes   = Base85.DecodeGitPadded(padded, decodedLength: 1);
+</code></pre>
+<h3 id="encode-a-mime-message-body-quoted-printable">Encode a MIME message body (Quoted-Printable)</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] body = &quot;café = møney&quot;u8.ToArray();
+
+string encoded = QuotedPrintable.Encode(body);   // printable run + =HH escapes, 76-column wrapping
+byte[] decoded = QuotedPrintable.Decode(encoded);
+</code></pre>
+<h3 id="escape-a-value-for-a-url-percent-encoding">Escape a value for a URL (percent-encoding)</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// URI component (default).
+string component = PercentEncoding.EncodeString(&quot;a/b?c=d&quot;);   // &quot;a%2Fb%3Fc%3Dd&quot;
+
+// HTML form field - space becomes '+'.
+string field = PercentEncoding.EncodeString(&quot;a b+c&quot;, mode: PercentEncodingMode.FormUrlEncoded); // &quot;a+b%2Bc&quot;
+
+string value = PercentEncoding.DecodeString(&quot;a%2Fb&quot;);         // &quot;a/b&quot;
+</code></pre>
+<h2 id="round-trip-example-with-whitespace-tolerance">Round-trip example with whitespace tolerance</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] original = { 0xDE, 0xAD, 0xBE, 0xEF };
+
+string display = Base16.Encode(
+    original,
+    BaseFormattingOptions.UpperCase
+        | BaseFormattingOptions.IncludePrefix
+        | BaseFormattingOptions.InsertSpacing
+        | BaseFormattingOptions.InsertLineBreaks);
+// display →
+//   &quot;0xDE AD BE EF&quot;
+
+byte[] recovered = Base16.Decode(
+    display,
+    BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
+
+Debug.Assert(original.SequenceEqual(recovered));
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../guides/text-encoding/index.html">Bodu.Text.Encoding guides</a></strong> - per-encoding deep dives.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - type map and scenario index.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Encoding.html">Bodu.Text.Encoding API reference</a></strong> - full type-by-type docs.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

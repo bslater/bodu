@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Deque | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Deque | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/core/deque.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="deque">Deque</h1>
+
+<p><code>Deque&lt;T&gt;</code> is a double-ended queue (deque) backed by a contiguous circular array. Elements may be added or removed from either end in amortized O(1) time. The <code>AllowGrow</code> property controls whether the backing array expands automatically when full or whether the deque rejects further inserts - letting one type cover both growable and fixed-capacity scenarios.</p>
+<p>For a single-ended FIFO buffer with eviction-on-full semantics, see <a href="circular-buffer.html">Circular buffer</a>. For thread-safe concurrent FIFO access, use <code>ConcurrentCircularBuffer&lt;T&gt;</code> (a separate, lock-free implementation).</p>
+<p><img src="../../images/diagrams/deque.svg" alt="Deque backing array with Head, Tail, wrap-around, and AllowGrow behavior"></p>
+<p><code>Head</code> and <code>Tail</code> index into a contiguous backing array but advance modulo <code>Capacity</code>, so the logical sequence may wrap past the end of the array. <code>AddFirst</code> / <code>RemoveFirst</code> operate at the head end; <code>AddLast</code> / <code>RemoveLast</code> operate at the tail end. The indexer <code>this[i]</code> reads in logical order, hiding the wrap from callers.</p>
+<p><code>Deque&lt;T&gt;</code> and <a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a> share the <a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> base, so they share enumeration, copy, indexer, and trim behaviour. Adds and removes at either end are <strong>amortised O(1)</strong> (the amortisation absorbs the occasional array-doubling pass in growable mode), and the indexer is an O(1) random read. The type accepts <code>null</code> for reference <code>T</code> and permits duplicates.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Enumeration is <strong>fail-fast</strong>: the deque carries a structural-version counter, and a <code>struct</code> enumerator created by <code>foreach</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> on the next <code>MoveNext</code> if the deque is structurally mutated - including <code>Clear</code>, <code>TrimExcess</code>, or any add/remove - while the enumerator is live. The struct enumerator means <code>foreach</code> allocates nothing.</p>
+</div>
+<h2 id="pattern-1---growable-double-ended-queue-default">Pattern 1 - growable double-ended queue (default)</h2>
+<p><code>new Deque&lt;T&gt;()</code> and <code>new Deque&lt;T&gt;(capacity)</code> both produce a growable deque. The capacity argument is a hint - the backing array doubles automatically when filled.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var deque = new Deque&lt;int&gt;();
+deque.AddLast(2);
+deque.AddFirst(1);
+deque.AddLast(3);          // contents: 1, 2, 3
+
+int first = deque.RemoveFirst();   // 1
+int last  = deque.RemoveLast();    // 3
+</code></pre>
+<h2 id="pattern-2---fixed-capacity-deque-that-throws-when-full">Pattern 2 - fixed-capacity deque that throws when full</h2>
+<p>Pass <code>allowGrow: false</code> to switch off automatic growth. Adds to a full deque throw <code>InvalidOperationException</code>; the <code>Try*</code> overloads return <code>false</code> without modifying state:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var bounded = new Deque&lt;int&gt;(capacity: 8, allowGrow: false);
+
+for (int i = 0; i &lt; 8; i++)
+    bounded.AddLast(i);
+
+bool added = bounded.TryAddLast(8);   // false - bounded is full
+bool full  = bounded.IsFull;          // true
+
+// Throwing variant:
+// bounded.AddLast(8);                // InvalidOperationException
+</code></pre>
+<h2 id="overflow-policy---evict-from-the-opposite-end">Overflow policy - evict from the opposite end</h2>
+<p>Rejecting is only the default. <code>OverflowPolicy</code> selects what a full, fixed-capacity deque does with the next add: <code>DequeOverflowPolicy.Reject</code> (throw / return <code>false</code>, as above) or <code>DequeOverflowPolicy.EvictOpposite</code>, which silently discards the element at the <em>opposite</em> end to make room - <code>AddFirst</code> drops the tail element, <code>AddLast</code> drops the head element, and <code>Count</code> stays at <code>Capacity</code>. This is the double-ended analogue of Python's <code>collections.deque(maxlen=N)</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var recent = new Deque&lt;int&gt;(capacity: 3, allowGrow: false)
+{
+    OverflowPolicy = DequeOverflowPolicy.EvictOpposite,
+};
+
+recent.AddLast(1);
+recent.AddLast(2);
+recent.AddLast(3);          // full: 1, 2, 3
+recent.AddLast(4);          // evicts 1 → 2, 3, 4
+recent.AddFirst(0);         // evicts 4 → 0, 2, 3
+
+bool added = recent.TryAddLast(5);   // true - evicts 0 → 2, 3, 5
+</code></pre>
+<p><code>EvictOpposite</code> is the deque counterpart of <code>CircularBuffer&lt;T&gt;.AllowOverwrite</code> - the same overwrite-on-full idea, generalised to both ends - and mirrors its event pair: <code>ItemEvicting</code> fires immediately before each eviction (a handler that throws vetoes the eviction in place, leaving the deque unchanged) and <code>ItemEvicted</code> fires immediately after, both carrying the discarded element. Handlers must not mutate the deque itself - mutating members are guarded against re-entry from inside an eviction handler and throw <code>InvalidOperationException</code> if called there.</p>
+<p>The policy is consulted only when the deque is full and <code>AllowGrow</code> is <code>false</code>. While <code>AllowGrow</code> is <code>true</code>, growth always wins and nothing is ever evicted, regardless of the configured policy. Assigning a value that is not a defined <code>DequeOverflowPolicy</code> member throws <code>ArgumentOutOfRangeException</code>.</p>
+<h2 id="pattern-3---sliding-window-from-both-ends">Pattern 3 - sliding window from both ends</h2>
+<p>Use <code>AddFirst</code> / <code>AddLast</code> together with <code>RemoveFirst</code> / <code>RemoveLast</code> to build a sliding window or undo/redo buffer. (The drop-the-oldest step below is exactly what <code>OverflowPolicy = DequeOverflowPolicy.EvictOpposite</code> automates - shown here in its manual form for when the eviction needs custom logic.)</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var recent = new Deque&lt;string&gt;(capacity: 5, allowGrow: false);
+
+void Record(string action)
+{
+    if (recent.IsFull)
+        recent.RemoveFirst();   // drop the oldest
+    recent.AddLast(action);
+}
+
+Record(&quot;open&quot;);
+Record(&quot;edit&quot;);
+Record(&quot;save&quot;);
+
+string mostRecent = recent.PeekLast();   // &quot;save&quot;
+</code></pre>
+<h2 id="pattern-4---peek-without-removing">Pattern 4 - peek without removing</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var deque = new Deque&lt;int&gt;();
+deque.AddLast(10);
+deque.AddLast(20);
+
+if (deque.TryPeekFirst(out int head)) Console.WriteLine(head);   // 10
+if (deque.TryPeekLast(out int tail))  Console.WriteLine(tail);   // 20
+
+// Throwing variants:
+int h = deque.PeekFirst();   // 10
+int t = deque.PeekLast();    // 20
+</code></pre>
+<h2 id="pattern-5---toggling-between-growable-and-fixed-at-runtime">Pattern 5 - toggling between growable and fixed at runtime</h2>
+<p><code>AllowGrow</code> is a settable property. Toggling from <code>true</code> to <code>false</code> does not shrink the existing capacity - call <code>TrimExcess</code> afterwards if a smaller footprint is wanted.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var deque = new Deque&lt;int&gt;(capacity: 4);   // growable
+
+for (int i = 0; i &lt; 100; i++)
+    deque.AddLast(i);                       // backing array grows past 4
+
+// Lock the deque to its current size so subsequent adds are rejected:
+deque.TrimExcess();                          // capacity 128 -&gt; 100, the current count
+deque.AllowGrow = false;
+bool added = deque.TryAddLast(101);          // false - at capacity
+
+// Switch back to growable later if needed:
+deque.AllowGrow = true;
+deque.AddLast(101);                          // OK; grows again
+</code></pre>
+<h2 id="pattern-6---pre-grow-with-ensurecapacity">Pattern 6 - pre-grow with EnsureCapacity</h2>
+<p><code>EnsureCapacity</code> works regardless of <code>AllowGrow</code> - it is the explicit pre-grow hatch even on fixed-capacity deques. Use it to reserve space ahead of a known burst of inserts:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var deque = new Deque&lt;int&gt;(capacity: 4, allowGrow: false);
+deque.EnsureCapacity(10_000);   // pre-allocate; AllowGrow stays false
+
+for (int i = 0; i &lt; 10_000; i++)
+    deque.AddLast(i);            // no throws - capacity already covers it
+</code></pre>
+<h2 id="growth-and-seeding">Growth and seeding</h2>
+<p>In growable mode the backing array doubles on overflow - the new capacity is twice the current one (with a small floor for tiny deques), capped at <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.maxlength">MaxLength</a>. Doubling keeps the per-element cost amortised O(1) over a run of appends.</p>
+<p>A deque can be seeded from a sequence. When the source is longer than the supplied capacity, growable mode bumps the capacity to fit the whole source (nothing is dropped), whereas <code>allowGrow: false</code> with an over-long source throws <code>InvalidOperationException</code>. The default capacity is <code>16</code> and the default <code>allowGrow</code> is <code>true</code> on every constructor overload:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var grown  = new Deque&lt;int&gt;(new[] { 1, 2, 3, 4, 5 }, capacity: 2);             // grows to fit: holds all 5
+// var fail = new Deque&lt;int&gt;(new[] { 1, 2, 3 }, capacity: 2, allowGrow: false); // InvalidOperationException
+</code></pre>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddFirst(T)</code></td>
+<td>Adds an element at the head. On a full fixed-capacity deque, throws under <code>Reject</code> or evicts the tail element under <code>EvictOpposite</code>.</td>
+</tr>
+<tr>
+<td><code>AddLast(T)</code></td>
+<td>Adds an element at the tail. On a full fixed-capacity deque, throws under <code>Reject</code> or evicts the head element under <code>EvictOpposite</code>.</td>
+</tr>
+<tr>
+<td><code>TryAddFirst(T)</code> / <code>TryAddLast(T)</code></td>
+<td>Non-throwing variants. Return <code>false</code> only when full, <code>AllowGrow</code> is <code>false</code>, and <code>OverflowPolicy</code> is <code>Reject</code>; otherwise <code>true</code> (growing or evicting as configured).</td>
+</tr>
+<tr>
+<td><code>RemoveFirst()</code> / <code>RemoveLast()</code></td>
+<td>Removes and returns the head or tail element. Throws if empty.</td>
+</tr>
+<tr>
+<td><code>TryRemoveFirst(out T)</code> / <code>TryRemoveLast(out T)</code></td>
+<td>Non-throwing remove variants; return <code>false</code> if empty.</td>
+</tr>
+<tr>
+<td><code>PeekFirst()</code> / <code>PeekLast()</code></td>
+<td>Reads the head or tail element without removing it. Throws if empty.</td>
+</tr>
+<tr>
+<td><code>TryPeekFirst(out T)</code> / <code>TryPeekLast(out T)</code></td>
+<td>Non-throwing peek variants; return <code>false</code> if empty.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>The number of elements currently in the deque.</td>
+</tr>
+<tr>
+<td><code>Capacity</code></td>
+<td>The current backing-array length. Mutable in growable mode.</td>
+</tr>
+<tr>
+<td><code>IsEmpty</code></td>
+<td><code>true</code> when <code>Count == 0</code>.</td>
+</tr>
+<tr>
+<td><code>IsFull</code></td>
+<td><code>true</code> when <code>Count == Capacity</code>.</td>
+</tr>
+<tr>
+<td><code>AllowGrow</code></td>
+<td>Whether the backing array expands automatically when full. Settable at runtime. While <code>true</code>, growth wins and <code>OverflowPolicy</code> is never consulted.</td>
+</tr>
+<tr>
+<td><code>OverflowPolicy</code></td>
+<td>How a full fixed-capacity deque handles adds: <code>Reject</code> (default - throw / <code>false</code>) or <code>EvictOpposite</code> (Python <code>deque(maxlen=N)</code> semantics).</td>
+</tr>
+<tr>
+<td><code>ItemEvicting</code> / <code>ItemEvicted</code></td>
+<td>Events raised around each <code>EvictOpposite</code> eviction with the discarded element. A throwing <code>ItemEvicting</code> handler vetoes the eviction in place.</td>
+</tr>
+<tr>
+<td><code>EnsureCapacity(int)</code></td>
+<td>Expands the backing array to hold at least the requested capacity. Ignores <code>AllowGrow</code>.</td>
+</tr>
+<tr>
+<td><code>Clear()</code></td>
+<td>Removes all elements; capacity unchanged.</td>
+</tr>
+<tr>
+<td><code>TrimExcess()</code></td>
+<td>Shrinks the backing array to <code>Count</code> (or 1 when empty).</td>
+</tr>
+<tr>
+<td><code>ToArray()</code></td>
+<td>Returns a snapshot in head-to-tail logical order.</td>
+</tr>
+<tr>
+<td><code>this[int]</code></td>
+<td>Read-only indexer in head-to-tail logical order.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="circular-buffer.html">Circular buffer</a> - fixed-capacity FIFO with eviction-on-full semantics.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> - fixed-capacity key-value cache with LRU / LFU / FIFO eviction.</li>
+<li><a href="index.html">Bodu.Collections guide index</a> - all key types at a glance.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

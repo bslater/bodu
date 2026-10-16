@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/core/evicting-dictionary.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/core/evicting-dictionary.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="evicting-dictionary">Evicting dictionary</h1>
 
-<p><code>EvictingDictionary&lt;TKey, TValue&gt;</code> is a fixed-capacity dictionary that automatically removes the least-worthy entry when capacity is exceeded. It implements the full <code>IDictionary&lt;TKey, TValue&gt;</code> surface, so it is a drop-in replacement for <code>Dictionary&lt;TKey, TValue&gt;</code> wherever a bounded cache is wanted - the eviction is the only behavioural difference. The victim is selected by one of <strong>six</strong> eviction policies, fixed at construction:</p>
+<p><code>EvictingDictionary&lt;TKey, TValue&gt;</code> is a fixed-capacity dictionary that automatically removes the least-worthy entry when capacity is exceeded. It implements the full <code>IDictionary&lt;TKey, TValue&gt;</code> surface, but it is not a drop-in replacement for <code>Dictionary&lt;TKey, TValue&gt;</code>: besides evicting, its <code>Add</code> adds or replaces rather than throwing on a duplicate key, and its reads update the eviction state. The victim is selected by one of <strong>six</strong> eviction policies, fixed at construction:</p>
 <table>
 <thead>
 <tr>
@@ -237,7 +237,7 @@ var cache = new EvictingDictionary&lt;string, byte[]&gt;(
     EvictingDictionaryPolicy.SecondChance);
 </code></pre>
 <h2 id="pattern-6---random-replacement">Pattern 6 - random replacement</h2>
-<p><code>RandomReplacement</code> keeps no recency or frequency metadata at all - eviction is a uniformly random pick. It is the cheapest policy per write and is a reasonable default when the access pattern has no exploitable locality:</p>
+<p><code>RandomReplacement</code> keeps no recency or frequency metadata at all - eviction is a uniformly random pick, so reads cost nothing extra. Picking the victim walks the keys to a random position, though, so each eviction is O(n) in the entry count. It is a reasonable choice when the access pattern has no exploitable locality and evictions are not the hot path:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var cache = new EvictingDictionary&lt;int, Tile&gt;(
@@ -262,9 +262,10 @@ void OnHeartbeat(string sessionId)
 <h2 id="pattern-8---observing-evictions">Pattern 8 - observing evictions</h2>
 <p>Two events fire around each eviction, both typed <code>Action&lt;TKey, TValue&gt;</code>:</p>
 <ul>
-<li><code>ItemEvicting</code> - raised immediately <strong>before</strong> the entry is removed (informational; it cannot cancel the eviction).</li>
+<li><code>ItemEvicting</code> - raised immediately <strong>before</strong> the entry is removed.</li>
 <li><code>ItemEvicted</code> - raised immediately <strong>after</strong> removal, when the key and value are no longer present.</li>
 </ul>
+<p>Handler exceptions are not caught. One thrown from <code>ItemEvicting</code> propagates before the victim is removed, and one thrown from <code>ItemEvicted</code> propagates after it; either way the add that triggered the eviction does not store its entry. Because expired entries are removed lazily, such an exception can also surface from a read such as <code>TryGetValue</code>.</p>
 <p>Use them to flush a dirty entry to its backing store, decrement a resource counter, or emit a metric:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -349,12 +350,12 @@ clock.Advance(TimeSpan.FromMinutes(6));
 bool alive = cache.ContainsKey(&quot;A&quot;);          // false - no real waiting
 </code></pre>
 <h2 id="inspecting-the-next-victim">Inspecting the next victim</h2>
-<p><code>PeekEvictionCandidate</code> returns the key that <em>would</em> be evicted on the next overflow, or <code>default</code> when the dictionary is empty. It is a pure read - it does not touch recency or frequency metadata - so it is safe to call in a monitoring loop:</p>
+<p><code>PeekEvictionCandidate</code> returns the policy's current eviction candidate, or <code>default</code> when the dictionary is empty. Under every policy but <code>RandomReplacement</code> that is the key the next overflow evicts, unless an entry has expired first (capacity pressure purges expired entries before the policy runs); under <code>RandomReplacement</code> it is an arbitrary key, because each eviction draws its victim at random. It is a pure read - it does not touch recency or frequency metadata - so it is safe to call in a monitoring loop:</p>
 <pre><code class="lang-csharp">TKey? nextOut = cache.PeekEvictionCandidate();
 </code></pre>
-<p>The <code>EvictionCount</code> and <code>TotalTouches</code> properties expose running totals of how many entries have been evicted and how many accesses have occurred since construction - useful for cache-effectiveness telemetry.</p>
+<p>The <code>EvictionCount</code> and <code>TotalTouches</code> properties expose running totals of how many entries have been evicted and how many accesses have occurred since construction or the last <code>Clear</code> - useful for cache-effectiveness telemetry.</p>
 <h2 id="pattern-9---assignment-semantics">Pattern 9 - assignment semantics</h2>
-<p>Unlike <code>Dictionary&lt;TKey, TValue&gt;.Add</code>, assigning to an existing key replaces the value <strong>and</strong> resets its eviction metadata. Note that <code>Add(key, value)</code> here is also add-<em>or-replace</em> - it does <strong>not</strong> throw on a duplicate key the way <code>Dictionary&lt;TKey, TValue&gt;.Add</code> does. There is no plain <code>TryAdd</code> or <code>GetOrAdd</code>; use the indexer or <code>Add</code> (the only <code>TryAdd</code> overload is the TTL-taking one described under <a href="#time-based-expiration-ttl">Time-based expiration</a>):</p>
+<p>Assigning to an existing key replaces the value <strong>and</strong> counts as an access: LRU and MRU move the entry to the most-recent end, LFU increments its access count, SecondChance sets its flag, and FIFO keeps its position. The accumulated metadata is not reset. Note that <code>Add(key, value)</code> here is also add-<em>or-replace</em> - it does <strong>not</strong> throw on a duplicate key the way <code>Dictionary&lt;TKey, TValue&gt;.Add</code> does. There is no plain <code>TryAdd</code> or <code>GetOrAdd</code>; use the indexer or <code>Add</code> (the only <code>TryAdd</code> overload is the TTL-taking one described under <a href="#time-based-expiration-ttl">Time-based expiration</a>):</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -385,7 +386,7 @@ var cache = new EvictingDictionary&lt;string, int&gt;(
     comparer: StringComparer.OrdinalIgnoreCase);
 </code></pre>
 <h2 id="thread-safety">Thread safety</h2>
-<p><code>EvictingDictionary&lt;TKey, TValue&gt;</code> is <strong>not thread-safe</strong>. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap with a lock or <code>ReaderWriterLockSlim</code> when multiple threads access the same instance, or use the thread-safe variant: <a href="concurrent-collections.html"><code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code></a> in the companion <code>Bodu.Collections.Concurrent</code> package supports all six policies over lock-striped segments, with optional TTL and single-flight <code>GetOrAdd</code>.</p>
+<p><code>EvictingDictionary&lt;TKey, TValue&gt;</code> is <strong>not thread-safe</strong>. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap every access in an exclusive lock when multiple threads use the same instance (a <code>ReaderWriterLockSlim</code> read lock is not enough, because reads write), or use the thread-safe variant: <a href="concurrent-collections.html"><code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code></a> in the companion <code>Bodu.Collections.Concurrent</code> package supports all six policies over lock-striped segments, with optional TTL and single-flight <code>GetOrAdd</code>.</p>
 <h2 id="keys--values-enumeration-order"><code>Keys</code> / <code>Values</code> enumeration order</h2>
 <p><code>Keys</code> and <code>Values</code> are live views, but their enumeration order reflects the <strong>current eviction order</strong>, not insertion order - FIFO/LRU/SecondChance walk the recency list head-to-tail, MRU walks it tail-to-head, LFU walks ascending frequency buckets, and <code>RandomReplacement</code> follows the underlying hash-table order. Do not rely on <code>Keys</code> to recover insertion order under a recency-based policy.</p>
 <p>Because reads reorder those structures, enumerators are invalidated not only by writes but by <strong>successful lookups</strong>: under LRU, MRU, or LFU, a <code>TryGetValue</code>, indexer read, or <code>Touch</code> between iteration steps causes the next <code>MoveNext</code> to throw <code>InvalidOperationException</code>. Materialize the view first (<code>ToArray()</code> / <code>ToList()</code>) when interleaving reads with iteration.</p>
@@ -404,7 +405,7 @@ var cache = new EvictingDictionary&lt;string, int&gt;(
 </tr>
 <tr>
 <td><code>this[TKey]</code> (set)</td>
-<td>Adds or replaces the entry, resetting its eviction metadata. Evicts the policy's victim if capacity is exceeded.</td>
+<td>Adds or replaces the entry; a replacement counts as an access (the access count and FIFO position are not reset). Evicts the policy's victim if capacity is exceeded.</td>
 </tr>
 <tr>
 <td><code>Add(TKey, TValue)</code></td>
@@ -444,7 +445,7 @@ var cache = new EvictingDictionary&lt;string, int&gt;(
 </tr>
 <tr>
 <td><code>PeekEvictionCandidate()</code></td>
-<td>Returns the key that would be evicted next, or <code>default</code> when empty. Pure read.</td>
+<td>Returns the policy's current eviction candidate (an arbitrary key under <code>RandomReplacement</code>), or <code>default</code> when empty. Pure read.</td>
 </tr>
 <tr>
 <td><code>Remove(TKey)</code></td>
@@ -468,11 +469,11 @@ var cache = new EvictingDictionary&lt;string, int&gt;(
 </tr>
 <tr>
 <td><code>EvictionCount</code></td>
-<td>Total entries evicted since construction.</td>
+<td>Total entries evicted since construction or the last <code>Clear</code>.</td>
 </tr>
 <tr>
 <td><code>TotalTouches</code></td>
-<td>Total accesses (reads + <code>Touch</code>) since construction.</td>
+<td>Total accesses (reads + <code>Touch</code>) since construction or the last <code>Clear</code>.</td>
 </tr>
 <tr>
 <td><code>Keys</code> / <code>Values</code></td>
@@ -487,7 +488,7 @@ var cache = new EvictingDictionary&lt;string, int&gt;(
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><a href="circular-buffer.html">Circular buffer</a> - fixed-capacity FIFO ring buffer.</li>
-<li><a href="week-pattern.html">WeekPattern</a> - immutable bitmask value type for sets of days of the week.</li>
+<li><a href="day-of-week-set.html">DayOfWeekSet</a> - immutable set of days of the week, one of the calendar value sets.</li>
 <li><a href="index.html">Bodu.Collections guide index</a> - all key types at a glance.</li>
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
 <li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
@@ -510,7 +511,7 @@ var cache = new EvictingDictionary&lt;string, int&gt;(
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

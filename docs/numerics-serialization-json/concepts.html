@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/numerics-serialization-json/concepts.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/numerics-serialization-json/concepts.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -133,12 +133,12 @@
 { &quot;empty&quot;: true }
 &quot;[1, 5)&quot;   &quot;[1, +∞)&quot;   &quot;∅&quot;
 </code></pre>
-<p>A bounded side carries its endpoint and inclusivity flag; an unbounded side is a <code>lowerUnbounded</code> / <code>upperUnbounded</code> marker with no endpoint; the empty interval is the single-property object <code>{ &quot;empty&quot;: true }</code> and must stand alone. Under <code>Strict</code> a bounded side's inclusivity flag is required; <code>Lenient</code> defaults a missing flag to closed and accepts <code>&quot;min&quot;</code> / <code>&quot;max&quot;</code> as endpoint aliases. The compact form is the same ISO 31-11 bracket notation <code>Interval&lt;T&gt;.ToString()</code> / <code>TryParse</code> use, with <code>&quot;∅&quot;</code> for empty (non-ASCII characters are escaped per the options' encoder).</p>
+<p>A bounded side carries its endpoint and inclusivity flag, the endpoint a JSON number or, for an infinite floating-point endpoint, the string <code>&quot;Infinity&quot;</code> or <code>&quot;-Infinity&quot;</code>; an unbounded side is a <code>lowerUnbounded</code> / <code>upperUnbounded</code> marker with no endpoint; the empty interval is the single-property object <code>{ &quot;empty&quot;: true }</code> and must stand alone. Under <code>Strict</code> a bounded side's inclusivity flag is required; <code>Lenient</code> defaults a missing flag to closed and accepts <code>&quot;min&quot;</code> / <code>&quot;max&quot;</code> as endpoint aliases. The compact form is the same ISO 31-11 bracket notation <code>Interval&lt;T&gt;.ToString()</code> / <code>TryParse</code> use, with <code>&quot;∅&quot;</code> for empty (non-ASCII characters are escaped per the options' encoder), so an infinite endpoint on an open side, as in <code>&quot;(0, Infinity)&quot;</code>, reads back as an unbounded side.</p>
 <h2 id="discrete-interval-and-interval-set">Discrete interval and interval set</h2>
-<p><a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> serializes <strong>through the <code>Interval&lt;T&gt;</code> shape</strong> over its canonical closed integer bounds - the integer domain has no open sides to express - so its compact form is always <code>&quot;[1, 5]&quot;</code>. <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> serializes as a JSON <strong>array</strong> of its <code>Interval&lt;T&gt;</code> pieces (<code>[]</code> when empty), each piece in the selected policy's shape; a non-array token is rejected.</p>
+<p><a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> serializes <strong>through the <code>Interval&lt;T&gt;</code> shape</strong> over its canonical closed integer bounds - the integer domain has no open sides to express - so its finite sides are always closed (<code>&quot;[1, 5]&quot;</code>; <code>DiscreteInterval&lt;int&gt;.Open(1, 5)</code> is written <code>&quot;[2, 4]&quot;</code>), and an unbounded side is written as in <code>Interval&lt;T&gt;</code> (<code>&quot;[1, +∞)&quot;</code>). <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> serializes as a JSON <strong>array</strong> of its <code>Interval&lt;T&gt;</code> pieces (<code>[]</code> when empty), each piece in the selected policy's shape; a non-array token is rejected.</p>
 <h2 id="bigdecimal-shape"><code>BigDecimal</code> shape</h2>
-<pre><code class="lang-json">{ &quot;unscaledValue&quot;: 12340, &quot;scale&quot;: 3 }
-&quot;12.340&quot;
+<pre><code class="lang-json">{ &quot;unscaledValue&quot;: 1234, &quot;scale&quot;: 2 }
+&quot;12.34&quot;
 </code></pre>
 <p><code>Strict</code> writes the exact pair - an arbitrary-magnitude unscaled mantissa as a raw JSON number plus the decimal scale - and <code>Compact</code> writes the plain decimal string. <code>Lenient</code> reads either. The string form is used for <code>Compact</code>, rather than a bare JSON number, because many consumers narrow long numbers to IEEE-754 <code>double</code>.</p>
 <h2 id="complex-shape"><code>Complex</code> shape</h2>
@@ -150,7 +150,7 @@
 <h2 id="convenience-helpers">Convenience helpers</h2>
 <p><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonExtensions.html">FractionJsonExtensions</a> offers <code>value.ToJson(policy)</code> and <code>FractionJsonExtensions.FromJson&lt;T&gt;(json, policy)</code>, each configuring a fresh <code>JsonSerializerOptions</code> per call. They exist for one-off calls; for repeated serialization build one options instance with <code>AddNumericsJsonConverters</code> and reuse it.</p>
 <h2 id="trimming-and-aot">Trimming and AOT</h2>
-<p>The converters are reflection-free at the value level, and the package is marked AOT-compatible. <code>AddNumericsJsonConverters</code> registers the factory set; point a source-generated <code>JsonSerializerContext</code> at your DTOs so the trimmer can see the closed types. The <code>ToJson</code> / <code>FromJson</code> helpers call the reflection-based <code>JsonSerializer</code> and are annotated <code>[RequiresUnreferencedCode]</code> / <code>[RequiresDynamicCode]</code>, so using them in a trimmed or native-AOT application produces the standard analyzer warnings - prefer the options-based path there.</p>
+<p>The converters are reflection-free at the value level, and the package is marked AOT-compatible. The exception is the factories that <code>AddNumericsJsonConverters</code> registers: each constructs a closed converter for each component type at run time, which native AOT cannot do, so their constructors and <code>AddNumericsJsonConverters</code> are annotated <code>[RequiresDynamicCode]</code>, and using them in a native-AOT application produces the standard analyzer warning. Under native AOT, register the closed converters (<code>FractionJsonConverter&lt;T&gt;</code>, <code>IntervalJsonConverter&lt;T&gt;</code>, <code>DiscreteIntervalJsonConverter&lt;T&gt;</code>, <code>IntervalSetJsonConverter&lt;T&gt;</code>, <code>ComplexJsonConverter&lt;T&gt;</code>, and <code>BigDecimalJsonConverter</code>) for the types you serialize, and point a source-generated <code>JsonSerializerContext</code> at your DTOs - see <a href="../../guides/numerics/json-serialization.html#trimming-and-aot">Trimming and AOT</a> in the guide. The <code>ToJson</code> / <code>FromJson</code> helpers call the reflection-based <code>JsonSerializer</code> and are annotated <code>[RequiresUnreferencedCode]</code> / <code>[RequiresDynamicCode]</code>, so using them in a trimmed or native-AOT application produces the standard analyzer warnings.</p>
 <h2 id="failure-modes">Failure modes</h2>
 <p>Every malformed payload surfaces as <code>JsonException</code>; the converters never coerce silently:</p>
 <table>
@@ -202,6 +202,10 @@
 <td><code>JsonException</code> reporting the type mismatch.</td>
 </tr>
 <tr>
+<td>A NaN endpoint on a bounded side of an interval (<code>&quot;lower&quot;: &quot;NaN&quot;</code>, or <code>&quot;[NaN, 1]&quot;</code> in compact form)</td>
+<td><code>JsonException</code> - NaN is unordered, so no interval can be formed around it.</td>
+</tr>
+<tr>
 <td>A compact string <code>TryParse</code> rejects (<code>&quot;3/&quot;</code>, <code>&quot;[1, )&quot;</code>, <code>&quot;&lt;3&gt;&quot;</code>)</td>
 <td><code>JsonException</code> carrying the offending text.</td>
 </tr>
@@ -234,7 +238,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

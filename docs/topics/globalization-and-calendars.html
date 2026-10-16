@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/topics/globalization-and-calendars.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/topics/globalization-and-calendars.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -88,7 +88,7 @@
 <h1 id="globalization--calendars">Globalization &amp; Calendars</h1>
 
 <p>The <strong>Globalization &amp; Calendars</strong> topic groups the packages that resolve authored calendar rules into concrete notable dates - public holidays, observances, religious festivals, and regional events - and that make those dates usable for filtering, querying, and working-day-aware date arithmetic. At its center is a single resource-driven engine: rules are authored on the notable-date schema, loaded into an immutable, validated <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>, and queried through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> by year, date, or range and territory.</p>
-<p>The runtime is intentionally small. Everything beyond the resolution engine - fluent rule authoring, dependency-injection registration, trust-gated plugin loading, resolved-date caching, build-time rule-pack compilation, and the curated per-region holiday data - ships as opt-in companion packages that release on their own cadence. The topic also holds <code>Bodu.Globalization.Recurrence</code>, an independent sibling for RFC 5545 / cron / interval schedules that shares no dependency with the calendar engine. Consumers pull in only the pieces they need: most applications reference the runtime plus one or two regional data packs and never touch the rest.</p>
+<p>The runtime is intentionally small. Everything beyond the resolution engine - fluent rule authoring, dependency-injection registration, trust-gated plugin loading, resolved-date caching, build-time rule-pack compilation, and the curated per-region holiday data - ships as opt-in companion packages, which version with the runtime (see <a href="../versioning-and-support.html">Versioning, stability, and support</a>). The topic also holds <code>Bodu.Globalization.Recurrence</code>, an independent sibling for RFC 5545 / cron / interval schedules that shares no dependency with the calendar engine. Consumers pull in only the pieces they need: most applications reference the runtime plus one or two regional data packs and never touch the rest.</p>
 <h2 id="packages-in-this-topic">Packages in this topic</h2>
 <table>
 <thead>
@@ -145,7 +145,7 @@
 <tr>
 <td><code>Bodu.Globalization.Calendar.Tool</code></td>
 <td>Preview</td>
-<td>The <code>bodu-calendar</code> command-line tool (<code>dotnet tool install</code>): lints notable-date documents with the stable <code>BODU-CAL-*</code> diagnostics, compiles them to sealed <code>.bcal</code> binary packs, and inspects compiled packs.</td>
+<td>The <code>bodu-calendar</code> command-line tool, not published to nuget.org (pack it from a clone and <code>dotnet tool install</code> it from that local feed - see the <a href="../package-matrix.html#not-published-to-nugetorg">package matrix</a>): lints notable-date documents with the stable <code>BODU-CAL-*</code> diagnostics, compiles them to sealed <code>.bcal</code> binary packs, and inspects compiled packs.</td>
 <td><a href="../../guides/calendar/binary-rule-packs.html">Binary rule packs</a></td>
 </tr>
 <tr>
@@ -156,7 +156,7 @@
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Recurrence</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>RFC 5545 recurrence rules (<code>RecurrenceRule</code> / <code>RecurrenceRuleBuilder</code> / <code>RecurrenceSet</code>), <code>CronExpression</code>, and <code>AnchoredInterval</code> - parsing, formatting, and next / previous occurrence queries; depends only on <code>Bodu.Core</code>.</td>
 <td><a href="../../guides/recurrence/index.html">Recurrence guide</a></td>
 </tr>
@@ -307,9 +307,10 @@ DateOnly inFive = today.AddWorkingDays(5, service, &quot;AU-NSW&quot;);
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 using Microsoft.Extensions.DependencyInjection;
 
-builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
+var services = new ServiceCollection();   // builder.Services in a hosted application
+services.AddNotableDateService(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
 // or reloadable, for runtime rule swaps:
-// builder.Services.AddReloadableNotableDateService(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
+// services.AddReloadableNotableDateService(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
 </code></pre>
 <p>And authoring a custom date with the Builder produces the same kind of document the data packs embed - see the <a href="../../guides/calendar/notable-date-builder.html">builder guide</a> for the fluent surface and its XML / JSON round-trip.</p>
 <h2 id="key-types-across-the-family">Key types across the family</h2>
@@ -401,7 +402,7 @@ builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource(&quo
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

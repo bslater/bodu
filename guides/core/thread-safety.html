@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/core/thread-safety.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/core/thread-safety.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="thread-safety-contracts-across-core-foundations">Thread-safety contracts across Core Foundations</h1>
 
-<p>This page is the one-table answer to &quot;can I share this object between threads?&quot; for every public type in <strong>Bodu.Core</strong>, <strong>Bodu.Collections</strong>, and <strong>Bodu.Collections.Concurrent</strong>. Each row is derived from the type's XML documentation and source - the presence or absence of internal synchronization, whether reads mutate state, and how enumeration behaves under concurrent modification - not from a general assumption.</p>
+<p>This page is the one-table answer to &quot;can I share this object between threads?&quot; for every public type in <strong>Bodu.Core</strong>, <strong>Bodu.Collections</strong>, and <strong>Bodu.Collections.Concurrent</strong>. Each row is derived from the type's XML documentation and source - the presence or absence of internal synchronization, whether reads mutate state, and how enumeration behaves under concurrent modification - not from a general assumption. For the other packages - the cryptography and hashing algorithms, the calendar services, the serializers, the document sessions, and the exchange-rate providers - see <a href="../../docs/topics/thread-safety.html">thread safety across the suite</a>.</p>
 <p>The columns use these terms:</p>
 <table>
 <thead>
@@ -143,10 +143,10 @@
 </thead>
 <tbody>
 <tr>
-<td><a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a></td>
+<td><a class="xref" href="../../api/Bodu.DayOfWeekSet.html">DayOfWeekSet</a>, <a class="xref" href="../../api/Bodu.MonthSet.html">MonthSet</a>, <a class="xref" href="../../api/Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, <a class="xref" href="../../api/Bodu.HourSet.html">HourSet</a>, <a class="xref" href="../../api/Bodu.MinuteSet.html">MinuteSet</a>, <a class="xref" href="../../api/Bodu.SecondSet.html">SecondSet</a></td>
 <td>Immutable</td>
 <td>Snapshot (value type)</td>
-<td>Every operator returns a new value. <a href="week-pattern.html">Guide</a></td>
+<td>Every operator returns a new value. <a href="day-of-week-set.html">Guide</a>, <a href="calendar-value-sets.html">guide</a></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>, <a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a>, <a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a>, <a class="xref" href="../../api/Bodu.Extensions.DateTimeResolution.html">DateTimeResolution</a>, <a class="xref" href="../../api/Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a>, <a class="xref" href="../../api/Bodu.Extensions.IdentifierCase.html">IdentifierCase</a>, <a class="xref" href="../../api/Bodu.Extensions.TitleCaseOptions.html">TitleCaseOptions</a>, <a class="xref" href="../../api/Bodu.Extensions.SentenceCaseOptions.html">SentenceCaseOptions</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.RandomizationMode.html">RandomizationMode</a>, <a class="xref" href="../../api/Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a></td>
@@ -286,7 +286,7 @@
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a></td>
 <td><strong>Unsafe - reads mutate</strong></td>
 <td>Fail-fast; expired entries are filtered against a clock snapshot taken at enumerator creation</td>
-<td>Every lookup (<code>this[key]</code>, <code>TryGetValue</code>, <code>ContainsKey</code>, …) counts as a <em>touch</em>: LRU / LFU-style policies reposition the entry, and with an expiration configured an access may purge expired keys. Even concurrent readers race. <a href="evicting-dictionary.html">Guide</a></td>
+<td>Value-returning lookups (<code>this[key]</code>, <code>TryGetValue</code>) and <code>Touch</code> count as a <em>touch</em>: LRU / LFU-style policies reposition the entry. <code>ContainsKey</code> is a pure read for the policy, but with an expiration configured any key-directed access may remove an expired entry, so it writes too. Even concurrent readers race. <a href="evicting-dictionary.html">Guide</a></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryExpiration.html">EvictingDictionaryExpiration</a></td>
@@ -388,7 +388,7 @@
 <td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a></td>
 <td>Read-only safe</td>
 <td>- (no element enumeration)</td>
-<td><code>Add</code> / <code>Merge</code> / <code>Import</code> are writes; <code>Export</code> produces a versioned snapshot. <a href="probabilistic-collections.html">Guide</a></td>
+<td><code>Add</code>, <code>UnionWith</code> / <code>MergeWith</code>, and <code>Clear</code> are writes; the static <code>Import</code> creates a new instance and <code>Export</code> produces a versioned snapshot. <a href="probabilistic-collections.html">Guide</a></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a></td>
@@ -467,7 +467,7 @@
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a></td>
 <td><strong>Safe</strong> - lock-free MPMC (Vyukov ring)</td>
 <td>Snapshot (atomic copy at <code>GetEnumerator</code>); never throws for concurrent modification</td>
-<td><code>Count</code> may be transiently stale under contention. Like its two siblings it reports <code>ICollection.IsSynchronized == false</code> - there is no lock to expose because the type manages its own synchronization, so do not try to coordinate access through <code>SyncRoot</code>. <a href="concurrent-collections.html">Guide</a></td>
+<td><code>Count</code> may be transiently stale under contention. Like its three siblings it reports <code>ICollection.IsSynchronized == false</code> - there is no lock to expose because the type manages its own synchronization, so do not try to coordinate access through <code>SyncRoot</code>. <a href="concurrent-collections.html">Guide</a></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a></td>
@@ -494,12 +494,13 @@
 <li><strong>Confine or lock every <code>Bodu.Collections</code> type.</strong> Wrap it in your own lock, or hand it to one thread. A <code>ReaderWriterLockSlim</code> is only valid for the rows marked <em>read-only safe</em> - never for <code>EvictingDictionary</code>, access-ordered <code>SequencedDictionary</code>, <code>DefaultingDictionary</code>, or <code>DisjointSet</code>, whose reads write.</li>
 <li><strong>Do not rely on fail-fast to detect races.</strong> The version check runs on the enumerating thread and can miss interleavings; it exists to turn a same-thread bug into an exception.</li>
 <li><strong>Prefer the <code>Bodu.Collections.Concurrent</code> type when one exists</strong> - it will beat a locked single-threaded collection under contention and its enumerators are snapshots rather than exceptions.</li>
-<li><strong>Share immutable values, not builders.</strong> <code>WeekPattern</code>, the option classes, the providers, and the <code>readonly struct</code> results are free to share; <code>PooledBufferBuilder&lt;T&gt;</code> and <code>XorShiftRandom</code> are not.</li>
+<li><strong>Share immutable values, not builders.</strong> The calendar value sets (<code>DayOfWeekSet</code> and its siblings), the option classes, the providers, and the <code>readonly struct</code> results are free to share; <code>PooledBufferBuilder&lt;T&gt;</code> and <code>XorShiftRandom</code> are not.</li>
 <li><strong>Stateless helpers are safe; their arguments may not be.</strong> Every extension class is pure, so thread safety collapses to the thread safety of the object you pass in.</li>
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="concurrent-collections.html">Concurrent collections</a> - the three safe collections in depth.</li>
+<li><a href="../../docs/topics/thread-safety.html">Thread safety across the suite</a> - the same answer for every other package.</li>
+<li><a href="concurrent-collections.html">Concurrent collections</a> - the four concurrent collections in depth.</li>
 <li><a href="async-primitives.html">Async coordination primitives</a> - the locks and gates for coordinating the rest.</li>
 <li><a href="choosing-a-collection.html">Choosing a collection</a> - picking by requirement, including &quot;shared between threads&quot;.</li>
 <li><a href="ring-backed-collections.html">Extending <code>RingBackedCollection&lt;T&gt;</code></a> - the version counter and fail-fast contract from the implementer's side.</li>
@@ -523,7 +524,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

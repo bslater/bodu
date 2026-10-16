@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ConfigurationWriteOptions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ConfigurationWriteOptions Class
+ | BODU ">
+      
+      <meta name="description" content="Controls how a configuration document is emitted by  and related methods.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions">
+
+
+
+
+  <h1 id="Bodu_Text_Configuration_ConfigurationWriteOptions" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ConfigurationWriteOptions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationWriteOptions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.Presets.cs">ConfigurationWriteOptions.Presets.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Controls how a configuration document is emitted by
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_">Save(IniDocumentBase, string, ConfigurationWriteOptions?)</a> and related methods.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ConfigurationWriteOptions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ConfigurationWriteOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationWriteOptions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+The writer aims to be round-trip preserving by default: <a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_PreserveComments">PreserveComments</a> and
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_WriteInlineComments">WriteInlineComments</a> retain commentary from the original document, and
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_InsertBlankLineBetweenSections">InsertBlankLineBetweenSections</a> keeps section blocks visually separated. Override these when emitting
+a freshly built document, or when generating a minimized variant for transport.
+</p>
+<p>
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_Profile">Profile</a> only labels the option set: the writer reads the individual properties. Start from a preset
+or <a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a> to take a profile's formatting choices, and set the properties that
+differ.
+</p>
+<p>
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_Encoding">Encoding</a> defaults to UTF-8 without a byte-order mark to match the EditorConfig file convention;
+supply an alternative explicitly when interoperating with a host that expects a BOM or a different code page.
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_NewLine">NewLine</a> defaults to a single LF - switch to <code>"\r\n"</code> for hosts that require CRLF on output.
+Every property is <code>init</code>-only, so instances are safe to cache and share across threads.
+</p>
+<example>
+<pre><code class="lang-csharp">ConfigurationDocument.Save(document, "team.boduconfig", new ConfigurationWriteOptions
+{
+    KeyValueSeparator = " = ",
+    PreserveComments = true,
+    InsertBlankLineBetweenSections = true,
+});</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions__ctor_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions__ctor" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.#ctor">
+  ConfigurationWriteOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationWriteOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_Bodu_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.Bodu*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_Bodu" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.Bodu">
+  Bodu
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for the default Bodu profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationWriteOptions Bodu { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></dt>
+    <dd><p>A cached default options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_CommentPrefix_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.CommentPrefix*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_CommentPrefix" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.CommentPrefix">
+  CommentPrefix
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a comment prefix character. The writer does not use it: every <a class="xref" href="Bodu.Text.Configuration.IniComment.html">IniComment</a> is written with its
+own <a class="xref" href="Bodu.Text.Configuration.IniComment.html#Bodu_Text_Configuration_IniComment_Prefix">Prefix</a>, and the writer emits no comment that lacks one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public char CommentPrefix { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd><p>The comment prefix; it has no effect on the output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_EditorConfigCompatible_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.EditorConfigCompatible*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_EditorConfigCompatible" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.EditorConfigCompatible">
+  EditorConfigCompatible
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for the EditorConfig-compatible profile: inline comments suppressed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationWriteOptions EditorConfigCompatible { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></dt>
+    <dd><p>A cached EditorConfig-compatible options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_Encoding_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.Encoding*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_Encoding" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.Encoding">
+  Encoding
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the encoding used when writing to a byte stream or file. The default is UTF-8 without BOM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Encoding Encoding { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The output encoding.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_InsertBlankLineBetweenSections_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.InsertBlankLineBetweenSections*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_InsertBlankLineBetweenSections" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.InsertBlankLineBetweenSections">
+  InsertBlankLineBetweenSections
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether a blank line is inserted between sections.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool InsertBlankLineBetweenSections { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to insert a blank line.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_KeyValueSeparator_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.KeyValueSeparator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_KeyValueSeparator" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.KeyValueSeparator">
+  KeyValueSeparator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the string used to separate keys and values (typically <code> = </code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string KeyValueSeparator { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The separator string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_NewLine_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.NewLine*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_NewLine" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.NewLine">
+  NewLine
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the line-ending sequence to emit between lines.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string NewLine { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The line terminator string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_Normalized_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.Normalized*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_Normalized" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.Normalized">
+  Normalized
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for normalized output, the one <a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a> gives for
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html#Bodu_Text_Configuration_ConfigurationProfile_Strict">Strict</a>: leading and inline comments dropped, a blank line between sections,
+and deterministic spacing. Sections and properties keep their document order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationWriteOptions Normalized { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></dt>
+    <dd><p>A cached normalized options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_PreserveComments_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.PreserveComments*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_PreserveComments" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.PreserveComments">
+  PreserveComments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether existing leading comments should be preserved in the output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool PreserveComments { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when comments are preserved.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_Profile_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.Profile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_Profile" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.Profile">
+  Profile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the profile this option set was created from. The default is <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html#Bodu_Text_Configuration_ConfigurationProfile_Bodu">Bodu</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationProfile Profile { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html">ConfigurationProfile</a></dt>
+    <dd><p>The profile the option set is labeled with.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Configuration_ConfigurationWriteOptions_Profile_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The property is informational: the writer does not read it, and setting it changes no other property. Use
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a> or a preset to select a profile's formatting choices.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_WriteInlineComments_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.WriteInlineComments*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_WriteInlineComments" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.WriteInlineComments">
+  WriteInlineComments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether inline comments should be emitted on property lines.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool WriteInlineComments { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when inline comments are emitted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationWriteOptions_For_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.For*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_ConfigurationWriteOptions_For_Bodu_Text_Configuration_ConfigurationProfile_" data-uid="Bodu.Text.Configuration.ConfigurationWriteOptions.For(Bodu.Text.Configuration.ConfigurationProfile)">
+  For(ConfigurationProfile)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationWriteOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the canonical option set for the specified profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationWriteOptions For(ConfigurationProfile profile)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profile</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html">ConfigurationProfile</a></dt>
+    <dd><p>The profile to materialize.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></dt>
+    <dd><p>An options instance configured for <code class="paramref">profile</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">profile</code> is not a defined value.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

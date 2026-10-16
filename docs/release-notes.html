@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Release notes | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Release notes | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/release-notes.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="release-notes">Release notes</h1>
+
+<p>Every Bodu release moves one or both of the two version streams, Stable and Preview, as <a href="versioning-and-support.html">versioning, stability, and support</a> explains. This page says what to change when you upgrade and lists every release. Each release's full notes, with every fix and the issue behind it, are on its <a href="https://github.com/bslater/bodu/releases">GitHub release</a>.</p>
+<h2 id="upgrading-to-130">Upgrading to 1.3.0</h2>
+<p>1.3.0 moves every Stable package to 1.3.0, promotes ten packages from the preview stream to Stable, and moves the three Experimental exchange-rate providers to 0.7.2. The <a href="https://github.com/bslater/bodu/releases/tag/v1.3.0">1.3.0 release notes</a> list every change; this section covers what can need a change in your code.</p>
+<h3 id="update-your-package-references">Update your package references</h3>
+<ul>
+<li><strong>Move every Stable Bodu package to 1.3.0 in the same change.</strong> That includes <code>Bodu.Core</code> 1.0.1, <code>Bodu.Security.Cryptography</code> 1.2.0, and <code>Bodu.Globalization.Calendar</code> 1.0.1, which shipped ahead of the lock-step version and rejoin it here.</li>
+<li><strong>Ten packages move from 0.7.1 to 1.3.0:</strong> <code>Bodu.IO.Pst</code>, <code>Bodu.Formats.Outlook</code>, <code>Bodu.Formats.Outlook.Msg</code>, <code>Bodu.Formats.Outlook.Pst</code>, and the BoE, ECB, RBA, Fixer, exchangerate.host, and FRED exchange-rate providers. From 1.3.0 they keep the Stable promise; their changes since 0.7.1, breaking ones included, are listed below.</li>
+<li><strong>The IMF, Yahoo, and OFX providers move to 0.7.2.</strong> They are now Experimental, because each reads a feed its operator does not publish as an API, and they depend on the 1.3.0 Stable packages.</li>
+</ul>
+<h3 id="breaking-changes">Breaking changes</h3>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What changed</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Core</code>, <code>Bodu.Globalization.Calendar</code>, <code>Bodu.Globalization.Calendar.Builder</code></td>
+<td><code>WeekPattern</code> is replaced by <code>DayOfWeekSet</code>, and every member that took or returned a <code>WeekPattern</code> takes or returns a <code>DayOfWeekSet</code>. Text that a <code>WeekPattern</code> wrote, calendar documents' <code>workingDays</code> attributes, and compiled <code>.bcal</code> packs read unchanged.</td>
+<td>Follow the <a href="../guides/core/day-of-week-set.html#migrating-from-weekpattern">migration table</a>. A <code>WeekPattern.ToByte()</code> value stored elsewhere held Sunday at bit 6; <code>DayOfWeekSet</code> holds it at bit 0.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Bencode</code></td>
+<td>A literal <code>null</code> passed to <code>BencodeElement.GetProperty</code> or <code>TryGetProperty</code> no longer compiles: the new UTF-8 overloads make it ambiguous.</td>
+<td>Cast the <code>null</code> to <code>string</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Pst</code> (against 0.7.1)</td>
+<td><code>PstNode.Id</code> and <code>ParentId</code> are renamed <code>NodeId</code> and <code>ParentNodeId</code>, and the <code>PstFileException(message, innerException, error)</code> constructor is removed.</td>
+<td>Use the new names, and the <code>(message, error, innerException)</code> constructor.</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Boe</code>, <code>.Ecb</code>, <code>.Rba</code> (against 0.7.1)</td>
+<td>Each options type derives from <code>WebRateProviderOptions</code>. The endpoint settings become <code>BaseAddress</code>, <code>HttpTimeout</code>, and <code>UserAgent</code>; <code>BoeEndpointOptions</code> and <code>EcbEndpointOptions</code> are removed; the BoE's <code>OnDemandWindowDays</code> becomes <code>DefaultLookback</code> and the RBA's <code>CurrentEraRefreshInterval</code> becomes <code>RefreshInterval</code>. The configuration keys follow the members. The three file-cache types are internal.</td>
+<td>Rename the keys in your configuration, as the <a href="../guides/financial/provider-configuration.html">provider configuration guide</a> shows. Every option keeps its default.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="behavior-changes-to-check">Behavior changes to check</h3>
+<p>These changes need no code change to compile, but they can change what your code sees at run time.</p>
+<ul>
+<li><strong>The format libraries reject input they accepted.</strong> The readers and serializers for Bencode, TOML, YAML, CSV, dotenv, INI, and EditorConfig, and the compound-file, <code>.xls</code>, <code>.msg</code>, and <code>.pst</code> readers, were held to the defect fixes in other libraries' release notes, and fix what that found. Some malformed input that 1.0 read now fails with the format's exception, and some valid input reads differently. See <a href="topics/conformance.html">conformance and test vectors</a> for how each reader is held to its specification.</li>
+<li><strong>The serializers are stricter about types and values.</strong>
+<ul>
+<li>An integer outside the range of an enum's underlying type is a serialization error, where it was narrowed into another value.</li>
+<li>A string enum converter created with <code>allowIntegerValues: false</code> reads and writes names only, as System.Text.Json's does.</li>
+<li>Combined flags, renamed members, and enum dictionary keys are written and read as System.Text.Json writes and reads them, so the text for a flags value or a renamed member can change.</li>
+<li>The DotEnv and INI serializers reject a scalar root, such as a <code>decimal</code> or a <code>DateOnly</code>.</li>
+<li>The Delimited serializer rejects a record type that is a scalar or a collection.</li>
+<li>The Delimited and DotEnv serializers reject a type with a member that is not a scalar, on read as on write.</li>
+</ul>
+</li>
+<li><strong>Exceptions change type.</strong>
+<ul>
+<li><code>Bodu.Formats.Outlook.Pst</code> reports a fault in the <code>.pst</code> container as <code>OutlookPstFormatException</code>, with the container's <code>PstFileException</code> as its inner exception, so one <code>catch (OutlookFormatException)</code> covers the <code>.msg</code> and <code>.pst</code> readers.</li>
+<li>The calendar loader reports more malformed documents as load diagnostics, so <code>Load</code> throws <code>NotableDateValidationException</code> where another exception escaped, and <code>TryLoad</code> returns <code>false</code>.</li>
+<li><code>ThrowHelper.ThrowIfNotEqual&lt;T&gt;</code> throws <code>ArgumentOutOfRangeException</code>, a subclass of the <code>ArgumentException</code> it threw.</li>
+<li>See <a href="topics/errors-and-exceptions.html">errors and exceptions</a> for each package's exception family.</li>
+</ul>
+</li>
+<li><strong>Exchange-rate defaults change.</strong>
+<ul>
+<li>The undated lookups of <code>CachingRateProvider</code> and <code>AggregatingRateProvider</code> return the most recent rate on or before today, as the web providers do, where they required a rate dated today.</li>
+<li>Today's rates are fetched again after <code>WebRateProviderOptions.RefreshInterval</code>, 12 hours by default.</li>
+<li>The named <code>HttpClient</code> that each <code>Add&lt;Source&gt;ExchangeRates</code> registers is capped at <code>MaxResponseContentBufferSize</code>, 64 MiB by default.</li>
+<li>The per-observation and cache hit-and-miss log events default to <code>Trace</code>.</li>
+<li>exchangerate.host's default range path is <code>timeframe</code>, and Yahoo dates each daily bar in the exchange's time zone.</li>
+</ul>
+</li>
+<li><strong><code>AddCachedNotableDateService</code> decorates only the unkeyed service.</strong> Keyed <code>INotableDateService</code> registrations stay in place, undecorated; see <a href="topics/hosting.html">dependency injection and configuration</a>.</li>
+<li><strong>Trimmed and native-AOT applications see new warnings.</strong> The Bencode and YAML serializers, and the JSON converter factories of <code>Bodu.Numerics.Serialization.Json</code> and <code>Bodu.Financial.Serialization.Json</code>, declare <code>[RequiresUnreferencedCode]</code> or <code>[RequiresDynamicCode]</code>, so a call to them reports IL2026 or IL3050. <a href="topics/trimming-and-native-aot.html">Trimming and native AOT</a> gives the alternatives.</li>
+</ul>
+<h3 id="what-is-new">What is new</h3>
+<ul>
+<li><strong>Calendar value sets</strong> in <code>Bodu.Core</code>: <code>MonthSet</code>, <code>DayOfMonthSet</code>, <code>HourSet</code>, <code>MinuteSet</code>, <code>SecondSet</code>, and <code>DayOfWeekSet</code>, behind one interface. See <a href="../guides/core/calendar-value-sets.html">calendar value sets</a>.</li>
+<li><strong>Recurrence:</strong> sub-daily rules (<code>FREQ=HOURLY</code>, <code>MINUTELY</code>, <code>SECONDLY</code>) are enumerated, cron accepts the Quartz day tokens <code>L</code>, <code>W</code>, <code>#</code>, and <code>?</code>, and the rule builder takes the calendar value sets. See <a href="../guides/recurrence/rrule.html#sub-daily-frequencies">sub-daily frequencies</a> and <a href="../guides/recurrence/cron.html#the-quartz-day-tokens">the Quartz day tokens</a>.</li>
+<li><strong>Salvage reads of damaged <code>.pst</code> stores</strong>, which leave out a value whose reference does not resolve instead of failing the object. See <a href="../guides/outlook/reader-options-and-limits.html#salvaging-a-damaged-store">salvaging a damaged store</a>.</li>
+<li><strong>Smaller additions:</strong> Bencode dictionary keys by their bytes, <code>LoadJson</code> overloads that take an algorithm registry, <code>ConfigurationKeyOptions.LowercaseKeys</code>, the Delimited writer's <code>CommentChar</code>, Base58's Flickr alphabet, and <code>WebRateProviderOptions.RefreshInterval</code>.</li>
+<li><strong>Faster:</strong> recurrence queries no longer replay a series from its start, the BLAKE2 and BLAKE3 kernels shorten each round's critical path, and Argon2 rotates with a single AVX-512 instruction where the processor has one, with output unchanged bit for bit.</li>
+</ul>
+<h2 id="release-history">Release history</h2>
+<table>
+<thead>
+<tr>
+<th>Release</th>
+<th>Published</th>
+<th>What it shipped</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.3.0</td>
+<td>This release</td>
+<td>Every Stable package at 1.3.0, ten packages promoted to Stable, and the Experimental providers at 0.7.2, as above.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bslater/bodu/releases/tag/Bodu.Globalization.Calendar-1.0.1"><code>Bodu.Globalization.Calendar</code> 1.0.1</a></td>
+<td>2026-10-01</td>
+<td>Out of band: working-day lookups no longer overflow the stack.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bslater/bodu/releases/tag/Bodu.Core-1.0.1"><code>Bodu.Core</code> 1.0.1</a> and <a href="https://github.com/bslater/bodu/releases/tag/Bodu.Security.Cryptography-1.2.0"><code>Bodu.Security.Cryptography</code> 1.2.0</a></td>
+<td>2026-10-01</td>
+<td>Out of band: further cryptography speed-ups, with the <code>Bodu.Core</code> internals they call.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bslater/bodu/releases/tag/Bodu.Security.Cryptography-1.1.0"><code>Bodu.Security.Cryptography</code> 1.1.0</a></td>
+<td>2026-09-29</td>
+<td>Out of band: Argon2 and cryptography speed-ups, and two conformance fixes after which data that AES-256-GCM-SIV sealed, and that AES-SIV sealed with an empty plaintext, in earlier releases does not decrypt. See <a href="../guides/cryptography/aead-modes.html">AEAD modes</a>.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bslater/bodu/releases/tag/v1.0.0">1.0.0</a></td>
+<td>2026-09-24</td>
+<td>The Stable stream at 1.0.0 and the preview stream at 0.7.1; every library targets <code>net8.0</code> and <code>net10.0</code>; <code>ArrayExtensions.Reverse</code> is renamed <code>ToReversed</code>.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bslater/bodu/releases/tag/v0.7.0">0.7.0</a></td>
+<td>2026-09-24</td>
+<td>14 packages: the exchange-rate infrastructure, its dependency injection, nine providers, and the three caching packages.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bslater/bodu/releases/tag/v0.6.0">0.6.0</a></td>
+<td>2026-09-24</td>
+<td>17 packages: the financial core, the calendar engine with its data packs and companions, recurrence, and the configuration bridge.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bslater/bodu/releases/tag/v0.5.0">0.5.0</a></td>
+<td>2026-09-23</td>
+<td>25 packages: the foundation libraries, the format and text libraries, and the <code>.pst</code> readers.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="versioning-and-support.html">Versioning, stability, and support</a></strong> - the two streams, the tiers, and which releases receive fixes.</li>
+<li><strong><a href="package-matrix.html">Package matrix</a></strong> - every package with its tier and version.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install commands and a first sample from each library.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Financial.md/#L2">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Financial.md/#L2">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -94,9 +94,9 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Packages</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.3.0</span>
 </div>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.DependencyInjection">Bodu.Financial.DependencyInjection</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.DependencyInjection">Bodu.Financial.DependencyInjection</a> <span class="bodu-package-version">1.3.0</span>
 </div>
     </dd></dl>
   </div>
@@ -116,7 +116,7 @@
 <p><strong>Monetary value types</strong></p>
 <ul>
 <li><a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> - immutable, value-equatable monetary amount whose currency is encoded as the type parameter. Cross-currency arithmetic is a compile error. Provides arithmetic, allocation, conversion, formatting/parsing, cash rounding, minor-unit interop, and <code>Fraction&lt;BigInteger&gt;</code> interop.</li>
-<li><a class="xref" href="Bodu.Financial.Money.html">Money</a> - runtime-tagged sister type with the same surface, where the currency is a <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value (its <code>Code</code> property). Cross-currency arithmetic throws <code>InvalidOperationException</code> at runtime. Use for deserialisation and generic invoicing.</li>
+<li><a class="xref" href="Bodu.Financial.Money.html">Money</a> - runtime-tagged sister type with the same arithmetic, allocation, formatting, and parsing surface, where the currency is a <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value (its <code>Code</code> property). Cross-currency arithmetic throws <code>InvalidOperationException</code> at runtime. Use for deserialisation and generic invoicing.</li>
 <li><a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> - immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order.</li>
 </ul>
 <p><strong>Currency display</strong></p>
@@ -127,7 +127,7 @@
 <p><strong>Rounding, allocation, formatting, and parsing</strong></p>
 <ul>
 <li><a class="xref" href="Bodu.Financial.IRoundingStrategy.html">IRoundingStrategy</a>, <a class="xref" href="Bodu.Financial.MidpointRoundingStrategy.html">MidpointRoundingStrategy</a>, <a class="xref" href="Bodu.Financial.StochasticRoundingStrategy.html">StochasticRoundingStrategy</a> - the rounding-strategy contract, the midpoint (banker's / away-from-zero) implementation applied when an amount is reduced to a currency's minor units, and the statistically unbiased stochastic alternative (rounds up with probability equal to the discarded fraction; <code>Shared</code> instance, or an injectable sampler for deterministic tests).</li>
-<li><a class="xref" href="Bodu.Financial.ScalePolicy.html">ScalePolicy</a>, <a class="xref" href="Bodu.Financial.CashRoundingPolicy.html">CashRoundingPolicy</a>, <a class="xref" href="Bodu.Financial.ConversionRoundingPolicy.html">ConversionRoundingPolicy</a>, <a class="xref" href="Bodu.Financial.AllocationPolicy.html">AllocationPolicy</a> - policy enums that select scale, cash-rounding increment, conversion-rounding, and allocation-remainder behaviour.</li>
+<li><a class="xref" href="Bodu.Financial.ScalePolicy.html">ScalePolicy</a>, <a class="xref" href="Bodu.Financial.CashRoundingPolicy.html">CashRoundingPolicy</a>, <a class="xref" href="Bodu.Financial.ConversionRoundingPolicy.html">ConversionRoundingPolicy</a>, <a class="xref" href="Bodu.Financial.AllocationPolicy.html">AllocationPolicy</a> - policy enums carried by a <a class="xref" href="Bodu.Financial.MonetaryContext.html">MonetaryContext</a>. Scale and cash rounding take effect where a context is applied; the conversion-rounding and allocation policies are validated but reserved, since conversions always round at the target and allocation always uses the largest-remainder method.</li>
 <li><a class="xref" href="Bodu.Financial.MoneyFormatter.html">MoneyFormatter</a>, <a class="xref" href="Bodu.Financial.MoneyFormatterBuilder.html">MoneyFormatterBuilder</a>, <a class="xref" href="Bodu.Financial.MoneyFormatOptions.html">MoneyFormatOptions</a>, <a class="xref" href="Bodu.Financial.Extensions.MoneyCompactFormattingExtensions.html">MoneyCompactFormattingExtensions</a> - configurable formatting: a formatter, its fluent builder, the options record, and compact (<code>1.2K</code>-style) formatting extensions.</li>
 <li><a class="xref" href="Bodu.Financial.MoneyParseOptions.html">MoneyParseOptions</a>, <a class="xref" href="Bodu.Financial.MoneyParseMode.html">MoneyParseMode</a> - parse configuration and the strictness selector for reading money back from text.</li>
 <li><a class="xref" href="Bodu.Financial.MoneyConversionResult.html">MoneyConversionResult</a>, <a class="xref" href="Bodu.Financial.MoneyBagConversionAudit-1.html">MoneyBagConversionAudit&lt;TTarget&gt;</a>, <a class="xref" href="Bodu.Financial.MoneyBagConversionRoundingPolicy.html">MoneyBagConversionRoundingPolicy</a> - the runtime-tagged conversion result and the portfolio-conversion audit record plus its rounding policy.</li>
@@ -209,8 +209,9 @@ monetary contexts, and exchange-rate providers.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Financial.MonetaryContext.html">MonetaryContext</a></dt>
-      <dd><p>Carries the rounding and scaling policy applied at a monetary operation boundary - multiplication, division,
-conversion, allocation, and the conversion of a high-precision calculation back to a settlement value.</p>
+      <dd><p>Carries the rounding and scaling policy applied at the monetary operations that accept one - typed multiplication,
+runtime conversion through an <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and the conversion of a high-precision
+calculation back to a settlement value.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -251,8 +252,8 @@ monetary text.</p>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Financial.ServiceProviderExtensions.html">ServiceProviderExtensions</a></dt>
       <dd><p>Provides the connector that promotes the container-registered <a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a> to the ambient
-<a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a> default, so the runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> resolves currencies through
-the application's configured catalogue.</p>
+<a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a> default, so the runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> reads currency metadata
+through the application's configured catalog.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -328,8 +329,7 @@ Enums
 </h3>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Financial.AllocationPolicy.html">AllocationPolicy</a></dt>
-      <dd><p>Specifies the algorithm a <a class="xref" href="Bodu.Financial.MonetaryContext.html">MonetaryContext</a> uses to distribute residual minor units when allocating a
-monetary amount across shares.</p>
+      <dd><p>Specifies the algorithm for distributing residual minor units when allocating a monetary amount across shares.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -339,7 +339,7 @@ monetary amount across shares.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Financial.ConversionRoundingPolicy.html">ConversionRoundingPolicy</a></dt>
-      <dd><p>Specifies when a <a class="xref" href="Bodu.Financial.MonetaryContext.html">MonetaryContext</a> rounds the result of a currency conversion.</p>
+      <dd><p>Specifies when the result of a currency conversion is rounded.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -382,7 +382,7 @@ per-currency balances into a single target-currency total.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

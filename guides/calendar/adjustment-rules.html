@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/calendar/adjustment-rules.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/guides/calendar/adjustment-rules.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -211,8 +211,8 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
 </tr>
 <tr>
 <td><code>IfNthOccurrenceInMonth</code></td>
-<td>The nominal date is the <code>weekOrdinal</code>-th occurrence of its weekday in the month.</td>
-<td><code>weekOrdinal</code></td>
+<td>The nominal date is the <code>weekOrdinal</code>-th occurrence in its month of the weekday named by the trigger's first <code>&lt;Weekday&gt;</code> child.</td>
+<td><code>weekOrdinal</code> plus one <code>&lt;Weekday value=&quot;…&quot; /&gt;</code> child</td>
 </tr>
 <tr>
 <td><code>Custom</code></td>
@@ -232,7 +232,7 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
 &lt;/AdjustmentPolicy&gt;
 </code></pre>
 <blockquote>
-<p><strong><code>IfNonWorkingDay</code> is order-sensitive.</strong> It is evaluated against the non-working dates already settled for the same year and territory, so an anchor rule (e.g. Christmas Day) must out-prioritise a dependent rule (e.g. Boxing Day) for the dependent's <code>IfNonWorkingDay</code> trigger to see the anchor's observed date. See the <a href="#worked-pattern---christmas-and-boxing-day-substitution">worked Boxing Day trace</a>.</p>
+<p><strong>What <code>IfNonWorkingDay</code> sees.</strong> The trigger is evaluated against <em>actual</em> dates: it fires on a weekend or on another non-working holiday's actual (nominal) date, whatever order the rules are declared or prioritised in, and it never sees another holiday's observed substitute. Substitutes matter only to a working-day action with <code>skipNonWorkingDates=&quot;true&quot;</code>, which steps over the days claimed by observed occurrences placed before it. Placement runs in order of actual date, earliest first, then by the higher rule <code>priority</code>. See the <a href="#worked-pattern---christmas-and-boxing-day-substitution">worked Boxing Day trace</a>.</p>
 </blockquote>
 <hr>
 <h2 id="action-catalogue">Action catalogue</h2>
@@ -258,22 +258,22 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
 </tr>
 <tr>
 <td><code>MoveToNextWeekday</code></td>
-<td>Advance to the next working-week day (ignores other non-working occurrences).</td>
-<td><em>(none)</em></td>
+<td>Move to the configured <code>dayOfWeek</code> on or after the nominal date (a nominal date already on that weekday is unchanged). Without <code>dayOfWeek</code> the date is unchanged.</td>
+<td><code>dayOfWeek</code> (required)</td>
 </tr>
 <tr>
 <td><code>MoveToPreviousWeekday</code></td>
-<td>Retreat to the previous working-week day.</td>
-<td><em>(none)</em></td>
+<td>Move to the configured <code>dayOfWeek</code> on or before the nominal date. Without <code>dayOfWeek</code> the date is unchanged.</td>
+<td><code>dayOfWeek</code> (required)</td>
 </tr>
 <tr>
 <td><code>MoveToNextWorkingDay</code></td>
-<td>Advance past every consecutive non-working day to the next working day.</td>
+<td>Starting the day after the nominal date, advance past every day the skip flags block to the next unblocked day.</td>
 <td><code>maxSearchDays</code>, <code>skipWeekends</code>, <code>skipNonWorkingDates</code></td>
 </tr>
 <tr>
 <td><code>MoveToPreviousWorkingDay</code></td>
-<td>Retreat past every consecutive non-working day to the previous working day.</td>
+<td>Starting the day before the nominal date, retreat past every day the skip flags block to the previous unblocked day.</td>
 <td><code>maxSearchDays</code>, <code>skipWeekends</code>, <code>skipNonWorkingDates</code></td>
 </tr>
 <tr>
@@ -293,8 +293,8 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
 </tr>
 </tbody>
 </table>
-<p><code>MoveToNextWeekday</code> / <code>MoveToPreviousWeekday</code> care only about the working week (weekends). <code>MoveToNextWorkingDay</code> / <code>MoveToPreviousWorkingDay</code> additionally skip other non-working occurrences - the right choice when a substitute must not land on another holiday - and accept <code>maxSearchDays</code> to cap how far they scan.</p>
-<p>The companion attributes have defaults when omitted: <code>skipWeekends</code> defaults to <code>true</code>, <code>skipNonWorkingDates</code> to <code>false</code>, and <code>days</code> (for <code>AddDays</code>) to <code>0</code>. <code>maxSearchDays</code> is unbounded when unset. So a bare <code>&lt;Action type=&quot;MoveToNextWorkingDay&quot; /&gt;</code> rolls past weekends but <em>not</em> past other holidays - set <code>skipNonWorkingDates=&quot;true&quot;</code> for the Boxing-Day-style &quot;skip past the Christmas substitute too&quot; behaviour.</p>
+<p><code>MoveToNextWeekday</code> / <code>MoveToPreviousWeekday</code> seek a named weekday and ignore both the working week and other holidays; the validator does not report a missing <code>dayOfWeek</code>, so always set it. <code>MoveToNextWorkingDay</code> / <code>MoveToPreviousWorkingDay</code> skip weekends and, when asked, other non-working occurrences - the right choice when a substitute must not land on another holiday - and accept <code>maxSearchDays</code> to cap how far they scan.</p>
+<p>The companion attributes have defaults when omitted: <code>skipWeekends</code> defaults to <code>true</code>, <code>skipNonWorkingDates</code> to <code>false</code>, <code>days</code> (for <code>AddDays</code>) to <code>0</code>, and <code>maxSearchDays</code> to <code>7</code>. When the search reaches <code>maxSearchDays</code> without finding an unblocked day, the last day scanned is used. So a bare <code>&lt;Action type=&quot;MoveToNextWorkingDay&quot; /&gt;</code> rolls past weekends but <em>not</em> past other holidays - set <code>skipNonWorkingDates=&quot;true&quot;</code> for the Boxing-Day-style &quot;skip past the Christmas substitute too&quot; behaviour.</p>
 <pre><code class="lang-xml">&lt;!-- Skip forward past weekends and any other non-working dates, searching at most 7 days. --&gt;
 &lt;AdjustmentPolicy id=&quot;skip-to-working&quot; priority=&quot;20&quot;&gt;
   &lt;Trigger type=&quot;IfNonWorkingDay&quot; /&gt;
@@ -342,7 +342,7 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
 </tr>
 </tbody>
 </table>
-<p><code>ObservedOnly</code> is the AU/NZ &quot;the holiday moved&quot; style; <code>ActualAndObserved</code> is the UK &quot;keep the nominal, add a bank-holiday substitute&quot; style. Which of the emitted occurrences governs inclusion in a <em>range</em> query is a separate, resource-level decision - the <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> - covered in <a href="identity-and-resolution.html">Rule identity, priority, and observed-date resolution</a>.</p>
+<p><code>ObservedOnly</code> is the AU/NZ &quot;the holiday moved&quot; style; <code>ActualAndObserved</code> is the UK &quot;keep the nominal, add a bank-holiday substitute&quot; style. A <em>range</em> query returns each emitted occurrence whose span intersects the window, so emitting the actual occurrence too (<code>ActualAndObserved</code>) is one way a holiday is found by its actual date; the other is the resource-level <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a>, whose <code>ActualOccurrenceControlsInclusion</code> includes the observed occurrence by its actual span. See <a href="identity-and-resolution.html">Rule identity, priority, and observed-date resolution</a>.</p>
 <pre><code class="lang-xml">&lt;!-- UK bank-holiday style: keep 25 December, add a working-day substitute when it is a weekend. --&gt;
 &lt;AdjustmentPolicy id=&quot;uk-substitute&quot; priority=&quot;10&quot;&gt;
   &lt;Trigger type=&quot;IfWeekend&quot; /&gt;
@@ -359,11 +359,11 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
     &lt;Category value=&quot;PublicHoliday&quot; /&gt;
   &lt;/Scope&gt;
   &lt;Trigger type=&quot;IfWeekend&quot; /&gt;
-  &lt;Action type=&quot;MoveToNextWeekday&quot; /&gt;
+  &lt;Action type=&quot;MoveToNextWeekday&quot; dayOfWeek=&quot;Monday&quot; /&gt;
   &lt;Emission mode=&quot;ObservedOnly&quot; /&gt;
 &lt;/AdjustmentPolicy&gt;
 </code></pre>
-<p><code>&lt;Scope&gt;</code> children mirror rule applicability: <code>&lt;Territory code=&quot;…&quot; /&gt;</code> (with the usual containment - a scope of <code>AU</code> matches <code>AU-NSW</code> queries), <code>&lt;Calendar name=&quot;…&quot; /&gt;</code>, <code>&lt;Category value=&quot;…&quot; /&gt;</code>, <code>&lt;NotableDate ref=&quot;…&quot; /&gt;</code>, <code>&lt;Rule notableDateRef=&quot;…&quot; ruleRef=&quot;…&quot; /&gt;</code>, and <code>&lt;OnlyYear value=&quot;…&quot; /&gt;</code> / <code>&lt;ExceptYear value=&quot;…&quot; /&gt;</code>, plus the <code>fromYear</code> / <code>toYear</code> attributes on <code>&lt;Scope&gt;</code> itself. A policy is considered only when its scope matches the resolution context; otherwise it is skipped before its trigger is evaluated.</p>
+<p><code>&lt;Scope&gt;</code> children mirror rule applicability: <code>&lt;Territory code=&quot;…&quot; /&gt;</code> (with the usual containment - a scope of <code>AU</code> matches <code>AU-NSW</code> queries), <code>&lt;Calendar name=&quot;…&quot; /&gt;</code>, <code>&lt;Category value=&quot;…&quot; /&gt;</code>, <code>&lt;NotableDate ref=&quot;…&quot; /&gt;</code>, <code>&lt;Rule notableDateRef=&quot;…&quot; ruleRef=&quot;…&quot; /&gt;</code> (that concept's rule only), and <code>&lt;OnlyYear value=&quot;…&quot; /&gt;</code> / <code>&lt;ExceptYear value=&quot;…&quot; /&gt;</code>, plus the <code>fromYear</code> / <code>toYear</code> attributes on <code>&lt;Scope&gt;</code> itself. A policy is considered only when its scope matches the resolution context; otherwise it is skipped before its trigger is evaluated.</p>
 <hr>
 <h2 id="chaining-several-policies-on-one-rule">Chaining several policies on one rule</h2>
 <p>A rule references policies by id, and they are evaluated in ascending <code>priority</code>; the first whose trigger fires wins and the rest are skipped. Because <code>IfWeekend</code> matches both Saturday and Sunday, distinct per-day behaviour needs distinct policies with distinct triggers:</p>
@@ -371,12 +371,12 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
   &lt;!-- US &quot;observed&quot; style: Saturday → preceding Friday, Sunday → following Monday. --&gt;
   &lt;AdjustmentPolicy id=&quot;sat-to-fri&quot; priority=&quot;10&quot;&gt;
     &lt;Trigger type=&quot;IfDayOfWeek&quot;&gt;&lt;Weekday value=&quot;Saturday&quot; /&gt;&lt;/Trigger&gt;
-    &lt;Action type=&quot;MoveToPreviousWeekday&quot; /&gt;
+    &lt;Action type=&quot;MoveToPreviousWeekday&quot; dayOfWeek=&quot;Friday&quot; /&gt;
     &lt;Emission mode=&quot;ObservedOnly&quot; /&gt;
   &lt;/AdjustmentPolicy&gt;
   &lt;AdjustmentPolicy id=&quot;sun-to-mon&quot; priority=&quot;20&quot;&gt;
     &lt;Trigger type=&quot;IfDayOfWeek&quot;&gt;&lt;Weekday value=&quot;Sunday&quot; /&gt;&lt;/Trigger&gt;
-    &lt;Action type=&quot;MoveToNextWeekday&quot; /&gt;
+    &lt;Action type=&quot;MoveToNextWeekday&quot; dayOfWeek=&quot;Monday&quot; /&gt;
     &lt;Emission mode=&quot;ObservedOnly&quot; /&gt;
   &lt;/AdjustmentPolicy&gt;
 &lt;/AdjustmentPolicies&gt;
@@ -389,21 +389,21 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
 </code></pre>
 <hr>
 <h2 id="worked-pattern---christmas-and-boxing-day-substitution">Worked pattern - Christmas and Boxing Day substitution</h2>
-<p>When Christmas Day moves to Monday, Boxing Day (26 December) must skip to Tuesday rather than also landing on Monday. Give Christmas a weekend-roll policy at a <em>higher</em> priority (lower number) than Boxing Day's <code>IfNonWorkingDay</code> policy so the relocated Christmas is already settled when Boxing Day is evaluated:</p>
+<p>When Christmas Day moves to Monday, Boxing Day (26 December) must skip to Tuesday rather than also landing on Monday. Give Christmas a weekend roll to Monday, and give Boxing Day a working-day search that skips days other holidays have claimed (<code>skipNonWorkingDates=&quot;true&quot;</code>). Christmas is placed first because its actual date is earlier, so its substitute has claimed Monday by the time Boxing Day searches. (The policies' <code>priority</code> values only order the policies one rule references; they do not order the rules.)</p>
 <pre><code class="lang-xml">&lt;AdjustmentPolicies&gt;
   &lt;AdjustmentPolicy id=&quot;weekend-to-next-weekday&quot; priority=&quot;10&quot;&gt;
     &lt;Trigger type=&quot;IfWeekend&quot; /&gt;
-    &lt;Action type=&quot;MoveToNextWeekday&quot; /&gt;
+    &lt;Action type=&quot;MoveToNextWeekday&quot; dayOfWeek=&quot;Monday&quot; /&gt;
     &lt;Emission mode=&quot;ObservedOnly&quot; nonWorking=&quot;true&quot; /&gt;
   &lt;/AdjustmentPolicy&gt;
   &lt;AdjustmentPolicy id=&quot;skip-nonworking&quot; priority=&quot;20&quot;&gt;
     &lt;Trigger type=&quot;IfNonWorkingDay&quot; /&gt;
-    &lt;Action type=&quot;MoveToNextWorkingDay&quot; maxSearchDays=&quot;7&quot; /&gt;
+    &lt;Action type=&quot;MoveToNextWorkingDay&quot; skipNonWorkingDates=&quot;true&quot; maxSearchDays=&quot;7&quot; /&gt;
     &lt;Emission mode=&quot;ObservedOnly&quot; nonWorking=&quot;true&quot; /&gt;
   &lt;/AdjustmentPolicy&gt;
 &lt;/AdjustmentPolicies&gt;
 </code></pre>
-<p>For 2027 (Christmas on Saturday, Boxing Day on Sunday), resolving <code>service.Resolve(2027, &quot;AU&quot;)</code>:</p>
+<p>Christmas Day's rule references <code>weekend-to-next-weekday</code> and Boxing Day's rule references <code>skip-nonworking</code>. For 2027 (Christmas on Saturday, Boxing Day on Sunday), resolving <code>service.Resolve(2027, &quot;AU&quot;)</code>:</p>
 <table>
 <thead>
 <tr>
@@ -415,12 +415,12 @@ IReadOnlyList&lt;NotableDate&gt; adjusted = service.Resolve(2027, &quot;AU&quot;
 <tbody>
 <tr>
 <td>Sat 25 Dec - Christmas Day</td>
-<td><code>weekend-to-next-weekday</code> (<code>IfWeekend → MoveToNextWeekday</code>)</td>
+<td><code>weekend-to-next-weekday</code> (<code>IfWeekend → MoveToNextWeekday</code>, Monday on or after)</td>
 <td>Mon 27 Dec</td>
 </tr>
 <tr>
 <td>Sun 26 Dec - Boxing Day</td>
-<td><code>skip-nonworking</code> (<code>IfNonWorkingDay → MoveToNextWorkingDay</code>): Sun → non-working, Mon 27 → non-working (Christmas substitute), Tue 28 → working</td>
+<td><code>skip-nonworking</code> (<code>IfNonWorkingDay → MoveToNextWorkingDay</code>), starting the day after: Mon 27 → claimed by the Christmas substitute, Tue 28 → working</td>
 <td>Tue 28 Dec</td>
 </tr>
 </tbody>
@@ -511,7 +511,7 @@ var service = new NotableDateService(resource, new NotableDateServiceOptions
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
         </div>
       </div>
     </footer>

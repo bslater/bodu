@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>NotableDateDocumentBuilder Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="NotableDateDocumentBuilder Class
+ | BODU ">
+      
+      <meta name="description" content="Provides a fluent, chainable API for authoring a Bodu notable-date document on the notable-date schema, with full-fidelity XML serialization, a JSON-subset surface, and materialization into a  through the canonical loader.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder">
+
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+NotableDateDocumentBuilder Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Binary.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Builder.html">Builder</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.Builder.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Builder">Bodu.Globalization.Calendar.Builder</a> <span class="bodu-package-version">1.3.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Binary.cs">NotableDateDocumentBuilder.Binary.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a fluent, chainable API for authoring a Bodu notable-date document on the notable-date schema, with
+full-fidelity XML serialization, a JSON-subset surface, and materialization into a
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> through the canonical loader.</p>
+</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class NotableDateDocumentBuilder</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NotableDateDocumentBuilder</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_examples">Examples</h2>
+  <pre><code class="lang-csharp">NotableDateResource resource = NotableDateDocumentBuilder.Create("contoso-holidays")
+    .AddAdjustmentPolicy("weekend-roll", p =&gt; p
+        .When(AdjustmentTrigger.IfWeekend)
+        .Then(AdjustmentAction.MoveToNextWorkingDay)
+        .Emit(EmissionMode.ObservedOnly))
+    .AddNotableDate("christmas", "Christmas Day", NotableDateCategory.PublicHoliday, c =&gt; c
+        .AsNonWorkingByDefault()
+        .AddRule("fixed", r =&gt; r
+            .Fixed(12, 25)
+            .WithAdjustment("weekend-roll")))
+    .Build();
+
+NotableDateService service = new(resource);
+
+// The same model serializes to XML or JSON for storage or distribution.
+NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("contoso-holidays")
+    .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c =&gt; c
+        .AddRule("fixed", r =&gt; r.Fixed(1, 1)));
+string xml = builder.ToXml();
+string json = builder.ToJson();</code></pre>
+
+
+  <h2 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+The builder accumulates an in-memory model of the document. Calling <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToXml">ToXml()</a> or <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build">Build()</a>
+renders the model to XML in the <code>urn:bodu:globalization:calendar</code> namespace; building then loads that XML
+through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, which remains the single source of validation and assembly. The
+XML form expresses every feature of the schema, whereas the JSON form rendered by <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToJson">ToJson()</a> is
+restricted to a subset of the JSON form the loader reads.
+</p>
+<p>
+<strong>Workflow.</strong> Obtain a builder with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Create">Create()</a> or <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Create_System_String_System_String_">Create(string, string)</a>,
+declare reusable adjustment policies with
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddAdjustmentPolicy_System_String_System_Action_Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder__">AddAdjustmentPolicy(string, Action&lt;AdjustmentPolicyBuilder&gt;)</a>, add each notable-date concept with
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddNotableDate_System_String_System_String_Bodu_Globalization_Calendar_NotableDateCategory_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateDefinitionBuilder__">AddNotableDate(string, string, NotableDateCategory, Action&lt;NotableDateDefinitionBuilder&gt;)</a>, then
+terminate by materializing a <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build">Build()</a>, serializing with
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToXml">ToXml()</a> / <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToJson">ToJson()</a> / <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_System_String_">Save(string)</a>, or wrapping the result with
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToProvider">ToProvider()</a>.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddAdjustmentPolicy_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddAdjustmentPolicy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddAdjustmentPolicy_System_String_System_Action_Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddAdjustmentPolicy(System.String,System.Action{Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder})">
+  AddAdjustmentPolicy(string, Action&lt;AdjustmentPolicyBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a reusable adjustment policy and configures it through the supplied delegate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder AddAdjustmentPolicy(string id, Action&lt;AdjustmentPolicyBuilder&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The stable identifier of the policy.</p>
+</dd>
+    <dt><code>configure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.html">AdjustmentPolicyBuilder</a>&gt;</dt>
+    <dd><p>A delegate that configures the policy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">id</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">configure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddImport_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddImport*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddImport_System_String_System_Action_Bodu_Globalization_Calendar_Builder_ImportBuilder__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddImport(System.String,System.Action{Bodu.Globalization.Calendar.Builder.ImportBuilder})">
+  AddImport(string, Action&lt;ImportBuilder&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds an import of an external resource and optionally configures its <code>Use</code> directives.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder AddImport(string resource, Action&lt;ImportBuilder&gt;? configure = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resource</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the imported resource.</p>
+</dd>
+    <dt><code>configure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Builder.ImportBuilder.html">ImportBuilder</a>&gt;</dt>
+    <dd><p>A delegate that configures the import, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">resource</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddNotableDate_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddNotableDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddNotableDate_System_String_System_String_Bodu_Globalization_Calendar_NotableDateCategory_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateDefinitionBuilder__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddNotableDate(System.String,System.String,Bodu.Globalization.Calendar.NotableDateCategory,System.Action{Bodu.Globalization.Calendar.Builder.NotableDateDefinitionBuilder})">
+  AddNotableDate(string, string, NotableDateCategory, Action&lt;NotableDateDefinitionBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a notable-date concept and configures it through the supplied delegate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder AddNotableDate(string id, string displayName, NotableDateCategory category, Action&lt;NotableDateDefinitionBuilder&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The stable identifier of the concept.</p>
+</dd>
+    <dt><code>displayName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The human-readable display name of the concept.</p>
+</dd>
+    <dt><code>category</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a></dt>
+    <dd><p>The category of the concept.</p>
+</dd>
+    <dt><code>configure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDefinitionBuilder.html">NotableDateDefinitionBuilder</a>&gt;</dt>
+    <dd><p>A delegate that configures the concept.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">id</code> or <code class="paramref">displayName</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">configure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddOverride_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddOverride*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddOverride_System_Action_Bodu_Globalization_Calendar_Builder_OverrideBuilder__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddOverride(System.Action{Bodu.Globalization.Calendar.Builder.OverrideBuilder})">
+  AddOverride(Action&lt;OverrideBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds override operations through the supplied delegate, appending to any previously configured overrides.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder AddOverride(Action&lt;OverrideBuilder&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Builder.OverrideBuilder.html">OverrideBuilder</a>&gt;</dt>
+    <dd><p>A delegate that configures the override operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">configure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Build*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Build">
+  Build()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Materializes the document into a validated <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> through the canonical loader.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateResource Build()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The loaded and validated <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete: the resource identifier is missing, a concept has no rules, a rule has no strategy,
+or an adjustment policy is missing a trigger, action, or emission.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The loader produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Build*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build_System_Func_System_String_System_String__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Build(System.Func{System.String,System.String})">
+  Build(Func&lt;string, string?&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Materializes the document into a validated <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>, resolving imports through the
+supplied resolver.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateResource Build(Func&lt;string, string?&gt;? importResolver)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>importResolver</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A delegate mapping a resource name to its XML or JSON content, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to resolve no imports.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The loaded and validated <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete: the resource identifier is missing, a concept has no rules, a rule has no strategy,
+or an adjustment policy is missing a trigger, action, or emission.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The loader produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Clone_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Clone*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Clone" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Clone">
+  Clone()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a deep copy of this document builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder Clone()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> carrying an independent copy of the document model.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Create_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Create*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Create" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Create">
+  Create()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates an empty document builder with no resource identifier configured.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateDocumentBuilder Create()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Create_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Create*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Create_System_String_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Create(System.String,System.String)">
+  Create(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a document builder with the supplied resource identifier and schema version.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateDocumentBuilder Create(string resourceId, string schemaVersion = &quot;1.0&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resourceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The resource identifier of the document.</p>
+</dd>
+    <dt><code>schemaVersion</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The schema version emitted on the root element.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">resourceId</code> or <code class="paramref">schemaVersion</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or
+white-space.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.FromJson*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.FromJson(System.String)">
+  FromJson(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Json.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses a JSON string into a builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateDocumentBuilder FromJson(string json)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>json</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The notable-date document JSON content.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> populated from the JSON.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Round-trip a document through its JSON-subset form, then materialize a resource.
+NotableDateDocumentBuilder original = NotableDateDocumentBuilder.Create("contoso-holidays")
+    .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c =&gt; c
+        .AddRule("fixed", r =&gt; r.Fixed(1, 1)));
+string json = original.ToJson();
+
+NotableDateDocumentBuilder reparsed = NotableDateDocumentBuilder.FromJson(json);
+NotableDateResource resource = reparsed.Build();</code></pre>
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Enumeration values and the working week are read with the loader's rules, so they never parse into data the
+loader would read differently: an enumeration value must name a member (ignoring case; a number is not a name),
+and <code>workingDays</code> must be the seven-character, Sunday-first binary pattern. Any other value throws a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the loader's <code>BODU-CAL-ENUM</code> or
+<code>BODU-CAL-WORKING-DAYS</code> diagnostic.
+</p>
+<p>
+Integers, Booleans and an adjustment trigger's month are read with the loader's rules too: a present value must
+be a 32-bit integer, an XML-schema Boolean literal (<code>true</code>, <code>false</code>, <code>1</code> or <code>0</code>), or a month
+name or number, and any other value throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the loader's
+<code>BODU-CAL-VALUE</code> diagnostic.
+</p>
+<p>
+The attribute values of a strategy, a recurrence and an end strategy are read the same way, each as the loader
+reads it: an integer, a Boolean, a weekday, week ordinal, direction or invalid-day behavior, a <code>yyyy-MM-dd</code>
+date, and a month, a fixed strategy's in the calendar the rule's applicability names. A value the loader rejects
+throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of its <code>BODU-CAL-VALUE</code>, <code>BODU-CAL-ENUM</code>
+or <code>BODU-CAL-MONTH</code> diagnostic, and a value it reads is written in the form the schema accepts: a name in
+another case as the member's name, a number in quotes by its digits, and a month as its English name, or a fixed
+month in a calendar other than the Gregorian as its number or its month alias.
+</p>
+<p>
+Text is read as the loader reads it: a string verbatim, a number by its invariant digits, and a Boolean as
+<code>true</code> or <code>false</code>, so <code>"displayName": 5</code> reads as the text <code>5</code>. An item of a list of
+identifiers, territory codes or tags must be a string, and any other item throws a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the loader's <code>BODU-CAL-VALUE</code> diagnostic; an item of
+a list of enumeration names is read by its JSON text, so a number there throws as a value that names no member,
+while an object or an array in a list of names or integers throws as a value of the wrong kind. The metadata, an
+adjustment policy's description and a rule's comment, which the loader does not read, accept the same scalars.
+Any other property that holds a value, holding an object or an array, a property that holds an object or a list,
+such as <code>applicability</code> or <code>tags</code>, holding a value of another kind, and an item of a list of concepts,
+rules, adjustment policies, imports, uses or overrides that is not an object, throw a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the loader's <code>BODU-CAL-VALUE</code> diagnostic, while the
+JSON literal <code>null</code> reads as absent, as the loader reads it. The message names a value or an item of the
+wrong kind by its JSON kind (<code>object</code>, <code>array</code>, <code>number</code>, <code>Boolean</code> or <code>null</code>), as the
+loader's does, rather than quoting it.
+</p>
+<p>
+Every field the loader's <code>LoadJson</code> reads is read, including those outside the JSON subset that
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToJson">ToJson()</a> writes (imports, the trigger and action refinements, handler parameters, scope rule
+references and year bounds, and a <code>PatchRule</code> override's applicability, strategy, recurrence, duration,
+tags and adjustments), so the builder and the loader read the same document into the same resource. Property
+names are matched ignoring case, as the loader matches them, so <code>"Strategy"</code> reads as <code>"strategy"</code>,
+and each strategy and recurrence attribute is written under its schema name, while a property the loader does
+not read is ignored, as the loader ignores it. The few fields the builder's model cannot hold throw a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> rather than being dropped. A rule's <code>strategy</code> and <code>recurrence</code>,
+and a <code>PatchRule</code> override's when it carries either, must name exactly one recognized kind between them,
+matched ignoring case as the loader matches it, and an <code>untilDate</code> must declare an end strategy that names
+exactly one, or the document throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the loader's
+<code>BODU-CAL-RULE-SOURCE</code>, <code>BODU-CAL-DURATION-NOEND</code> or <code>BODU-CAL-DURATION-CONFLICT</code> diagnostic,
+rather than building the first kind alone or none. An override's <code>operation</code> is matched ignoring case, as
+the loader matches it; one that is absent or names no operation throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying
+the message of the loader's <code>BODU-CAL-ENUM</code> diagnostic, rather than being read as a <code>PatchRule</code>, and
+an <code>AddRule</code> override without a <code>rule</code> throws one carrying the message of its <code>BODU-CAL-SCHEMA</code>
+diagnostic, rather than adding a rule with an empty identifier.
+</p>
+<p>
+The values the XML schema requires and the ranges it holds integers to are held to as the loader holds a JSON
+document to them: an object that lacks a property the schema requires of it (the root's <code>schemaVersion</code> and
+<code>resourceId</code>, a concept's <code>id</code>, <code>displayName</code> and <code>category</code>, a strategy's <code>month</code>, …),
+a concept's <code>rules</code> or a weekly recurrence's <code>days</code> that holds no item, and an integer outside the
+schema's range (a day count or interval below 1, a year outside 0 to 65535, a day of the month outside 1 to 31,
+an ISO week outside 1 to 53, or an ordinal that is zero, outside -366 to 366, or written with a plus sign or a
+leading zero) throw a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the loader's <code>BODU-CAL-SCHEMA</code>
+diagnostic, rather than being read with a default in the value's place or written for the schema to reject at
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build">Build()</a>. An empty list that is optional reads as absent. Each identifier, reference and territory
+code is held to the pattern the schema requires of it, as the loader holds it: the resource identifier, the
+concept, rule and adjustment policy identifiers, the references of an action, a strategy, an override, an import
+use and a scope, the adjustment policy references of a rule, a patch and an import use, an import use's alias,
+and the territory codes of a scope, an applicability and an import use. A value that breaks its pattern, such as
+<code>New-Year</code> for a concept identifier, throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the
+loader's <code>BODU-CAL-SCHEMA</code> diagnostic.
+</p>
+<p>
+Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
+malformed value, such as a dangling reference, can still parse. Validate with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Validate">Validate()</a> or
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_TryBuild_Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___">TryBuild(out NotableDateResource?, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt;)</a>, or load
+the text with <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, when the input is not trusted.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">json</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p><code class="paramref">json</code> is not well-formed or is not a notable-date document, an enumeration, integer, Boolean,
+date, month, trigger-month or <code>workingDays</code> value does not parse, a property that holds a value holds an
+object or an array, a property that holds an object or a list holds a value of another kind, an item of a list
+of identifiers, territory codes or tags is not a string, an item of a list of concepts, rules, adjustment
+policies, imports, uses or overrides is not an object, a rule's <code>strategy</code> and <code>recurrence</code>, or a
+<code>PatchRule</code> override's when it carries either, name no recognized kind or more than one between them, an
+<code>untilDate</code> declares no end strategy or one that names no recognized kind or more than one, an override's
+<code>operation</code> is absent or names no operation, an object lacks a property the XML schema requires of it, a
+concept's <code>rules</code> or a weekly recurrence's <code>days</code> holds no item, an integer lies outside the range the
+XML schema allows, or an identifier, reference or territory code does not match the pattern the XML schema
+requires of it.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p><code class="paramref">json</code> declares a field the builder's document model cannot hold: an empty <code>tags</code> or
+<code>adjustments</code> list on a <code>PatchRule</code> override, an empty <code>adjustments</code> list on an import use, a
+scope rule reference that is a bare rule identifier, a handler parameter whose value is an object or an array,
+or a metadata name, description or source, an adjustment policy's description or a rule's comment that is an
+object or an array.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJsonObject_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.FromJsonObject*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJsonObject_System_Text_Json_Nodes_JsonObject_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.FromJsonObject(System.Text.Json.Nodes.JsonObject)">
+  FromJsonObject(JsonObject)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Json.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonobject">JsonObject</a> into a builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateDocumentBuilder FromJsonObject(JsonObject json)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>json</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonobject">JsonObject</a></dt>
+    <dd><p>The notable-date document JSON object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> populated from the object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJsonObject_System_Text_Json_Nodes_JsonObject__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Values are read as <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_System_String_">FromJson(string)</a> reads them; see its remarks.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">json</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>An enumeration, integer, Boolean, date, month, trigger-month or <code>workingDays</code> value does not parse, a
+property that holds a value holds an object or an array, a property that holds an object or a list holds a value
+of another kind, an item of a list of identifiers, territory codes or tags is not a string, an item of a list of
+concepts, rules, adjustment policies, imports, uses or overrides is not an object, a rule's <code>strategy</code> and
+<code>recurrence</code>, or a <code>PatchRule</code> override's when it carries either, name no recognized kind or more than
+one between them, an <code>untilDate</code> declares no end strategy or one that names no recognized kind or more than
+one, an override's <code>operation</code> is absent or names no operation, an object lacks a property the XML schema
+requires of it, a concept's <code>rules</code> or a weekly recurrence's <code>days</code> holds no item, an integer lies
+outside the range the XML schema allows, or an identifier, reference or territory code does not match the
+pattern the XML schema requires of it.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p><code class="paramref">json</code> declares a field the builder's document model cannot hold; see
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_System_String_">FromJson(string)</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXDocument_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.FromXDocument*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXDocument_System_Xml_Linq_XDocument_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.FromXDocument(System.Xml.Linq.XDocument)">
+  FromXDocument(XDocument)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Xml.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.xml.linq.xdocument">XDocument</a> into a builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateDocumentBuilder FromXDocument(XDocument document)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.xml.linq.xdocument">XDocument</a></dt>
+    <dd><p>The notable-date document.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> populated from the document.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXDocument_System_Xml_Linq_XDocument__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Values are read as <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXml_System_String_">FromXml(string)</a> reads them; see its remarks.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">document</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The root element is not a notable-date resource element, or an enumeration, integer, Boolean, trigger-month or
+<code>workingDays</code> value does not parse.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXml_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.FromXml*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXml_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.FromXml(System.String)">
+  FromXml(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Xml.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses an XML document into a builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateDocumentBuilder FromXml(string xml)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The notable-date document XML content.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> populated from the XML.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXml_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Round-trip a document through its XML form: serialize, then re-parse into an equivalent builder.
+NotableDateDocumentBuilder original = NotableDateDocumentBuilder.Create("contoso-holidays")
+    .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c =&gt; c
+        .AddRule("fixed", r =&gt; r.Fixed(1, 1)));
+string xml = original.ToXml();
+
+NotableDateDocumentBuilder reparsed = NotableDateDocumentBuilder.FromXml(xml);
+NotableDateResource resource = reparsed.Build();</code></pre>
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXml_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Enumeration values and the working week are read with the loader's rules, so they never parse into data the
+loader would read differently: an enumeration value must name a member (ignoring case; a number is not a name),
+and <code>workingDays</code> must be the seven-character, Sunday-first binary pattern. Any other value throws a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the loader's <code>BODU-CAL-ENUM</code> or
+<code>BODU-CAL-WORKING-DAYS</code> diagnostic.
+</p>
+<p>
+Integers, Booleans and an adjustment trigger's month are read with the loader's rules too: a present value must
+be a 32-bit integer, an XML-schema Boolean literal (<code>true</code>, <code>false</code>, <code>1</code> or <code>0</code>), or a month
+name or number, and any other value throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> carrying the message of the loader's
+<code>BODU-CAL-VALUE</code> diagnostic.
+</p>
+<p>
+Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
+malformed value, such as a dangling reference, can still parse. Validate with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Validate">Validate()</a> or
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_TryBuild_Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___">TryBuild(out NotableDateResource?, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt;)</a>, or load
+the text with <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, when the input is not trusted.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">xml</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p><code class="paramref">xml</code> is not well-formed or is not a notable-date document, or an enumeration, integer,
+Boolean, trigger-month or <code>workingDays</code> value does not parse.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Load_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Load*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Load_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Load(System.String)">
+  Load(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Reads a document from a file and parses it into a builder, inferring the format from the file extension.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateDocumentBuilder Load(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The source file path. A <code>.xml</code> extension reads XML; a <code>.json</code> extension reads JSON.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> populated from the file.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Load_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Like <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXml_System_String_">FromXml(string)</a> and <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_System_String_">FromJson(string)</a>, loading reads each value with the
+loader's rules but does not otherwise validate the document; see their remarks.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, white-space, or has an extension other than
+<code>.xml</code>, <code>.json</code>, or <code>.bcal</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p><code class="paramref">path</code> has a <code>.bcal</code> extension: a binary rule pack is compiled output that cannot be
+reopened for editing (load it with <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html#Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadBinary_System_IO_Stream_">LoadBinary(Stream)</a>); or a
+<code>.json</code> file declares a field the builder's document model cannot hold; see <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_System_String_">FromJson(string)</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The file content is not a well-formed notable-date document, or holds a value or a field that
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromXml_System_String_">FromXml(string)</a>, for an <code>.xml</code> file, or <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_FromJson_System_String_">FromJson(string)</a>, for a <code>.json</code>
+file, rejects with a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>; see their exceptions.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Save*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Save(System.String)">
+  Save(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the document to a file, inferring the format from the file extension.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Save(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The destination file path. A <code>.xml</code> extension writes XML, a <code>.json</code> extension writes JSON, and a
+<code>.bcal</code> extension writes a binary rule pack.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("contoso-holidays")
+    .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c =&gt; c
+        .AddRule("fixed", r =&gt; r.Fixed(1, 1)));
+
+// The extension selects the format: .xml writes XML, .json writes JSON.
+builder.Save("contoso-holidays.xml");
+builder.Save("contoso-holidays.json");
+
+// Reload the document later and build a service over it.
+NotableDateResource resource = NotableDateDocumentBuilder.Load("contoso-holidays.xml").Build();</code></pre>
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>XML and JSON are written as UTF-8 without a byte order mark, and the XML declaration names that encoding.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, white-space, or has an extension other than
+<code>.xml</code>, <code>.json</code>, or <code>.bcal</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>A JSON target is requested but the document uses a feature the JSON subset cannot represent.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>A <code>.bcal</code> target is requested and the document produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Save*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_System_String_Bodu_Globalization_Calendar_Builder_NotableDateDocumentFormat_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Save(System.String,Bodu.Globalization.Calendar.Builder.NotableDateDocumentFormat)">
+  Save(string, NotableDateDocumentFormat)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the document to a file in the specified format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Save(string path, NotableDateDocumentFormat format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The destination file path.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentFormat.html">NotableDateDocumentFormat</a></dt>
+    <dd><p>The serialization format.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_System_String_Bodu_Globalization_Calendar_Builder_NotableDateDocumentFormat__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>XML and JSON are written as UTF-8 without a byte order mark, and the XML declaration names that encoding.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>A JSON target is requested but the document uses a feature the JSON subset cannot represent.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>A binary target is requested and the document produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_SaveBinary_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.SaveBinary*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_SaveBinary_System_IO_Stream_System_Func_System_String_System_String__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.SaveBinary(System.IO.Stream,System.Func{System.String,System.String})">
+  SaveBinary(Stream, Func&lt;string, string?&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Binary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compiles the document to a sealed binary rule pack written to a stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SaveBinary(Stream stream, Func&lt;string, string?&gt;? importResolver = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The writable stream receiving the pack.</p>
+</dd>
+    <dt><code>importResolver</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A delegate mapping a resource name to its XML or JSON content, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to resolve no imports.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The document produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_SaveBinary_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.SaveBinary*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_SaveBinary_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.SaveBinary(System.String)">
+  SaveBinary(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Binary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compiles the document to a sealed binary rule pack on disk.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SaveBinary(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The destination file path, conventionally with the <code>.bcal</code> extension.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_SaveBinary_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The document is materialized through <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build">Build()</a> first, so only content that passed the canonical
+loader's validation is ever encoded; the pack then loads via
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html#Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadBinary_System_IO_Stream_">LoadBinary(Stream)</a> without re-parsing or re-validating.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The document produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_SaveBinary_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.SaveBinary*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_SaveBinary_System_String_System_Func_System_String_System_String__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.SaveBinary(System.String,System.Func{System.String,System.String})">
+  SaveBinary(string, Func&lt;string, string?&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Binary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compiles the document to a sealed binary rule pack on disk, resolving imports through the supplied resolver.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SaveBinary(string path, Func&lt;string, string?&gt;? importResolver)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The destination file path, conventionally with the <code>.bcal</code> extension.</p>
+</dd>
+    <dt><code>importResolver</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A delegate mapping a resource name to its XML or JSON content, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to resolve no imports.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The document produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToJson_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToJson*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToJson" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToJson">
+  ToJson()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Json.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the document to an indented JSON string in the JSON-subset form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToJson()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The serialized JSON.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The document uses a feature the JSON subset cannot represent.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToJsonObject_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToJsonObject*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToJsonObject" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToJsonObject">
+  ToJsonObject()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Json.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the document to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonobject">JsonObject</a> in the JSON-subset form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public JsonObject ToJsonObject()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonobject">JsonObject</a></dt>
+    <dd><p>The serialized JSON object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The document uses a feature the JSON subset cannot represent.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToProvider_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToProvider*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToProvider" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToProvider">
+  ToProvider()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Materializes the document and wraps it in a mutable provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public INotableDateResourceProvider ToProvider()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a></dt>
+    <dd><p>An <a class="xref" href="Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a> exposing the built resource.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a></dt>
+    <dd><p>The loader produced one or more error diagnostics.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToXDocument_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToXDocument*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToXDocument" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToXDocument">
+  ToXDocument()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Xml.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the document to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.xml.linq.xdocument">XDocument</a> in the <code>urn:bodu:globalization:calendar</code> namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public XDocument ToXDocument()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.xml.linq.xdocument">XDocument</a></dt>
+    <dd><p>The serialized document.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToXml_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToXml*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToXml" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.ToXml">
+  ToXml()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Xml.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the document to an indented XML string in the <code>urn:bodu:globalization:calendar</code> namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToXml()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The serialized XML.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_ToXml_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The XML declaration names the UTF-8 encoding, so the text can be written to a file as UTF-8, as
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Save_System_String_">Save(string)</a> writes it, and read back by any XML reader.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The document is incomplete.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_TryBuild_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.TryBuild*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_TryBuild_Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.TryBuild(Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)">
+  TryBuild(out NotableDateResource?, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Validation.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to materialize the document into a validated <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>, collecting every
+diagnostic instead of throwing on an invalid document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryBuild(out NotableDateResource? resource, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt; diagnostics)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The built resource, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the document does not validate.</p>
+</dd>
+    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
+    <dd><p>Every diagnostic serialization and validation produced.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the document built without error-severity diagnostics; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_TryBuild_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.TryBuild*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_TryBuild_System_Func_System_String_System_String__Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.TryBuild(System.Func{System.String,System.String},Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)">
+  TryBuild(Func&lt;string, string?&gt;?, out NotableDateResource?, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Validation.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to materialize the document into a validated <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> resolving imports
+through the supplied resolver, collecting every diagnostic instead of throwing on an invalid document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryBuild(Func&lt;string, string?&gt;? importResolver, out NotableDateResource? resource, out IReadOnlyList&lt;NotableDateValidationDiagnostic&gt; diagnostics)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>importResolver</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A delegate mapping a resource name to its XML or JSON content, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to resolve no imports.</p>
+</dd>
+    <dt><code>resource</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></dt>
+    <dd><p>The built resource, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the document does not validate.</p>
+</dd>
+    <dt><code>diagnostics</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
+    <dd><p>Every diagnostic serialization and validation produced.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the document built without error-severity diagnostics; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Validate_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Validate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Validate" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Validate">
+  Validate()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Validation.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Lints the document, returning every diagnostic the canonical loader's validation would produce - errors,
+warnings, and informational messages - without throwing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NotableDateValidationDiagnostic&gt; Validate()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
+    <dd><p>The collected diagnostics; empty when the document is valid.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Validate_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Validation runs the same pipeline as <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build">Build()</a> - the document is serialized to XML and passed
+through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a> - so a clean result guarantees <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Build">Build()</a> succeeds
+for the same document. A document too incomplete to serialize (a missing resource identifier, a concept with no
+rules, a rule with no strategy) is reported as a <code>BODU-CAL-BUILDER-INCOMPLETE</code> error diagnostic rather than
+an exception.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Validate_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Validate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_Validate_System_Func_System_String_System_String__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.Validate(System.Func{System.String,System.String})">
+  Validate(Func&lt;string, string?&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.Validation.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Lints the document against the supplied import resolver, returning every diagnostic without throwing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NotableDateValidationDiagnostic&gt; Validate(Func&lt;string, string?&gt;? importResolver)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>importResolver</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A delegate mapping a resource name to its XML or JSON content, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to resolve no imports.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateValidationDiagnostic.cs">NotableDateValidationDiagnostic</a>&gt;</dt>
+    <dd><p>The collected diagnostics; empty when the document is valid.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_WithMetadata_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.WithMetadata*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_WithMetadata_System_String_System_String_System_String___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.WithMetadata(System.String,System.String,System.String[])">
+  WithMetadata(string?, string?, params string[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the document metadata name, description, and sources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder WithMetadata(string? name = null, string? description = null, params string[] sources)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The metadata name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to leave it unset.</p>
+</dd>
+    <dt><code>description</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The metadata description, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to leave it unset.</p>
+</dd>
+    <dt><code>sources</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
+    <dd><p>The metadata source entries.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">sources</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_WithResolutionPolicy_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.WithResolutionPolicy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_WithResolutionPolicy_System_Action_Bodu_Globalization_Calendar_Builder_ResolutionPolicyBuilder__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.WithResolutionPolicy(System.Action{Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder})">
+  WithResolutionPolicy(Action&lt;ResolutionPolicyBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Configures the document-level resolution policy through the supplied delegate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder WithResolutionPolicy(Action&lt;ResolutionPolicyBuilder&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder.html">ResolutionPolicyBuilder</a>&gt;</dt>
+    <dd><p>A delegate that configures the resolution policy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">configure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_WithResourceId_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.WithResourceId*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_WithResourceId_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.WithResourceId(System.String)">
+  WithResourceId(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the resource identifier of the document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder WithResourceId(string resourceId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resourceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The resource identifier.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">resourceId</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_WithSchemaVersion_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.WithSchemaVersion*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_WithSchemaVersion_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.WithSchemaVersion(System.String)">
+  WithSchemaVersion(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/613759c5e7fceb2b18b412120832813a570ab169/Bodu.Globalization.Calendar.Builder/src/Globalization.Calendar.Builder/NotableDateDocumentBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the schema version emitted on the root element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateDocumentBuilder WithSchemaVersion(string schemaVersion)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>schemaVersion</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The schema version.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></dt>
+    <dd><p>The same <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> instance, enabling chained calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">schemaVersion</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or white-space.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></div>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a></div>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a></div>
+      <div><span><a href="../guides/calendar/notable-date-builder.html">Authoring with
+             the notable-date builder (guide)</a></span></div>
+      <div><span><a href="../guides/calendar/rule-authoring.html">Authoring notable
+             date rules (guide)</a></span></div>
+  </div>
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

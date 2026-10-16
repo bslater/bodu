@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.Toml.Nodes Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.Toml.Nodes Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/apidoc/Bodu.Text.Toml.Nodes.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Bodu.Text.Toml.Nodes">
+
+
+  <h1 id="Bodu_Text_Toml_Nodes" data-uid="Bodu.Text.Toml.Nodes" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Text.Toml.Nodes Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Toml">Bodu.Text.Toml</a> <span class="bodu-package-version">1.3.0</span>
+</div>
+    </dd></dl>
+  </div>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-toml.svg" alt="Bodu.Text.Toml.Nodes"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Toml.Nodes</strong> is the mutable document object model of <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>, shaped after <code>System.Text.Json.Nodes</code>. Parse UTF-8 TOML into an editable tree, build one from scratch, change it, and write it back through the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a>. For read-only inspection with fewer allocations, use the sibling <a class="xref" href="Bodu.Text.Toml.Document.html">Bodu.Text.Toml.Document</a> tier; for typed binding, use the <a class="xref" href="Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a>.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> - abstract base: <code>Parse</code>, <code>AsObject</code> / <code>AsArray</code> / <code>AsValue</code>, <code>GetValue&lt;T&gt;</code>, <code>GetValueKind</code>, <code>WriteTo</code>, <code>ToUtf8Bytes</code>, <code>DeepEquals</code>, string and integer indexers, and implicit conversions from every TOML scalar CLR type.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a> - a table node keyed by string, with <code>Add</code> / <code>Remove</code> / <code>TryGetValue</code> and an indexer.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a> - an array node implementing <code>IList&lt;TomlNode?&gt;</code>.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> - a scalar leaf (string, integer, float, boolean, or one of the four date-time kinds), created via <code>Create</code> and read via <code>GetValue&lt;T&gt;</code> / <code>TryGetValue&lt;T&gt;</code>.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNodeOptions.html">TomlNodeOptions</a> - parsing options for <code>Parse</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Nodes;
+
+TomlNode root = TomlNode.Parse(&quot;[server]\nhost = \&quot;localhost\&quot;\nport = 8080\n&quot;u8)!;
+root[&quot;server&quot;]![&quot;port&quot;] = 9090;                 // implicit conversion from int
+root[&quot;server&quot;]!.AsObject().Add(&quot;tls&quot;, true);    // implicit conversion from bool
+
+byte[] back = root.ToUtf8Bytes();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Table root.</strong> The root of a parsed or written tree is always a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a>; writing a scalar or array as the root throws.</li>
+<li><strong>Layout is normalized.</strong> Comments and the original header/inline layout are not preserved; the writer re-emits the tree in normalized block form.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/toml/index.html">Bodu.Text.Toml introduction</a> and the <a href="../guides/serialization/toml/using.html">Using TOML</a> guide (Pattern 6 - Edit a document with the mutable DOM).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a></dt>
+      <dd><p>Represents a mutable TOML array as an ordered, index-addressable collection of child nodes.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a></dt>
+      <dd><p>Represents a single node in a mutable TOML document object model, serving as the base for the three concrete node
+kinds - <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a>, <a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a>, and <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a></dt>
+      <dd><p>Represents a mutable TOML table as a string-keyed collection of child nodes.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a></dt>
+      <dd><p>Represents a scalar TOML value within a node tree - one of the eight TOML scalar kinds: a string, a 64-bit integer,
+a floating-point number, a Boolean, or one of the four date-time kinds.</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNodeOptions.html">TomlNodeOptions</a></dt>
+      <dd><p>Defines the customizations applied to a mutable TOML node tree.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

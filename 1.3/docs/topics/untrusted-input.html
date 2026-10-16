@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Reading untrusted input | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Reading untrusted input | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/topics/untrusted-input.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="reading-untrusted-input">Reading untrusted input</h1>
+
+<p>An uploaded file, an email attachment, a downloaded feed, or a configuration file someone else wrote can be crafted to make a reader allocate without bound, recurse until the stack overflows, or spin. This page lists, for every Bodu reader that accepts such input, the limits it enforces, their defaults and ceilings, what happens when one trips, and what is left to you.</p>
+<h2 id="what-the-readers-guarantee">What the readers guarantee</h2>
+<ul>
+<li><strong>Malformed input fails as an exception you can catch.</strong> Each reader throws its format exception, which you can catch, and never fails by overflowing the stack, which you cannot: the recursive readers stop at a nesting depth they cannot be configured past. <a href="errors-and-exceptions.html">Errors and exceptions</a> lists the types.</li>
+<li><strong>A declared size is checked before it is trusted.</strong> The container readers bound the sizes a file declares against the file or against a configured limit before allocating for them, because a crafted file can declare any size it likes.</li>
+<li><strong>Nothing is fetched or executed on the input's behalf.</strong> The calendar document parser prohibits DTDs and resolves no external entities, a document's imports reach only the resolver delegate you pass, and plugin code loads only through an explicit trust policy.</li>
+</ul>
+<h2 id="what-is-left-to-you">What is left to you</h2>
+<ol>
+<li><strong>Bound the input's size before you hand it over.</strong> Most readers hold the whole input in memory: the stream overloads of the six text serializers copy the stream into memory before parsing (all but Delimited's record-by-record <code>DeserializeAsyncEnumerableAsync</code>), a compound file opened with the default <code>Buffered</code> strategy reads the whole file, a <code>.bcal</code> pack is read whole, and the <code>Bodu.Text.Configuration</code> reader reads each line whole before measuring it. Check the length of a file or upload first, or wrap the stream so that it stops reading at your limit.</li>
+<li><strong>Catch the format exceptions, and treat each as a rejection.</strong> A message is for a log, not for the person who supplied the file; see <a href="errors-and-exceptions.html">errors and exceptions</a>.</li>
+<li><strong>Tighten the limits to what your application needs.</strong> The defaults suit real files, not the worst case your service can afford. The tables below say which limits you can lower.</li>
+</ol>
+<h2 id="text-formats">Text formats</h2>
+<table>
+<thead>
+<tr>
+<th>Reader</th>
+<th>Limit</th>
+<th>Default</th>
+<th>Ceiling</th>
+<th>When it trips</th>
+<th>Documented in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Text.Toml</code> (reader, documents, serializer)</td>
+<td><code>MaxDepth</code>: nested tables and arrays</td>
+<td>64</td>
+<td>64; a larger value is clamped</td>
+<td><code>TomlFormatException</code></td>
+<td><a href="../serialization/toml/concepts.html#options">TOML options</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Yaml</code> (reader, documents, serializer)</td>
+<td><code>MaxDepth</code>: nested collections</td>
+<td>64</td>
+<td>64; a larger value is clamped</td>
+<td><code>YamlFormatException</code></td>
+<td><a href="../serialization/yaml/concepts.html#options">YAML options</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Yaml</code></td>
+<td>Nodes after aliases are expanded, which stops &quot;billion laughs&quot; amplification</td>
+<td>10,000,000</td>
+<td>Fixed</td>
+<td><code>YamlFormatException</code></td>
+<td><a href="../serialization/yaml/concepts.html#the-buffered-reader-and-the-writer">The YAML reader</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Bencode</code> (reader, documents, serializer)</td>
+<td><code>MaxDepth</code>: nested lists and dictionaries</td>
+<td>64</td>
+<td>64; a larger value is clamped</td>
+<td><code>BencodeFormatException</code></td>
+<td><a href="../serialization/bencode/concepts.html#options">Bencode options</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, <code>Bodu.Text.Ini</code></td>
+<td>None: the formats do not nest</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Configuration</code></td>
+<td><code>MaxLineLength</code> / <code>MaxKeyLength</code> on <code>ConfigurationParseOptions</code></td>
+<td>8,192 / 1,024 characters</td>
+<td>None</td>
+<td>A <code>LineTooLong</code> or <code>KeyTooLong</code> error diagnostic: a <code>ConfigurationParseException</code> in the default <code>Throw</code> mode.</td>
+<td><a href="../text-configuration/concepts.html#parse-resolve-and-write-options">Parse options</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Configuration</code></td>
+<td>A section name used as a glob: length, brace nesting, numeric-range expansion</td>
+<td>4,096 characters, 32 levels, 10,000 values</td>
+<td>Fixed</td>
+<td><code>ConfigurationParseException</code>. A match that runs past its fixed 100 ms timeout counts as no match.</td>
+<td>This page</td>
+</tr>
+</tbody>
+</table>
+<p><code>DelimitedSerializer.DeserializeAsyncEnumerableAsync</code> reads a stream in segments and holds only the record in progress, so its memory is bounded by the longest record rather than the document; no record or field has a size limit of its own. Every other stream overload of the six serializers reads the whole stream first.</p>
+<h2 id="encodings-and-filters">Encodings and filters</h2>
+<table>
+<thead>
+<tr>
+<th>Reader</th>
+<th>Limit</th>
+<th>Default</th>
+<th>When it trips</th>
+<th>Documented in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Base58</code>, <code>Base58Check</code>, and <code>Base62</code> decoding</td>
+<td>Encoded length, because the decode is quadratic in it</td>
+<td>65,536 characters</td>
+<td><code>Decode</code> throws <code>FormatException</code>; <code>TryDecode</code> and <code>IsValid</code> return <code>false</code>.</td>
+<td><a href="../../guides/text-encoding/base58.html#span-path">Base58</a></td>
+</tr>
+<tr>
+<td><code>TextFilter</code> patterns</td>
+<td>Pattern length</td>
+<td>4,096 characters</td>
+<td><code>ArgumentOutOfRangeException</code> when the pattern is declared or parsed.</td>
+<td><a href="../../guides/text-filtering/patterns-and-globs.html#brace-alternation">Brace alternation</a></td>
+</tr>
+<tr>
+<td><code>TextFilter</code> globs</td>
+<td>Brace nesting, and the alternatives one pattern expands to</td>
+<td>32 levels, 10,000 alternatives</td>
+<td><code>ArgumentException</code> when the pattern is declared.</td>
+<td><a href="../../guides/text-filtering/patterns-and-globs.html#brace-alternation">Brace alternation</a></td>
+</tr>
+<tr>
+<td><code>TextFilter</code> regular expressions</td>
+<td><code>TextFilterOptions.RegexMatchTimeout</code></td>
+<td>100 ms</td>
+<td>Fails safe: a timed-out include does not admit the value, and a timed-out exclude still rejects it.</td>
+<td><a href="../../guides/text-filtering/patterns-and-globs.html#when-to-use-a-regex-instead">When to use a regex</a></td>
+</tr>
+</tbody>
+</table>
+<p>A <code>TextFilter</code> prefers the linear-time <code>RegexOptions.NonBacktracking</code> engine, so the timeout applies only to a pattern that needs the backtracking engine. If your users supply the patterns, keep the timeout.</p>
+<h2 id="containers-and-binary-formats">Containers and binary formats</h2>
+<p>The container readers share one model: a <strong>validation level</strong> decides how the reader responds to an inconsistency it can recover from, while the checks that keep the reader itself safe - bounds, allocation-table sizes, the limits below - hold at every level.</p>
+<table>
+<thead>
+<tr>
+<th>Reader</th>
+<th>Limit or setting</th>
+<th>Default</th>
+<th>When it trips</th>
+<th>Documented in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.IO.Compound</code> (<code>CompoundFileOptions</code>)</td>
+<td><code>ReadStrategy</code>: <code>Buffered</code> reads the whole file into memory at open, <code>Streaming</code> reads sectors on demand from a seekable stream, <code>Auto</code> streams a seekable source longer than <code>MaxBufferedBytes</code>. A non-seekable source can only be buffered.</td>
+<td><code>Buffered</code>; <code>MaxBufferedBytes</code> 64 MiB</td>
+<td>Not a limit.</td>
+<td><a href="../../guides/io-compound/streaming-and-buffering.html">Buffered vs streaming</a></td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Compound</code></td>
+<td><code>ValidationLevel</code>: <code>Strict</code> rejects anything non-conformant, <code>Compatible</code> rejects structural corruption and skips a malformed directory entry, <code>Minimal</code> recovers what it can</td>
+<td><code>Compatible</code></td>
+<td><code>CompoundFileFormatException</code>, with its <code>CompoundFileError</code> category.</td>
+<td><a href="../io-compound/concepts.html#validation-level">Validation level</a></td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Compound</code></td>
+<td>A stream whose declared size is larger than its sector chain</td>
+<td>-</td>
+<td><code>StreamChainTooShort</code> at <code>Strict</code> and <code>Compatible</code>. At <code>Minimal</code> the missing bytes read as zero, up to the container's length or 1 MiB, whichever is larger.</td>
+<td><a href="../io-compound/concepts.html#validation-level">Validation level</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Excel.Binary</code></td>
+<td>None of its own. It opens the container streaming, from a seekable stream, at <code>Compatible</code>, and holds one sheet's records in memory at a time.</td>
+<td>-</td>
+<td><code>ExcelBinaryFormatException</code> for a malformed record stream; the container's <code>CompoundFileFormatException</code> for a file that is not a valid compound file.</td>
+<td><a href="../../guides/excel/reading-workbooks.html#error-handling">Reading workbooks</a></td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Pst</code> (<code>PstFileOptions</code>)</td>
+<td><code>MaxNodeDataLength</code>: the largest node payload read whole</td>
+<td>256 MiB</td>
+<td><code>PstFileFormatException</code>, <code>Error == PstFileError.LimitExceeded</code>, at every validation level.</td>
+<td><a href="../../guides/io-pst/streaming-and-validation.html#pstfileoptions"><code>PstFileOptions</code></a></td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Pst</code></td>
+<td><code>MaxDataTreeLeaves</code>: the leaf blocks one node's data tree may reference</td>
+<td>65,536</td>
+<td>The same, checked before any leaf is read.</td>
+<td><a href="../../guides/io-pst/streaming-and-validation.html#pstfileoptions"><code>PstFileOptions</code></a></td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Pst</code></td>
+<td><code>ValidationLevel</code>: <code>Strict</code> verifies every page and block checksum and signature, which the other levels skip</td>
+<td><code>Compatible</code></td>
+<td><code>PstFileFormatException</code>.</td>
+<td><a href="../../guides/io-pst/streaming-and-validation.html#what-each-validation-level-checks">Validation levels</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook.Msg</code>, <code>Bodu.Formats.Outlook.Pst</code></td>
+<td><code>MaxEmbeddedMessageDepth</code>: how deep <code>OpenMessage</code> follows attached messages</td>
+<td>16</td>
+<td><code>OutlookMsgFormatException</code> / <code>OutlookPstFormatException</code>, at every validation level.</td>
+<td><a href="../../guides/outlook/reader-options-and-limits.html">Outlook reader options</a></td>
+</tr>
+<tr>
+<td>The Outlook readers</td>
+<td><code>MaxDecompressedRtfBytes</code>: the largest RTF body <code>BodyRtf</code> produces, since the declared size sits outside the payload's checksum</td>
+<td>64 MiB</td>
+<td>The same, before anything is allocated.</td>
+<td><a href="../../guides/outlook/reader-options-and-limits.html">Outlook reader options</a></td>
+</tr>
+<tr>
+<td>The Outlook readers</td>
+<td><code>MaxInlineAttachmentBytes</code>: above it, an attachment's payload stays in the container until you stream it</td>
+<td>1 MiB</td>
+<td>Never: a threshold, not a rejection.</td>
+<td><a href="../../guides/outlook/reader-options-and-limits.html#the-inline-attachment-threshold-in-practice">Outlook reader options</a></td>
+</tr>
+</tbody>
+</table>
+<p><code>BiffReader</code> reads records from a span you supply and allocates nothing for them; a record's length field is 16 bits, so no record can declare more than 65,535 bytes. The <a href="../../guides/outlook/reader-options-and-limits.html">Outlook reader options guide</a> and the <a href="../../guides/io-pst/streaming-and-validation.html">PST streaming and validation guide</a> describe every option, including the ones the mail store does not forward to its container.</p>
+<h3 id="reading-a-damaged-file">Reading a damaged file</h3>
+<p>The tolerant levels exist for files that are damaged rather than hostile. <code>CompoundValidationLevel.Minimal</code> returns what a corrupt container still holds, reading unreachable bytes as zero. For a <code>.pst</code>, <code>OmitUnresolvableValues</code> leaves out a value whose reference does not resolve instead of failing the object that holds it, and <code>ValueOmittedCallback</code> reports each omission, so you can tell a salvaged message from a clean one. Use these for recovery tools, not as the default for input you do not trust.</p>
+<h2 id="calendars">Calendars</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Protection</th>
+<th>When it trips</th>
+<th>Documented in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A notable-date XML document</td>
+<td>DTDs prohibited, no external resolver, at most 64 Mi characters</td>
+<td>A <code>FormatException</code> from <code>Load</code>; a <code>BODU-CAL-SYNTAX</code> diagnostic from <code>TryLoad</code>.</td>
+<td>This page</td>
+</tr>
+<tr>
+<td>A notable-date JSON document</td>
+<td><code>System.Text.Json</code>'s default depth limit of 64</td>
+<td>The same, from <code>LoadJson</code> and <code>TryLoadJson</code>.</td>
+<td>This page</td>
+</tr>
+<tr>
+<td>Imports</td>
+<td>Resolved only through the resolver delegate you pass, which decides what a document can reach; a cycle is reported</td>
+<td>A <code>BODU-CAL-IMPORT-CYCLE</code> diagnostic.</td>
+<td><a href="../../guides/calendar/validation-diagnostics.html">Validation diagnostics</a></td>
+</tr>
+<tr>
+<td>A rule that fails validation</td>
+<td>Every error is collected, with its <code>BODU-CAL-*</code> code</td>
+<td><code>NotableDateValidationException</code> from <code>Load</code>; <code>false</code> and the diagnostics from <code>TryLoad</code> and <code>TryLoadJson</code>.</td>
+<td><a href="../../guides/calendar/validation-diagnostics.html">Validation diagnostics</a></td>
+</tr>
+<tr>
+<td>A compiled <code>.bcal</code> pack</td>
+<td>The structure, every value and reference, and a SHA-256 digest of the payload are checked</td>
+<td><code>NotableDateBinaryFormatException</code>.</td>
+<td><a href="../../guides/calendar/binary-rule-packs.html">Binary rule packs</a></td>
+</tr>
+<tr>
+<td>A plugin assembly</td>
+<td>The trust policy runs before any plugin type is activated, and registration is atomic</td>
+<td><code>PluginNotTrustedException</code> and the other plugin exceptions.</td>
+<td><a href="../../guides/calendar/plugin-trust.html">Plugin trust</a></td>
+</tr>
+</tbody>
+</table>
+<p>Two of these are integrity checks, not trust boundaries. A pack's digest is unkeyed, so it detects corruption, but someone who edits a pack can recompute it, and a pack is not revalidated as a document is: load packs only from your own build or deployment, and load a document you do not trust with <code>TryLoad</code>. An admitted plugin runs with the full trust of your process; pin the exact bytes you reviewed with <code>FileHashPluginTrustPolicy</code>, as the <a href="../../guides/calendar/plugin-trust.html">plugin trust guide</a> explains.</p>
+<h2 id="recurrence-rules">Recurrence rules</h2>
+<p><code>RecurrenceRule</code>, <code>CronExpression</code>, <code>RecurrenceSet</code>, and <code>AnchoredInterval</code> each have a <code>TryParse(s, out result, out failureMessage)</code> overload that names the defect instead of throwing, for rules a user types. A <code>CronExpression</code> search scans at most 400 years, one whole Gregorian cycle, so an expression that can never fire returns <code>null</code> rather than searching without end.</p>
+<h2 id="password-hashes">Password hashes</h2>
+<p><code>Argon2.Verify</code> and <code>Scrypt.Verify</code> read their cost parameters from the encoded hash, so a hash from an untrusted store can ask for any amount of work. Both cap the memory a verification may allocate at 2 GiB (an Argon2 <code>MemoryKiB</code> of at most 2^21, a scrypt <code>128 * N * r</code> of at most 2 GiB) and throw <code>ArgumentOutOfRangeException</code> for a hash that asks for more. A single 2 GiB verification is still expensive, so if the hashes can come from somewhere you do not control, check their parameters against the ones you issue before verifying. See <a href="../../guides/cryptography/argon2.html">Argon2</a> and <a href="../../guides/cryptography/scrypt.html">scrypt</a>.</p>
+<h2 id="exchange-rate-feeds">Exchange-rate feeds</h2>
+<p>A web provider parses whatever its endpoint returns. A payload it cannot parse throws <code>ExchangeRateFormatException</code>, and the response is capped at <code>WebRateProviderOptions.MaxResponseContentBufferSize</code>, 64 MiB by default, both when the provider builds its own <code>HttpClient</code> and when its dependency-injection registration configures the named client, as the <a href="hosting.html#one-host">example host</a> shows. The cap is not applied to a client you pass to the provider's constructor yourself; set that client's <code>MaxResponseContentBufferSize</code>. See <a href="../exchange-rates/concepts.html#resilience">resilience</a>.</p>
+<h2 id="recommended-settings-for-hostile-input">Recommended settings for hostile input</h2>
+<p>For a service that reads files from people it does not trust:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Any</td>
+<td>Reject an input over your size limit before opening it, and catch the reader's format exception as a rejection.</td>
+</tr>
+<tr>
+<td>Compound files (<code>.doc</code>, <code>.xls</code>, <code>.msg</code>)</td>
+<td><code>CompoundReadStrategy.Streaming</code> or <code>Auto</code>, so a large file is not read into memory whole; <code>Strict</code> when conformance matters more than reading what other tools accept, <code>Compatible</code> otherwise; never <code>Minimal</code>.</td>
+</tr>
+<tr>
+<td><code>.pst</code> stores</td>
+<td><code>MaxNodeDataLength</code> lowered to the largest property or attachment you will read whole, streaming larger attachments with <code>OpenContentStream</code>; <code>Compatible</code>, or <code>Strict</code> to refuse tampered stores; <code>OmitUnresolvableValues</code> off.</td>
+</tr>
+<tr>
+<td>Outlook messages</td>
+<td><code>MaxEmbeddedMessageDepth</code> and <code>MaxDecompressedRtfBytes</code> lowered to what you need, and <code>DecompressRtf</code> off if you do not read RTF bodies.</td>
+</tr>
+<tr>
+<td>TOML, YAML, Bencode</td>
+<td>The default <code>MaxDepth</code>, or lower; it cannot be raised past 64.</td>
+</tr>
+<tr>
+<td>Calendar rules</td>
+<td><code>TryLoad</code> / <code>TryLoadJson</code> with a resolver that serves only your own resources; packs and plugins only from your own deployment.</td>
+</tr>
+<tr>
+<td>Filters and globs supplied by users</td>
+<td>The default <code>RegexMatchTimeout</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>For example, opening an uploaded <code>.msg</code> with tightened limits:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Compound;
+
+var options = new OutlookMessageReaderOptions
+{
+    ValidationLevel = CompoundValidationLevel.Strict,
+    ReadStrategy = CompoundReadStrategy.Streaming,
+    MaxEmbeddedMessageDepth = 4,
+    MaxDecompressedRtfBytes = 8 * 1024 * 1024,
+};
+
+using FileStream source = File.OpenRead(&quot;upload.msg&quot;);
+if (source.Length &gt; 50 * 1024 * 1024)
+{
+    Console.WriteLine(&quot;Rejected: the file is larger than 50 MiB.&quot;);
+    return;
+}
+
+try
+{
+    using var message = OutlookMessage.Open(source, options);
+    Console.WriteLine(message.Subject);
+}
+catch (OutlookFormatException)
+{
+    Console.WriteLine(&quot;Rejected: the file is not a readable Outlook message.&quot;);
+}
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="errors-and-exceptions.html">Errors and exceptions</a></strong> - every exception the limits above throw, and what it carries.</li>
+<li><strong><a href="conformance.html">Conformance and test vectors</a></strong> - the published vectors and corpora each reader is tested against.</li>
+<li><strong><a href="../../guides/outlook/reader-options-and-limits.html">Outlook reader options and limits</a></strong> - every Outlook limit, and what <code>Strict</code> changes.</li>
+<li><strong><a href="../../guides/calendar/plugin-trust.html">Calendar plugin trust</a></strong> - what the plugin trust gate does and does not guarantee.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

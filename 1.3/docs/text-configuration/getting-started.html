@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bodu.Text.Configuration - Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Text.Configuration - Getting started | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/v1.3.0/docs/docs/text-configuration/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="bodutextconfiguration---getting-started">Bodu.Text.Configuration - Getting started</h1>
+
+<p>Unfamiliar with terms like <em>document</em>, <em>view</em>, <em>profile</em>, <em>preamble</em>, <em>target path</em>, <em>unset</em>, or <em>diagnostic mode</em>?
+Read <a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Text.Configuration
+</code></pre>
+<p>Targets <code>net8.0</code> and <code>net10.0</code>. Depends only on <code>Bodu.Core</code> (throw helpers); the INI document model is the library's own. No
+external NuGet references.</p>
+<p>For <code>Microsoft.Extensions.Configuration</code> integration - <code>AddTextConfiguration*</code>, options binding, file-provider
+support - install the sibling <a href="../extensions-configuration-text/getting-started.html"><code>Bodu.Extensions.Configuration.Text</code></a>
+package on top.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="parse-resolve-read">Parse, resolve, read</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+const string source = &quot;&quot;&quot;
+# Bodu configuration sample
+root = true
+
+[*.cs]
+format.indent.style = space
+format.indent.size  = 4
+logging.level.default = Information
+
+[src/**/*.{cs,csproj}]
+format.indent.size = 2
+logging.level.default = Warning
+&quot;&quot;&quot;;
+
+ConfigurationDocument doc = ConfigurationDocument.Parse(source);
+
+ConfigurationView view = doc.Resolve(&quot;src/Bodu.Text.Configuration/src/Foo.cs&quot;);
+
+string indentStyle = view.GetString(&quot;format:indent:style&quot;);           // &quot;space&quot;
+int    indentSize  = view.GetInt32(&quot;format:indent:size&quot;);             // 2 (last-wins from the [src/**] section)
+string logLevel    = view.GetString(&quot;logging:level:default&quot;);         // &quot;Warning&quot;
+</code></pre>
+<p>Both the dotted form (<code>format.indent.style</code>) and the colon-delimited form (<code>format:indent:style</code>) work as lookup keys
+on the view - the library projects raw keys to canonical colon-delimited form during resolve, but the dotted form
+remains a valid alias.</p>
+<h3 id="read-with-a-fallback">Read with a fallback</h3>
+<pre><code class="lang-csharp">int indent = view.GetInt32(&quot;format:indent:size&quot;, fallback: 4);        // 4 if the key is missing - but FormatException still fires on malformed values
+string logTo = view.GetString(&quot;logging:writeTo&quot;, fallback: &quot;console&quot;);
+</code></pre>
+<p><code>TryGetXxx</code> never throws - including on malformed values. Use it when you cannot trust the source text and want
+diagnostics on a per-key basis.</p>
+<pre><code class="lang-csharp">if (view.TryGetInt32(&quot;format:indent:size&quot;, out int size))
+{
+    // size is set
+}
+</code></pre>
+<h3 id="generic-typed-accessor---any-ispanparsablet">Generic typed accessor - any <code>ISpanParsable&lt;T&gt;</code></h3>
+<pre><code class="lang-csharp">double threshold = view.GetValue&lt;double&gt;(&quot;limits:cpu:threshold&quot;);
+TimeSpan timeout = view.GetValue&lt;TimeSpan&gt;(&quot;network:read:timeout&quot;);
+Guid     correlation = view.GetValue&lt;Guid&gt;(&quot;trace:correlation:id&quot;);
+</code></pre>
+<p>All parsing uses <code>CultureInfo.InvariantCulture</code> so behaviour is deterministic across locales.</p>
+<h3 id="profile-presets">Profile presets</h3>
+<pre><code class="lang-csharp">// Strict - duplicate keys are rejected, key-only properties forbidden, inline comments off.
+ConfigurationDocument generated = ConfigurationDocument.Parse(
+    text,
+    ConfigurationParseOptions.Strict);
+
+// EditorConfig-compatible - inline comments disabled, identity key mapping (keys keep their dots), keys lowercased.
+// The matching resolve preset, ConfigurationResolveOptions.EditorConfigCompatible, leaves the preamble out of the view.
+ConfigurationDocument editorConfig = ConfigurationDocument.Parse(
+    text,
+    ConfigurationParseOptions.EditorConfigCompatible);
+
+// Pick a profile at runtime.
+ConfigurationProfile profile = userProfile;
+ConfigurationParseOptions options = ConfigurationParseOptions.For(profile);
+</code></pre>
+<h3 id="collect-diagnostics-instead-of-throwing">Collect diagnostics instead of throwing</h3>
+<pre><code class="lang-csharp">ConfigurationParseOptions options = ConfigurationParseOptions.Relaxed; // DiagnosticMode = Collect
+
+ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(text, options);
+
+foreach (ConfigurationDiagnostic d in result.Diagnostics)
+{
+    Console.WriteLine($&quot;{d.Severity} {d.Code} at line {d.Location.LineNumber}: {d.Message}&quot;);
+}
+
+if (result.Diagnostics.Length == 0)
+{
+    // Clean parse - document is fully usable.
+    ConfigurationView view = result.Document.Resolve(&quot;src/Foo.cs&quot;);
+}
+</code></pre>
+<p><code>ParseWithDiagnostics</code> returns successfully even when the document contains recoverable issues; valid sections remain
+usable in <code>result.Document</code>. Under the default <code>Throw</code> diagnostic mode, the same method raises
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a> on the first error.</p>
+<h3 id="load-from-a-file-or-stream">Load from a file or stream</h3>
+<pre><code class="lang-csharp">ConfigurationDocument fromPath = ConfigurationDocument.Load(&quot;.boduconfig&quot;);
+
+await using FileStream fs = File.OpenRead(&quot;bodu.config&quot;);
+ConfigurationDocument fromStream = ConfigurationDocument.Load(fs);
+</code></pre>
+<p><code>Load(path)</code> records the full path of the file's directory, and <code>Resolve</code> rebases a target path that lies under it when
+no <code>PathRoot</code> is set, so anchored glob patterns (e.g. <code>[src/**]</code>) are relative to the file, as EditorConfig defines
+them, without an explicit <code>PathRoot</code> setting; a <code>PathRoot</code> you set still wins. Pass the target as a full path: a
+relative one is matched as given. <code>Load(Stream)</code>, <code>Load(TextReader)</code> and <code>Parse(string)</code> produce documents with no path
+context: an anchored glob is matched against the target path as given, so <code>[src/*.txt]</code> matches <code>src/a.txt</code>, and
+<code>ConfigurationResolveOptions.PathRoot</code> only rebases a target that lies under it. <code>MissingPathRootMode</code> matters only when
+<code>Resolve</code> gets no target path and no root is known: <code>UseEmptyRoot</code> (the <code>Bodu</code> profile default) returns the
+preamble-only view, and <code>Throw</code> (which the <code>EditorConfigCompatible</code> profile selects) raises <code>InvalidOperationException</code>.</p>
+<h3 id="resolve-options---anchor-a-path-root">Resolve options - anchor a path root</h3>
+<pre><code class="lang-csharp">ConfigurationDocument doc = ConfigurationDocument.Parse(source);
+
+ConfigurationResolveOptions options = new()
+{
+    PathRoot = &quot;/home/user/projects/my-app&quot;,
+    ApplyPreambleProperties = true,
+    UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue, // EditorConfig sentinel
+};
+
+ConfigurationView view = doc.Resolve(&quot;src/Bodu/Foo.cs&quot;, options);
+</code></pre>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>A target path is required for glob sections to match. <code>doc.Resolve()</code> with no path (or <code>null</code>) skips every named
+section and returns a preamble-only view. Always pass the file you are evaluating - <code>doc.Resolve(&quot;src/Foo.cs&quot;)</code> - when
+you want section rules to apply.</p>
+</div>
+<h3 id="trace-where-a-value-came-from">Trace where a value came from</h3>
+<pre><code class="lang-csharp">ConfigurationView view = doc.Resolve(&quot;src/Foo.cs&quot;);
+
+ConfigurationResolvedEntry? entry = view.GetEntry(&quot;format:indent:size&quot;);
+if (entry is not null)
+{
+    Console.WriteLine($&quot;{entry.Key} = {entry.Value}&quot;);
+    Console.WriteLine($&quot;  won from section: {entry.SectionPattern ?? &quot;&lt;preamble&gt;&quot;}&quot;);
+    Console.WriteLine($&quot;  source line:      {entry.SourceLocation.LineNumber}&quot;);
+}
+</code></pre>
+<p><code>GetEntry</code> returns the <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a> that won under last-wins precedence;
+<code>view.Entries</code> enumerates the same metadata for every resolved key.</p>
+<h3 id="save-round-trip">Save (round-trip)</h3>
+<pre><code class="lang-csharp">ConfigurationDocument doc = ConfigurationDocument.Parse(source);
+
+// Entry values remain mutable via the underlying IniSection API.
+doc.Sections[0].SetEntry(&quot;format.indent.size&quot;, &quot;8&quot;);
+
+ConfigurationDocument.Save(doc, &quot;/tmp/output.boduconfig&quot;);
+</code></pre>
+<p>The writer emits canonical Bodu formatting by default. Use
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationWriteOptions.html#Bodu_Text_Configuration_ConfigurationWriteOptions_EditorConfigCompatible">EditorConfigCompatible</a> when round-tripping into an
+EditorConfig-strict toolchain.</p>
+<h3 id="key-parsing">Key parsing</h3>
+<pre><code class="lang-csharp">ConfigurationKey key = ConfigurationKey.Parse(&quot;logging.level.default&quot;);
+
+string raw      = key.RawKey;             // &quot;logging.level.default&quot;
+string canonical = key.Path;              // &quot;logging:level:default&quot;
+ImmutableArray&lt;string&gt; segments = key.Segments; // [&quot;logging&quot;, &quot;level&quot;, &quot;default&quot;]
+
+// Non-throwing variant.
+if (ConfigurationKey.TryParse(userInput, out ConfigurationKey parsed))
+{
+    // parsed.Path is ready for Microsoft.Extensions.Configuration interop
+}
+</code></pre>
+<h3 id="iterate-the-resolved-view">Iterate the resolved view</h3>
+<pre><code class="lang-csharp">ConfigurationView view = doc.Resolve(&quot;src/Foo.cs&quot;);
+
+foreach (KeyValuePair&lt;string, string?&gt; kvp in view)
+{
+    Console.WriteLine($&quot;{kvp.Key} = {kvp.Value}&quot;);
+}
+
+// Or directly via the underlying read-only dictionary.
+IReadOnlyDictionary&lt;string, string?&gt; raw = view.Values;
+</code></pre>
+<p>The view implements <code>IEnumerable&lt;KeyValuePair&lt;string, string?&gt;&gt;</code> and exposes the underlying dictionary through
+<code>Values</code>, <code>Keys</code>, and <code>Count</code>.</p>
+<h2 id="end-to-end-round-trip-example">End-to-end round-trip example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+const string source = &quot;&quot;&quot;
+root = true
+
+[*.cs]
+format.indent.style = space
+format.indent.size  = 4
+&quot;&quot;&quot;;
+
+// Parse → Resolve → Read.
+ConfigurationDocument doc = ConfigurationDocument.Parse(source);
+ConfigurationView view = doc.Resolve(&quot;Bodu/Foo.cs&quot;);
+
+string style = view.GetString(&quot;format:indent:style&quot;);                 // &quot;space&quot;
+int size = view.GetInt32(&quot;format:indent:size&quot;);                       // 4
+
+// Save → Parse again → Compare.
+using StringWriter sw = new();
+ConfigurationDocument.Save(doc, sw);
+
+ConfigurationDocument reparsed = ConfigurationDocument.Parse(sw.ToString());
+Debug.Assert(reparsed.Sections.Count == doc.Sections.Count);
+Debug.Assert(reparsed.GlobalSection[&quot;root&quot;] == doc.GlobalSection[&quot;root&quot;]);
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - type map, scenario index.</li>
+<li><strong><a href="../extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a></strong> - plug into <code>IConfigurationBuilder</code>, bind to <code>IOptions&lt;T&gt;</code>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Configuration.html">Bodu.Text.Configuration API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../formats/index.html">Bodu.Text.Ini</a></strong> - the standalone INI library, for codec-only INI reading and editing.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: v1.3.0 · Commit: 613759c · Built: 2026-10-16 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
