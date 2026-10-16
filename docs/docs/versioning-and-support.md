@@ -48,7 +48,7 @@ Stored data is unchanged: calendar documents keep `workingDays="0111110"`, and c
 
 ### How compatibility is checked
 
-Every published package is compared, when it is packed, against the last release of its own stream with the .NET SDK's package validation: the Stable packages against 1.0.0, and the Preview-stream packages against 0.7.1. A removed or changed public API fails the pack unless it is recorded, with its reason, in the package's `CompatibilitySuppressions.xml`; additions pass. The comparison runs on every pull request, so a Stable break cannot reach a release by accident. The baselines move up after each release.
+Every published package is compared, when it is packed, against the last release of its own stream with the .NET SDK's package validation: the Stable packages against 1.3.0, and the Preview-stream packages against 0.7.2. A removed or changed public API fails the pack unless it is recorded, with its reason, in the package's `CompatibilitySuppressions.xml`; additions pass. The comparison runs on every pull request, so a Stable break cannot reach a release by accident. The baselines move up after each release.
 
 ## Moving between tiers
 

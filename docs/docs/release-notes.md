@@ -63,7 +63,7 @@ These changes need no code change to compile, but they can change what your code
 
 | Release | Published | What it shipped |
 |---|---|---|
-| 1.3.0 | This release | Every Stable package at 1.3.0, ten packages promoted to Stable, and the Experimental providers at 0.7.2, as above. |
+| [1.3.0](https://github.com/bslater/bodu/releases/tag/v1.3.0) | 2026-10-16 | Every Stable package at 1.3.0, ten packages promoted to Stable, and the Experimental providers at 0.7.2, as above. |
 | [`Bodu.Globalization.Calendar` 1.0.1](https://github.com/bslater/bodu/releases/tag/Bodu.Globalization.Calendar-1.0.1) | 2026-10-01 | Out of band: working-day lookups no longer overflow the stack. |
 | [`Bodu.Core` 1.0.1](https://github.com/bslater/bodu/releases/tag/Bodu.Core-1.0.1) and [`Bodu.Security.Cryptography` 1.2.0](https://github.com/bslater/bodu/releases/tag/Bodu.Security.Cryptography-1.2.0) | 2026-10-01 | Out of band: further cryptography speed-ups, with the `Bodu.Core` internals they call. |
 | [`Bodu.Security.Cryptography` 1.1.0](https://github.com/bslater/bodu/releases/tag/Bodu.Security.Cryptography-1.1.0) | 2026-09-29 | Out of band: Argon2 and cryptography speed-ups, and two conformance fixes after which data that AES-256-GCM-SIV sealed, and that AES-SIV sealed with an empty plaintext, in earlier releases does not decrypt. See [AEAD modes](../guides/cryptography/aead-modes.md). |

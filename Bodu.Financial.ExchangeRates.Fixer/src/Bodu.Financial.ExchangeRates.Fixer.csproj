@@ -3,13 +3,6 @@
     <!-- Build configuration and NuGet package metadata. -->
     <PropertyGroup>
         <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-
-        <!--
-            Stable tier, promoted from the preview stream in 1.3.0. Until 1.3.0 is on nuget.org the
-            package validates against its last preview release, since it has never shipped at the
-            Stable baseline; delete this pin then (bld/RELEASING.md, Post-publish).
-        -->
-        <PackageValidationBaselineVersion>0.7.1</PackageValidationBaselineVersion>
         <RootNamespace>Bodu</RootNamespace>
         <Title>Bodu - Fixer Exchange Rates</Title>
         <Description>Fixer (fixer.io) exchange-rate provider for Bodu.Financial. Fetches and parses the Fixer time-series and historical JSON endpoints and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over currency pairs. Includes the dependency-injection registration extensions (AddFixerExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>
