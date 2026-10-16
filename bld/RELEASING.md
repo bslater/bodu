@@ -203,7 +203,7 @@ unable to confirm that anything is new.
    promoted from the preview stream (see
    [Promoting a package to Stable](#promoting-a-package-to-stable)), so it
    validates against the Stable baseline from then on: 1.3.0 promoted ten,
-   each pinned to 0.7.1. Verify once
+   each pinned to 0.7.1 until 1.3.0 was published. Verify once
    nuget.org lists the packages (each baseline package is restored during
    validation), with the release's own pack, which validates both streams:
 

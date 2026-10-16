@@ -134,25 +134,24 @@ stream it publishes in, on every pull request.
 | `Bodu.Security.Cryptography-1.1.0` | 2026-09-29 | Out of band: the speed-ups of `plans/argon2-performance.md` and `plans/crypto-performance.md`, and two conformance fixes (AES-256-GCM-SIV's message key, AES-SIV's empty plaintext) after which data those modes sealed in earlier versions does not decrypt. |
 | `Bodu.Core-1.0.1`, `Bodu.Security.Cryptography-1.2.0` | 2026-10-01 | Out of band: follow-ups F1-F13 of `plans/crypto-performance-followups.md`; Core 1.0.1 carries the internals 1.2.0 calls. |
 | `Bodu.Globalization.Calendar-1.0.1` | 2026-10-01 | Out of band: working-day lookups no longer overflow the stack. |
+| `v1.3.0` | 2026-10-16 | Every Stable package at 1.3.0, the three out-of-band packages rejoining the lock-step stream; ten packages promoted to Stable; the IMF, Yahoo and OFX providers Experimental at 0.7.2; `DayOfWeekSet` replaces `WeekPattern`. |
 
-**Next: 1.3.0.** `BoduBaseVersion` is 1.3.0 and `BoduPreviewVersion`
-0.7.2, so every Stable package ships at 1.3.0 and every package left on
-the preview stream at 0.7.2; no package joins the manifest. Ten
-packages move from the preview stream to Stable: `Bodu.IO.Pst` and the
+**1.3.0.** Every Stable package shipped at 1.3.0 and every package left
+on the preview stream at 0.7.2; no package joined the manifest. Ten
+packages moved from the preview stream to Stable: `Bodu.IO.Pst` and the
 three Outlook packages, and the six exchange-rate providers over
-published APIs (BoE, ECB, RBA, Fixer, exchangerate.host and FRED). Until
-1.3.0 is on nuget.org each pins its package validation to its 0.7.1
-release. The IMF, Yahoo and OFX providers read feeds their operators do
-not publish as APIs, so they are retiered Experimental and stay on the
-preview stream. The Stable stream moves past
-`Bodu.Security.Cryptography` 1.2.0, the highest out-of-band version,
-and the out-of-band overrides are retired. The release carries what
-master has gained since 1.0.0 beyond the out-of-band releases (see
-*Active focus*), including one deliberate break inside the Stable line:
-`DayOfWeekSet` replaces `WeekPattern` in `Bodu.Core`,
-`Bodu.Globalization.Calendar` and `Bodu.Globalization.Calendar.Builder`,
-recorded in their `CompatibilitySuppressions.xml` until the Stable
-validation baseline moves to 1.3.0.
+published APIs (BoE, ECB, RBA, Fixer, exchangerate.host and FRED). The
+IMF, Yahoo and OFX providers read feeds their operators do not publish
+as APIs, so they were retiered Experimental and stay on the preview
+stream. The Stable stream moved past `Bodu.Security.Cryptography` 1.2.0,
+the highest out-of-band version, and the out-of-band overrides were
+retired. The release carried what master had gained since 1.0.0 beyond
+the out-of-band releases (see *Active focus*), including one deliberate
+break inside the Stable line: `DayOfWeekSet` replaces `WeekPattern` in
+`Bodu.Core`, `Bodu.Globalization.Calendar` and
+`Bodu.Globalization.Calendar.Builder`, recorded in their
+`CompatibilitySuppressions.xml` until the validation baseline moved to
+1.3.0 after the publish.
 
 **Withheld.** Four packages pack with the solution but are deliberately
 not published. `bld/release-manifest.txt` records why, and removing an
@@ -166,13 +165,11 @@ entry from that list is the decision to ship it:
 | `Bodu.Globalization.Calendar.Build` | Preview | The MSBuild integration (`DevelopmentDependency`) for that tool, held back for the same reason. |
 
 **Package validation.** Each stream is compared with its own last
-lock-step release: `BoduPackageValidationBaseline` is 1.0.0 for the
-Stable packages and `BoduPreviewPackageValidationBaseline` 0.7.1 for the
+lock-step release: `BoduPackageValidationBaseline` is 1.3.0 for the
+Stable packages and `BoduPreviewPackageValidationBaseline` 0.7.2 for the
 Preview ones. After each publish, `bld/RELEASING.md` (Post-publish)
 moves the Stable baseline to the version just published, and the
-Preview one only when the release moved `BoduPreviewVersion`; after
-1.3.0 that is 1.3.0 and 0.7.2, and the ten packages 1.3.0 promotes drop
-their 0.7.1 pins.
+Preview one only when the release moved `BoduPreviewVersion`.
 
 ## Non-goals
 
@@ -1682,8 +1679,8 @@ non-test, non-benchmark package: the default is set in
 project or per build) and the gate is applied in
 `Directory.Build.targets`, where `IsTestProject` and the benchmark flag
 are resolved. Each version stream is compared with its own last
-lock-step release: `BoduPackageValidationBaseline` (Stable, 1.0.0
-today) and `BoduPreviewPackageValidationBaseline` (Preview, 0.7.1
+lock-step release: `BoduPackageValidationBaseline` (Stable, 1.3.0
+today) and `BoduPreviewPackageValidationBaseline` (Preview, 0.7.2
 today) in `bld/Versioning.props`. A baseline applies to a package only
 once it has reached the version that package first shipped at in
 `bld/release-manifest.txt`, so a new wave never asks ApiCompat for a
