@@ -10,7 +10,7 @@ namespace Bodu.Formats.Outlook;
 /// Verifies the behavior of <see cref="OutlookRecipient" />, the recipient view.
 /// </summary>
 [TestClass]
-public class OutlookRecipientTests
+public partial class OutlookRecipientTests
 {
     /// <summary>
     /// Verifies that the conveniences surface their underlying properties.
