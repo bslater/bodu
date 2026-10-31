@@ -353,8 +353,8 @@ of `CrcCore.cs` and `Bodu.IO.Pst` showed none of it; closing a line in that file
 would have moved a row that does not own it. Splitting the sets out cost
 `Outlook.Msg` 1.1pp and gained `ExchangeRates.Caching` 0.3pp, with the solution
 figure unchanged - a correction, not a regression, so the two `Outlook.Msg`
-ratchet floors were lowered by hand to match. That is the only circumstance in
-which a floor comes down. The Outlook decode layer was the same kind of
+ratchet floors were lowered by hand to match. That, and the hardware case
+below, are the only circumstances in which a floor comes down. The Outlook decode layer was the same kind of
 correction when it joined the table: the merge had credited it to
 `Outlook.Msg`, the first host it emits, while a collection of `Outlook.Pst`
 alone credited it to that package instead (88.6% line there, against 94.0% for
@@ -362,6 +362,19 @@ the package's own code). Its unit and both readers' floors were reset by hand
 from a net10.0 collection of the two readers' test projects, less the grace
 band: the unit at 96.7 / 94.6, `Outlook.Msg` at 94.3 / 93.0 and `Outlook.Pst`
 at 93.5 / 88.0 (line / branch).
+
+`Bodu.Security.Cryptography` is the hardware case, a measurement correction
+rather than an attribution one. Its floor of 97.9 / 93.6 was recorded from a
+host with AVX-512, and the hosted runners are a mixed fleet. On a crypto shard
+without AVX-512 the kernel files are excluded per package (above), but the 99
+lines that select and dispatch them, the `KernelKind.Avx512` arms and the
+`Vector512.IsHardwareAccelerated` paths inside the scalar files, cannot execute
+either, and no file pattern names them. The floor was reset to 96.9 / 92.0, the
+figure the scheduled run of 25 October 2026 reads with the exclusion applied,
+so the package meets it on either kind of runner. A later
+`tools/Update-CoverageThresholds.ps1` from a run whose crypto shard had AVX-512
+would raise it past what a shard without AVX-512 can reach, so that floor is
+raised only from a run whose crypto shard lacked AVX-512.
 
 The last two sets joined the table the same way, from a net10.0 collection of
 the 20 test projects under `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`,
