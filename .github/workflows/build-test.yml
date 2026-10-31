@@ -6,6 +6,16 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
+    inputs:
+      consumer_smoke_version:
+        description: >-
+          Optional: the Stable version at which nuget.org publishes the packages (e.g. "1.3.0").
+          When set, the shipping-pack job's consumer smoke consumes the packages nuget.org publishes at
+          that version (the preview stream at the BoduPreviewVersion this checkout names) instead of
+          the packages the job packs: the post-publish check in bld/RELEASING.md. Leave empty for the
+          usual run, which consumes the job's own pack.
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -716,3 +726,26 @@ jobs:
             --output "$RUNNER_TEMP/shipping-packages" \
             -p:BoduShipping=true \
             -p:TreatWarningsAsErrors=true
+
+      # The consumer boundary (#1362). The packages the pack just wrote are restored into a console project
+      # outside the checkout, from an empty NuGet cache, with no project reference, on every framework in
+      # BoduNetTargets, then built with warnings as errors and run. A packaging mistake that only a
+      # consumer sees - a dependency missing from a nuspec, a documentation file left out, a framework
+      # claimed but not carried - fails here rather than at a consumer's first restore. A manual run that
+      # sets consumer_smoke_version points the smoke at nuget.org instead, for the post-publish check.
+      - name: Consume the shipping packages from a clean cache
+        shell: bash
+        env:
+          # Empty except for a manual run that names a published version.
+          PUBLISHED_VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.consumer_smoke_version || '' }}
+        run: |
+          if [ -n "$PUBLISHED_VERSION" ]; then
+            bash bld/consumer-smoke.sh \
+              --source https://api.nuget.org/v3/index.json \
+              --version "$PUBLISHED_VERSION" \
+              --output "$RUNNER_TEMP/consumer-smoke"
+          else
+            bash bld/consumer-smoke.sh \
+              --feed "$RUNNER_TEMP/shipping-packages" \
+              --output "$RUNNER_TEMP/consumer-smoke"
+          fi
