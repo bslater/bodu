@@ -57,4 +57,41 @@ public partial class EcbRateProviderOptionsTests
 
         Assert.AreEqual("feed", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that a feed whose file name is empty is rejected, since an empty name resolves to the base address
+    /// itself rather than to a feed beneath it.
+    /// </summary>
+    [TestMethod]
+    public void ResolveFeedUrl_WhenFeedFileNameIsEmpty_ShouldThrowArgumentException()
+    {
+        EcbRateProviderOptions options = new();
+        EcbRateFeed feed = new("crafted", string.Empty, null);
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = options.ResolveFeedUrl(feed);
+        });
+
+        Assert.AreEqual("feed", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a feed file name rooted with a backslash is rejected as a rooted path. A name rooted with a
+    /// slash is read as an absolute file path on Unix and rejected as an absolute URI there, so the backslash is the
+    /// rooted shape that reaches the rooted-path check itself on every platform.
+    /// </summary>
+    [TestMethod]
+    public void ResolveFeedUrl_WhenFeedFileNameIsBackslashRooted_ShouldThrowArgumentException()
+    {
+        EcbRateProviderOptions options = new();
+        EcbRateFeed feed = new("crafted", "\\rooted.xml", null);
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = options.ResolveFeedUrl(feed);
+        });
+
+        Assert.AreEqual("feed", ex.ParamName);
+    }
 }
