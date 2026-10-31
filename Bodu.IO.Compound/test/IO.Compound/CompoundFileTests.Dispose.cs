@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.IO;
+
 namespace Bodu.IO.Compound;
 
 public partial class CompoundFileTests
@@ -48,5 +50,32 @@ public partial class CompoundFileTests
         {
             _ = source.ReadByte();
         });
+    }
+
+    /// <summary>
+    /// Verifies that disposing a file opened for update with <c>leaveOpen</c> after a commit faulted part way through
+    /// the write neither throws nor touches the destination again: no further write or flush reaches it, and its
+    /// length is what the faulted commit left.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCommitFaultedMidWrite_ShouldWriteNothingMore()
+    {
+        using var destination = new FaultingWriteStream(CreateSeedContainer(), MidWriteFaultBytes);
+        CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+        Assert.ThrowsExactly<IOException>(() =>
+        {
+            file.Commit();
+        });
+
+        var writeCount = destination.WriteCount;
+        var flushCount = destination.FlushCount;
+        var length = destination.Length;
+
+        file.Dispose();
+
+        Assert.AreEqual(writeCount, destination.WriteCount);
+        Assert.AreEqual(flushCount, destination.FlushCount);
+        Assert.AreEqual(length, destination.Length);
     }
 }

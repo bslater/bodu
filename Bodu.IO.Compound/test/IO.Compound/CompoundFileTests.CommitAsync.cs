@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using Bodu.IO.Compound.Builders;
 using Bodu.Test;
+using Bodu.Test.IO;
 
 namespace Bodu.IO.Compound;
 
@@ -291,5 +292,216 @@ public partial class CompoundFileTests
         });
 
         CollectionAssert.AreEqual(original, destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> in update mode, when its staged tree cannot be written,
+    /// leaves the file dirty, and that a <see cref="CompoundFile.Revert" /> followed by a commit succeeds and writes the
+    /// tree that was loaded.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenStagedTreeCannotBeWritten_ShouldStayDirtyAndCommitAfterRevert()
+    {
+        using var destination = new MemoryStream();
+        destination.Write(CreateSeedContainer());
+        destination.Position = 0;
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        CompoundStorage storage = file.RootStorage;
+        for (int depth = 0; depth < 70; depth++)
+            storage = storage.CreateStorage("S");
+
+        await Assert.ThrowsExactlyAsync<CompoundFileSerializationException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        Assert.IsTrue(file.IsDirty);
+
+        file.Revert();
+        await file.CommitAsync();
+
+        Assert.IsFalse(file.IsDirty);
+        AssertHoldsSeedContainer(destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> in update mode, when its destination faults part way
+    /// through the write, throws the destination's <see cref="IOException" /> unwrapped, leaves the file dirty, and
+    /// leaves the destination partially written: shorter than the container, longer than nothing, and not a container
+    /// the reader accepts.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenDestinationFaultsMidWrite_ShouldLeaveDestinationPartiallyWrittenAndFileDirty()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var destination = new FaultingWriteStream(seed, MidWriteFaultBytes);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+
+        await Assert.ThrowsExactlyAsync<IOException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        Assert.IsTrue(file.IsDirty);
+        AssertPartiallyWritten(destination.ToArray(), full);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> retried over a destination that faulted part way through
+    /// the previous write produces the bytes a fault-free commit of the same tree produces, clears the dirty state, and
+    /// reopens with the staged entries.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenRetriedAfterMidWriteFault_ShouldWriteWholeContainer()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var destination = new FaultingWriteStream(seed, MidWriteFaultBytes);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+        await Assert.ThrowsExactlyAsync<IOException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        destination.Disarm();
+        await file.CommitAsync();
+
+        Assert.IsFalse(file.IsDirty);
+        CollectionAssert.AreEqual(full, destination.ToArray());
+        AssertHoldsSampleEdits(destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> whose destination throws from its flush propagates the
+    /// <see cref="IOException" /> after every sector has been written and leaves the file dirty, and that a retry once
+    /// the destination flushes again writes the whole container a second time, flushes it, and clears the dirty state.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenDestinationFlushThrows_ShouldPropagateAndStayDirtyUntilRetried()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var destination = new FaultingWriteStream(seed, long.MaxValue, throwOnFlush: true);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+
+        await Assert.ThrowsExactlyAsync<IOException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        Assert.IsTrue(file.IsDirty);
+        Assert.AreEqual(1, destination.FlushCount);
+        Assert.AreEqual(full.LongLength, destination.BytesWritten);
+
+        destination.Disarm();
+        await file.CommitAsync();
+
+        Assert.IsFalse(file.IsDirty);
+        Assert.AreEqual(2, destination.FlushCount);
+        Assert.AreEqual(2 * full.LongLength, destination.BytesWritten);
+        CollectionAssert.AreEqual(full, destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> canceled part way through the write throws
+    /// <see cref="OperationCanceledException" /> carrying the caller's token, leaves the file dirty, and leaves the
+    /// destination partially written: shorter than the container, longer than nothing, and not a container the reader
+    /// accepts.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenCanceledMidWrite_ShouldThrowOperationCanceledExceptionAndStayDirty()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var cts = new CancellationTokenSource();
+        using var destination = new CancellationTriggerWriteStream(seed, cts, MidWriteFaultBytes);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+
+        var ex = await Assert.ThrowsExactlyAsync<OperationCanceledException>(async () =>
+        {
+            await file.CommitAsync(cts.Token);
+        });
+
+        Assert.AreEqual(cts.Token, ex.CancellationToken);
+        Assert.IsTrue(file.IsDirty);
+        Assert.IsTrue(destination.HasTriggered);
+        AssertPartiallyWritten(destination.ToArray(), full);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> retried with a fresh token after a commit was canceled part
+    /// way through the write produces the bytes a fault-free commit of the same tree produces, clears the dirty state,
+    /// and reopens with the staged entries.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenRetriedWithFreshTokenAfterCancellation_ShouldWriteWholeContainer()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var cts = new CancellationTokenSource();
+        using var destination = new CancellationTriggerWriteStream(seed, cts, MidWriteFaultBytes);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+        await Assert.ThrowsExactlyAsync<OperationCanceledException>(async () =>
+        {
+            await file.CommitAsync(cts.Token);
+        });
+
+        using var fresh = new CancellationTokenSource();
+        await file.CommitAsync(fresh.Token);
+
+        Assert.IsFalse(file.IsDirty);
+        CollectionAssert.AreEqual(full, destination.ToArray());
+        AssertHoldsSampleEdits(destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> to a non-seekable destination that faults part way through
+    /// the write leaves the bytes written so far in place, and that a retry appends one whole container after them, as
+    /// the documented append-at-current-position behavior of a non-seekable destination requires.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenNonSeekableDestinationFaultsMidWrite_ShouldAppendRetryAfterPartialBytes()
+    {
+        byte[] full;
+        using (var plain = new MemoryStream())
+        {
+            using CompoundFile reference = CreateSampleTree(plain);
+            await reference.CommitAsync();
+            full = plain.ToArray();
+        }
+
+        using var sink = new FaultingWriteStream(MidWriteFaultBytes, seekable: false);
+        using CompoundFile file = CreateSampleTree(sink);
+        await Assert.ThrowsExactlyAsync<IOException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        var partial = (int)sink.BytesWritten;
+        Assert.IsTrue(file.IsDirty);
+        Assert.IsGreaterThan(0, partial);
+        Assert.IsLessThan(full.Length, partial);
+
+        sink.Disarm();
+        await file.CommitAsync();
+
+        byte[] written = sink.ToArray();
+        Assert.IsFalse(file.IsDirty);
+        Assert.AreEqual(partial + full.Length, written.Length);
+        CollectionAssert.AreEqual(full.AsSpan(0, partial).ToArray(), written.AsSpan(0, partial).ToArray());
+        CollectionAssert.AreEqual(full, written.AsSpan(partial).ToArray());
     }
 }
