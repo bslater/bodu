@@ -81,13 +81,14 @@ rate (the measurement less the 0.5pp grace band, as
 has no floor, so a new package is gated from its first collection. The floor is
 a gate, not a target: a package well above it is not
 "finished", and a package at it is not in trouble. What the invariant buys is
-that a new gap has to be introduced deliberately - the ratchet fails the build
-before an untested subsystem can arrive quietly inside an otherwise healthy
-package total. In `.github/workflows/coverage.yml` the ratchet is report-only
-until its floors have proven stable: its outcome is written under a "Coverage
-ratchet" heading in the job summary, a failure also raises a warning annotation,
-and the check's output is kept as `ratchet.txt` in the `coverage-report`
-artifact, so a failed ratchet no longer passes unnoticed behind a green run.
+that a new gap has to be introduced deliberately - the ratchet is built to fail
+the build before an untested subsystem can arrive quietly inside an otherwise
+healthy package total. In `.github/workflows/coverage.yml` the ratchet is
+report-only until its floors have proven stable: its outcome is written under a
+"Coverage ratchet" heading in the job summary, a failure also raises a warning
+annotation, and the check's output is kept as `ratchet.txt` in the
+`coverage-report` artifact, so a failed ratchet no longer passes unnoticed
+behind a green run.
 
 Two consequences worth stating, because both were live questions while the floor
 was being established:

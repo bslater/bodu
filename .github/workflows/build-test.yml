@@ -257,12 +257,14 @@ jobs:
       # An ordinary run writes nothing into the tree: the root .runsettings and test.runsettings exclude
       # the Census tier, which rewrites the committed kat-census.txt (#1349), and this step is the guard
       # that the tests and samples left every tracked file as the checkout had it. The Pack step above
-      # rewrites the committed analyzer package under local-packages/, so that path is not judged. An
-      # untracked file is reported without failing the job, TestResults/ and FailedTestResults/
-      # excepted, which the TRX steps write.
+      # rewrites the committed analyzer package, local-packages/Bodu.CodeStyle.XmlDocumentation.*.nupkg
+      # (a glob, so that a version bump still matches), so that one file is not judged; every other
+      # package under local-packages/ is. An untracked file is reported without failing the job,
+      # TestResults/ and FailedTestResults/ excepted, which the TRX steps write.
       - name: Check the tests and samples left the tracked files unchanged
         run: |
-          changed=$(git status --porcelain --untracked-files=no -- . ':(exclude)local-packages/')
+          changed=$(git status --porcelain --untracked-files=no \
+            -- . ':(exclude,glob)local-packages/Bodu.CodeStyle.XmlDocumentation.*.nupkg')
 
           if [ -n "$changed" ]; then
             while IFS= read -r entry; do
