@@ -131,4 +131,40 @@ public partial class ConcurrentHashSetTests
         Assert.IsFalse(empty.Overlaps([1, 2]));
         Assert.IsTrue(empty.SetEquals([]));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.IsProperSubsetOf" /> returns <see langword="false" /> for a set
+    /// that is smaller than the other collection but holds an element the other collection lacks.
+    /// </summary>
+    [TestMethod]
+    public void IsProperSubsetOf_WhenSmallerButNotContained_ShouldReturnFalse()
+    {
+        var set = new ConcurrentHashSet<int>([1, 2]);
+
+        Assert.IsFalse(set.IsProperSubsetOf([1, 3, 4]));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.IsProperSupersetOf" /> returns <see langword="false" /> for a set
+    /// that is larger than the other collection but lacks one of its elements.
+    /// </summary>
+    [TestMethod]
+    public void IsProperSupersetOf_WhenLargerButNotContaining_ShouldReturnFalse()
+    {
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
+
+        Assert.IsFalse(set.IsProperSupersetOf([1, 4]));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.SetEquals" /> returns <see langword="false" /> when the two
+    /// collections have the same number of elements but differ in membership.
+    /// </summary>
+    [TestMethod]
+    public void SetEquals_WhenSameCountButDifferentElements_ShouldReturnFalse()
+    {
+        var set = new ConcurrentHashSet<int>([1, 2]);
+
+        Assert.IsFalse(set.SetEquals([1, 3]));
+    }
 }

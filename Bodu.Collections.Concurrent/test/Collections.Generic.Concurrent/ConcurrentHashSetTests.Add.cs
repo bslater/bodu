@@ -92,4 +92,25 @@ public partial class ConcurrentHashSetTests
         Assert.IsFalse(set.Add("HELLO"));
         Assert.AreEqual(1, set.Count);
     }
+
+    /// <summary>
+    /// Verifies that when the comparer appends a colliding element to the insertion window, from inside the traversal
+    /// that is deciding where to insert, the insertion's compare-and-swap fails, the traversal is retried, and both
+    /// elements end up stored.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenComparerAppendsCollidingElementReentrantly_ShouldRetryAndStoreBoth()
+    {
+        var comparer = new ReentrantComparer();
+        var set = new ConcurrentHashSet<int>(comparer);
+        set.Add(2);
+        set.Add(7);
+        comparer.OnEquals = () => Assert.IsTrue(set.Add(9), "The re-entrant insert into the colliding run must succeed.");
+
+        Assert.IsTrue(set.Add(3));
+
+        Assert.IsNull(comparer.OnEquals, "The callback must have run from inside the insertion's traversal.");
+        Assert.AreEqual(4, set.Count);
+        AssertContainsExactly(set, 2, 7, 9, 3);
+    }
 }

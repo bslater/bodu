@@ -302,4 +302,25 @@ public partial class ConcurrentEvictingDictionaryTests
         Assert.IsNull(dictionary.Expiration);
         Assert.IsTrue(dictionary.TryGetValue("a", out _));
     }
+
+    /// <summary>
+    /// Verifies that a time-to-live of <see cref="TimeSpan.MaxValue" /> saturates the expiration deadline at
+    /// <see cref="long.MaxValue" /> instead of overflowing, both when the entry is added and when a sliding read
+    /// refreshes it, so the entry never expires.
+    /// </summary>
+    [TestMethod]
+    public void Expiration_WhenTimeToLiveIsMaxValue_ShouldSaturateDeadlineAndNeverExpire()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(1), EvictingDictionaryExpirationKind.Sliding, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+        dictionary.Add("eternal", 1, TimeSpan.MaxValue);
+
+        time.Advance(TimeSpan.FromDays(365 * 5000));
+        Assert.IsTrue(dictionary.TryGetValue("eternal", out int value), "The saturated deadline must outlast any clock advance.");
+        Assert.AreEqual(1, value);
+
+        time.Advance(TimeSpan.FromDays(365 * 1000));
+        Assert.IsTrue(dictionary.ContainsKey("eternal"), "The sliding refresh must saturate again rather than overflow.");
+    }
 }
