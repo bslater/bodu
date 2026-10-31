@@ -149,4 +149,55 @@ public partial class WebRateProviderExtensionsTests
             _ = GetResilienceOptions(provider);
         });
     }
+
+    /// <summary>
+    /// Verifies that with no resilience delegate, the explicit-selector overload aligns the pipeline's timeouts from
+    /// the timeout its selector returns: the attempt timeout is the selected value and the total-request timeout
+    /// three times it, as observed once the named client has been built through <see cref="IHttpClientFactory" />.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenConfigureResilienceIsNull_ForExplicitSelectors_ShouldAlignTheTimeoutsFromTheSelector()
+    {
+        var timeout = TimeSpan.FromSeconds(7);
+        using ServiceProvider provider = CreateExplicitSelectorServices(
+            configure: o =>
+            {
+                PlainDefaultConfigure(o);
+                o.HttpTimeout = timeout;
+            },
+            configureResilience: null)
+            .BuildServiceProvider();
+
+        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient(TestHttpClientName);
+        HttpStandardResilienceOptions options = GetResilienceOptions(provider);
+
+        Assert.AreEqual(Timeout.InfiniteTimeSpan, client.Timeout);
+        Assert.AreEqual(timeout, options.AttemptTimeout.Timeout);
+        Assert.AreEqual(timeout * 3, options.TotalRequestTimeout.Timeout);
+    }
+
+    /// <summary>
+    /// Verifies that the resilience delegate the explicit-selector overload takes runs after the timeout alignment,
+    /// so it can override what the shared machinery computed from the selector, and that the named client still
+    /// builds through <see cref="IHttpClientFactory" /> with the override in place.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenConfigureResilienceSupplied_ForExplicitSelectors_ShouldApplyItAfterTimeoutAlignment()
+    {
+        var overridden = TimeSpan.FromSeconds(2);
+        using ServiceProvider provider = CreateExplicitSelectorServices(
+            configure: o =>
+            {
+                PlainDefaultConfigure(o);
+                o.HttpTimeout = TimeSpan.FromSeconds(7);
+            },
+            configureResilience: o => o.AttemptTimeout.Timeout = overridden)
+            .BuildServiceProvider();
+
+        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient(TestHttpClientName);
+
+        // 2s, not the 7s the alignment computed from the selector - so the delegate ran last.
+        Assert.AreEqual(Timeout.InfiniteTimeSpan, client.Timeout);
+        Assert.AreEqual(overridden, GetResilienceOptions(provider).AttemptTimeout.Timeout);
+    }
 }
