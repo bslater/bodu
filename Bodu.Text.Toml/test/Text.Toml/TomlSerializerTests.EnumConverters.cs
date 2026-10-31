@@ -601,6 +601,10 @@ public partial class TomlSerializerTests
     [DataRow("Int16", "-32769", false, DisplayName = "short, one below the range, by name")]
     [DataRow("Int32", "2147483648", false, DisplayName = "int, one above the range, by name")]
     [DataRow("Int32", "-2147483649", false, DisplayName = "int, one below the range, by name")]
+    [DataRow("UInt16", "65536", false, DisplayName = "ushort, one above the range, by name")]
+    [DataRow("UInt16", "-1", false, DisplayName = "ushort, one below the range, by name")]
+    [DataRow("UInt32", "4294967296", false, DisplayName = "uint, one above the range, by name")]
+    [DataRow("UInt32", "-1", false, DisplayName = "uint, one below the range, by name")]
     [DataRow("UInt64", "-1", false, DisplayName = "ulong, one below the range, by name")]
     [DataRow("SByte", "128", true, DisplayName = "sbyte, one above the range, number converter")]
     [DataRow("SByte", "-129", true, DisplayName = "sbyte, one below the range, number converter")]
@@ -610,6 +614,10 @@ public partial class TomlSerializerTests
     [DataRow("Int16", "-32769", true, DisplayName = "short, one below the range, number converter")]
     [DataRow("Int32", "2147483648", true, DisplayName = "int, one above the range, number converter")]
     [DataRow("Int32", "-2147483649", true, DisplayName = "int, one below the range, number converter")]
+    [DataRow("UInt16", "65536", true, DisplayName = "ushort, one above the range, number converter")]
+    [DataRow("UInt16", "-1", true, DisplayName = "ushort, one below the range, number converter")]
+    [DataRow("UInt32", "4294967296", true, DisplayName = "uint, one above the range, number converter")]
+    [DataRow("UInt32", "-1", true, DisplayName = "uint, one below the range, number converter")]
     [DataRow("UInt64", "-1", true, DisplayName = "ulong, one below the range, number converter")]
     public void Deserialize_WhenIntegerIsOutsideEnumUnderlyingRange_ShouldThrowTomlSerializationException(
         string member,
@@ -651,6 +659,10 @@ public partial class TomlSerializerTests
     [DataRow("Int32", "-2147483648", false, DisplayName = "int, the minimum, by name")]
     [DataRow("Int64", "9223372036854775807", false, DisplayName = "long, the maximum, by name")]
     [DataRow("Int64", "-9223372036854775808", false, DisplayName = "long, the minimum, by name")]
+    [DataRow("UInt16", "65535", false, DisplayName = "ushort, the maximum, by name")]
+    [DataRow("UInt16", "0", false, DisplayName = "ushort, the minimum, by name")]
+    [DataRow("UInt32", "4294967295", false, DisplayName = "uint, the maximum, by name")]
+    [DataRow("UInt32", "0", false, DisplayName = "uint, the minimum, by name")]
     [DataRow("UInt64", "9223372036854775807", false, DisplayName = "ulong, the format's maximum, by name")]
     [DataRow("UInt64", "0", false, DisplayName = "ulong, the minimum, by name")]
     [DataRow("SByte", "127", true, DisplayName = "sbyte, the maximum, number converter")]
@@ -663,6 +675,10 @@ public partial class TomlSerializerTests
     [DataRow("Int32", "-2147483648", true, DisplayName = "int, the minimum, number converter")]
     [DataRow("Int64", "9223372036854775807", true, DisplayName = "long, the maximum, number converter")]
     [DataRow("Int64", "-9223372036854775808", true, DisplayName = "long, the minimum, number converter")]
+    [DataRow("UInt16", "65535", true, DisplayName = "ushort, the maximum, number converter")]
+    [DataRow("UInt16", "0", true, DisplayName = "ushort, the minimum, number converter")]
+    [DataRow("UInt32", "4294967295", true, DisplayName = "uint, the maximum, number converter")]
+    [DataRow("UInt32", "0", true, DisplayName = "uint, the minimum, number converter")]
     [DataRow("UInt64", "9223372036854775807", true, DisplayName = "ulong, the format's maximum, number converter")]
     [DataRow("UInt64", "0", true, DisplayName = "ulong, the minimum, number converter")]
     public void Deserialize_WhenIntegerIsAtEnumUnderlyingRangeLimit_ShouldBindIt(
@@ -689,10 +705,14 @@ public partial class TomlSerializerTests
     [DataRow("SByte", "-5", false, DisplayName = "sbyte, by name")]
     [DataRow("Int64", "-123456789012", false, DisplayName = "long, by name")]
     [DataRow("UInt64", "7", false, DisplayName = "ulong, by name")]
+    [DataRow("UInt16", "9", false, DisplayName = "ushort, by name")]
+    [DataRow("UInt32", "9", false, DisplayName = "uint, by name")]
     [DataRow("Byte", "99", true, DisplayName = "byte, number converter")]
     [DataRow("SByte", "-5", true, DisplayName = "sbyte, number converter")]
     [DataRow("Int64", "-123456789012", true, DisplayName = "long, number converter")]
     [DataRow("UInt64", "7", true, DisplayName = "ulong, number converter")]
+    [DataRow("UInt16", "9", true, DisplayName = "ushort, number converter")]
+    [DataRow("UInt32", "9", true, DisplayName = "uint, number converter")]
     public void Deserialize_WhenIntegerInRangeNamesNoMember_ShouldBindUndefinedValue(
         string member,
         string literal,
@@ -1274,6 +1294,38 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// An enumeration whose underlying type is <see cref="ushort" />.
+    /// </summary>
+    private enum UInt16BasedLevel : ushort
+    {
+        /// <summary>
+        /// The low level, with underlying value <c>1</c>.
+        /// </summary>
+        Low = 1,
+
+        /// <summary>
+        /// The high level, with underlying value <c>2</c>.
+        /// </summary>
+        High = 2,
+    }
+
+    /// <summary>
+    /// An enumeration whose underlying type is <see cref="uint" />.
+    /// </summary>
+    private enum UInt32BasedLevel : uint
+    {
+        /// <summary>
+        /// The low level, with underlying value <c>1</c>.
+        /// </summary>
+        Low = 1,
+
+        /// <summary>
+        /// The high level, with underlying value <c>2</c>.
+        /// </summary>
+        High = 2,
+    }
+
+    /// <summary>
     /// An enumeration whose underlying type is <see cref="long" />.
     /// </summary>
     private enum Int64BasedLevel : long
@@ -1335,6 +1387,18 @@ public partial class TomlSerializerTests
         public Int32BasedLevel Int32 { get; set; }
 
         /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="ushort" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public UInt16BasedLevel UInt16 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="uint" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public UInt32BasedLevel UInt32 { get; set; }
+
+        /// <summary>
         /// Gets or sets the member whose enumeration is based on <see cref="long" />.
         /// </summary>
         /// <value>The value.</value>
@@ -1381,6 +1445,20 @@ public partial class TomlSerializerTests
         public Int32BasedLevel Int32 { get; set; }
 
         /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="ushort" />.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(TomlNumberEnumConverter<UInt16BasedLevel>))]
+        public UInt16BasedLevel UInt16 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="uint" />.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(TomlNumberEnumConverter<UInt32BasedLevel>))]
+        public UInt32BasedLevel UInt32 { get; set; }
+
+        /// <summary>
         /// Gets or sets the member whose enumeration is based on <see cref="long" />.
         /// </summary>
         /// <value>The value.</value>
@@ -1407,5 +1485,180 @@ public partial class TomlSerializerTests
         /// <value>The value.</value>
         [Converter(typeof(TomlNumberEnumConverter<UInt64BasedLevel>))]
         public UInt64BasedLevel Value { get; set; }
+    }
+
+    /// <summary>
+    /// Verifies that a list of flag names binds to a combination of the named members for an enumeration of each
+    /// underlying width the name table combines through its bits: one, two and eight bytes, beside the four-byte
+    /// default.
+    /// </summary>
+    /// <param name="member">The member, named for its enumeration's underlying type.</param>
+    /// <param name="text">The string's text, a list of flag names.</param>
+    /// <param name="expected">The decimal text of the combined underlying value.</param>
+    [TestMethod]
+    [DataRow("Byte", "A, B", "3", DisplayName = "byte")]
+    [DataRow("UInt16", "A, B", "32769", DisplayName = "ushort, with the high bit")]
+    [DataRow("UInt64", "A, B", "9223372036854775809", DisplayName = "ulong, with the high bit")]
+    public void Deserialize_WhenFlagsListTargetsEnumOfAnotherWidth_ShouldCombineValues(string member, string text, string expected)
+    {
+        WidthFlagsModel model = TomlSerializer.Deserialize<WidthFlagsModel>($"{member} = \"{text}\"\n");
+
+        Assert.AreEqual(expected, UnderlyingText(model, member));
+    }
+
+    /// <summary>
+    /// Verifies that a combination of flags of an enumeration of each underlying width round-trips through the
+    /// by-name default, written as the comma-separated member names.
+    /// </summary>
+    /// <param name="member">The member, named for its enumeration's underlying type.</param>
+    /// <param name="expected">The decimal text of the combined underlying value.</param>
+    [TestMethod]
+    [DataRow("Byte", "3", DisplayName = "byte")]
+    [DataRow("UInt16", "32769", DisplayName = "ushort, with the high bit")]
+    [DataRow("UInt64", "9223372036854775809", DisplayName = "ulong, with the high bit")]
+    public void SerializeDeserialize_WhenCombinedFlagsOfAnotherWidth_ShouldRoundTrip(string member, string expected)
+    {
+        WidthFlagsModel model = TomlSerializer.Deserialize<WidthFlagsModel>($"{member} = \"A, B\"\n");
+
+        string text = TomlSerializer.Serialize(model);
+        WidthFlagsModel roundTripped = TomlSerializer.Deserialize<WidthFlagsModel>(text);
+
+        Assert.IsTrue(text.Contains($"{member} = \"A, B\"\n", StringComparison.Ordinal), text);
+        Assert.AreEqual(expected, UnderlyingText(roundTripped, member));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TomlNumberEnumConverter{TEnum}" /> writes a value of an enumeration based on
+    /// <see cref="ulong" /> that lies within the range of <see cref="long" /> as that integer, so only a value above
+    /// <see cref="long.MaxValue" /> is rejected.
+    /// </summary>
+    /// <param name="value">The underlying value, within the range of <see cref="long" />.</param>
+    /// <param name="digits">The value's decimal digits.</param>
+    [TestMethod]
+    [DataRow(2UL, "2", DisplayName = "a member's value")]
+    [DataRow(9_223_372_036_854_775_807UL, "9223372036854775807", DisplayName = "long.MaxValue")]
+    public void Serialize_WhenUInt64BasedValueFitsInt64_ForNumberConverter_ShouldWriteInteger(ulong value, string digits)
+    {
+        var model = new UnsignedNumberModel { Value = (UInt64BasedLevel)value };
+
+        string text = TomlSerializer.Serialize(model);
+
+        Assert.AreEqual("Value = " + digits + "\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that an integer read for an enumeration whose underlying type is not one of the eight integral types,
+    /// which only another language can declare, is rejected with <see cref="TomlSerializationException" />, since no
+    /// integer lies within such a type's range, as System.Text.Json treats it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumUnderlyingTypeIsChar_ShouldThrowTomlSerializationException()
+    {
+        Type enumType = DefineCharBasedEnum();
+        Type modelType = typeof(Dictionary<,>).MakeGenericType(typeof(string), enumType);
+        System.Reflection.MethodInfo deserialize = typeof(TomlSerializer)
+            .GetMethod(nameof(TomlSerializer.Deserialize), [typeof(string), typeof(TomlSerializerOptions)])!
+            .MakeGenericMethod(modelType);
+
+        System.Reflection.TargetInvocationException ex = Assert.ThrowsExactly<System.Reflection.TargetInvocationException>(() =>
+        {
+            _ = deserialize.Invoke(null, ["Value = 97\n", null]);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<TomlSerializationException>(ex.InnerException);
+        Assert.IsTrue(ex.InnerException.Message.Contains("97", StringComparison.Ordinal), ex.InnerException.Message);
+    }
+
+    /// <summary>
+    /// Defines, in a dynamic assembly, an enumeration whose underlying type is <see cref="char" />, which C# cannot
+    /// declare but the runtime permits, with one member <c>Low</c> of value <c>'a'</c>.
+    /// </summary>
+    /// <returns>The enumeration type.</returns>
+    private static Type DefineCharBasedEnum()
+    {
+        var assembly = System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(
+            new System.Reflection.AssemblyName("Bodu.Text.Toml.Test.CharBasedEnum"),
+            System.Reflection.Emit.AssemblyBuilderAccess.Run);
+        System.Reflection.Emit.ModuleBuilder module = assembly.DefineDynamicModule("CharBasedEnum");
+        System.Reflection.Emit.EnumBuilder builder = module.DefineEnum("CharBasedLevel", System.Reflection.TypeAttributes.Public, typeof(char));
+        _ = builder.DefineLiteral("Low", 'a');
+
+        return builder.CreateType();
+    }
+
+    /// <summary>
+    /// A flags enumeration whose underlying type is <see cref="byte" />.
+    /// </summary>
+    [Flags]
+    private enum ByteFlags : byte
+    {
+        /// <summary>
+        /// The first flag, with underlying value <c>1</c>.
+        /// </summary>
+        A = 1,
+
+        /// <summary>
+        /// The second flag, with underlying value <c>2</c>.
+        /// </summary>
+        B = 2,
+    }
+
+    /// <summary>
+    /// A flags enumeration whose underlying type is <see cref="ushort" />, with a flag on the high bit.
+    /// </summary>
+    [Flags]
+    private enum UInt16Flags : ushort
+    {
+        /// <summary>
+        /// The first flag, with underlying value <c>1</c>.
+        /// </summary>
+        A = 1,
+
+        /// <summary>
+        /// The second flag, on the high bit, with underlying value <c>32768</c>.
+        /// </summary>
+        B = 0x8000,
+    }
+
+    /// <summary>
+    /// A flags enumeration whose underlying type is <see cref="ulong" />, with a flag on the high bit.
+    /// </summary>
+    [Flags]
+    private enum UInt64Flags : ulong
+    {
+        /// <summary>
+        /// The first flag, with underlying value <c>1</c>.
+        /// </summary>
+        A = 1,
+
+        /// <summary>
+        /// The second flag, on the high bit, with underlying value <c>9223372036854775808</c>.
+        /// </summary>
+        B = 1UL << 63,
+    }
+
+    /// <summary>
+    /// A model with a flags member of each underlying width other than four bytes, read by name as the default does.
+    /// </summary>
+    private sealed class WidthFlagsModel
+    {
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="byte" />.
+        /// </summary>
+        /// <value>The flags.</value>
+        public ByteFlags Byte { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="ushort" />.
+        /// </summary>
+        /// <value>The flags.</value>
+        public UInt16Flags UInt16 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="ulong" />.
+        /// </summary>
+        /// <value>The flags.</value>
+        public UInt64Flags UInt64 { get; set; }
     }
 }

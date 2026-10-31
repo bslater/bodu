@@ -1706,4 +1706,28 @@ public partial class YamlSerializerTests
         [Converter(typeof(YamlNumberEnumConverter<UInt64BasedLevel>))]
         public UInt64BasedLevel Value { get; set; }
     }
+
+    /// <summary>
+    /// Verifies that a value of an enumeration based on <see cref="ulong" /> within the range of <see cref="long" />
+    /// is written as a plain integer, through <see cref="YamlNumberEnumConverter{TEnum}" /> and through the default
+    /// handling with <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off, so only a value above
+    /// <see cref="long.MaxValue" /> takes the invariant-text path.
+    /// </summary>
+    /// <param name="value">The underlying value, within the range of <see cref="long" />.</param>
+    /// <param name="digits">The value's decimal digits.</param>
+    /// <param name="numberConverter">
+    /// Whether the member writes through <see cref="YamlNumberEnumConverter{TEnum}" /> rather than the default.
+    /// </param>
+    [TestMethod]
+    [DataRow(2UL, "2", false, DisplayName = "a member's value, default")]
+    [DataRow(9_223_372_036_854_775_807UL, "9223372036854775807", false, DisplayName = "long.MaxValue, default")]
+    [DataRow(2UL, "2", true, DisplayName = "a member's value, number")]
+    [DataRow(9_223_372_036_854_775_807UL, "9223372036854775807", true, DisplayName = "long.MaxValue, number")]
+    public void Serialize_WhenUInt64BasedValueFitsInt64_ShouldWriteInteger(ulong value, string digits, bool numberConverter)
+    {
+        string text = SerializeUnsignedValue((UInt64BasedLevel)value, numberConverter);
+
+        Assert.AreEqual("Value: " + digits + "\n", text);
+        Assert.AreEqual((UInt64BasedLevel)value, DeserializeUnsignedValue(text, numberConverter));
+    }
 }

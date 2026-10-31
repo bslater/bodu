@@ -300,4 +300,90 @@ public partial class TomlSerializerTests
         public override void Write(Utf8TomlWriter writer, PlainCode value, TomlSerializerOptions options) =>
             writer.WriteString("code:" + value.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
+
+    /// <summary>
+    /// Verifies that a <see cref="ConverterAttribute" /> naming a type that is not a converter throws
+    /// <see cref="InvalidOperationException" /> naming that type when the member's metadata is resolved.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenConverterAttributeNamesNonConverterType_ShouldThrowInvalidOperationException()
+    {
+        var model = new NonConverterAttributeModel { Value = 5 };
+
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(typeof(string).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="ConverterAttribute" /> naming a converter without a public parameterless constructor
+    /// throws <see cref="InvalidOperationException" /> naming that converter when the member's metadata is resolved.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenConverterAttributeNamesConverterWithoutParameterlessConstructor_ShouldThrowInvalidOperationException()
+    {
+        var model = new ScaledConverterAttributeModel { Value = 5 };
+
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(typeof(ScaledInt32Converter).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// A model whose member names <see cref="string" />, which is not a converter, as its converter.
+    /// </summary>
+    private sealed class NonConverterAttributeModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(string))]
+        public int Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose member names <see cref="ScaledInt32Converter" />, which has no parameterless constructor, as its
+    /// converter.
+    /// </summary>
+    private sealed class ScaledConverterAttributeModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(ScaledInt32Converter))]
+        public int Value { get; set; }
+    }
+
+    /// <summary>
+    /// A converter that can be built only with a scale, so a <see cref="ConverterAttribute" /> cannot instantiate it.
+    /// </summary>
+    private sealed class ScaledInt32Converter
+        : TomlConverter<int>
+    {
+        /// <summary>The factor the value is written by.</summary>
+        private readonly int _scale;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScaledInt32Converter" /> class.
+        /// </summary>
+        /// <param name="scale">The factor the value is written by.</param>
+        public ScaledInt32Converter(int scale) =>
+            _scale = scale;
+
+        /// <inheritdoc />
+        public override int Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+            (int)(reader.GetInt64() / _scale);
+
+        /// <inheritdoc />
+        public override void Write(Utf8TomlWriter writer, int value, TomlSerializerOptions options) =>
+            writer.WriteInteger((long)value * _scale);
+    }
 }

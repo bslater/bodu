@@ -900,4 +900,63 @@ public partial class TomlSerializerTests
         /// </summary>
         CanExecute = 4,
     }
+
+    /// <summary>
+    /// Verifies that the keys of a dictionary keyed by an enumeration are still written and read by the members' names
+    /// when the enumeration's registered converter is <see cref="TomlNumberEnumConverter{TEnum}" />, which reads and
+    /// writes integers and so cannot carry a table key, as System.Text.Json keys such a dictionary.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenEnumKeyedDictionaryAndNumberEnumConverterRegistered_ShouldUseMemberNamesForKeys()
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlNumberEnumConverter<Status>());
+        var model = new Dictionary<Status, int> { [Status.Archived] = 1, [Status.Active] = 2 };
+
+        string text = TomlSerializer.Serialize(model, options);
+
+        Assert.AreEqual("Archived = 1\nActive = 2\n", text);
+
+        Dictionary<Status, int> roundTripped = TomlSerializer.Deserialize<Dictionary<Status, int>>(text, options);
+        Assert.AreEqual(1, roundTripped[Status.Archived]);
+        Assert.AreEqual(2, roundTripped[Status.Active]);
+    }
+
+    /// <summary>
+    /// Verifies that a member of an abstract dictionary type, which cannot be materialized on read, is rejected with
+    /// <see cref="NotSupportedException" /> naming that type, since neither the dictionary nor the object converters
+    /// take an abstract type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenDictionaryMemberTypeIsAbstract_ShouldThrowNotSupportedException()
+    {
+        var model = new AbstractMapHostModel();
+
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(AbstractMap), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// A model with a member of an abstract dictionary type.
+    /// </summary>
+    private sealed class AbstractMapHostModel
+    {
+        /// <summary>
+        /// Gets or sets the map.
+        /// </summary>
+        /// <value>The map; <see langword="null" /> by default.</value>
+        public AbstractMap? Map { get; set; }
+    }
+
+    /// <summary>
+    /// An abstract dictionary, which no converter can materialize.
+    /// </summary>
+    private abstract class AbstractMap
+        : Dictionary<string, int>
+    {
+    }
 }

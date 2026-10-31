@@ -853,4 +853,209 @@ public partial class TomlSerializerTests
         /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on a member bound to a parameter of its owner's
+    /// constructor reads the member as usual and passes the read value to that constructor, since there is no held
+    /// instance to populate before the owner is constructed.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndMemberIsBoundToConstructorParameter_ShouldPassReadValueToConstructor()
+    {
+        PopulateConstructorBoundModel model = TomlSerializer.Deserialize<PopulateConstructorBoundModel>("[Inner]\nX = 5\n");
+
+        Assert.AreEqual(5, model.Inner.X);
+        Assert.AreEqual(0, model.Inner.Y);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on a get-only member of a struct type leaves the
+    /// held value alone, since a populated copy of a value type could not be stored back without a setter.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndGetOnlyStructMember_ShouldKeepItsValue()
+    {
+        PopulateGetOnlyStructMemberModel model = TomlSerializer.Deserialize<PopulateGetOnlyStructMemberModel>("[Point]\nX = 5\n");
+
+        Assert.AreEqual(0, model.Point.X);
+        Assert.AreEqual(7, model.Point.Y);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on a get-only member whose collection implements
+    /// <see cref="ICollection{T}" /> but not the non-generic <see cref="System.Collections.IList" />, a
+    /// <see cref="HashSet{T}" />, adds the read items to the held set.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndGetOnlySetMember_ShouldAddReadItems()
+    {
+        PopulateGetOnlySetModel model = TomlSerializer.Deserialize<PopulateGetOnlySetModel>("Tags = [3, 4]\n");
+
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4 }, model.Tags.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on a get-only member whose held value is enumerable
+    /// but is neither a list nor a generic collection, a <see cref="Queue{T}" /> held as
+    /// <see cref="IEnumerable{T}" />, leaves the held value alone, since the read items cannot be added to it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndHeldEnumerableIsNotACollection_ShouldKeepItsValue()
+    {
+        PopulateQueueEnumerableModel model = TomlSerializer.Deserialize<PopulateQueueEnumerableModel>("Items = [3]\n");
+
+        CollectionAssert.AreEqual(new[] { 1, 2 }, model.Items.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on a get-only member whose held collection
+    /// implements <see cref="ICollection{T}" /> but reports itself read-only leaves the held value alone rather than
+    /// adding to it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndHeldGenericCollectionIsReadOnly_ShouldKeepItsValue()
+    {
+        PopulateReadOnlyGenericCollectionModel model = TomlSerializer.Deserialize<PopulateReadOnlyGenericCollectionModel>("Tags = []\n");
+
+        CollectionAssert.AreEqual(new[] { 1, 2 }, model.Tags.ToArray());
+    }
+
+    /// <summary>
+    /// A model built through a constructor that takes its <see cref="PopulatedInner" /> member, which is marked
+    /// <see cref="ObjectCreationHandling.Populate" /> although it is bound to the constructor parameter.
+    /// </summary>
+    private sealed class PopulateConstructorBoundModel
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PopulateConstructorBoundModel" /> class.
+        /// </summary>
+        /// <param name="inner">The instance the member holds.</param>
+        public PopulateConstructorBoundModel(PopulatedInner inner) =>
+            Inner = inner;
+
+        /// <summary>
+        /// Gets the held instance, bound to the constructor's <c>inner</c> parameter.
+        /// </summary>
+        /// <value>The instance the constructor received.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public PopulatedInner Inner { get; }
+    }
+
+    /// <summary>
+    /// A model whose get-only member of a struct type, seeded with <c>Y = 7</c>, is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateGetOnlyStructMemberModel
+    {
+        /// <summary>
+        /// Gets the held value.
+        /// </summary>
+        /// <value>The value, <c>Y = 7</c>.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public PopulatedPoint Point { get; } = new() { Y = 7 };
+    }
+
+    /// <summary>
+    /// A model whose get-only set member, seeded with <c>1</c> and <c>2</c>, is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateGetOnlySetModel
+    {
+        /// <summary>
+        /// Gets the tags, seeded with <c>1</c> and <c>2</c>.
+        /// </summary>
+        /// <value>The tags.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public HashSet<int> Tags { get; } = [1, 2];
+    }
+
+    /// <summary>
+    /// A model whose get-only enumerable member holds a <see cref="Queue{T}" />, seeded with <c>1</c> and <c>2</c>, and
+    /// is marked <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateQueueEnumerableModel
+    {
+        /// <summary>
+        /// Gets the items, a queue seeded with <c>1</c> and <c>2</c>.
+        /// </summary>
+        /// <value>The items.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public IEnumerable<int> Items { get; } = new Queue<int>([1, 2]);
+    }
+
+    /// <summary>
+    /// A model whose get-only member holds a <see cref="ReadOnlyTagSet" />, seeded with <c>1</c> and <c>2</c>, and is
+    /// marked <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateReadOnlyGenericCollectionModel
+    {
+        /// <summary>
+        /// Gets the tags, seeded with <c>1</c> and <c>2</c>.
+        /// </summary>
+        /// <value>The tags.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public ReadOnlyTagSet Tags { get; } = new([1, 2]);
+    }
+
+    /// <summary>
+    /// A collection that implements <see cref="ICollection{T}" /> but not the non-generic
+    /// <see cref="System.Collections.IList" />, reports itself read-only, and refuses every change.
+    /// </summary>
+    private sealed class ReadOnlyTagSet
+        : ICollection<int>
+    {
+        /// <summary>The tags.</summary>
+        private readonly int[] _tags;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadOnlyTagSet" /> class that holds no tags.
+        /// </summary>
+        public ReadOnlyTagSet()
+            : this([])
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadOnlyTagSet" /> class.
+        /// </summary>
+        /// <param name="tags">The tags.</param>
+        public ReadOnlyTagSet(int[] tags) =>
+            _tags = tags;
+
+        /// <inheritdoc />
+        public int Count =>
+            _tags.Length;
+
+        /// <inheritdoc />
+        public bool IsReadOnly =>
+            true;
+
+        /// <inheritdoc />
+        public void Add(int item) =>
+            throw new NotSupportedException();
+
+        /// <inheritdoc />
+        public void Clear() =>
+            throw new NotSupportedException();
+
+        /// <inheritdoc />
+        public bool Contains(int item) =>
+            Array.IndexOf(_tags, item) >= 0;
+
+        /// <inheritdoc />
+        public void CopyTo(int[] array, int arrayIndex) =>
+            _tags.CopyTo(array, arrayIndex);
+
+        /// <inheritdoc />
+        public IEnumerator<int> GetEnumerator() =>
+            ((IEnumerable<int>)_tags).GetEnumerator();
+
+        /// <inheritdoc />
+        public bool Remove(int item) =>
+            throw new NotSupportedException();
+
+        /// <inheritdoc />
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
+            GetEnumerator();
+    }
 }

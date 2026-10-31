@@ -674,4 +674,18 @@ public partial class TomlSerializerTests
         /// <value>The value; 1.5 by default.</value>
         public double B { get; set; } = 1.5;
     }
+
+    /// <summary>
+    /// Verifies that a type with no public constructor, built through a static factory, still serializes its members,
+    /// since construction is needed only on read.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTypeHasNoPublicConstructor_ShouldWriteMembers()
+    {
+        FactoryOnlyModel model = FactoryOnlyModel.Create(5);
+
+        string text = TomlSerializer.Serialize(model);
+
+        Assert.AreEqual("Value = 5\n", text);
+    }
 }
