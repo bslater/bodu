@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Text;
 using Bodu.IO.Compound.Builders;
+using Bodu.Test.IO;
 
 namespace Bodu.IO.Compound;
 
@@ -297,5 +298,179 @@ public partial class CompoundFileTests
         });
 
         CollectionAssert.AreEqual(first, destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a commit in update mode whose staged tree cannot be written leaves the file dirty, and that a
+    /// <see cref="CompoundFile.Revert" /> followed by a commit succeeds and writes the tree that was loaded.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenStagedTreeCannotBeWritten_ShouldStayDirtyAndCommitAfterRevert()
+    {
+        using var destination = new MemoryStream();
+        destination.Write(CreateSeedContainer());
+        destination.Position = 0;
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        CompoundStorage storage = file.RootStorage;
+        for (int depth = 0; depth < 70; depth++)
+            storage = storage.CreateStorage("S");
+
+        Assert.ThrowsExactly<CompoundFileSerializationException>(() =>
+        {
+            file.Commit();
+        });
+
+        Assert.IsTrue(file.IsDirty);
+
+        file.Revert();
+        file.Commit();
+
+        Assert.IsFalse(file.IsDirty);
+        AssertHoldsSeedContainer(destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a commit in update mode whose destination faults part way through the write throws the
+    /// destination's <see cref="IOException" /> unwrapped, leaves the file dirty, and leaves the destination partially
+    /// written: shorter than the container, longer than nothing, and not a container the reader accepts.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenDestinationFaultsMidWrite_ShouldLeaveDestinationPartiallyWrittenAndFileDirty()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var destination = new FaultingWriteStream(seed, MidWriteFaultBytes);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+
+        Assert.ThrowsExactly<IOException>(() =>
+        {
+            file.Commit();
+        });
+
+        Assert.IsTrue(file.IsDirty);
+        AssertPartiallyWritten(destination.ToArray(), full);
+    }
+
+    /// <summary>
+    /// Verifies that a commit retried over a destination that faulted part way through the previous write produces the
+    /// bytes a fault-free commit of the same tree produces, clears the dirty state, and reopens with the staged entries.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenRetriedAfterMidWriteFault_ShouldWriteWholeContainer()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var destination = new FaultingWriteStream(seed, MidWriteFaultBytes);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+        Assert.ThrowsExactly<IOException>(() =>
+        {
+            file.Commit();
+        });
+
+        destination.Disarm();
+        file.Commit();
+
+        Assert.IsFalse(file.IsDirty);
+        CollectionAssert.AreEqual(full, destination.ToArray());
+        AssertHoldsSampleEdits(destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a commit whose destination throws from its flush propagates the <see cref="IOException" /> after
+    /// every sector has been written and leaves the file dirty, and that a retry once the destination flushes again
+    /// writes the whole container a second time, flushes it, and clears the dirty state.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenDestinationFlushThrows_ShouldPropagateAndStayDirtyUntilRetried()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var destination = new FaultingWriteStream(seed, long.MaxValue, throwOnFlush: true);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+
+        Assert.ThrowsExactly<IOException>(() =>
+        {
+            file.Commit();
+        });
+
+        Assert.IsTrue(file.IsDirty);
+        Assert.AreEqual(1, destination.FlushCount);
+        Assert.AreEqual(full.LongLength, destination.BytesWritten);
+
+        destination.Disarm();
+        file.Commit();
+
+        Assert.IsFalse(file.IsDirty);
+        Assert.AreEqual(2, destination.FlushCount);
+        Assert.AreEqual(2 * full.LongLength, destination.BytesWritten);
+        CollectionAssert.AreEqual(full, destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a commit to a seekable destination whose position is not at the start writes the container from
+    /// offset zero and truncates whatever the destination held, so the destination is exactly the container.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenDestinationPositionIsNotZero_ShouldWriteFromStart()
+    {
+        byte[] expected;
+        using (var plain = new MemoryStream())
+        {
+            using CompoundFile reference = CreateSampleTree(plain);
+            reference.Commit();
+            expected = plain.ToArray();
+        }
+
+        using var destination = new MemoryStream();
+        destination.Write(CompoundContainerBytes.Pattern(777));
+        using (CompoundFile file = CreateSampleTree(destination))
+        {
+            destination.Position = 300;
+            file.Commit();
+        }
+
+        Assert.AreEqual(expected.LongLength, destination.Length);
+        CollectionAssert.AreEqual(expected, destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a commit to a non-seekable destination that faults part way through the write leaves the bytes
+    /// written so far in place, and that a retry appends one whole container after them, as the documented
+    /// append-at-current-position behavior of a non-seekable destination requires.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenNonSeekableDestinationFaultsMidWrite_ShouldAppendRetryAfterPartialBytes()
+    {
+        byte[] full;
+        using (var plain = new MemoryStream())
+        {
+            using CompoundFile reference = CreateSampleTree(plain);
+            reference.Commit();
+            full = plain.ToArray();
+        }
+
+        using var sink = new FaultingWriteStream(MidWriteFaultBytes, seekable: false);
+        using CompoundFile file = CreateSampleTree(sink);
+        Assert.ThrowsExactly<IOException>(() =>
+        {
+            file.Commit();
+        });
+
+        var partial = (int)sink.BytesWritten;
+        Assert.IsTrue(file.IsDirty);
+        Assert.IsGreaterThan(0, partial);
+        Assert.IsLessThan(full.Length, partial);
+
+        sink.Disarm();
+        file.Commit();
+
+        byte[] written = sink.ToArray();
+        Assert.IsFalse(file.IsDirty);
+        Assert.AreEqual(partial + full.Length, written.Length);
+        CollectionAssert.AreEqual(full.AsSpan(0, partial).ToArray(), written.AsSpan(0, partial).ToArray());
+        CollectionAssert.AreEqual(full, written.AsSpan(partial).ToArray());
     }
 }

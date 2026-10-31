@@ -30,7 +30,9 @@ namespace Bodu.Test.Corpus;
 /// <para>
 /// A catalog whose lines end in a carriage return and a line feed, as a working copy cloned before
 /// <c>.gitattributes</c> pinned <c>*.csv</c> to line feeds holds it, is reported once with that cause and its remedy,
-/// and is otherwise read as its line-feed form, so the rows still load and the line endings are the one problem.
+/// and is otherwise read as its line-feed form, so the rows still load and the line endings are the one problem. A
+/// catalog that starts with the UTF-8 byte order mark, as an editor that saves UTF-8 with a signature writes it, is
+/// likewise reported once with its remedy and read from the byte after the mark.
 /// </para>
 /// </remarks>
 public sealed class ReleaseNoteCatalog
@@ -52,6 +54,9 @@ public sealed class ReleaseNoteCatalog
 
     /// <summary>The prefixes of the header lines every catalog opens with, in order.</summary>
     private static readonly string[] s_requiredHeaders = ["# library: ", "# releases: ", "# licence: "];
+
+    /// <summary>The bytes of the UTF-8 byte order mark, which an editor that saves UTF-8 with a signature writes first.</summary>
+    private static readonly byte[] s_utf8ByteOrderMark = [0xEF, 0xBB, 0xBF];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReleaseNoteCatalog" /> class.
@@ -135,6 +140,17 @@ public sealed class ReleaseNoteCatalog
         string library = fileName.EndsWith(FileNameSuffix, StringComparison.Ordinal) ? fileName[..^FileNameSuffix.Length] : string.Empty;
         if (library.Length == 0)
             problems.Add($"{fileName}: the file name is not <library>{FileNameSuffix}");
+
+        // An editor that saves UTF-8 with a signature writes the byte order mark before the first header line. It is
+        // reported once and read past, before the byte scan and the parse, so the header and rows still load and the
+        // mark is the one problem, as a CRLF line ending is.
+        if (content.StartsWith(s_utf8ByteOrderMark))
+        {
+            problems.Add(
+                $"{fileName}:1: the file starts with the UTF-8 byte order mark EF BB BF: an editor saved it as UTF-8 "
+                + "with a signature, so save it as UTF-8 without one");
+            content = content[s_utf8ByteOrderMark.Length..];
+        }
 
         CheckBytes(fileName, content, problems);
 

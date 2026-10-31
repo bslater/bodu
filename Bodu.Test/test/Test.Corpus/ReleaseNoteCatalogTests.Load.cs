@@ -247,4 +247,112 @@ public sealed partial class ReleaseNoteCatalogTests
 
         Assert.AreEqual("fileName", ex.ParamName);
     }
+
+    /// <summary>
+    /// Prefixes a catalog's bytes with the UTF-8 byte order mark, as an editor that saves UTF-8 with a signature writes
+    /// the file.
+    /// </summary>
+    /// <param name="content">The catalog's bytes.</param>
+    /// <returns>The bytes <c>EF BB BF</c>, then the catalog's bytes.</returns>
+    private static byte[] WithByteOrderMark(byte[] content) =>
+        [0xEF, 0xBB, 0xBF, .. content];
+
+    /// <summary>
+    /// Verifies that a catalog whose lines end some in a line feed and some in a carriage return and a line feed
+    /// reports the CRLF endings once, at the first line that has one, and reads the same header lines and rows as
+    /// its line-feed form.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenLinesMixLineFeedAndCarriageReturnLineFeedEndings_ShouldReportCrlfOnceAndReadTheLineFeedForm()
+    {
+        byte[] lineFeeds = Catalog(ValidRow, "sample,0.9.0,#2,Another fix,n/a,,,,,,,packaging");
+        ReleaseNoteCatalog expected = ReleaseNoteCatalog.Load("sample-fixes.csv", lineFeeds);
+        string[] lines = Encoding.ASCII.GetString(lineFeeds).Split('\n');
+        lines[1] += "\r";
+        lines[4] += "\r";
+        byte[] content = Encoding.ASCII.GetBytes(string.Join('\n', lines));
+
+        ReleaseNoteCatalog catalog = ReleaseNoteCatalog.Load("sample-fixes.csv", content);
+
+        AssertSingleProblem(catalog, "CRLF");
+        Assert.StartsWith("sample-fixes.csv:2: ", catalog.Problems[0]);
+        CollectionAssert.AreEqual(expected.HeaderLines.ToList(), catalog.HeaderLines.ToList());
+        CollectionAssert.AreEqual(expected.Rows.ToList(), catalog.Rows.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that a catalog whose lines end in a carriage return and a line feed, except the last, which has no
+    /// line ending at all, reports the CRLF endings and the missing final line feed, and nothing else, and still reads
+    /// its rows.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenLinesEndInCarriageReturnLineFeedAndTheLastHasNoLineEnding_ShouldReportBothAndNothingElse()
+    {
+        byte[] content = WithCarriageReturns(Catalog(ValidRow))[..^2];
+
+        ReleaseNoteCatalog catalog = ReleaseNoteCatalog.Load("sample-fixes.csv", content);
+
+        Assert.AreEqual(2, catalog.Problems.Count, string.Join(Environment.NewLine, catalog.Problems));
+        Assert.IsTrue(catalog.Problems.Any(problem => problem.Contains("does not end with a line feed", StringComparison.Ordinal)), string.Join(Environment.NewLine, catalog.Problems));
+        Assert.IsTrue(catalog.Problems.Any(problem => problem.StartsWith("sample-fixes.csv:1: ", StringComparison.Ordinal) && problem.Contains("CRLF", StringComparison.Ordinal)), string.Join(Environment.NewLine, catalog.Problems));
+        Assert.AreEqual(1, catalog.Rows.Count);
+        Assert.AreEqual(5, catalog.Rows[0].LineNumber);
+    }
+
+    /// <summary>
+    /// Verifies that a carriage return inside a field, one no line feed follows, is reported as the byte 0x0D at its
+    /// line, not as a CRLF line ending, and is the only problem.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenACarriageReturnStandsAloneInsideAField_ShouldReportTheByteAtItsLine()
+    {
+        byte[] content = Catalog(ValidRow);
+        content[^5] = 0x0D;
+
+        ReleaseNoteCatalog catalog = ReleaseNoteCatalog.Load("sample-fixes.csv", content);
+
+        AssertSingleProblem(catalog, "0x0D");
+        Assert.StartsWith("sample-fixes.csv:5: ", catalog.Problems[0]);
+        Assert.DoesNotContain("CRLF", catalog.Problems[0]);
+    }
+
+    /// <summary>
+    /// Verifies that a catalog that starts with the UTF-8 byte order mark, as an editor that saves UTF-8 with a
+    /// signature writes it, is reported once, at its first line, with the cause and the remedy named, and reads the
+    /// same header lines and rows as it does without the mark.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenFileStartsWithTheUtf8ByteOrderMark_ShouldReportOneProblemNamingItAndReadTheHeaderAndRows()
+    {
+        byte[] plain = Catalog(ValidRow, "sample,0.9.0,#2,Another fix,n/a,,,,,,,packaging");
+        ReleaseNoteCatalog expected = ReleaseNoteCatalog.Load("sample-fixes.csv", plain);
+
+        ReleaseNoteCatalog catalog = ReleaseNoteCatalog.Load("sample-fixes.csv", WithByteOrderMark(plain));
+
+        AssertSingleProblem(catalog, "byte order mark");
+        Assert.StartsWith("sample-fixes.csv:1: ", catalog.Problems[0]);
+        Assert.Contains("signature", catalog.Problems[0]);
+        CollectionAssert.AreEqual(expected.HeaderLines.ToList(), catalog.HeaderLines.ToList());
+        CollectionAssert.AreEqual(expected.Rows.ToList(), catalog.Rows.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that a catalog that starts with the UTF-8 byte order mark and whose lines end in a carriage return
+    /// and a line feed reports both, and nothing else, and still reads the same header lines and rows as its plain
+    /// line-feed form.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenFileStartsWithTheUtf8ByteOrderMarkAndLinesEndInCarriageReturnLineFeed_ShouldReportBothAndReadTheRows()
+    {
+        byte[] lineFeeds = Catalog(ValidRow);
+        ReleaseNoteCatalog expected = ReleaseNoteCatalog.Load("sample-fixes.csv", lineFeeds);
+
+        ReleaseNoteCatalog catalog = ReleaseNoteCatalog.Load("sample-fixes.csv", WithByteOrderMark(WithCarriageReturns(lineFeeds)));
+
+        Assert.AreEqual(2, catalog.Problems.Count, string.Join(Environment.NewLine, catalog.Problems));
+        Assert.IsTrue(catalog.Problems.Any(problem => problem.Contains("byte order mark", StringComparison.Ordinal)), string.Join(Environment.NewLine, catalog.Problems));
+        Assert.IsTrue(catalog.Problems.Any(problem => problem.Contains("CRLF", StringComparison.Ordinal)), string.Join(Environment.NewLine, catalog.Problems));
+        CollectionAssert.AreEqual(expected.HeaderLines.ToList(), catalog.HeaderLines.ToList());
+        CollectionAssert.AreEqual(expected.Rows.ToList(), catalog.Rows.ToList());
+    }
 }

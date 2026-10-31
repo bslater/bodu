@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.IO;
+
 namespace Bodu.IO.Compound;
 
 /// <summary>
@@ -82,5 +84,73 @@ public partial class CompoundFileTests
         file.Flush();
 
         Assert.AreEqual(committed, destination.Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.Flush" /> presents the surface of the <see cref="CompoundFile.Commit" />
+    /// it forwards to when the destination throws from its flush: the <see cref="IOException" /> propagates after every
+    /// sector has been written and the file stays dirty, and a retry once the destination flushes again writes the
+    /// whole container a second time, flushes it, and clears the dirty state.
+    /// </summary>
+    [TestMethod]
+    public void Flush_WhenDestinationFlushThrows_ShouldPropagateAndStayDirtyUntilRetried()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var destination = new FaultingWriteStream(seed, long.MaxValue, throwOnFlush: true);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+
+        Assert.ThrowsExactly<IOException>(() =>
+        {
+            file.Flush();
+        });
+
+        Assert.IsTrue(file.IsDirty);
+        Assert.AreEqual(1, destination.FlushCount);
+        Assert.AreEqual(full.LongLength, destination.BytesWritten);
+
+        destination.Disarm();
+        file.Flush();
+
+        Assert.IsFalse(file.IsDirty);
+        Assert.AreEqual(2, destination.FlushCount);
+        Assert.AreEqual(2 * full.LongLength, destination.BytesWritten);
+        CollectionAssert.AreEqual(full, destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.FlushAsync(CancellationToken)" /> presents the surface of the
+    /// <see cref="CompoundFile.CommitAsync(CancellationToken)" /> it forwards to when the destination throws from its
+    /// flush: the <see cref="IOException" /> propagates after every sector has been written and the file stays dirty,
+    /// and a retry once the destination flushes again writes the whole container a second time, flushes it, and clears
+    /// the dirty state.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task FlushAsync_WhenDestinationFlushThrows_ShouldPropagateAndStayDirtyUntilRetried()
+    {
+        byte[] seed = CreateSeedContainer();
+        byte[] full = CommitSampleEditsToMemory(seed);
+        using var destination = new FaultingWriteStream(seed, long.MaxValue, throwOnFlush: true);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        StageSampleEdits(file);
+
+        await Assert.ThrowsExactlyAsync<IOException>(async () =>
+        {
+            await file.FlushAsync();
+        });
+
+        Assert.IsTrue(file.IsDirty);
+        Assert.AreEqual(1, destination.FlushCount);
+        Assert.AreEqual(full.LongLength, destination.BytesWritten);
+
+        destination.Disarm();
+        await file.FlushAsync();
+
+        Assert.IsFalse(file.IsDirty);
+        Assert.AreEqual(2, destination.FlushCount);
+        Assert.AreEqual(2 * full.LongLength, destination.BytesWritten);
+        CollectionAssert.AreEqual(full, destination.ToArray());
     }
 }

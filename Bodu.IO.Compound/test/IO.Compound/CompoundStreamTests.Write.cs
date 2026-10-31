@@ -158,4 +158,35 @@ public partial class CompoundStreamTests
             await cursor.WriteAsync(new ReadOnlyMemory<byte>(new byte[] { 4 }));
         });
     }
+
+    /// <summary>
+    /// Verifies that a committed stream grown through the writable cursor between two lengths that sit either side
+    /// of, at, or past the mini-stream cutoff, and committed again, is committed intact: the stream moves from the
+    /// mini stream, or from empty, to the regular sectors where the lengths straddle the cutoff, and stays in the
+    /// regular sectors where both are at or above it; a strict reopen accepts the container, reads back exactly the
+    /// bytes written, and finds the stream beside it unchanged.
+    /// </summary>
+    /// <param name="before">The length of the stream as first committed.</param>
+    /// <param name="after">The length written through the cursor before the second commit.</param>
+    [TestMethod]
+    [DataRow(MiniStreamCutoff - 1, MiniStreamCutoff)]
+    [DataRow(MiniStreamCutoff, MiniStreamCutoff + 1)]
+    [DataRow(MiniStreamCutoff - 1, MiniStreamCutoff + 1)]
+    [DataRow(0, MiniStreamCutoff)]
+    [DataRow(63, 2 * MiniStreamCutoff)]
+    public void Write_WhenGrowingAcrossTheMiniStreamCutoff_ShouldCommitAndReadBackIntact(int before, int after)
+    {
+        using MemoryStream destination = CreateCommittedContainer(before);
+        byte[] edited = CompoundContainerBytes.Pattern(after, EditedPatternStart);
+
+        using (var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
+        {
+            using (CompoundStream cursor = file.RootStorage.OpenStream("Data", FileMode.Open, FileAccess.ReadWrite))
+                cursor.Write(edited);
+
+            file.Commit();
+        }
+
+        AssertCommittedStreams(destination.ToArray(), edited);
+    }
 }

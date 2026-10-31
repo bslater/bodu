@@ -66,6 +66,13 @@ jobs:
           global-json-file: global.json
           dotnet-version: 8.0.x
 
+      # CompoundOleFileCrossValidationTests reads each container the builder writes back through
+      # python's olefile and reports inconclusive without it, so this is what makes that lane run at
+      # all. Linux only: the tests shell out to python3, so Windows is left inconclusive.
+      - name: Install olefile for the compound-file cross-validation tests
+        if: runner.os == 'Linux'
+        run: python3 -m pip install --disable-pip-version-check --user olefile
+
       - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
         working-directory: Bodu.CodeStyle
         run: |
@@ -245,6 +252,36 @@ jobs:
           if [ "${#failed[@]}" -gt 0 ]; then
             echo "::error::${#failed[@]} sample(s) failed: ${failed[*]}" >&2
             exit 1
+          fi
+
+      # An ordinary run writes nothing into the tree: the root .runsettings and test.runsettings exclude
+      # the Census tier, which rewrites the committed kat-census.txt (#1349), and this step is the guard
+      # that the tests and samples left every tracked file as the checkout had it. The Pack step above
+      # rewrites the committed analyzer package, local-packages/Bodu.CodeStyle.XmlDocumentation.*.nupkg
+      # (a glob, so that a version bump still matches), so that one file is not judged; every other
+      # package under local-packages/ is. An untracked file is reported without failing the job,
+      # TestResults/ and FailedTestResults/ excepted, which the TRX steps write.
+      - name: Check the tests and samples left the tracked files unchanged
+        run: |
+          changed=$(git status --porcelain --untracked-files=no \
+            -- . ':(exclude,glob)local-packages/Bodu.CodeStyle.XmlDocumentation.*.nupkg')
+
+          if [ -n "$changed" ]; then
+            while IFS= read -r entry; do
+              echo "::error::The tests or samples changed the tracked file ${entry:3}"
+            done <<< "$changed"
+            echo "::error::An ordinary run must leave the tracked files unchanged; see the errors above" >&2
+            exit 1
+          fi
+
+          untracked=$(git status --porcelain --untracked-files=all \
+            | grep '^?? ' \
+            | grep -vE '^\?\? (TestResults|FailedTestResults)/' || true)
+
+          if [ -n "$untracked" ]; then
+            while IFS= read -r entry; do
+              echo "::warning::The tests or samples left the untracked file ${entry:3}"
+            done <<< "$untracked"
           fi
 
       - name: Upload TRX artifact
