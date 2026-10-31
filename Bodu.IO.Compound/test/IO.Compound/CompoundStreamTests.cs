@@ -15,6 +15,18 @@ namespace Bodu.IO.Compound;
 [TestClass]
 public partial class CompoundStreamTests
 {
+    /// <summary>The length, in bytes, from which a stream is stored in regular sectors rather than the mini stream.</summary>
+    private const int MiniStreamCutoff = 4096;
+
+    /// <summary>The length of the stream the cutoff tests commit beside the edited one and never edit.</summary>
+    private const int BystanderLength = 200;
+
+    /// <summary>
+    /// The offset into the catalog pattern at which the bytes an edit writes begin, so that they differ at every
+    /// position from the bytes first committed.
+    /// </summary>
+    private const long EditedPatternStart = 101;
+
     /// <summary>
     /// Builds a single-stream container whose <c>Data</c> stream carries a deterministic multi-sector payload.
     /// </summary>
@@ -43,6 +55,53 @@ public partial class CompoundStreamTests
         CompoundStream cursor = file.RootStorage.OpenStream("Data", FileMode.Open, FileAccess.ReadWrite);
         file.Dispose();
         return cursor;
+    }
+
+    /// <summary>
+    /// Returns the bytes of the stream <c>Other</c>, which the cutoff tests commit beside <c>Data</c> and never edit.
+    /// </summary>
+    /// <returns>The catalog pattern from offset 50, <see cref="BystanderLength" /> bytes long.</returns>
+    private static byte[] BystanderBytes() =>
+        CompoundContainerBytes.Pattern(BystanderLength, start: 50);
+
+    /// <summary>
+    /// Creates and commits a compound file holding the stream <c>Data</c>, carrying the catalog pattern at the given
+    /// length, beside the untouched stream <c>Other</c>.
+    /// </summary>
+    /// <param name="dataLength">The length of <c>Data</c>, in bytes.</param>
+    /// <returns>A stream over the committed bytes, positioned at the start, for the edit to reopen.</returns>
+    private static MemoryStream CreateCommittedContainer(int dataLength)
+    {
+        var destination = new MemoryStream();
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
+        {
+            file.RootStorage.CreateStream("Data", CompoundContainerBytes.Pattern(dataLength));
+            file.RootStorage.CreateStream("Other", BystanderBytes());
+            file.Commit();
+        }
+
+        destination.Position = 0;
+        return destination;
+    }
+
+    /// <summary>
+    /// Reopens committed bytes read-only at <see cref="CompoundValidationLevel.Strict" />, so that a container the
+    /// edit laid out wrongly is rejected rather than tolerated, and asserts that <c>Data</c> holds exactly the
+    /// expected bytes and that <c>Other</c> holds the bytes it was committed with.
+    /// </summary>
+    /// <param name="container">The committed bytes.</param>
+    /// <param name="expectedData">The bytes <c>Data</c> is expected to hold.</param>
+    private static void AssertCommittedStreams(byte[] container, byte[] expectedData)
+    {
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+        using var reopened = CompoundFile.Open(new MemoryStream(container, writable: false), options);
+
+        using CompoundStream data = reopened.RootStorage.OpenStream("Data");
+        Assert.AreEqual(expectedData.Length, data.Length);
+        CollectionAssert.AreEqual(expectedData, data.ReadAllBytes());
+
+        using CompoundStream other = reopened.RootStorage.OpenStream("Other");
+        CollectionAssert.AreEqual(BystanderBytes(), other.ReadAllBytes());
     }
 
     /// <summary>
