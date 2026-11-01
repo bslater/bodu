@@ -210,4 +210,107 @@ public partial class ConcurrentEvictingDictionaryTests
         Assert.IsTrue(dictionary.TryGetValue("a", out int value));
         Assert.AreEqual(2, value);
     }
+
+    /// <summary>
+    /// Verifies that the capacity, policy and comparer constructor stores each of the three settings and leaves
+    /// expiration disabled.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityPolicyAndComparerSupplied_ShouldStoreEachSetting()
+    {
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 4, EvictingDictionaryPolicy.FirstInFirstOut, StringComparer.OrdinalIgnoreCase);
+
+        Assert.AreEqual(4, dictionary.Capacity);
+        Assert.AreEqual(EvictingDictionaryPolicy.FirstInFirstOut, dictionary.Policy);
+        Assert.AreSame(StringComparer.OrdinalIgnoreCase, dictionary.Comparer);
+        Assert.IsNull(dictionary.Expiration);
+    }
+
+    /// <summary>
+    /// Verifies that the capacity, policy and expiration constructor stores each of the three settings and uses the
+    /// default comparer.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityPolicyAndExpirationSupplied_ShouldStoreEachSetting()
+    {
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(1));
+
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 4, EvictingDictionaryPolicy.MostRecentlyUsed, expiration);
+
+        Assert.AreEqual(4, dictionary.Capacity);
+        Assert.AreEqual(EvictingDictionaryPolicy.MostRecentlyUsed, dictionary.Policy);
+        Assert.AreSame(expiration, dictionary.Expiration);
+        Assert.AreSame(EqualityComparer<string>.Default, dictionary.Comparer);
+    }
+
+    /// <summary>
+    /// Verifies that the capacity, policy, comparer and expiration constructor stores each of the four settings.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityPolicyComparerAndExpirationSupplied_ShouldStoreEachSetting()
+    {
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(1));
+
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 4, EvictingDictionaryPolicy.LeastFrequentlyUsed, StringComparer.Ordinal, expiration);
+
+        Assert.AreEqual(4, dictionary.Capacity);
+        Assert.AreEqual(EvictingDictionaryPolicy.LeastFrequentlyUsed, dictionary.Policy);
+        Assert.AreSame(StringComparer.Ordinal, dictionary.Comparer);
+        Assert.AreSame(expiration, dictionary.Expiration);
+    }
+
+    /// <summary>
+    /// Verifies that the source and policy constructor copies every entry, applies the default capacity and stores the
+    /// policy.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceAndPolicySupplied_ShouldCopyEntriesAndStorePolicy()
+    {
+        KeyValuePair<string, int>[] source = [new("a", 1)];
+
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(source, EvictingDictionaryPolicy.SecondChance);
+
+        Assert.AreEqual(16, dictionary.Capacity);
+        Assert.AreEqual(EvictingDictionaryPolicy.SecondChance, dictionary.Policy);
+        Assert.IsNull(dictionary.Expiration);
+        AssertContainsExactly(dictionary, ("a", 1));
+    }
+
+    /// <summary>
+    /// Verifies that the capacity, source and policy constructor copies every entry and stores the capacity and
+    /// policy.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacitySourceAndPolicySupplied_ShouldCopyEntriesAndStoreEachSetting()
+    {
+        // The capacity is split across the segments, so it is kept generous enough that two keys landing in the
+        // same segment cannot evict each other.
+        KeyValuePair<string, int>[] source = [new("a", 1), new("b", 2)];
+
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, source, EvictingDictionaryPolicy.MostRecentlyUsed);
+
+        Assert.AreEqual(128, dictionary.Capacity);
+        Assert.AreEqual(EvictingDictionaryPolicy.MostRecentlyUsed, dictionary.Policy);
+        Assert.AreSame(EqualityComparer<string>.Default, dictionary.Comparer);
+        AssertContainsExactly(dictionary, ("a", 1), ("b", 2));
+    }
+
+    /// <summary>
+    /// Verifies that the capacity, source, policy and comparer constructor copies every entry through the supplied
+    /// comparer and stores the capacity, policy and comparer.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacitySourcePolicyAndComparerSupplied_ShouldCopyEntriesAndStoreEachSetting()
+    {
+        KeyValuePair<string, int>[] source = [new("a", 1), new("B", 2)];
+
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, source, EvictingDictionaryPolicy.FirstInFirstOut, StringComparer.OrdinalIgnoreCase);
+
+        Assert.AreEqual(128, dictionary.Capacity);
+        Assert.AreEqual(EvictingDictionaryPolicy.FirstInFirstOut, dictionary.Policy);
+        Assert.AreSame(StringComparer.OrdinalIgnoreCase, dictionary.Comparer);
+        Assert.IsNull(dictionary.Expiration);
+        Assert.IsTrue(dictionary.ContainsKey("b"), "The supplied comparer must govern key lookups on the copied entries.");
+        AssertContainsExactly(dictionary, ("a", 1), ("B", 2));
+    }
 }

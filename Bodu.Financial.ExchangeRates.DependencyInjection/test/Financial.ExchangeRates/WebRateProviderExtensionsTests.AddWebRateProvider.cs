@@ -149,4 +149,78 @@ public partial class WebRateProviderExtensionsTests
 
         Assert.AreSame(TimeProvider.System, instance.SuppliedTimeProvider);
     }
+
+    /// <summary>
+    /// Verifies that the explicit-selector overload, which takes an options type outside the
+    /// <see cref="WebRateProviderOptions" /> hierarchy, resolves the concrete provider type as a singleton.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenRegistered_ForExplicitSelectors_ShouldResolveProviderAsSingleton()
+    {
+        using ServiceProvider provider = CreateExplicitSelectorServices().BuildServiceProvider();
+
+        var first = provider.GetRequiredService<PlainRateProvider>();
+        var second = provider.GetRequiredService<PlainRateProvider>();
+
+        Assert.AreSame(first, second);
+    }
+
+    /// <summary>
+    /// Verifies that a provider registered through the explicit-selector overload is reachable through
+    /// <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />, all three resolving the same instance.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenRegistered_ForExplicitSelectors_ShouldExposeSameInstanceThroughBothProviderContracts()
+    {
+        using ServiceProvider provider = CreateExplicitSelectorServices().BuildServiceProvider();
+
+        var concrete = provider.GetRequiredService<PlainRateProvider>();
+        var dated = provider.GetRequiredService<IDatedRateProvider>();
+        var timeless = provider.GetRequiredService<IRateProvider>();
+
+        Assert.AreSame(concrete, dated);
+        Assert.AreSame(concrete, timeless);
+    }
+
+    /// <summary>
+    /// Verifies that the explicit-selector overload returns the same builder instance it was given, so provider
+    /// registrations chain.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenRegistered_ForExplicitSelectors_ShouldReturnSameBuilderForChaining()
+    {
+        var services = new ServiceCollection();
+        IFinancialServiceBuilder builder = services.AddFinancialService();
+
+        IFinancialServiceBuilder returned = builder.AddWebRateProvider<PlainRateProvider, PlainRateProviderOptions>(
+            TestHttpClientName,
+            null,
+            TestSectionName,
+            PlainValidate,
+            TestValidationMessage,
+            static opts => opts.UserAgent,
+            static opts => opts.HttpTimeout,
+            PlainDefaultConfigure,
+            null,
+            static (client, options, loggerFactory, timeProvider) =>
+                new PlainRateProvider(client, options, loggerFactory, timeProvider));
+
+        Assert.AreSame(builder, returned);
+    }
+
+    /// <summary>
+    /// Verifies that the explicit-selector overload's factory delegate receives the resolved options instance, so a
+    /// provider observes the same configuration the container validated.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenResolved_ForExplicitSelectors_ShouldPassConfiguredOptionsToFactory()
+    {
+        var expected = new Uri("https://configured.example.test/");
+        using ServiceProvider provider = CreateExplicitSelectorServices(configure: o => o.BaseAddress = expected)
+            .BuildServiceProvider();
+
+        var instance = provider.GetRequiredService<PlainRateProvider>();
+
+        Assert.AreEqual(expected, instance.Options.BaseAddress);
+    }
 }

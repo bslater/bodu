@@ -65,4 +65,17 @@ public partial class MapiNamedPropertyTests
         Assert.IsFalse(numeric.Equals(text));
         Assert.IsFalse(numeric.Equals(otherSet));
     }
+
+    /// <summary>
+    /// Verifies that an identity is unequal to <see langword="null" /> and to an object of another type.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenOtherObjectShape_ShouldBeUnequal()
+    {
+        var named = new MapiNamedProperty(PublicStrings, 0x00008233u);
+
+        Assert.IsFalse(named.Equals(null));
+        Assert.IsFalse(named.Equals(0x00008233u));
+        Assert.IsFalse(named.Equals(PublicStrings));
+    }
 }

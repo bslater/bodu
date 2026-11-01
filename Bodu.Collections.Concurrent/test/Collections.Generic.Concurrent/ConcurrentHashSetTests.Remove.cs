@@ -112,4 +112,54 @@ public partial class ConcurrentHashSetTests
             .ToArray();
         AssertContainsExactly(set, expected);
     }
+
+    /// <summary>
+    /// Verifies that when the comparer inserts a new predecessor in front of the element being removed, from inside
+    /// the traversal that has just matched it, the removal still succeeds, its best-effort unlink leaves the node
+    /// logically deleted in the list, later lookups skip that node through its marker, and a later insertion unlinks
+    /// it.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenComparerInsertsPredecessorReentrantly_ShouldRemoveAndLeaveMarkedNodeForLaterTraversals()
+    {
+        var comparer = new ReentrantComparer();
+        var set = new ConcurrentHashSet<int>(comparer);
+        set.Add(2);
+        set.Add(3);
+        comparer.OnEquals = () => Assert.IsTrue(set.Add(1), "The re-entrant insert between 2 and 3 must succeed.");
+
+        Assert.IsTrue(set.Remove(3));
+
+        Assert.IsNull(comparer.OnEquals, "The callback must have run from inside the removal's traversal.");
+        Assert.AreEqual(2, set.Count);
+        Assert.IsFalse(set.Contains(3), "A lookup must skip the logically deleted node through its marker.");
+        Assert.IsTrue(set.Contains(1));
+        Assert.IsTrue(set.Add(3), "A later insertion must unlink the marked node and append the fresh element.");
+        Assert.IsTrue(set.Contains(3));
+        AssertContainsExactly(set, 2, 1, 3);
+    }
+
+    /// <summary>
+    /// Verifies that when the comparer removes the very element being removed, from inside the traversal that has
+    /// just matched it, the outer removal observes the marker the inner one installed, retries, and reports the
+    /// element absent, so the element is removed exactly once.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenComparerRemovesSameElementReentrantly_ShouldRemoveExactlyOnce()
+    {
+        var comparer = new ReentrantComparer();
+        var set = new ConcurrentHashSet<int>(comparer);
+        set.Add(2);
+        set.Add(3);
+        var innerRemoved = false;
+        comparer.OnEquals = () => innerRemoved = set.Remove(3);
+
+        var outerRemoved = set.Remove(3);
+
+        Assert.IsTrue(innerRemoved, "The re-entrant removal must have claimed the element.");
+        Assert.IsFalse(outerRemoved, "The outer removal must observe the marker, retry, and find the element gone.");
+        Assert.AreEqual(1, set.Count);
+        Assert.IsFalse(set.Contains(3));
+        AssertContainsExactly(set, 2);
+    }
 }

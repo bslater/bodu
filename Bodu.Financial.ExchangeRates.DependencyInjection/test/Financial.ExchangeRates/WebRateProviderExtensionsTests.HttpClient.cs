@@ -117,4 +117,38 @@ public partial class WebRateProviderExtensionsTests
 
         Assert.AreEqual(Timeout.InfiniteTimeSpan, client.Timeout);
     }
+
+    /// <summary>
+    /// Verifies that the explicit-selector overload applies the user agent its selector returns to the named client.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenUserAgentSelectorSupplied_ForExplicitSelectors_ShouldApplyItToTheNamedClient()
+    {
+        const string expected = "bodu-plain-agent/1.0";
+        using ServiceProvider provider = CreateExplicitSelectorServices(configure: o =>
+        {
+            PlainDefaultConfigure(o);
+            o.UserAgent = expected;
+        }).BuildServiceProvider();
+
+        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient(TestHttpClientName);
+
+        Assert.AreEqual(expected, client.DefaultRequestHeaders.UserAgent.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that an options type outside the <see cref="WebRateProviderOptions" /> hierarchy leaves the named
+    /// client's response cap at the default a bare <see cref="HttpClient" /> has, since such options carry no cap
+    /// to apply.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenOptionsAreOutsideTheWebRateProviderOptionsHierarchy_ShouldLeaveTheClientResponseCapAtItsDefault()
+    {
+        using ServiceProvider provider = CreateExplicitSelectorServices().BuildServiceProvider();
+        using var bare = new HttpClient();
+
+        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient(TestHttpClientName);
+
+        Assert.AreEqual(bare.MaxResponseContentBufferSize, client.MaxResponseContentBufferSize);
+    }
 }

@@ -83,4 +83,42 @@ public partial class ConcurrentEvictingDictionaryTests
         Assert.AreEqual(2, dictionary.Count);
         Assert.IsFalse(dictionary.ContainsKey("a"));
     }
+
+    /// <summary>
+    /// Verifies that the time-to-live overload adds a missing key with the supplied lifetime in place of the
+    /// dictionary default and returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void TryAdd_WhenKeyIsNew_ForTimeToLive_ShouldReturnTrueAndApplyOverriddenLifetime()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+
+        Assert.IsTrue(dictionary.TryAdd("a", 1, TimeSpan.FromMinutes(1)));
+
+        Assert.IsTrue(dictionary.TryGetValue("a", out int value));
+        Assert.AreEqual(1, value);
+        time.Advance(TimeSpan.FromMinutes(2));
+        Assert.IsFalse(dictionary.ContainsKey("a"), "The per-entry lifetime must have replaced the ten-minute default.");
+    }
+
+    /// <summary>
+    /// Verifies that the time-to-live overload returns <see langword="false" /> for a live key and leaves the existing
+    /// entry's value and lifetime unchanged.
+    /// </summary>
+    [TestMethod]
+    public void TryAdd_WhenKeyExists_ForTimeToLive_ShouldReturnFalseAndKeepExistingEntry()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+        dictionary.Add("a", 1);
+
+        Assert.IsFalse(dictionary.TryAdd("a", 2, TimeSpan.FromMinutes(1)));
+
+        time.Advance(TimeSpan.FromMinutes(2));
+        Assert.IsTrue(dictionary.TryGetValue("a", out int value), "A rejected add must not shorten the existing entry's lifetime.");
+        Assert.AreEqual(1, value);
+    }
 }

@@ -888,4 +888,123 @@ public partial class TomlSerializerTests
         [PropertyName("publish")]
         public bool Publish { get; set; }
     }
+
+    /// <summary>
+    /// Verifies that a member of a rectangular array type, which TOML's one-dimensional arrays cannot carry, is
+    /// rejected with <see cref="NotSupportedException" /> naming that type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsRectangularArray_ShouldThrowNotSupportedException()
+    {
+        var model = new RectangularArrayModel();
+
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("System.Int32[,]", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a member of an abstract queue type, which cannot be materialized on read, is rejected with
+    /// <see cref="NotSupportedException" /> naming that type, since neither the collection nor the object converters
+    /// take an abstract type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsAbstractQueue_ShouldThrowNotSupportedException()
+    {
+        var model = new AbstractQueueHostModel();
+
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(AbstractQueue), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a member whose type implements <see cref="IEnumerable{T}" /> for two element types is not treated
+    /// as a collection, since its element type is ambiguous, and is written as an object of its members instead.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberImplementsTwoEnumerableInterfaces_ShouldWriteItAsObject()
+    {
+        var model = new DualEnumerableHostModel { Dual = new DualEnumerable { Name = "x" } };
+
+        string text = TomlSerializer.Serialize(model);
+
+        Assert.AreEqual("[Dual]\nName = \"x\"\n", text);
+    }
+
+    /// <summary>
+    /// A model with a rectangular array member.
+    /// </summary>
+    private sealed class RectangularArrayModel
+    {
+        /// <summary>
+        /// Gets or sets the grid.
+        /// </summary>
+        /// <value>The grid; <see langword="null" /> by default.</value>
+        public int[,]? Grid { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a member of an abstract queue type.
+    /// </summary>
+    private sealed class AbstractQueueHostModel
+    {
+        /// <summary>
+        /// Gets or sets the queue.
+        /// </summary>
+        /// <value>The queue; <see langword="null" /> by default.</value>
+        public AbstractQueue? Items { get; set; }
+    }
+
+    /// <summary>
+    /// An abstract queue, which no converter can materialize.
+    /// </summary>
+    private abstract class AbstractQueue
+        : Queue<int>
+    {
+    }
+
+    /// <summary>
+    /// A model with a member that enumerates two element types.
+    /// </summary>
+    private sealed class DualEnumerableHostModel
+    {
+        /// <summary>
+        /// Gets or sets the member.
+        /// </summary>
+        /// <value>The member.</value>
+        public DualEnumerable Dual { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A type that implements <see cref="IEnumerable{T}" /> for both <see cref="int" /> and <see cref="string" />, so
+    /// no single element type describes it.
+    /// </summary>
+    private sealed class DualEnumerable
+        : IEnumerable<int>, IEnumerable<string>
+    {
+        /// <summary>
+        /// Gets or sets the name, the one member an object converter writes.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; set; } = string.Empty;
+
+        /// <inheritdoc />
+        IEnumerator<int> IEnumerable<int>.GetEnumerator() =>
+            Enumerable.Empty<int>().GetEnumerator();
+
+        /// <inheritdoc />
+        IEnumerator<string> IEnumerable<string>.GetEnumerator() =>
+            Enumerable.Empty<string>().GetEnumerator();
+
+        /// <inheritdoc />
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
+            Enumerable.Empty<int>().GetEnumerator();
+    }
 }

@@ -105,4 +105,45 @@ public partial class WebRateProviderExtensionsTests
             _ = provider.GetRequiredService<IOptions<TestRateProviderOptions>>().Value;
         });
     }
+
+    /// <summary>
+    /// Verifies that the explicit-selector overload binds its options type from the named configuration section, as
+    /// the short overload binds <see cref="WebRateProviderOptions" />.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenConfigurationSupplied_ForExplicitSelectors_ShouldBindOptionsFromNamedSection()
+    {
+        IConfigurationRoot configuration = CreateConfiguration(
+            ("BaseAddress", "https://bound.example.test/"),
+            ("HttpTimeout", "00:00:11"));
+
+        using ServiceProvider provider = CreateExplicitSelectorServices(configuration, configure: static _ => { })
+            .BuildServiceProvider();
+
+        PlainRateProviderOptions options = provider.GetRequiredService<IOptions<PlainRateProviderOptions>>().Value;
+
+        Assert.AreEqual(new Uri("https://bound.example.test/"), options.BaseAddress);
+        Assert.AreEqual(TimeSpan.FromSeconds(11), options.HttpTimeout);
+    }
+
+    /// <summary>
+    /// Verifies that options failing the supplied validation predicate throw
+    /// <see cref="OptionsValidationException" /> carrying the registered validation message, so the predicate the
+    /// explicit-selector overload takes is the one wired into <c>ValidateOnStart</c>.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenOptionsFailThePredicate_ForExplicitSelectors_ShouldThrowOptionsValidationExceptionWithRegisteredMessage()
+    {
+        using ServiceProvider provider = CreateExplicitSelectorServices(validateOptions: static _ => false)
+            .BuildServiceProvider();
+
+        var ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IOptions<PlainRateProviderOptions>>().Value;
+        });
+
+        Assert.IsTrue(
+            ex.Failures.Any(f => f.Contains(TestValidationMessage, StringComparison.Ordinal)),
+            $"Expected the registered validation message. Actual failures: {string.Join(" | ", ex.Failures)}");
+    }
 }

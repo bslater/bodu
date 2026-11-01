@@ -175,4 +175,87 @@ public partial class ConcurrentEvictingDictionaryTests
         foreach (int result in results)
             Assert.AreEqual(1, result, "Every racing caller must observe the single created value.");
     }
+
+    /// <summary>
+    /// Verifies that the time-to-live overload adds a missing key with the supplied lifetime in place of the
+    /// dictionary default and returns the added value.
+    /// </summary>
+    [TestMethod]
+    public void GetOrAdd_WhenKeyMissing_ForTimeToLive_ShouldAddWithOverriddenLifetime()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+
+        var result = dictionary.GetOrAdd("a", 1, TimeSpan.FromMinutes(1));
+
+        Assert.AreEqual(1, result);
+        Assert.IsTrue(dictionary.ContainsKey("a"));
+        time.Advance(TimeSpan.FromMinutes(2));
+        Assert.IsFalse(dictionary.ContainsKey("a"), "The per-entry lifetime must have replaced the ten-minute default.");
+    }
+
+    /// <summary>
+    /// Verifies that the time-to-live overload returns the existing value for a live key and leaves that entry's
+    /// lifetime unchanged.
+    /// </summary>
+    [TestMethod]
+    public void GetOrAdd_WhenKeyExists_ForTimeToLive_ShouldReturnExistingValueAndKeepLifetime()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+        dictionary.Add("a", 1);
+
+        var result = dictionary.GetOrAdd("a", 2, TimeSpan.FromMinutes(1));
+
+        Assert.AreEqual(1, result);
+        time.Advance(TimeSpan.FromMinutes(2));
+        Assert.IsTrue(dictionary.TryGetValue("a", out int value), "A hit must not shorten the existing entry's lifetime.");
+        Assert.AreEqual(1, value);
+    }
+
+    /// <summary>
+    /// Verifies that the factory overload with a time-to-live invokes the factory exactly once for a missing key and
+    /// adds its result with the supplied lifetime in place of the dictionary default.
+    /// </summary>
+    [TestMethod]
+    public void GetOrAdd_WhenKeyMissing_ForFactoryWithTimeToLive_ShouldInvokeFactoryOnceAndAddWithOverriddenLifetime()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+        var calls = 0;
+
+        var result = dictionary.GetOrAdd("abc", key => { calls++; return key.Length; }, TimeSpan.FromMinutes(1));
+
+        Assert.AreEqual(3, result);
+        Assert.AreEqual(1, calls);
+        Assert.IsTrue(dictionary.TryGetValue("abc", out int value));
+        Assert.AreEqual(3, value);
+        time.Advance(TimeSpan.FromMinutes(2));
+        Assert.IsFalse(dictionary.ContainsKey("abc"), "The per-entry lifetime must have replaced the ten-minute default.");
+    }
+
+    /// <summary>
+    /// Verifies that the factory overload with a time-to-live returns the existing value for a live key without
+    /// invoking the factory and leaves that entry's lifetime unchanged.
+    /// </summary>
+    [TestMethod]
+    public void GetOrAdd_WhenKeyExists_ForFactoryWithTimeToLive_ShouldReturnExistingValueWithoutInvokingFactory()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+        dictionary.Add("a", 1);
+        var calls = 0;
+
+        var result = dictionary.GetOrAdd("a", _ => { calls++; return 2; }, TimeSpan.FromMinutes(1));
+
+        Assert.AreEqual(1, result);
+        Assert.AreEqual(0, calls);
+        time.Advance(TimeSpan.FromMinutes(2));
+        Assert.IsTrue(dictionary.TryGetValue("a", out int value), "A hit must not shorten the existing entry's lifetime.");
+        Assert.AreEqual(1, value);
+    }
 }

@@ -38,4 +38,38 @@ public sealed partial class EcbRateTableTests
 
         Assert.AreEqual(0, CountOutOfOrder(table.EnumerateRates()));
     }
+
+    /// <summary>
+    /// Verifies that a table already listed oldest day first is yielded in its own order, since reversing it would
+    /// turn every append into an insertion.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateRates_WhenTableListsOldestDayFirst_ShouldYieldInListedOrder()
+    {
+        EcbRateTable table = new(
+        [
+            new EcbRateObservation(new DateOnly(2023, 1, 3), "USD", 1.0545m),
+            new EcbRateObservation(new DateOnly(2023, 1, 4), "USD", 1.0600m),
+        ]);
+
+        List<ExchangeRate> rates = table.EnumerateRates().ToList();
+
+        Assert.HasCount(2, rates);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), rates[0].Date);
+        Assert.AreEqual(new DateOnly(2023, 1, 4), rates[1].Date);
+    }
+
+    /// <summary>
+    /// Verifies that a table holding a single observation yields that one rate, with no order to settle.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateRates_WhenTableHoldsOneObservation_ShouldYieldIt()
+    {
+        EcbRateTable table = new([new EcbRateObservation(new DateOnly(2023, 1, 3), "USD", 1.0545m)]);
+
+        List<ExchangeRate> rates = table.EnumerateRates().ToList();
+
+        Assert.HasCount(1, rates);
+        Assert.AreEqual(1.0545m, rates[0].Rate);
+    }
 }

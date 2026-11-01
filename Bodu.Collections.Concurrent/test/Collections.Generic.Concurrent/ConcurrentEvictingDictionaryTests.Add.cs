@@ -125,4 +125,31 @@ public partial class ConcurrentEvictingDictionaryTests
         Assert.IsFalse(dictionary.ContainsKey("a"), "Replacing must not reset FIFO order; 'a' is still first in.");
         AssertContainsExactly(dictionary, ("b", 2), ("c", 3));
     }
+
+    /// <summary>
+    /// Verifies that adding over an expired-but-unpurged key lazily evicts the expired entry, raising
+    /// <see cref="ConcurrentEvictingDictionary{TKey, TValue}.ItemEvicted" /> for it, and installs the new value as a
+    /// fresh entry whose lifetime restarts.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenKeyHoldsExpiredEntry_ShouldEvictItAndAddFreshEntry()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(1), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+        var evicted = new List<(string Key, int Value)>();
+        dictionary.ItemEvicted += (key, value) => evicted.Add((key, value));
+        dictionary.Add("a", 1);
+        time.Advance(TimeSpan.FromMinutes(2));
+
+        dictionary.Add("a", 2);
+
+        Assert.HasCount(1, evicted, "The expired entry must have been removed as an eviction.");
+        Assert.AreEqual(("a", 1), evicted[0]);
+        Assert.AreEqual(1, dictionary.EvictionCount);
+        Assert.AreEqual(1, dictionary.Count);
+        time.Advance(TimeSpan.FromSeconds(30));
+        Assert.IsTrue(dictionary.TryGetValue("a", out int value), "The replacement must start a fresh lifetime rather than inherit the expired one.");
+        Assert.AreEqual(2, value);
+    }
 }

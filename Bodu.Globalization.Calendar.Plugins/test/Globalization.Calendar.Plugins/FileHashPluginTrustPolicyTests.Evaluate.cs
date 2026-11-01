@@ -69,6 +69,22 @@ public sealed partial class FileHashPluginTrustPolicyTests
     }
 
     /// <summary>
+    /// Verifies that a context without an assembly name is rejected with the missing-name reason before any digest is
+    /// consulted.
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_WhenAssemblyNameIsEmpty_ShouldRejectWithMissingNameReason()
+    {
+        FileHashPluginTrustPolicy policy = new(new Dictionary<string, byte[]> { ["Plug"] = Hash });
+        PluginTrustContext context = new(string.Empty, "/x/Plug.dll", (byte[])Hash.Clone());
+
+        PluginTrustResult result = policy.Evaluate(context);
+
+        Assert.IsFalse(result.IsTrusted);
+        Assert.AreEqual(PluginsResourceStrings.Op_NotTrusted_PluginAssemblyNameMissing, result.Reason);
+    }
+
+    /// <summary>
     /// Verifies that a <see langword="null" /> context throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]

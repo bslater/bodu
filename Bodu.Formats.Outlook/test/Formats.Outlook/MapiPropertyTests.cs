@@ -46,4 +46,16 @@ public class MapiPropertyTests
 
         Assert.AreEqual("0x0037001F = Hello", property.ToString());
     }
+
+    /// <summary>
+    /// Verifies that the diagnostic text of a property whose payload is absent writes <c>null</c> in place of the
+    /// value.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenValueIsNull_ShouldWriteNullPlaceholder()
+    {
+        var property = new MapiProperty(new MapiPropertyTag(MapiPropertyIds.AttachData, MapiPropertyType.Object), null);
+
+        Assert.AreEqual("0x3701000D = null", property.ToString());
+    }
 }

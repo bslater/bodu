@@ -106,4 +106,22 @@ public sealed partial class NotableDatePluginLoaderTests
 
         Assert.AreEqual("Test Plugin", plugin.Name);
     }
+
+    /// <summary>
+    /// Verifies that a trust policy rejecting without a reason still prevents activation, names the assembly, and
+    /// leaves the exception's reason unset.
+    /// </summary>
+    [TestMethod]
+    public void LoadFrom_WhenTrustRejectedWithoutAReason_ShouldThrowWithNullReason()
+    {
+        IPluginTrustPolicy policy = new DelegatingPluginTrustPolicy(_ => new PluginTrustResult(false, null));
+
+        PluginNotTrustedException ex = Assert.ThrowsExactly<PluginNotTrustedException>(() =>
+        {
+            _ = NotableDatePluginLoader.LoadFrom(TestAssembly, policy);
+        });
+
+        Assert.AreEqual(TestAssembly.GetName().Name, ex.AssemblyName);
+        Assert.IsNull(ex.Reason);
+    }
 }

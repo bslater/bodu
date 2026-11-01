@@ -71,4 +71,31 @@ public partial class ConcurrentEvictingDictionaryTests
 
         Assert.IsFalse(dictionary.ContainsKey("a"), "The snapshot must not have counted as an access on any entry.");
     }
+
+    /// <summary>
+    /// Verifies that a snapshot omits expired-but-unpurged entries under every eviction policy, since each policy
+    /// projects the live entries from its own tracking structure.
+    /// </summary>
+    /// <param name="policy">The eviction policy whose snapshot walk is exercised.</param>
+    [TestMethod]
+    [DataRow(EvictingDictionaryPolicy.FirstInFirstOut)]
+    [DataRow(EvictingDictionaryPolicy.LeastRecentlyUsed)]
+    [DataRow(EvictingDictionaryPolicy.MostRecentlyUsed)]
+    [DataRow(EvictingDictionaryPolicy.LeastFrequentlyUsed)]
+    [DataRow(EvictingDictionaryPolicy.SecondChance)]
+    [DataRow(EvictingDictionaryPolicy.RandomReplacement)]
+    public void ToArray_WhenEntriesExpiredUnpurged_ShouldOmitExpiredEntriesForPolicy(EvictingDictionaryPolicy policy)
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, policy, expiration);
+        dictionary.Add("mortal", 1, TimeSpan.FromMinutes(1));
+        dictionary.Add("live", 2);
+        time.Advance(TimeSpan.FromMinutes(2));
+
+        KeyValuePair<string, int>[] snapshot = dictionary.ToArray();
+
+        Assert.AreEqual(2, dictionary.Count, "The expired entry is unpurged and must still be counted.");
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("live", 2) }, snapshot);
+    }
 }

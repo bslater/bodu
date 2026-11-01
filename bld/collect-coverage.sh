@@ -38,11 +38,13 @@
 #   -h | --help         Show this help.
 #
 # Emits <output>/report/environment.json describing the run - most importantly whether this host
-# supports AVX-512, and its architecture. Six *.Avx512.cs files in Bodu.Security.Cryptography are
-# hardware-gated: the JIT selects exactly one path per process, so on a host without AVX-512 those
-# files CANNOT be covered and must be reported as 'n/a (hardware-gated)' rather than 0%. The
-# ARM64 instruction-set shims (*.AdvSimd.cs, *.PmullIsa.cs) are gated the same way on any host that
-# is not ARM64; the ARM64 job in .github/workflows/build-test.yml runs them. See
+# supports AVX-512, its architecture, and the names of the test projects it collected. The *.Avx512.cs
+# and *.Vector512.cs files in Bodu.Security.Cryptography are hardware-gated: the JIT selects exactly one
+# path per process, so on a host without AVX-512 those files CANNOT be covered and must be reported as
+# 'n/a (hardware-gated)' rather than 0%. The ARM64 instruction-set shims (*.AdvSimd.cs, *.PmullIsa.cs)
+# are gated the same way on any host that is not ARM64; the ARM64 job in .github/workflows/build-test.yml
+# runs them. The matrix decides each package's gating from the manifest of the shard that collected
+# that package's own test project, which is why the manifest names them (#1364). See
 # docs/articles/code-coverage.md.
 #
 # Exit code: 0 when every selected project collected successfully, 1 otherwise.
@@ -63,7 +65,7 @@ list_only=false
 scalar_pass=false
 
 usage() {
-    sed -n '2,49p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,51p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ $# -gt 0 ]; do
@@ -223,11 +225,13 @@ CSHARP
 # ---------------------------------------------------------------------------------------------------------------
 status=0
 collected=0
+collected_names=()
 
 while read -r proj; do
     [ -n "$proj" ] || continue
 
-    name="$(basename "$proj" .csproj)"
+    project_name="$(basename "$proj" .csproj)"
+    name="$project_name"
     [ "$scalar_pass" = true ] && name="$name.scalar"
     echo "::group::Collect $name"
 
@@ -294,6 +298,7 @@ while read -r proj; do
             find "$raw_dir/$name" -mindepth 1 -type d -exec rm -rf {} + 2>/dev/null
             mv "$raw_dir/$name.cobertura.tmp" "$raw_dir/$name/coverage.cobertura.xml"
             collected=$((collected + 1))
+            collected_names+=("$project_name")
         else
             echo "error: no coverage.cobertura.xml produced for $name" >&2
             status=1
@@ -340,10 +345,21 @@ else
     fi
 fi
 
+# The test projects this run collected, as a JSON array of their names, beside the count. The matrix
+# reads them to find the shard that collected a package's own test project, because that shard's host
+# is the only one whose capabilities say anything about the package's hardware-gated files: the hosted
+# runners are a mixed fleet, and judging AVX-512 across every shard counted the cryptography kernels
+# as uncovered whenever the crypto shard lacked it while another shard had it (#1364).
+projects_json="[]"
+if [ "$collected" -gt 0 ]; then
+    projects_json="[$(printf '"%s", ' "${collected_names[@]}")]"
+    projects_json="${projects_json%, ]}]"
+fi
+
 # Each shard runs in its own job and uploads its own artifact, which the aggregate job downloads into
 # a single directory. A fixed filename would let the shards overwrite one another and lose the
-# per-shard projectsCollected counts, so the manifest name carries the shard identity (resolved
-# above, before the probe reads the previous value back).
+# per-shard project lists, so the manifest name carries the shard identity (resolved above, before
+# the probe reads the previous value back).
 cat > "$manifest" <<JSON
 {
   "commit": "$(git rev-parse HEAD 2>/dev/null || echo unknown)",
@@ -352,6 +368,7 @@ cat > "$manifest" <<JSON
   "framework": "$framework",
   "shard": "${shard_spec:-full}",
   "projectsCollected": $collected,
+  "projects": $projects_json,
   "avx512Supported": "$avx512",
   "os": "$(uname -s)",
   "arch": "$(uname -m)",

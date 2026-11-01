@@ -254,4 +254,94 @@ public partial class TomlSerializerTests
         [ExtensionData]
         public Dictionary<string, int>? Extra { get; set; }
     }
+
+    /// <summary>
+    /// Verifies that a public field opted in with <see cref="IncludeAttribute" /> and marked
+    /// <see cref="ExtensionDataAttribute" /> captures the unmatched table entries on read and writes them back after
+    /// the declared members.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenExtensionDataIsAField_ShouldCaptureOverflowAndWriteBack()
+    {
+        FieldExtensionDataModel model = TomlSerializer.Deserialize<FieldExtensionDataModel>("Name = \"n\"\nalpha = 1\n");
+
+        Assert.AreEqual("n", model.Name);
+        Assert.IsNotNull(model.Extra);
+        Assert.AreEqual(1, model.Extra.Count);
+        Assert.IsTrue(model.Extra.ContainsKey("alpha"));
+
+        Assert.AreEqual("Name = \"n\"\nalpha = 1\n", TomlSerializer.Serialize(model));
+    }
+
+    /// <summary>
+    /// Verifies that resolving a type whose extension-data field duplicates an extension-data property throws
+    /// <see cref="InvalidOperationException" />, as a second extension-data property does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenExtensionDataFieldDuplicatesProperty_ShouldThrowInvalidOperationException()
+    {
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<DuplicateFieldExtensionDataModel>(string.Empty);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that resolving a type whose extension-data field is of an unsupported type throws
+    /// <see cref="InvalidOperationException" />, as an unsupported extension-data property does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenExtensionDataFieldTypeUnsupported_ShouldThrowInvalidOperationException()
+    {
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<UnsupportedFieldExtensionDataModel>(string.Empty);
+        });
+    }
+
+    /// <summary>
+    /// A model whose overflow keys are captured into an included <see cref="TomlObject" /> field.
+    /// </summary>
+    private sealed class FieldExtensionDataModel
+    {
+        /// <summary>The captured entries, an empty table until the read fills it.</summary>
+        [Include]
+        [ExtensionData]
+        public TomlObject? Extra = [];
+
+        /// <summary>
+        /// Gets or sets the declared member.
+        /// </summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+    }
+
+    /// <summary>
+    /// A model that declares an extension-data property and an extension-data field, which is invalid.
+    /// </summary>
+    private sealed class DuplicateFieldExtensionDataModel
+    {
+        /// <summary>The second extension-data member, which makes the type invalid.</summary>
+        [Include]
+        [ExtensionData]
+        public TomlObject? Second = [];
+
+        /// <summary>
+        /// Gets or sets the first extension-data member.
+        /// </summary>
+        /// <value>The first captured entries.</value>
+        [ExtensionData]
+        public TomlObject? First { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose extension-data field is of an unsupported type.
+    /// </summary>
+    private sealed class UnsupportedFieldExtensionDataModel
+    {
+        /// <summary>The extension-data field declared with an unsupported value type.</summary>
+        [Include]
+        [ExtensionData]
+        public Dictionary<string, int>? Extra = [];
+    }
 }

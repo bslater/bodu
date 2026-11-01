@@ -74,4 +74,50 @@ public partial class ConcurrentLruCacheTests
         Assert.IsTrue(cache.ColdCount <= cache.ColdCapacity, $"Cold occupancy {cache.ColdCount} exceeded its slice {cache.ColdCapacity}.");
         Assert.IsTrue(cache.Count <= cache.Capacity, $"Count {cache.Count} exceeded the capacity after convergence.");
     }
+
+    /// <summary>
+    /// Verifies that write-amortized maintenance yields after its pass budget even when every pass made progress -
+    /// here a chain of cold resurrections that overflows warm again on each pass - leaving warm over its slice, and
+    /// that <see cref="ConcurrentLruCache{TKey, TValue}.RunMaintenance" /> then finishes the convergence.
+    /// </summary>
+    [TestMethod]
+    public void RunMaintenance_WhenAmortizedPassesLeaveWarmOverfull_ShouldFinishConvergence()
+    {
+        // Capacity 9 partitions as hot 3 / warm 3 / cold 3.
+        var cache = new ConcurrentLruCache<string, int>(capacity: 9);
+        var evicted = new List<string>();
+        cache.ItemEvicted += (key, _) => evicted.Add(key);
+
+        // Fill cold with a, b, c and hot with d, e, f; read d, e, f so the next three arrivals promote them to warm.
+        foreach (string key in new[] { "a", "b", "c", "d", "e", "f" })
+            cache.Add(key, 0);
+        foreach (string key in new[] { "d", "e", "f" })
+            Assert.IsTrue(cache.TryGetValue(key, out _));
+        foreach (string key in new[] { "g", "h", "i" })
+            cache.Add(key, 0);
+        Assert.AreEqual(3, cache.HotCount);
+        Assert.AreEqual(3, cache.WarmCount);
+        Assert.AreEqual(3, cache.ColdCount);
+
+        // Flag every cold entry, and retire 'f' so its dead node holds a warm slot without counting as live: the next
+        // add then stays within capacity and takes the amortized path.
+        foreach (string key in new[] { "a", "b", "c" })
+            Assert.IsTrue(cache.TryGetValue(key, out _));
+        Assert.IsTrue(cache.TryRemove("f", out _));
+
+        // Each pass demotes one warm entry into cold, whose drain resurrects the next flagged entry back into warm:
+        // three productive passes exhaust the budget with warm still one over its slice.
+        cache.Add("j", 0);
+
+        Assert.AreEqual(4, cache.WarmCount, "Amortized maintenance must have yielded with warm still over its slice.");
+        Assert.IsTrue(cache.WarmCount > cache.WarmCapacity);
+
+        cache.RunMaintenance();
+
+        Assert.AreEqual(3, cache.WarmCount, "The blocking run must drop the retired node and converge warm within its slice.");
+        Assert.AreEqual(3, cache.HotCount);
+        Assert.AreEqual(3, cache.ColdCount);
+        Assert.AreEqual(9, cache.Count);
+        Assert.HasCount(0, evicted, "The resurrections must have spared every live entry.");
+    }
 }

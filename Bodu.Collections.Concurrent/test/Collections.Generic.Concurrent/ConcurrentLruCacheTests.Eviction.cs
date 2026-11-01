@@ -132,4 +132,67 @@ public partial class ConcurrentLruCacheTests
         Assert.AreEqual(cache.EvictionCount, evicted.Count, "Every eviction must produce exactly one event callback.");
         Assert.AreEqual(evicted.Count, evicted.Distinct().Count(), "No key may be evicted twice.");
     }
+
+    /// <summary>
+    /// Verifies that when warm overflows and its head has been read since it arrived there, the head recycles to the
+    /// warm tail with its flag cleared instead of demoting, so its unread neighbor is the one demoted and later
+    /// evicted.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenWarmHeadReadBeforeOverflow_ShouldRecycleHeadAndDemoteUnreadNeighbor()
+    {
+        // Capacity 3 partitions as hot 1 / warm 1 / cold 1.
+        var cache = new ConcurrentLruCache<string, int>(capacity: 3);
+        var evicted = new List<string>();
+        cache.ItemEvicted += (key, _) => evicted.Add(key);
+
+        // 'a' is read while hot, so the arrival of 'b' promotes it to warm.
+        cache.Add("a", 1);
+        Assert.IsTrue(cache.TryGetValue("a", out _));
+        cache.Add("b", 2);
+        Assert.AreEqual(1, cache.WarmCount);
+
+        // Read both: 'a' is flagged in warm and 'b' in hot. The arrival of 'c' promotes 'b', overflowing warm; the
+        // drain recycles the read head 'a' behind 'b' and then demotes the unread 'b' to cold.
+        Assert.IsTrue(cache.TryGetValue("a", out _));
+        Assert.IsTrue(cache.TryGetValue("b", out _));
+        cache.Add("c", 3);
+        Assert.AreEqual(1, cache.WarmCount);
+        Assert.AreEqual(1, cache.ColdCount);
+        Assert.HasCount(0, evicted, "Recycling and demotion alone must not evict.");
+
+        // The arrival of 'd' demotes 'c' into cold, overflowing it; the demoted 'b', not the recycled 'a', is evicted.
+        cache.Add("d", 4);
+
+        CollectionAssert.AreEqual(new[] { "b" }, evicted, "The recycled warm head must survive; its demoted neighbor is the victim.");
+        AssertContainsExactly(cache, ("a", 1), ("c", 3), ("d", 4));
+    }
+
+    /// <summary>
+    /// Verifies that when the cold drain resurrects a read entry instead of evicting it, so the policy cycling alone
+    /// leaves the cache over capacity, the capacity enforcement evicts from the cold head regardless of its accessed
+    /// flag and the capacity contract holds.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenColdResurrectionLeavesCacheOverCapacity_ShouldEnforceCapacityFromColdHead()
+    {
+        // Capacity 2 partitions as hot 1 / warm 0 / cold 1.
+        var cache = new ConcurrentLruCache<string, int>(capacity: 2);
+        var evicted = new List<string>();
+        cache.ItemEvicted += (key, _) => evicted.Add(key);
+
+        cache.Add("a", 1);
+        cache.Add("b", 2);
+        Assert.AreEqual(1, cache.ColdCount, "The arrival of 'b' must have demoted the unread 'a' to cold.");
+
+        // Read 'a' in cold. The arrival of 'c' demotes 'b' to cold behind it; the cold drain resurrects the read 'a'
+        // to warm rather than evicting it, which leaves three live entries in a capacity-2 cache.
+        Assert.IsTrue(cache.TryGetValue("a", out _));
+        cache.Add("c", 3);
+
+        CollectionAssert.AreEqual(new[] { "b" }, evicted, "Capacity enforcement must evict the unread cold head left behind by the resurrection.");
+        Assert.AreEqual(2, cache.Count);
+        Assert.AreEqual(1, cache.EvictionCount);
+        AssertContainsExactly(cache, ("a", 1), ("c", 3));
+    }
 }

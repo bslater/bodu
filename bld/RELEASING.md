@@ -185,8 +185,22 @@ unable to confirm that anything is new.
 
 1. Verify each manifest package is listed on nuget.org at the new version
    and its README, icon, and license render.
-2. Smoke-restore from a clean cache:
-   `dotnet add package Bodu.Core` in a scratch project.
+2. Consume the published packages from a clean cache, with the script the
+   `shipping-pack` job of `build-test.yml` runs against every pull request's
+   pack, pointed at nuget.org and the Stable version just published (the
+   preview stream's version is read from `BoduPreviewVersion` in
+   `bld/Versioning.props`, or passed as `--preview-version`):
+
+   ```bash
+   bash bld/consumer-smoke.sh --source https://api.nuget.org/v3/index.json --version 1.3.0
+   ```
+
+   It restores every manifest package into a console project outside the
+   repository, from an empty NuGet cache and with no project reference, on
+   every framework in `BoduNetTargets`, builds it with warnings as errors and
+   runs it. The same check runs from the Actions tab by dispatching
+   **Build and Test** with its `consumer_smoke_version` input set to the
+   version.
 3. **Move the package-validation baselines**: in `bld/Versioning.props`, set
    `BoduPackageValidationBaseline` to the Stable version just published (e.g.
    `1.3.0`). If the release also moved `BoduPreviewVersion`, set

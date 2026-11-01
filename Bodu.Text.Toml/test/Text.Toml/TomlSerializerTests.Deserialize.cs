@@ -1115,4 +1115,46 @@ public partial class TomlSerializerTests
         /// <value>The repository.</value>
         public string Repo { get; set; } = string.Empty;
     }
+
+    /// <summary>
+    /// Verifies that reading a type with no public constructor throws <see cref="TomlSerializationException" />
+    /// naming the type, since the serializer has no way to build an instance.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTypeHasNoPublicConstructor_ShouldThrowTomlSerializationException()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<FactoryOnlyModel>("Value = 5\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(FactoryOnlyModel), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// A model with no public constructor, built through <see cref="Create(int)" />.
+    /// </summary>
+    private sealed class FactoryOnlyModel
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FactoryOnlyModel" /> class.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        private FactoryOnlyModel(int value) =>
+            Value = value;
+
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public int Value { get; }
+
+        /// <summary>
+        /// Creates a model holding the given value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The model.</returns>
+        public static FactoryOnlyModel Create(int value) =>
+            new(value);
+    }
 }

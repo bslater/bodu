@@ -25,7 +25,10 @@
          and PMULL instruction-set shims) run only on ARM64. Files that the collecting host could not
          possibly execute - *.Avx512.cs and the 512-bit *.Vector512.cs kernels on a host without
          AVX-512, *.AdvSimd.cs and *.PmullIsa.cs on a host that is not ARM64 - are reported as n/a and
-         excluded from the denominator rather than as 0%.
+         excluded from the denominator rather than as 0%. The host that counts is the one that
+         collected the package's own test project, <Package>.Test, which each collection manifest
+         names: the shards run on a mixed fleet, and another shard's host proves nothing about
+         kernels that only the package's own tests call (#1364).
 
 .PARAMETER ReportPath
     Merged Cobertura report. Default: artifacts/coverage/report/Cobertura.xml.
@@ -154,27 +157,55 @@ $SharedSourceUnits = @($SharedSourceSets | ForEach-Object { $_.Unit })
 
 # ---------------------------------------------------------------------------------------------------------------
 # Collection manifests
+#
+# bld/collect-coverage.sh writes one per shard (environment.shard-i-of-N.json; environment.json for a full
+# run) recording the collecting host's capabilities - avx512Supported, arch - and, in 'projects', the names
+# of the test projects the shard collected. The hardware gating below is decided per package from the
+# manifest whose project list names that package's own test project; the fleet-wide verdicts here are the
+# rule the matrix applied before manifests named their projects, kept as the fallback for artifacts that
+# predate the list.
 # ---------------------------------------------------------------------------------------------------------------
 $manifests = @(Get-ChildItem -Path $ReportDirectory -Filter 'environment*.json' -ErrorAction SilentlyContinue |
     ForEach-Object { Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json })
 
+# Fleet-wide fallback: any shard that saw AVX-512 means the intrinsic paths were reachable somewhere in this
+# collection. Only a fallback, because the shard that could execute the kernels need not be the one that ran
+# the tests that call them: the hosted runners are a mixed fleet, and when the crypto shard landed on a host
+# without AVX-512 while another shard had it, this rule counted the kernels as uncovered (#1364).
 $avx512 = 'unknown'
 if ($manifests.Count -gt 0) {
-    # Any shard that saw AVX-512 means the intrinsic paths were reachable in this collection.
     if ($manifests | Where-Object { $_.avx512Supported -eq 'true' }) { $avx512 = 'true' }
     elseif ($manifests | Where-Object { $_.avx512Supported -eq 'false' }) { $avx512 = 'false' }
 }
 
-# The ARM64 implementations need an ARM64 host; the manifests record each collecting host's 'uname -m'.
+# The ARM64 implementations need an ARM64 host; the manifests record each collecting host's 'uname -m'. The
+# same fleet-wide fallback: any shard collected on ARM64 means the ARM64 paths were reachable somewhere.
 $arm64 = 'unknown'
 if ($manifests.Count -gt 0) {
-    # Any shard collected on ARM64 means the ARM64 paths were reachable in this collection.
     if ($manifests | Where-Object { $_.arch -in @('aarch64', 'arm64') }) { $arm64 = 'true' }
     elseif ($manifests | Where-Object { $_.arch }) { $arm64 = 'false' }
 }
 
+# The manifests whose project list names the test project, in file order. A manifest written before the list
+# existed names nothing, so the lookup finds none and the caller falls back to the fleet-wide verdict. The
+# match is by the exact name, so Bodu.Security.Cryptography.Simd.Test - which runs with the SIMD feature
+# switch off and can never reach the kernels - is not Bodu.Security.Cryptography.Test.
+function Get-CollectingManifests([string]$testProject) {
+    return @($manifests | Where-Object { @($_.projects) -contains $testProject })
+}
+
 $architectures = @($manifests | Where-Object { $_.arch } | ForEach-Object { $_.arch } | Sort-Object -Unique)
 $architecture = if ($architectures.Count -gt 0) { $architectures -join ', ' } else { 'unknown' }
+
+# The per-shard AVX-512 answers for the evidence section, shard 1 first; a full run's one manifest says 'full'.
+$avx512ByShard = if ($manifests.Count -gt 0) {
+    @($manifests |
+        Sort-Object { $index = 0; if ([int]::TryParse(("$($_.shard)" -split '/')[0], [ref]$index)) { $index } else { 0 } } |
+        ForEach-Object { "``$($_.shard)`` = ``$($_.avx512Supported)``" }) -join ', '
+}
+else {
+    '`unknown`'
+}
 
 $commit = if ($manifests.Count -gt 0 -and $manifests[0].commit) { $manifests[0].commit } else { 'unknown' }
 
@@ -375,27 +406,98 @@ foreach ($relative in @($files.Keys)) {
 # ---------------------------------------------------------------------------------------------------------------
 # Hardware-gated files
 #
-# When the collecting host lacks AVX-512 the intrinsic implementations cannot execute, so they are
-# reported as n/a; so are the ARM64 implementations when no collecting host is ARM64.
-# Bodu.Security.Cryptography.Simd.Test forces the SIMD feature switch off in its own process, so when
-# it is part of the collection the scalar fallbacks are covered regardless.
+# The JIT selects exactly one implementation per process, so a package's AVX-512 kernels can execute only in
+# the process that runs that package's tests on an AVX-512 host, and its ARM64 shims only in one on an ARM64
+# host. Each package is therefore judged by the shard that collected its own test project, <Package>.Test:
+# that host lacking AVX-512 means the kernels could not run in the only process that calls them, whatever the
+# other shards' hosts supported, and that host having it means they could (#1364).
+# Bodu.Security.Cryptography.Simd.Test forces the SIMD feature switch off in its own process, so it can never
+# reach the kernels; it is not the package's test project (the lookup is by exact name), and when it is part
+# of the collection the scalar fallbacks are covered regardless.
+#
+# A package no manifest names - an artifact written before manifests listed their projects, or a package
+# collected only through other projects - falls back to the fleet-wide verdict, with a warning. Either way the
+# files are gated only on positive evidence that the host could not execute them: excluding code from the
+# denominator because the probe did not run, or the architecture was not recorded, would quietly inflate the
+# figure, so an unknown verdict reports them as measured, with a warning.
 # ---------------------------------------------------------------------------------------------------------------
-$hardwareGated = @()
-if ($avx512 -eq 'false') {
-    $hardwareGated = @($files.Keys | Where-Object { $_ -like '*.Avx512.cs' -or $_ -like '*.Vector512.cs' })
-}
-elseif ($avx512 -ne 'true') {
-    # Gate only on positive evidence that the host could not execute these paths. Excluding code
-    # from the denominator because the probe did not run would quietly inflate the figure.
-    Write-Warning 'AVX-512 support could not be determined from the collection manifests; the intrinsic implementations are reported as measured rather than excluded.'
+$HardwareGates = @(
+    @{
+        Name          = 'AVX-512'
+        Patterns      = @('*.Avx512.cs', '*.Vector512.cs')
+        Verdict       = {
+            param($manifest)
+            if ($manifest.avx512Supported -eq 'true') { 'true' } elseif ($manifest.avx512Supported -eq 'false') { 'false' } else { 'unknown' }
+        }
+        Evidence      = { param($manifest) "``Avx512F.IsSupported`` = ``$($manifest.avx512Supported)``" }
+        FleetVerdict  = $avx512
+        UnknownNotice = 'AVX-512 support could not be determined from the collection manifests; the intrinsic implementations of {0} are reported as measured rather than excluded.'
+    }
+    @{
+        Name          = 'ARM64'
+        Patterns      = @('*.AdvSimd.cs', '*.PmullIsa.cs')
+        Verdict       = {
+            param($manifest)
+            if ($manifest.arch -in @('aarch64', 'arm64')) { 'true' } elseif ($manifest.arch) { 'false' } else { 'unknown' }
+        }
+        Evidence      = { param($manifest) "architecture ``$($manifest.arch)``" }
+        FleetVerdict  = $arm64
+        UnknownNotice = 'The collecting architecture could not be determined from the collection manifests; the ARM64 implementations of {0} are reported as measured rather than excluded.'
+    }
+)
+
+# The project that owns a source file is the directory holding its src/ folder: Bodu.Core for
+# Bodu.Core/src/..., and a regional calendar data pack a level deeper under Bodu.Globalization.Calendar.Data/.
+function Get-OwningProject([string]$relative) {
+    if ($relative -match '(?:^|/)([^/]+)/src/') { return $Matches[1] }
+    return $null
 }
 
-if ($arm64 -eq 'false') {
-    $hardwareGated += @($files.Keys | Where-Object { $_ -like '*.AdvSimd.cs' -or $_ -like '*.PmullIsa.cs' })
-}
-elseif ($arm64 -ne 'true') {
-    # The same rule: exclude only on positive evidence that no collecting host was ARM64.
-    Write-Warning 'The collecting architecture could not be determined from the collection manifests; the ARM64 implementations are reported as measured rather than excluded.'
+$hardwareGated = [System.Collections.Generic.List[string]]::new()
+
+# One record per package and gate, for the matrix's evidence section: the verdict, which shard decided it,
+# and on what evidence.
+$gateDecisions = [System.Collections.Generic.List[object]]::new()
+
+foreach ($gate in $HardwareGates) {
+    $candidates = @($files.Keys | Where-Object { $file = $_; @($gate.Patterns | Where-Object { $file -like $_ }).Count -gt 0 })
+
+    foreach ($group in ($candidates | Group-Object { Get-OwningProject $_ } | Sort-Object Name)) {
+        $project = $group.Name
+        $testProject = "$project.Test"
+        $deciders = Get-CollectingManifests $testProject
+
+        if ($deciders.Count -gt 0) {
+            # More than one manifest naming the project means it was collected more than once; the kernels were
+            # reachable if any of those hosts could execute them, the same union the fleet-wide rule takes.
+            $verdicts = @($deciders | ForEach-Object { & $gate.Verdict $_ })
+            $verdict = if ($verdicts -contains 'true') { 'true' } elseif ($verdicts -contains 'false') { 'false' } else { 'unknown' }
+            $decidedBy = 'shard ' + (@($deciders | ForEach-Object { "``$($_.shard)``" }) -join ', ') + ", which collected ``$testProject``"
+            $evidence = @($deciders | ForEach-Object { & $gate.Evidence $_ }) -join '; '
+        }
+        else {
+            $verdict = $gate.FleetVerdict
+            $decidedBy = 'the fleet-wide rule'
+            $evidence = "no collection manifest names ``$testProject``; across every collecting host ``$verdict``"
+            Write-Warning "No collection manifest names $testProject (manifests written before the 'projects' list carry no project names); the $($gate.Name) gating of $project falls back to the fleet-wide rule: $verdict."
+        }
+
+        if ($verdict -eq 'false') {
+            foreach ($file in $group.Group) { $hardwareGated.Add($file) }
+        }
+        elseif ($verdict -ne 'true') {
+            Write-Warning ($gate.UnknownNotice -f $project)
+        }
+
+        $gateDecisions.Add([pscustomobject]@{
+            Package   = $project
+            Gate      = $gate.Name
+            Verdict   = $verdict
+            DecidedBy = $decidedBy
+            Evidence  = $evidence
+            Files     = @($group.Group | Sort-Object)
+        })
+    }
 }
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -577,19 +679,34 @@ if ($rows | Where-Object Excluded) {
 [void]$sb.AppendLine('```')
 [void]$sb.AppendLine()
 [void]$sb.AppendLine("- Commit: ``$commit``")
-[void]$sb.AppendLine("- ``Avx512F.IsSupported`` on the collecting host: ``$avx512``")
-[void]$sb.AppendLine("- Architecture of the collecting host: ``$architecture``")
+[void]$sb.AppendLine("- ``Avx512F.IsSupported`` on the collecting hosts, by shard: $avx512ByShard")
+[void]$sb.AppendLine("- Architecture of the collecting hosts: ``$architecture``")
 [void]$sb.AppendLine("- Phantom rows discarded: $($phantom.Count)")
 [void]$sb.AppendLine("- Files with stale line numbering: $($staleNumbered.Count)")
+
+if ($gateDecisions.Count -gt 0) {
+    [void]$sb.AppendLine()
+    [void]$sb.AppendLine('### Hardware-gating decisions')
+    [void]$sb.AppendLine()
+    [void]$sb.AppendLine('Each package''s hardware-dependent files are judged by the shard that collected its own test')
+    [void]$sb.AppendLine('project, whatever the other shards'' hosts supported: `measured` means that host could execute')
+    [void]$sb.AppendLine('them, `excluded` that it could not. A package no manifest names falls back to the fleet-wide')
+    [void]$sb.AppendLine('rule, which judges across every collecting host.')
+    [void]$sb.AppendLine()
+    foreach ($decision in ($gateDecisions | Sort-Object Package, Gate)) {
+        $outcome = switch ($decision.Verdict) { 'false' { 'excluded' } 'true' { 'measured' } default { 'measured (undetermined)' } }
+        [void]$sb.AppendLine("- ``$($decision.Package)`` $($decision.Gate): $outcome, decided by $($decision.DecidedBy) ($($decision.Evidence))")
+    }
+}
 
 if ($hardwareGated.Count -gt 0) {
     [void]$sb.AppendLine()
     [void]$sb.AppendLine('### Hardware-gated files excluded from the denominator')
     [void]$sb.AppendLine()
-    [void]$sb.AppendLine('The collecting host could not execute these implementations - AVX-512 code without')
-    [void]$sb.AppendLine('AVX-512, ARM64 code off ARM64 - so the JIT could not select them. They are exercised by')
-    [void]$sb.AppendLine('the standard known-answer suites on capable hardware, including the ARM64 CI job, and are')
-    [void]$sb.AppendLine('**not** a missing-test gap.')
+    [void]$sb.AppendLine('The host that collected each package''s own tests could not execute these implementations -')
+    [void]$sb.AppendLine('AVX-512 code without AVX-512, ARM64 code off ARM64 - so the JIT could not select them there,')
+    [void]$sb.AppendLine('whatever the other shards saw. They are exercised by the standard known-answer suites on')
+    [void]$sb.AppendLine('capable hardware, including the ARM64 CI job, and are **not** a missing-test gap.')
     [void]$sb.AppendLine()
     foreach ($file in ($hardwareGated | Sort-Object)) { [void]$sb.AppendLine("- ``$file``") }
 }
