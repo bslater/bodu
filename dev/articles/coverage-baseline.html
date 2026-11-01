@@ -90,10 +90,6 @@
 <p>Per-package line and branch coverage for every packable Bodu package, computed from a merged
 Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>; do not hand-edit.</p>
 <p>Legend: <code>-</code> = not part of this collection · <code>n/a</code> = excluded by design (see <a href="code-coverage.html">Code coverage strategy</a>).</p>
-<div class="NOTE">
-<h5>Note</h5>
-<p>This table is the last full collection, at the commit named under <a href="#baseline-evidence">Baseline evidence</a>, and it has not been regenerated since. It predates <code>Bodu.IO.Biff</code> and <code>Bodu.Formats.Outlook.Pst</code>, so neither has a row, and a package that has grown since shows its size at that commit (<code>Bodu.IO.Pst</code>'s 408 lines, for one). The current floor of every package, those two included, is in <code>bld/coverage-thresholds.json</code>, which the coverage workflow enforces on every collection.</p>
-</div>
 <table>
 <thead>
 <tr>
@@ -110,35 +106,35 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <td>Stable</td>
 <td style="text-align: right;">97.7%</td>
 <td style="text-align: right;">95.9%</td>
-<td style="text-align: right;">6028 / 6171</td>
+<td style="text-align: right;">6030 / 6175</td>
 </tr>
 <tr>
 <td><code>Bodu.Collections.Concurrent</code></td>
 <td>Stable</td>
-<td style="text-align: right;">94.9%</td>
-<td style="text-align: right;">91.7%</td>
-<td style="text-align: right;">1009 / 1063</td>
+<td style="text-align: right;">97.6%</td>
+<td style="text-align: right;">94.8%</td>
+<td style="text-align: right;">1345 / 1378</td>
 </tr>
 <tr>
 <td><code>Bodu.Core</code></td>
 <td>Stable</td>
-<td style="text-align: right;">98.6%</td>
-<td style="text-align: right;">96.4%</td>
-<td style="text-align: right;">5631 / 5711</td>
+<td style="text-align: right;">99%</td>
+<td style="text-align: right;">96.7%</td>
+<td style="text-align: right;">6355 / 6422</td>
 </tr>
 <tr>
 <td><code>Bodu.Extensions.Configuration.Text</code></td>
 <td>Stable</td>
-<td style="text-align: right;">97.3%</td>
-<td style="text-align: right;">87.5%</td>
-<td style="text-align: right;">256 / 263</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">97.5%</td>
+<td style="text-align: right;">293 / 293</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial</code></td>
 <td>Stable</td>
-<td style="text-align: right;">97.3%</td>
-<td style="text-align: right;">86.9%</td>
-<td style="text-align: right;">3600 / 3700</td>
+<td style="text-align: right;">97.4%</td>
+<td style="text-align: right;">87.7%</td>
+<td style="text-align: right;">3713 / 3812</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.DependencyInjection</code></td>
@@ -150,65 +146,72 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates</code></td>
 <td>Stable</td>
-<td style="text-align: right;">91%</td>
-<td style="text-align: right;">84.8%</td>
-<td style="text-align: right;">332 / 365</td>
+<td style="text-align: right;">91.7%</td>
+<td style="text-align: right;">89%</td>
+<td style="text-align: right;">400 / 436</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates (shared source)</code></td>
+<td>Stable</td>
+<td style="text-align: right;">95.7%</td>
+<td style="text-align: right;">91.1%</td>
+<td style="text-align: right;">133 / 139</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Boe</code></td>
 <td>Stable</td>
-<td style="text-align: right;">91.1%</td>
-<td style="text-align: right;">85.3%</td>
-<td style="text-align: right;">267 / 293</td>
+<td style="text-align: right;">98.6%</td>
+<td style="text-align: right;">92.3%</td>
+<td style="text-align: right;">272 / 276</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Caching</code></td>
 <td>Stable</td>
-<td style="text-align: right;">91.6%</td>
-<td style="text-align: right;">88.6%</td>
-<td style="text-align: right;">1368 / 1493</td>
+<td style="text-align: right;">92.9%</td>
+<td style="text-align: right;">89.9%</td>
+<td style="text-align: right;">1392 / 1499</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Caching.Distributed</code></td>
 <td>Stable</td>
 <td style="text-align: right;">93.5%</td>
 <td style="text-align: right;">91.9%</td>
-<td style="text-align: right;">172 / 184</td>
+<td style="text-align: right;">173 / 185</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></td>
 <td>Stable</td>
+<td style="text-align: right;">95.4%</td>
 <td style="text-align: right;">94.8%</td>
-<td style="text-align: right;">94.8%</td>
-<td style="text-align: right;">308 / 325</td>
+<td style="text-align: right;">310 / 325</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></td>
 <td>Stable</td>
 <td style="text-align: right;">100%</td>
 <td style="text-align: right;">100%</td>
-<td style="text-align: right;">70 / 70</td>
+<td style="text-align: right;">75 / 75</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Ecb</code></td>
 <td>Stable</td>
-<td style="text-align: right;">91.7%</td>
-<td style="text-align: right;">81%</td>
-<td style="text-align: right;">254 / 277</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">301 / 301</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></td>
 <td>Stable</td>
-<td style="text-align: right;">95.3%</td>
-<td style="text-align: right;">73.7%</td>
-<td style="text-align: right;">143 / 150</td>
+<td style="text-align: right;">96.5%</td>
+<td style="text-align: right;">75.7%</td>
+<td style="text-align: right;">137 / 142</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Fixer</code></td>
 <td>Stable</td>
-<td style="text-align: right;">96.7%</td>
-<td style="text-align: right;">75%</td>
-<td style="text-align: right;">147 / 152</td>
+<td style="text-align: right;">97.9%</td>
+<td style="text-align: right;">77.3%</td>
+<td style="text-align: right;">141 / 144</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Fred</code></td>
@@ -220,79 +223,93 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Imf</code></td>
 <td>Experimental</td>
-<td style="text-align: right;">90.9%</td>
-<td style="text-align: right;">88.5%</td>
-<td style="text-align: right;">289 / 318</td>
+<td style="text-align: right;">95.8%</td>
+<td style="text-align: right;">93.5%</td>
+<td style="text-align: right;">339 / 354</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Oanda</code></td>
 <td>Experimental</td>
-<td style="text-align: right;">97%</td>
-<td style="text-align: right;">89.2%</td>
-<td style="text-align: right;">164 / 169</td>
+<td style="text-align: right;">99.4%</td>
+<td style="text-align: right;">98.4%</td>
+<td style="text-align: right;">156 / 157</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Ofx</code></td>
 <td>Experimental</td>
-<td style="text-align: right;">97.6%</td>
-<td style="text-align: right;">88.9%</td>
-<td style="text-align: right;">124 / 127</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">97.8%</td>
+<td style="text-align: right;">126 / 126</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Rba</code></td>
 <td>Stable</td>
-<td style="text-align: right;">94.4%</td>
-<td style="text-align: right;">89.5%</td>
-<td style="text-align: right;">303 / 321</td>
+<td style="text-align: right;">99.7%</td>
+<td style="text-align: right;">97.4%</td>
+<td style="text-align: right;">331 / 332</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Xe</code></td>
 <td>Experimental</td>
-<td style="text-align: right;">95.4%</td>
-<td style="text-align: right;">86.6%</td>
-<td style="text-align: right;">228 / 239</td>
+<td style="text-align: right;">95.8%</td>
+<td style="text-align: right;">92.1%</td>
+<td style="text-align: right;">230 / 240</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Yahoo</code></td>
 <td>Experimental</td>
-<td style="text-align: right;">96%</td>
-<td style="text-align: right;">73.1%</td>
-<td style="text-align: right;">143 / 149</td>
+<td style="text-align: right;">98.9%</td>
+<td style="text-align: right;">90.8%</td>
+<td style="text-align: right;">177 / 179</td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.Serialization.Json</code></td>
 <td>Stable</td>
-<td style="text-align: right;">95%</td>
-<td style="text-align: right;">89.4%</td>
-<td style="text-align: right;">551 / 580</td>
+<td style="text-align: right;">95.1%</td>
+<td style="text-align: right;">89.5%</td>
+<td style="text-align: right;">562 / 591</td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Excel.Binary</code></td>
 <td>Stable</td>
-<td style="text-align: right;">92.6%</td>
-<td style="text-align: right;">85.4%</td>
-<td style="text-align: right;">731 / 789</td>
+<td style="text-align: right;">96.4%</td>
+<td style="text-align: right;">93.9%</td>
+<td style="text-align: right;">623 / 646</td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook</code></td>
 <td>Stable</td>
-<td style="text-align: right;">95.9%</td>
-<td style="text-align: right;">88.9%</td>
-<td style="text-align: right;">71 / 74</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">106 / 106</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook (shared source)</code></td>
+<td>Stable</td>
+<td style="text-align: right;">97.2%</td>
+<td style="text-align: right;">95.1%</td>
+<td style="text-align: right;">310 / 319</td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook.Msg</code></td>
 <td>Stable</td>
-<td style="text-align: right;">94.2%</td>
-<td style="text-align: right;">90.2%</td>
-<td style="text-align: right;">524 / 556</td>
+<td style="text-align: right;">94.8%</td>
+<td style="text-align: right;">93.5%</td>
+<td style="text-align: right;">436 / 460</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook.Pst</code></td>
+<td>Stable</td>
+<td style="text-align: right;">94%</td>
+<td style="text-align: right;">88.5%</td>
+<td style="text-align: right;">489 / 520</td>
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar</code></td>
 <td>Stable</td>
-<td style="text-align: right;">97%</td>
-<td style="text-align: right;">89.6%</td>
-<td style="text-align: right;">3370 / 3474</td>
+<td style="text-align: right;">98.1%</td>
+<td style="text-align: right;">93.7%</td>
+<td style="text-align: right;">4082 / 4162</td>
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Africa</code></td>
@@ -325,16 +342,16 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Builder</code></td>
 <td>Stable</td>
-<td style="text-align: right;">95.7%</td>
-<td style="text-align: right;">88%</td>
-<td style="text-align: right;">1692 / 1768</td>
+<td style="text-align: right;">95.9%</td>
+<td style="text-align: right;">90.2%</td>
+<td style="text-align: right;">1935 / 2017</td>
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Caching</code></td>
 <td>Stable</td>
-<td style="text-align: right;">91.2%</td>
-<td style="text-align: right;">86.5%</td>
-<td style="text-align: right;">622 / 682</td>
+<td style="text-align: right;">92.2%</td>
+<td style="text-align: right;">88%</td>
+<td style="text-align: right;">661 / 717</td>
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Caching.Distributed</code></td>
@@ -374,9 +391,9 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Plugins</code></td>
 <td>Stable</td>
-<td style="text-align: right;">92%</td>
-<td style="text-align: right;">82.7%</td>
-<td style="text-align: right;">208 / 226</td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;">86.7%</td>
+<td style="text-align: right;">226 / 226</td>
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Tool</code></td>
@@ -388,23 +405,30 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <tr>
 <td><code>Bodu.Globalization.Recurrence</code></td>
 <td>Stable</td>
-<td style="text-align: right;">91.3%</td>
-<td style="text-align: right;">89.4%</td>
-<td style="text-align: right;">1314 / 1439</td>
+<td style="text-align: right;">95.9%</td>
+<td style="text-align: right;">94.6%</td>
+<td style="text-align: right;">1942 / 2025</td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Biff</code></td>
+<td>Stable</td>
+<td style="text-align: right;">99.7%</td>
+<td style="text-align: right;">97.8%</td>
+<td style="text-align: right;">1154 / 1158</td>
 </tr>
 <tr>
 <td><code>Bodu.IO.Compound</code></td>
 <td>Stable</td>
-<td style="text-align: right;">98.8%</td>
-<td style="text-align: right;">94.1%</td>
-<td style="text-align: right;">2220 / 2247</td>
+<td style="text-align: right;">99.1%</td>
+<td style="text-align: right;">95.6%</td>
+<td style="text-align: right;">2489 / 2512</td>
 </tr>
 <tr>
 <td><code>Bodu.IO.Hashing</code></td>
 <td>Stable</td>
 <td style="text-align: right;">98.7%</td>
 <td style="text-align: right;">96%</td>
-<td style="text-align: right;">2518 / 2551</td>
+<td style="text-align: right;">2519 / 2552</td>
 </tr>
 <tr>
 <td><code>Bodu.IO.Hashing (shared source)</code></td>
@@ -416,65 +440,65 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <tr>
 <td><code>Bodu.IO.Pst</code></td>
 <td>Stable</td>
-<td style="text-align: right;">100%</td>
-<td style="text-align: right;">100%</td>
-<td style="text-align: right;">408 / 408</td>
+<td style="text-align: right;">97.7%</td>
+<td style="text-align: right;">96.1%</td>
+<td style="text-align: right;">1254 / 1283</td>
 </tr>
 <tr>
 <td><code>Bodu.Numerics</code></td>
 <td>Stable</td>
-<td style="text-align: right;">94.2%</td>
-<td style="text-align: right;">91%</td>
-<td style="text-align: right;">2090 / 2219</td>
+<td style="text-align: right;">94.5%</td>
+<td style="text-align: right;">91.7%</td>
+<td style="text-align: right;">2171 / 2297</td>
 </tr>
 <tr>
 <td><code>Bodu.Numerics.Serialization.Json</code></td>
 <td>Stable</td>
-<td style="text-align: right;">92.5%</td>
-<td style="text-align: right;">83.6%</td>
-<td style="text-align: right;">494 / 534</td>
+<td style="text-align: right;">92.6%</td>
+<td style="text-align: right;">84.1%</td>
+<td style="text-align: right;">501 / 541</td>
 </tr>
 <tr>
 <td><code>Bodu.Security.Cryptography</code></td>
 <td>Stable</td>
-<td style="text-align: right;">98.4%</td>
-<td style="text-align: right;">94.1%</td>
-<td style="text-align: right;">13684 / 13912</td>
+<td style="text-align: right;">97.6%</td>
+<td style="text-align: right;">93.3%</td>
+<td style="text-align: right;">20787 / 21289</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.Bencode</code></td>
 <td>Stable</td>
-<td style="text-align: right;">93.1%</td>
-<td style="text-align: right;">91.7%</td>
-<td style="text-align: right;">1525 / 1638</td>
+<td style="text-align: right;">94%</td>
+<td style="text-align: right;">92.1%</td>
+<td style="text-align: right;">1582 / 1683</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.Configuration</code></td>
 <td>Stable</td>
-<td style="text-align: right;">95.5%</td>
-<td style="text-align: right;">94.7%</td>
-<td style="text-align: right;">1134 / 1187</td>
+<td style="text-align: right;">95.7%</td>
+<td style="text-align: right;">95%</td>
+<td style="text-align: right;">1181 / 1234</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.Delimited</code></td>
 <td>Stable</td>
-<td style="text-align: right;">91.7%</td>
-<td style="text-align: right;">85.9%</td>
-<td style="text-align: right;">824 / 899</td>
+<td style="text-align: right;">95.2%</td>
+<td style="text-align: right;">95.3%</td>
+<td style="text-align: right;">968 / 1017</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.DotEnv</code></td>
 <td>Stable</td>
-<td style="text-align: right;">90.3%</td>
-<td style="text-align: right;">86.7%</td>
-<td style="text-align: right;">652 / 722</td>
+<td style="text-align: right;">94.4%</td>
+<td style="text-align: right;">96.5%</td>
+<td style="text-align: right;">645 / 683</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.Encoding</code></td>
 <td>Stable</td>
-<td style="text-align: right;">95.5%</td>
-<td style="text-align: right;">93.8%</td>
-<td style="text-align: right;">3036 / 3178</td>
+<td style="text-align: right;">95.7%</td>
+<td style="text-align: right;">94.3%</td>
+<td style="text-align: right;">3009 / 3145</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.Filtering</code></td>
@@ -493,9 +517,9 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <tr>
 <td><code>Bodu.Text.Ini</code></td>
 <td>Stable</td>
-<td style="text-align: right;">90.7%</td>
-<td style="text-align: right;">85.3%</td>
-<td style="text-align: right;">830 / 915</td>
+<td style="text-align: right;">95.4%</td>
+<td style="text-align: right;">94.6%</td>
+<td style="text-align: right;">879 / 921</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.Serialization</code></td>
@@ -505,25 +529,32 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <td style="text-align: right;">72 / 72</td>
 </tr>
 <tr>
+<td><code>Bodu.Text.Serialization (line-format shared source)</code></td>
+<td>Stable</td>
+<td style="text-align: right;">98.9%</td>
+<td style="text-align: right;">97.3%</td>
+<td style="text-align: right;">269 / 272</td>
+</tr>
+<tr>
 <td><code>Bodu.Text.Serialization (shared source)</code></td>
 <td>Stable</td>
-<td style="text-align: right;">93.4%</td>
-<td style="text-align: right;">89%</td>
-<td style="text-align: right;">606 / 649</td>
+<td style="text-align: right;">99.9%</td>
+<td style="text-align: right;">97.3%</td>
+<td style="text-align: right;">921 / 922</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.Toml</code></td>
 <td>Stable</td>
-<td style="text-align: right;">95.5%</td>
-<td style="text-align: right;">92.8%</td>
-<td style="text-align: right;">2988 / 3130</td>
+<td style="text-align: right;">96.5%</td>
+<td style="text-align: right;">93.8%</td>
+<td style="text-align: right;">3059 / 3171</td>
 </tr>
 <tr>
 <td><code>Bodu.Text.Yaml</code></td>
 <td>Stable</td>
-<td style="text-align: right;">90.7%</td>
-<td style="text-align: right;">88.9%</td>
-<td style="text-align: right;">2435 / 2685</td>
+<td style="text-align: right;">94.7%</td>
+<td style="text-align: right;">93.4%</td>
+<td style="text-align: right;">3160 / 3337</td>
 </tr>
 <tr>
 <td><code>Caching (shared source)</code></td>
@@ -539,17 +570,41 @@ Cobertura report. Regenerate with <code>pwsh tools/New-CoverageMatrix.ps1</code>
 <li><code>Bodu.Globalization.Calendar.Build</code> - MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.</li>
 <li><code>Bodu.Text.Formats</code> - Umbrella meta-package: references the three format libraries and ships no source of its own.</li>
 </ul>
-<p><strong>Overall:</strong> 96.1% (66879 / 69560 lines across 59 collected package(s)).</p>
+<p><strong>Overall:</strong> 97% (81865 / 84354 lines across 64 collected package(s)).</p>
 <h2 id="baseline-evidence">Baseline evidence</h2>
 <pre><code class="lang-bash">bld/collect-coverage.sh
 bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 </code></pre>
 <ul>
-<li>Commit: <code>f629e0beea64b7650a5ff9485b5edcaf71a76c8d</code></li>
-<li><code>Avx512F.IsSupported</code> on the collecting host: <code>true</code></li>
+<li>Commit: <code>8aba55ac47fff4c32862f42f8c004ff587f551c2</code></li>
+<li><code>Avx512F.IsSupported</code> on the collecting hosts, by shard: <code>full</code> = <code>true</code></li>
+<li>Architecture of the collecting hosts: <code>x86_64</code></li>
 <li>Phantom rows discarded: 0</li>
 <li>Files with stale line numbering: 0</li>
+</ul>
+<h3 id="hardware-gating-decisions">Hardware-gating decisions</h3>
+<p>Each package's hardware-dependent files are judged by the shard that collected its own test
+project, whatever the other shards' hosts supported: <code>measured</code> means that host could execute
+them, <code>excluded</code> that it could not. A package no manifest names falls back to the fleet-wide
+rule, which judges across every collecting host.</p>
+<ul>
+<li><code>Bodu.Core</code> ARM64: excluded, decided by shard <code>full</code>, which collected <code>Bodu.Core.Test</code> (architecture <code>x86_64</code>)</li>
+<li><code>Bodu.Core</code> AVX-512: measured, decided by shard <code>full</code>, which collected <code>Bodu.Core.Test</code> (<code>Avx512F.IsSupported</code> = <code>true</code>)</li>
+<li><code>Bodu.Security.Cryptography</code> ARM64: excluded, decided by shard <code>full</code>, which collected <code>Bodu.Security.Cryptography.Test</code> (architecture <code>x86_64</code>)</li>
+<li><code>Bodu.Security.Cryptography</code> AVX-512: measured, decided by shard <code>full</code>, which collected <code>Bodu.Security.Cryptography.Test</code> (<code>Avx512F.IsSupported</code> = <code>true</code>)</li>
+</ul>
+<h3 id="hardware-gated-files-excluded-from-the-denominator">Hardware-gated files excluded from the denominator</h3>
+<p>The host that collected each package's own tests could not execute these implementations -
+AVX-512 code without AVX-512, ARM64 code off ARM64 - so the JIT could not select them there,
+whatever the other shards saw. They are exercised by the standard known-answer suites on
+capable hardware, including the ARM64 CI job, and are <strong>not</strong> a missing-test gap.</p>
+<ul>
+<li><code>Bodu.Core/src/Extensions/VectorRotation.AdvSimd.cs</code></li>
+<li><code>Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Core.AdvSimd.cs</code></li>
+<li><code>Bodu.Security.Cryptography/src/Security.Cryptography/Blake2sCore.AdvSimd.cs</code></li>
+<li><code>Bodu.Security.Cryptography/src/Security.Cryptography/Ghash.PmullIsa.cs</code></li>
+<li><code>Bodu.Security.Cryptography/src/Security.Cryptography/ScryptCore.AdvSimd.cs</code></li>
 </ul>
 
 </article>
@@ -569,7 +624,7 @@ pwsh tools/New-CoverageMatrix.ps1
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 9234df7 · Built: 2026-11-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1f8b789 · Built: 2026-11-01 (UTC)</span>
         </div>
       </div>
     </footer>
