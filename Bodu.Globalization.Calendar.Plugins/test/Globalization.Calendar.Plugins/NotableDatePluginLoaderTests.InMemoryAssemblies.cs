@@ -28,10 +28,12 @@ public sealed partial class NotableDatePluginLoaderTests
 
     /// <summary>
     /// Emits a run-only dynamic assembly declaring, through <see cref="NotableDatePluginAttribute" />, an entry-point
-    /// type defined in that same assembly.
+    /// type defined in that same assembly or in the core library.
     /// </summary>
     /// <param name="name">The simple name of the dynamic assembly.</param>
-    /// <param name="defineEntryPoint">Defines and creates the entry-point type in the assembly's module.</param>
+    /// <param name="defineEntryPoint">
+    /// Defines and creates the entry-point type in the assembly's module, or returns a core-library type to name.
+    /// </param>
     /// <returns>The dynamic assembly and the entry-point type it declares.</returns>
     /// <remarks>
     /// The attribute is written as a raw ECMA-335 II.23.3 blob naming the entry point by its unqualified full name.
@@ -39,7 +41,8 @@ public sealed partial class NotableDatePluginLoaderTests
     /// assembly cannot be bound by name - neither through probing nor through
     /// <see cref="System.Runtime.Loader.AssemblyLoadContext.Resolving" /> - so reading that attribute back fails
     /// with <see cref="FileNotFoundException" />. An unqualified name is resolved by the custom-attribute search
-    /// rules in the declaring assembly first, which is where the type lives.
+    /// rules in the declaring assembly first, which is where a defined type lives, and then in the core library,
+    /// which is where <see langword="void" />, <see cref="List{T}" /> and <see cref="Span{T}" /> live.
     /// </remarks>
     private static (AssemblyBuilder Assembly, Type EntryPoint) DefineDynamicPluginAssembly(
         string name,

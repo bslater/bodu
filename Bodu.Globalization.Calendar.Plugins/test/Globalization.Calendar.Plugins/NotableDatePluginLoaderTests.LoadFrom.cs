@@ -274,6 +274,83 @@ public sealed partial class NotableDatePluginLoaderTests
     }
 
     /// <summary>
+    /// Verifies that an assembly whose plugin attribute names an open generic type definition, which
+    /// <see cref="Activator.CreateInstance(Type)" /> rejects with <see cref="ArgumentException" />, is reported as
+    /// <see cref="PluginActivationException" /> naming the type, carrying it as
+    /// <see cref="PluginActivationException.PluginType" /> and the rejection as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void LoadFrom_WhenPluginTypeIsAnOpenGenericDefinition_ShouldThrowPluginActivationExceptionWithTheCause()
+    {
+        (AssemblyBuilder assembly, Type entryPoint) = DefineDynamicPluginAssembly(
+            "Bodu.Globalization.Calendar.Plugins.Test.Dynamic.OpenGeneric",
+            _ => typeof(List<>));
+        Assert.IsTrue(entryPoint.ContainsGenericParameters, "The attribute must name the open definition.");
+
+        PluginActivationException ex = Assert.ThrowsExactly<PluginActivationException>(() =>
+        {
+            _ = NotableDatePluginLoader.LoadFrom(assembly, new AllowAllPluginTrustPolicy());
+        });
+
+        Assert.AreSame(entryPoint, ex.PluginType);
+        Assert.AreEqual(
+            string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, entryPoint.FullName),
+            ex.Message);
+        Assert.IsInstanceOfType<ArgumentException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that an assembly whose plugin attribute names <see langword="void" />, which
+    /// <see cref="Activator.CreateInstance(Type)" /> rejects with <see cref="NotSupportedException" />, is reported
+    /// as <see cref="PluginActivationException" /> naming the type, carrying it as
+    /// <see cref="PluginActivationException.PluginType" /> and the rejection as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void LoadFrom_WhenPluginTypeIsVoid_ShouldThrowPluginActivationExceptionWithTheCause()
+    {
+        (AssemblyBuilder assembly, Type entryPoint) = DefineDynamicPluginAssembly(
+            "Bodu.Globalization.Calendar.Plugins.Test.Dynamic.Void",
+            _ => typeof(void));
+
+        PluginActivationException ex = Assert.ThrowsExactly<PluginActivationException>(() =>
+        {
+            _ = NotableDatePluginLoader.LoadFrom(assembly, new AllowAllPluginTrustPolicy());
+        });
+
+        Assert.AreSame(entryPoint, ex.PluginType);
+        Assert.AreEqual(
+            string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, "System.Void"),
+            ex.Message);
+        Assert.IsInstanceOfType<NotSupportedException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that an assembly whose plugin attribute names a byref-like struct, which
+    /// <see cref="Activator.CreateInstance(Type)" /> rejects with <see cref="NotSupportedException" /> because its
+    /// instances cannot be boxed, is reported as <see cref="PluginActivationException" /> naming the type, carrying
+    /// it as <see cref="PluginActivationException.PluginType" /> and the rejection as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void LoadFrom_WhenPluginTypeIsByRefLike_ShouldThrowPluginActivationExceptionWithTheCause()
+    {
+        (AssemblyBuilder assembly, Type entryPoint) = DefineDynamicPluginAssembly(
+            "Bodu.Globalization.Calendar.Plugins.Test.Dynamic.ByRefLike",
+            _ => typeof(Span<int>));
+        Assert.IsTrue(entryPoint.IsByRefLike, "The attribute must name a byref-like struct.");
+
+        PluginActivationException ex = Assert.ThrowsExactly<PluginActivationException>(() =>
+        {
+            _ = NotableDatePluginLoader.LoadFrom(assembly, new AllowAllPluginTrustPolicy());
+        });
+
+        Assert.AreSame(entryPoint, ex.PluginType);
+        Assert.AreEqual(
+            string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, entryPoint.FullName),
+            ex.Message);
+        Assert.IsInstanceOfType<NotSupportedException>(ex.InnerException);
+    }
+
+    /// <summary>
     /// Verifies that an assembly whose <see cref="AssemblyName" /> carries no simple name is identified to the trust
     /// policy by its full name instead.
     /// </summary>
