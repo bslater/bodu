@@ -603,6 +603,39 @@ public sealed partial class ConcurrentCircularBuffer<T>
     }
 
     /// <summary>
+    /// Publishes the specified head and tail positions as a reader observes them when the two are read at different
+    /// moments: a head past the tail, or a tail more than <see cref="Capacity" /> ahead of the head. Exposed to the
+    /// test assembly so the count clamps of <see cref="Count" />, the indexer, <see cref="Contains" /> and
+    /// <see cref="ToArray" /> can be driven deterministically.
+    /// </summary>
+    /// <param name="head">The consumer position to publish.</param>
+    /// <param name="tail">The producer position to publish.</param>
+    /// <remarks>
+    /// This is a test seam. It bypasses the producer and consumer protocols, so the instance is coherent only for the
+    /// read paths a test drives afterwards and should be discarded once they have been observed.
+    /// </remarks>
+    internal void SetPositions(int head, int tail)
+    {
+        Volatile.Write(ref _head, head);
+        Volatile.Write(ref _tail, tail);
+    }
+
+    /// <summary>
+    /// Overwrites the coordination sequence of the slot at the specified physical index with the value a producer or
+    /// consumer in flight would have left there. Exposed to the test assembly so the sequence-validated read paths can
+    /// be driven to their mismatch and retry-budget branches deterministically.
+    /// </summary>
+    /// <param name="slotIndex">The physical slot index.</param>
+    /// <param name="sequence">The sequence value to publish.</param>
+    /// <remarks>
+    /// This is a test seam; <paramref name="slotIndex" /> must be in the range <c>[0, Capacity)</c>. A slot whose
+    /// sequence is not its publication mark is rejected by every sequence-validated read, which is what a slot that has
+    /// been claimed but not yet published, or already reclaimed, presents to a reader.
+    /// </remarks>
+    internal void SetSlotSequence(int slotIndex, int sequence) =>
+        Volatile.Write(ref _buffer[slotIndex].Sequence, sequence);
+
+    /// <summary>
     /// Produces a best-effort snapshot when the standard <see cref="ToArray" /> retry budget is exhausted. Each slot is
     /// still sequence-validated; slots that cannot be stabilized are written as <see langword="default" /> rather than
     /// as a torn or stale-generation value.

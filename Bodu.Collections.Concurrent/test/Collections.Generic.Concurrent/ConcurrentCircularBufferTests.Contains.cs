@@ -346,4 +346,38 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.Contains(a)); // was dequeued
     }
 
+    /// <summary>
+    /// Verifies that when the tail is observed more than <see cref="ConcurrentCircularBuffer{T}.Capacity" /> ahead of
+    /// the head - a stale head read against producers that have wrapped - <see cref="ConcurrentCircularBuffer{T}.Contains" />
+    /// clamps its scan to the capacity, finding the element in the last slot of the ring and no phantom beyond it.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenTailObservedMoreThanCapacityAheadOfHead_ShouldClampScanToCapacity()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        for (int i = 0; i < 4; i++)
+            buffer.Enqueue(new TestItem(i));
+        buffer.SetPositions(head: 0, tail: 4 + 3);
+
+        Assert.IsTrue(buffer.Contains(new TestItem(3)), "The element in the last slot of the clamped window must be found.");
+        Assert.IsFalse(buffer.Contains(new TestItem(99)));
+    }
+
+    /// <summary>
+    /// Verifies that when a slot ahead of the sought element never carries its publication mark, so the in-place scan
+    /// fails on every attempt, <see cref="ConcurrentCircularBuffer{T}.Contains" /> falls back to the coherent snapshot,
+    /// which still carries every stable slot, and finds the element there.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenEarlierSlotNeverStabilizes_ShouldFindElementThroughSnapshotFallback()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        var sought = new TestItem(2);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(sought);
+        buffer.SetSlotSequence(slotIndex: 0, sequence: 0);
+
+        Assert.IsTrue(buffer.Contains(sought), "The snapshot fallback must find the element in the stable slot behind the unstable one.");
+    }
+
 }
