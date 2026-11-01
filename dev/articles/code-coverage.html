@@ -284,6 +284,20 @@ AVX-512 still cannot execute the intrinsic files - every <code>*.Avx512.cs</code
 512-bit <code>*.Vector512.cs</code> kernels, which the script classifies with them - and
 reporting them as 0% there would be wrong. The classification stays for that case; after a dual pass it
 simply never triggers, because neither path is unreachable any more.</p>
+<p>The classification is decided <strong>per package, by the host that ran that
+package's own tests</strong>. Every collection manifest records, beside the host's
+<code>avx512Supported</code> and <code>arch</code>, the names of the test projects the shard
+collected (<code>projects</code>), and the matrix gates a package's <code>*.Avx512.cs</code> and
+<code>*.Vector512.cs</code> files on the manifest whose <code>projects</code> names <code>&lt;Package&gt;.Test</code>,
+whatever the other shards saw. GitHub's hosted runners are a mixed fleet, and
+judging AVX-512 availability across the whole fleet counted the cryptography
+kernels as uncovered whenever the crypto shard landed on a runner without
+AVX-512 while another shard had one, about 5pp below the floor (#1364).
+<code>Bodu.Security.Cryptography.Simd.Test</code> runs with SIMD disabled and can never
+reach the kernels, so it is not the deciding project. A package no manifest
+names, as in an artifact written before manifests listed their projects, falls
+back to the fleet-wide rule, with a warning, and the matrix's evidence section
+says per package which shard decided it.</p>
 <h3 id="arm64-the-advsimd-and-pmull-files">ARM64: the AdvSimd and PMULL files</h3>
 <p>Argon2's 128-bit compression kernel is written once over portable <code>Vector128</code>
 arithmetic and specialized by a five-member instruction-set shim, so nearly all
@@ -307,12 +321,14 @@ shim is <code>Argon2Core.AdvSimd.cs</code> again, and BLAKE2s's is <code>Blake2s
 BLAKE3's 128-bit kernels reuse the BLAKE2s shims, so on ARM64 they too run through
 <code>Blake2sCore.AdvSimd.cs</code>; its 256- and 512-bit kernels are x64-only, and the
 512-bit one, <code>Blake3Core.Vector512.cs</code>, is classified with the AVX-512 files.</p>
-<p><code>tools/New-CoverageMatrix.ps1</code> therefore treats <code>*.AdvSimd.cs</code> and
-<code>*.PmullIsa.cs</code> as hardware-gated whenever no collecting host is ARM64 - judged
-from the <code>arch</code> field every collection manifest records - and reports them as
-<code>n/a (hardware-gated)</code> rather than 0%. As with the AVX-512 files, the rule
-applies only on positive evidence: a collection with no recorded architecture
-reports the files as measured. The shims are not untested: the ARM64 job in
+<p><code>tools/New-CoverageMatrix.ps1</code> therefore treats a package's <code>*.AdvSimd.cs</code> and
+<code>*.PmullIsa.cs</code> files as hardware-gated whenever the host that collected the
+package's own test project is not ARM64 - judged from the <code>arch</code> field of that
+shard's collection manifest, the same per-package rule as the AVX-512 files -
+and reports them as <code>n/a (hardware-gated)</code> rather than 0%. As with the AVX-512
+files, the rule applies only on positive evidence: a collection with no
+recorded architecture reports the files as measured. The shims are not
+untested: the ARM64 job in
 <code>.github/workflows/build-test.yml</code> runs both cryptography suites on GitHub's
 hosted ARM64 runner, where the Argon2 shim tests hold each member to its scalar
 definition, the vector corpus runs through the AdvSimd kernel, the GHASH
@@ -472,8 +488,8 @@ of <code>CrcCore.cs</code> and <code>Bodu.IO.Pst</code> showed none of it; closi
 would have moved a row that does not own it. Splitting the sets out cost
 <code>Outlook.Msg</code> 1.1pp and gained <code>ExchangeRates.Caching</code> 0.3pp, with the solution
 figure unchanged - a correction, not a regression, so the two <code>Outlook.Msg</code>
-ratchet floors were lowered by hand to match. That is the only circumstance in
-which a floor comes down. The Outlook decode layer was the same kind of
+ratchet floors were lowered by hand to match. That, and the hardware case
+below, are the only circumstances in which a floor comes down. The Outlook decode layer was the same kind of
 correction when it joined the table: the merge had credited it to
 <code>Outlook.Msg</code>, the first host it emits, while a collection of <code>Outlook.Pst</code>
 alone credited it to that package instead (88.6% line there, against 94.0% for
@@ -481,6 +497,18 @@ the package's own code). Its unit and both readers' floors were reset by hand
 from a net10.0 collection of the two readers' test projects, less the grace
 band: the unit at 96.7 / 94.6, <code>Outlook.Msg</code> at 94.3 / 93.0 and <code>Outlook.Pst</code>
 at 93.5 / 88.0 (line / branch).</p>
+<p><code>Bodu.Security.Cryptography</code> is the hardware case, a measurement correction
+rather than an attribution one. Its floor of 97.9 / 93.6 was recorded from a
+host with AVX-512, and the hosted runners are a mixed fleet. On a crypto shard
+without AVX-512 the kernel files are excluded per package (above), but the 99
+lines that select and dispatch them, the <code>KernelKind.Avx512</code> arms and the
+<code>Vector512.IsHardwareAccelerated</code> paths inside the scalar files, cannot execute
+either, and no file pattern names them. The floor was reset to 96.9 / 92.0, the
+figure the scheduled run of 25 October 2026 reads with the exclusion applied,
+so the package meets it on either kind of runner. A later
+<code>tools/Update-CoverageThresholds.ps1</code> from a run whose crypto shard had AVX-512
+would raise it past what a shard without AVX-512 can reach, so that floor is
+raised only from a run whose crypto shard lacked AVX-512.</p>
 <p>The last two sets joined the table the same way, from a net10.0 collection of
 the 20 test projects under <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>,
 <code>Bodu.Text.Ini</code>, <code>Bodu.Text.Formats.Generators</code> and every
@@ -544,7 +572,7 @@ happy, edge, and exception cases together.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5e7bfc1 · Built: 2026-10-31 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 9234df7 · Built: 2026-11-01 (UTC)</span>
         </div>
       </div>
     </footer>
