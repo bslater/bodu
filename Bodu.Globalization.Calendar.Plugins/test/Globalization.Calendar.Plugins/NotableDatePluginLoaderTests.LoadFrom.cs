@@ -296,7 +296,8 @@ public sealed partial class NotableDatePluginLoaderTests
         Assert.AreEqual(
             string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, entryPoint.FullName),
             ex.Message);
-        Assert.IsInstanceOfType<ArgumentException>(ex.InnerException);
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(ArgumentException), ex.InnerException.GetType());
     }
 
     /// <summary>
@@ -321,7 +322,8 @@ public sealed partial class NotableDatePluginLoaderTests
         Assert.AreEqual(
             string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, "System.Void"),
             ex.Message);
-        Assert.IsInstanceOfType<NotSupportedException>(ex.InnerException);
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(NotSupportedException), ex.InnerException.GetType());
     }
 
     /// <summary>
@@ -347,7 +349,8 @@ public sealed partial class NotableDatePluginLoaderTests
         Assert.AreEqual(
             string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, entryPoint.FullName),
             ex.Message);
-        Assert.IsInstanceOfType<NotSupportedException>(ex.InnerException);
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(NotSupportedException), ex.InnerException.GetType());
     }
 
     /// <summary>
