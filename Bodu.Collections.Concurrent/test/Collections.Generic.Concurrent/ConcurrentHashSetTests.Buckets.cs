@@ -91,4 +91,73 @@ public partial class ConcurrentHashSetTests
         for (int i = 0; i < 500; i++)
             Assert.IsTrue(set.Contains(i), $"Colliding key {i} was lost.");
     }
+
+    /// <summary>
+    /// Verifies that when a bucket's sentinel is already linked into the list but not yet published to the shortcut
+    /// array - a racing initializer between its two steps - the next operation on the bucket adopts that sentinel
+    /// rather than linking a second one, publishes it, and finds its element through it.
+    /// </summary>
+    [TestMethod]
+    public void InitializeBucket_WhenSentinelLinkedButUnpublished_ShouldAdoptAndPublishIt()
+    {
+        // With 32 buckets, 6 maps to bucket 6, whose parent bucket 2 is itself still uninitialized.
+        var set = new ConcurrentHashSet<int>(capacity: 64);
+        set.Add(1);
+        Assert.AreEqual(32, set.BucketCount);
+        Assert.IsNull(set.GetBucketShortcut(2));
+        Assert.IsNull(set.GetBucketShortcut(6));
+        object linked = set.LinkSentinelUnpublished(6);
+        Assert.IsNotNull(set.GetBucketShortcut(2), "Linking initializes the parent bucket the way a racing initializer would.");
+        Assert.IsNull(set.GetBucketShortcut(6), "Linking must not publish the sentinel.");
+        Assert.AreSame(linked, set.LinkSentinelUnpublished(6), "A bucket has exactly one sentinel: linking again must yield the linked one.");
+
+        Assert.IsTrue(set.Add(6));
+
+        Assert.AreSame(linked, set.GetBucketShortcut(6), "The initializer must adopt and publish the linked sentinel.");
+        Assert.IsTrue(set.Contains(6));
+        AssertContainsExactly(set, 1, 6);
+    }
+
+    /// <summary>
+    /// Verifies that when a competing initializer links and publishes the bucket's sentinel in the window between
+    /// this initializer's traversal and its link compare-and-swap, the initializer loses the compare-and-swap,
+    /// retries, adopts the winner's sentinel rather than replacing it, and the operation that triggered it completes
+    /// through that sentinel.
+    /// </summary>
+    [TestMethod]
+    public void InitializeBucket_WhenCompetingInitializerLinksSentinelBeforeCompareAndSwap_ShouldRetryAndAdoptWinner()
+    {
+        // With 32 buckets, 17 and 49 both map to bucket 17, whose parent bucket 1 already holds the element 1.
+        var set = new ConcurrentHashSet<int>(capacity: 64);
+        set.Add(1);
+        Assert.AreEqual(32, set.BucketCount);
+        object? winner = null;
+        var hookInvocations = 0;
+        set.InitializeBucketRaceHook = () =>
+        {
+            hookInvocations++;
+            set.InitializeBucketRaceHook = null;
+
+            // The competing initializer: a lookup of another element of bucket 17 links and publishes its sentinel.
+            Assert.IsFalse(set.Contains(49));
+            winner = set.GetBucketShortcut(17);
+            Assert.IsNotNull(winner, "The competing initializer must have published the bucket's sentinel.");
+        };
+
+        bool added;
+        try
+        {
+            added = set.Add(17);
+        }
+        finally
+        {
+            set.InitializeBucketRaceHook = null;
+        }
+
+        Assert.AreEqual(1, hookInvocations);
+        Assert.IsTrue(added);
+        Assert.AreSame(winner, set.GetBucketShortcut(17), "The loser must adopt the winner's sentinel rather than replace it.");
+        Assert.IsTrue(set.Contains(17));
+        AssertContainsExactly(set, 1, 17);
+    }
 }

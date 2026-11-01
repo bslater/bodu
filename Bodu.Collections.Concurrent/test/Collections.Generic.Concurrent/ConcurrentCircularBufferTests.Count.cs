@@ -275,4 +275,33 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(3, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that when the head is observed past the tail - the two positions read at different moments while
+    /// consumers drain the buffer - <see cref="ConcurrentCircularBuffer{T}.Count" /> clamps the difference to zero
+    /// rather than reporting a negative count.
+    /// </summary>
+    [TestMethod]
+    public void Count_WhenHeadObservedPastTail_ShouldClampToZero()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(1));
+        buffer.SetPositions(head: 5, tail: 3);
+
+        Assert.AreEqual(0, buffer.Count);
+    }
+
+    /// <summary>
+    /// Verifies that when the tail is observed more than <see cref="ConcurrentCircularBuffer{T}.Capacity" /> ahead of
+    /// the head - a stale head read against producers that have wrapped - <see cref="ConcurrentCircularBuffer{T}.Count" />
+    /// clamps the difference to the capacity.
+    /// </summary>
+    [TestMethod]
+    public void Count_WhenTailObservedMoreThanCapacityAheadOfHead_ShouldClampToCapacity()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.SetPositions(head: 0, tail: 4 + 3);
+
+        Assert.AreEqual(4, buffer.Count);
+    }
+
 }

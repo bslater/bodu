@@ -122,29 +122,16 @@ public partial class ConcurrentCircularBufferTests
 
     /// <summary>
     /// Overwrites the <c>Sequence</c> field of the slot at <paramref name="slotIndex"/> in <paramref name="buffer"/>'s internal
-    /// array to <paramref name="newSequence"/> via reflection, simulating a torn or unpublished slot that the seqlock pre-check
-    /// will reject.
+    /// array to <paramref name="newSequence"/> through the internal test seam, simulating a torn or unpublished slot that
+    /// the seqlock pre-check will reject.
     /// </summary>
     /// <typeparam name="T">The buffer element type.</typeparam>
     /// <param name="buffer">The buffer whose slot to corrupt.</param>
     /// <param name="slotIndex">The zero-based physical slot index to modify.</param>
     /// <param name="newSequence">The sequence value to write into the slot.</param>
     private static void CorruptSlotSequence<T>(ConcurrentCircularBuffer<T> buffer, int slotIndex, int newSequence)
-        where T : class?
-    {
-        FieldInfo bufferField = typeof(ConcurrentCircularBuffer<T>).GetField(
-            "_buffer",
-            BindingFlags.Instance | BindingFlags.NonPublic)
-            ?? throw new InvalidOperationException("_buffer field not found.");
-
-        var slotArray = (Array)bufferField.GetValue(buffer)!;
-        object slot = slotArray.GetValue(slotIndex)!;
-        FieldInfo sequenceField = slot.GetType().GetField("Sequence", BindingFlags.Instance | BindingFlags.Public)
-            ?? throw new InvalidOperationException("Slot.Sequence field not found.");
-
-        sequenceField.SetValue(slot, newSequence);
-        slotArray.SetValue(slot, slotIndex);
-    }
+        where T : class? =>
+        buffer.SetSlotSequence(slotIndex, newSequence);
 
     /// <summary>
     /// Invokes the private <c>BestEffortSnapshot</c> method on <paramref name="buffer"/> via reflection.

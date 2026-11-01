@@ -195,4 +195,121 @@ public partial class ConcurrentLruCacheTests
         Assert.AreEqual(1, cache.EvictionCount);
         AssertContainsExactly(cache, ("a", 1), ("c", 3));
     }
+
+    /// <summary>
+    /// Verifies that when the live count exceeds the capacity while the cold queue is empty - in-flight writers hold
+    /// entries no queue has received yet - the hard capacity enforcement demotes the warm head to cold and evicts it,
+    /// so the capacity contract holds without waiting for the writers to deliver.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenLiveCountExceedsCapacityAndColdQueueIsEmpty_ShouldDemoteFromWarmAndEvict()
+    {
+        // Capacity 3 partitions as hot 1 / warm 1 / cold 1.
+        var cache = new ConcurrentLruCache<string, int>(capacity: 3);
+        var evicted = new List<string>();
+        cache.ItemEvicted += (key, _) => evicted.Add(key);
+        cache.Add("a", 1);
+        Assert.IsTrue(cache.TryGetValue("a", out _));
+        cache.Add("b", 2);
+        Assert.AreEqual(1, cache.WarmCount, "The accessed entry must have been promoted to warm by the second add.");
+        Assert.AreEqual(0, cache.ColdCount);
+        Assert.IsTrue(cache.AddInFlight("c", 3));
+        Assert.IsTrue(cache.AddInFlight("d", 4));
+        Assert.AreEqual(4, cache.ApproximateCount);
+
+        cache.RunMaintenance();
+
+        CollectionAssert.AreEqual(new[] { "a" }, evicted, "With cold empty, the warm head must be demoted and evicted.");
+        Assert.AreEqual(3, cache.ApproximateCount);
+        Assert.AreEqual(0, cache.WarmCount);
+        AssertContainsExactly(cache, ("b", 2), ("c", 3), ("d", 4));
+    }
+
+    /// <summary>
+    /// Verifies that when the live count exceeds the capacity while both the cold and the warm queues are empty, the
+    /// hard capacity enforcement demotes the hot head to cold and evicts it.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenLiveCountExceedsCapacityAndOnlyHotQueueHoldsEntries_ShouldDemoteFromHotAndEvict()
+    {
+        var cache = new ConcurrentLruCache<string, int>(capacity: 3);
+        var evicted = new List<string>();
+        cache.ItemEvicted += (key, _) => evicted.Add(key);
+        cache.Add("a", 1);
+        Assert.AreEqual(1, cache.HotCount);
+        Assert.IsTrue(cache.AddInFlight("b", 2));
+        Assert.IsTrue(cache.AddInFlight("c", 3));
+        Assert.IsTrue(cache.AddInFlight("d", 4));
+
+        cache.RunMaintenance();
+
+        CollectionAssert.AreEqual(new[] { "a" }, evicted, "With cold and warm empty, the hot head must be demoted and evicted.");
+        Assert.AreEqual(3, cache.ApproximateCount);
+        Assert.AreEqual(0, cache.HotCount);
+        AssertContainsExactly(cache, ("b", 2), ("c", 3), ("d", 4));
+    }
+
+    /// <summary>
+    /// Verifies that when the live count still exceeds the capacity after every queue has been drained - the excess
+    /// is held entirely by in-flight writers - the hard capacity enforcement stops rather than spinning, and that the
+    /// maintenance run after the writers deliver brings the cache back within its capacity.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenEveryQueueIsEmptyWhileWritersAreInFlight_ShouldStopAndConvergeOnceDelivered()
+    {
+        var cache = new ConcurrentLruCache<string, int>(capacity: 3);
+        var evicted = new List<string>();
+        cache.ItemEvicted += (key, _) => evicted.Add(key);
+        cache.Add("a", 1);
+        foreach (string key in new[] { "b", "c", "d", "e" })
+            Assert.IsTrue(cache.AddInFlight(key, 0));
+        Assert.IsFalse(cache.AddInFlight("a", 0), "A writer for a key that is already present adds nothing.");
+
+        cache.RunMaintenance();
+
+        CollectionAssert.AreEqual(new[] { "a" }, evicted, "Only the delivered entry can be evicted while the rest are in flight.");
+        Assert.AreEqual(4, cache.ApproximateCount, "The undelivered entries stay until their writers deliver them.");
+        Assert.AreEqual(0, cache.HotCount);
+
+        Assert.IsFalse(cache.DeliverInFlight("a"), "The evicted entry has no node left to deliver.");
+        foreach (string key in new[] { "b", "c", "d", "e" })
+            Assert.IsTrue(cache.DeliverInFlight(key));
+        cache.RunMaintenance();
+
+        Assert.IsTrue(cache.Count <= cache.Capacity, $"Count {cache.Count} must be within the capacity once the writers have delivered.");
+        Assert.AreEqual(cache.Count, cache.ApproximateCount);
+        Assert.AreEqual(3, evicted.Count, "The delivered entries flow through the queues and the unread excess is evicted.");
+    }
+
+    /// <summary>
+    /// Verifies that the hard capacity enforcement drops a dead node it dequeues from hot while refilling the empty
+    /// cold queue - an entry removed after it was queued - without counting it as an eviction, and that the cache
+    /// converges once the in-flight writers deliver.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenHardEnforcementDequeuesRemovedEntryFromHot_ShouldDropItWithoutEvicting()
+    {
+        var cache = new ConcurrentLruCache<string, int>(capacity: 3);
+        var evicted = new List<string>();
+        cache.ItemEvicted += (key, _) => evicted.Add(key);
+        cache.Add("a", 1);
+        Assert.IsTrue(cache.TryRemove("a", out _));
+        Assert.AreEqual(1, cache.HotCount, "The removed entry's dead node keeps its hot slot until a pass drains it.");
+        foreach (string key in new[] { "b", "c", "d", "e" })
+            Assert.IsTrue(cache.AddInFlight(key, 0));
+
+        cache.RunMaintenance();
+
+        Assert.IsEmpty(evicted, "A removed entry is dropped, not evicted.");
+        Assert.AreEqual(0, cache.HotCount, "The dead node must have been drained from hot.");
+        Assert.AreEqual(0, cache.EvictionCount);
+        Assert.AreEqual(4, cache.ApproximateCount);
+
+        foreach (string key in new[] { "b", "c", "d", "e" })
+            Assert.IsTrue(cache.DeliverInFlight(key));
+        cache.RunMaintenance();
+
+        Assert.IsTrue(cache.Count <= cache.Capacity, $"Count {cache.Count} must be within the capacity once the writers have delivered.");
+        Assert.IsFalse(cache.ContainsKey("a"));
+    }
 }

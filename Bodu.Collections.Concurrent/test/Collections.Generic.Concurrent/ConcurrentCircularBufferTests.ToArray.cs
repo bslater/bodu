@@ -253,4 +253,22 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 2, 3, 4 }, result);
     }
 
+    /// <summary>
+    /// Verifies that when the tail is observed more than <see cref="ConcurrentCircularBuffer{T}.Capacity" /> ahead of
+    /// the head - a stale head read against producers that have wrapped - <see cref="ConcurrentCircularBuffer{T}.ToArray" />
+    /// clamps the snapshot to the capacity and returns exactly the ring's elements in FIFO order.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenTailObservedMoreThanCapacityAheadOfHead_ShouldClampSnapshotToCapacity()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        for (int i = 0; i < 4; i++)
+            buffer.Enqueue(new TestItem(i));
+        buffer.SetPositions(head: 0, tail: 4 + 3);
+
+        TestItem[] snapshot = buffer.ToArray();
+
+        CollectionAssert.AreEqual(new[] { 0, 1, 2, 3 }, snapshot.Select(x => x.Value).ToArray());
+    }
+
 }

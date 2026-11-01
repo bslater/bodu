@@ -162,4 +162,75 @@ public partial class ConcurrentHashSetTests
         Assert.IsFalse(set.Contains(3));
         AssertContainsExactly(set, 2);
     }
+
+    /// <summary>
+    /// Verifies that when a competing removal of the same element marks its node in the window between this call's
+    /// read of the node's successor and its logical-delete compare-and-swap, the call loses the compare-and-swap,
+    /// retries, finds the element gone and reports <see langword="false" />, so the element is removed exactly once.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenCompetingRemoveMarksNodeBeforeCompareAndSwap_ShouldRetryAndReportElementAbsent()
+    {
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
+        var innerRemoved = false;
+        set.RemoveRaceHook = () =>
+        {
+            set.RemoveRaceHook = null;
+            innerRemoved = set.Remove(2);
+        };
+
+        bool outerRemoved;
+        try
+        {
+            outerRemoved = set.Remove(2);
+        }
+        finally
+        {
+            set.RemoveRaceHook = null;
+        }
+
+        Assert.IsTrue(innerRemoved, "The competing removal must have claimed the element.");
+        Assert.IsFalse(outerRemoved, "The removal that lost the logical delete must retry and find the element gone.");
+        Assert.AreEqual(2, set.Count);
+        Assert.IsFalse(set.Contains(2));
+        AssertContainsExactly(set, 1, 3);
+    }
+
+    /// <summary>
+    /// Verifies that when a competing insert links a new node directly after the element in the window between this
+    /// call's read of the element's successor and its logical-delete compare-and-swap, the call loses the
+    /// compare-and-swap, retries with the new successor and removes the element, leaving the inserted neighbor
+    /// reachable.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenCompetingInsertLinksSuccessorBeforeCompareAndSwap_ShouldRetryAndRemoveElement()
+    {
+        // With 32 buckets, 1 and 33 share bucket 1 and 33 follows 1 in split order, so the add links 33 after 1.
+        var set = new ConcurrentHashSet<int>(capacity: 64);
+        set.Add(1);
+        set.Add(2);
+        Assert.AreEqual(32, set.BucketCount);
+        var hookInvocations = 0;
+        set.RemoveRaceHook = () =>
+        {
+            hookInvocations++;
+            set.RemoveRaceHook = null;
+            Assert.IsTrue(set.Add(33), "The competing insert after the element must land.");
+        };
+
+        bool removed;
+        try
+        {
+            removed = set.Remove(1);
+        }
+        finally
+        {
+            set.RemoveRaceHook = null;
+        }
+
+        Assert.AreEqual(1, hookInvocations);
+        Assert.IsTrue(removed, "The removal must succeed on the retry with the new successor.");
+        Assert.IsFalse(set.Contains(1));
+        AssertContainsExactly(set, 2, 33);
+    }
 }

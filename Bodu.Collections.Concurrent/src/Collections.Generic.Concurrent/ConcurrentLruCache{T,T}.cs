@@ -342,6 +342,12 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     internal int HotCount => Volatile.Read(ref _hotCount);
 
     /// <summary>
+    /// Gets the monitor that serializes queue maintenance. Exposed to the test assembly so a test can hold it from
+    /// another thread and drive a writer through the path on which its <see cref="Monitor.TryEnter(object)" /> fails.
+    /// </summary>
+    internal object MaintenanceLock => _maintenanceLock;
+
+    /// <summary>
     /// Gets the capacity slice of the warm queue. Exposed to the test assembly so partition invariants can be asserted
     /// directly.
     /// </summary>
@@ -704,6 +710,89 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
         int cold = capacity / 3;
 
         return (hot, capacity - hot - cold, cold);
+    }
+
+    /// <summary>
+    /// Marks the node that <see cref="RemoveWithoutMarking" /> returned dead, completing the removal it began. Exposed
+    /// to the test assembly.
+    /// </summary>
+    /// <param name="node">The reference <see cref="RemoveWithoutMarking" /> returned.</param>
+    /// <remarks>
+    /// This is a test seam.
+    /// </remarks>
+    internal static void MarkNodeRemoved(object node) =>
+        ((Node)node).MarkRemoved();
+
+    /// <summary>
+    /// Adds a new entry the way a concurrent writer leaves it between its dictionary insert and the delivery of its
+    /// node to the hot queue: present in the backing dictionary and counted in the live count, but held by no queue,
+    /// with no maintenance run. Exposed to the test assembly.
+    /// </summary>
+    /// <param name="key">The key of the entry to add.</param>
+    /// <param name="value">The value to associate with <paramref name="key" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if the entry was added; <see langword="false" /> if the key was already present.
+    /// </returns>
+    /// <remarks>
+    /// This is a test seam. Until <see cref="DeliverInFlight" /> completes the writer's publication the entry is
+    /// readable but invisible to maintenance, which is the state the hard capacity enforcement's empty-queue exit
+    /// exists for.
+    /// </remarks>
+    internal bool AddInFlight(TKey key, TValue value)
+    {
+        var created = new Node(key, value, Node.StateHot);
+        if (!_dictionary.TryAdd(key, created))
+            return false;
+
+        Interlocked.Increment(ref _liveCount);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Delivers the node of an entry added through <see cref="AddInFlight" /> to the hot queue, completing the writer's
+    /// publication without the maintenance it would then run. Exposed to the test assembly.
+    /// </summary>
+    /// <param name="key">The key of the in-flight entry.</param>
+    /// <returns>
+    /// <see langword="true" /> if the entry's node was delivered; <see langword="false" /> if the key was not present.
+    /// </returns>
+    /// <remarks>
+    /// This is a test seam.
+    /// </remarks>
+    internal bool DeliverInFlight(TKey key)
+    {
+        if (!_dictionary.TryGetValue(key, out Node? node))
+            return false;
+
+        Enqueue(_hotQueue, ref _hotCount, node);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Removes the entry with the specified key from the backing dictionary and the live count but leaves its node
+    /// alive in its queue: the state a remover, or a replacing write, leaves between taking the node out of the
+    /// dictionary and marking it dead. Exposed to the test assembly.
+    /// </summary>
+    /// <param name="key">The key of the entry to remove.</param>
+    /// <returns>
+    /// An opaque reference to the still-live node, to pass to <see cref="MarkNodeRemoved" /> once the test has observed
+    /// the window; or <see langword="null" /> if the key was not present.
+    /// </returns>
+    /// <remarks>
+    /// This is a test seam. A <see cref="Clear" /> that runs in this window neither sees the entry in its sweep nor
+    /// drops the node from its queue, so the node survives the drain and keeps its occupancy slot until the remover
+    /// marks it and a later pass drains it.
+    /// </remarks>
+    internal object? RemoveWithoutMarking(TKey key)
+    {
+        if (!_dictionary.TryRemove(key, out Node? node))
+            return null;
+
+        Interlocked.Decrement(ref _liveCount);
+
+        return node;
     }
 
     /// <summary>
