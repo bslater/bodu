@@ -108,7 +108,7 @@ public partial class ConcurrentHashSetTests
     public void Clear_WhenCompetingClearSwapsGenerationBeforeCompareAndSwap_ShouldRetryAndClearNewGeneration()
     {
         var set = new ConcurrentHashSet<int>([1, 2, 3]);
-        int bucketCount = set.BucketCount;
+        var bucketCount = set.BucketCount;
         var hookInvocations = 0;
         set.ClearRaceHook = () =>
         {

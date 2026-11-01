@@ -232,7 +232,7 @@ public sealed partial class NotableDatePluginLoaderTests
             "Bodu.Globalization.Calendar.Plugins.Test.Dynamic.Faulting",
             DefineFaultingEntryPoint);
 
-        var ex = Assert.ThrowsExactly<PluginActivationException>(() =>
+        PluginActivationException ex = Assert.ThrowsExactly<PluginActivationException>(() =>
         {
             _ = NotableDatePluginLoader.LoadFrom(assembly, new AllowAllPluginTrustPolicy());
         });
@@ -261,7 +261,7 @@ public sealed partial class NotableDatePluginLoaderTests
             "Bodu.Globalization.Calendar.Plugins.Test.Dynamic.NotAPlugin",
             DefinePlainEntryPoint);
 
-        var ex = Assert.ThrowsExactly<PluginActivationException>(() =>
+        PluginActivationException ex = Assert.ThrowsExactly<PluginActivationException>(() =>
         {
             _ = NotableDatePluginLoader.LoadFrom(assembly, new AllowAllPluginTrustPolicy());
         });
@@ -502,7 +502,7 @@ public sealed partial class NotableDatePluginLoaderTests
         NamelessType pluginType = new(typeof(FaultingPlugin));
         StubAssembly assembly = new(new AssemblyName("Stub"), "Stub", string.Empty, pluginType);
 
-        var ex = Assert.ThrowsExactly<PluginActivationException>(() =>
+        PluginActivationException ex = Assert.ThrowsExactly<PluginActivationException>(() =>
         {
             _ = NotableDatePluginLoader.LoadFrom(assembly, new AllowAllPluginTrustPolicy());
         });
@@ -529,7 +529,7 @@ public sealed partial class NotableDatePluginLoaderTests
         NamelessType pluginType = new(typeof(NotAPlugin));
         StubAssembly assembly = new(new AssemblyName("Stub"), "Stub", string.Empty, pluginType);
 
-        var ex = Assert.ThrowsExactly<PluginActivationException>(() =>
+        PluginActivationException ex = Assert.ThrowsExactly<PluginActivationException>(() =>
         {
             _ = NotableDatePluginLoader.LoadFrom(assembly, new AllowAllPluginTrustPolicy());
         });
