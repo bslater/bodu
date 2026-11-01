@@ -5,71 +5,73 @@ Cobertura report. Regenerate with `pwsh tools/New-CoverageMatrix.ps1`; do not ha
 
 Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Code coverage strategy](code-coverage.md)).
 
-> [!NOTE]
-> This table is the last full collection, at the commit named under [Baseline evidence](#baseline-evidence), and it has not been regenerated since. It predates `Bodu.IO.Biff` and `Bodu.Formats.Outlook.Pst`, so neither has a row, and a package that has grown since shows its size at that commit (`Bodu.IO.Pst`'s 408 lines, for one). The current floor of every package, those two included, is in `bld/coverage-thresholds.json`, which the coverage workflow enforces on every collection.
-
 | Package | Status | Line % | Branch % | Covered / total lines |
 |---|---|--:|--:|--:|
-| `Bodu.Collections` | Stable | 97.7% | 95.9% | 6028 / 6171 |
-| `Bodu.Collections.Concurrent` | Stable | 94.9% | 91.7% | 1009 / 1063 |
-| `Bodu.Core` | Stable | 98.6% | 96.4% | 5631 / 5711 |
-| `Bodu.Extensions.Configuration.Text` | Stable | 97.3% | 87.5% | 256 / 263 |
-| `Bodu.Financial` | Stable | 97.3% | 86.9% | 3600 / 3700 |
+| `Bodu.Collections` | Stable | 97.7% | 95.9% | 6030 / 6175 |
+| `Bodu.Collections.Concurrent` | Stable | 97.6% | 94.8% | 1345 / 1378 |
+| `Bodu.Core` | Stable | 99% | 96.7% | 6355 / 6422 |
+| `Bodu.Extensions.Configuration.Text` | Stable | 100% | 97.5% | 293 / 293 |
+| `Bodu.Financial` | Stable | 97.4% | 87.7% | 3713 / 3812 |
 | `Bodu.Financial.DependencyInjection` | Stable | 100% | 100% | 43 / 43 |
-| `Bodu.Financial.ExchangeRates` | Stable | 91% | 84.8% | 332 / 365 |
-| `Bodu.Financial.ExchangeRates.Boe` | Stable | 91.1% | 85.3% | 267 / 293 |
-| `Bodu.Financial.ExchangeRates.Caching` | Stable | 91.6% | 88.6% | 1368 / 1493 |
-| `Bodu.Financial.ExchangeRates.Caching.Distributed` | Stable | 93.5% | 91.9% | 172 / 184 |
-| `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | 94.8% | 94.8% | 308 / 325 |
-| `Bodu.Financial.ExchangeRates.DependencyInjection` | Stable | 100% | 100% | 70 / 70 |
-| `Bodu.Financial.ExchangeRates.Ecb` | Stable | 91.7% | 81% | 254 / 277 |
-| `Bodu.Financial.ExchangeRates.ExchangeRateHost` | Stable | 95.3% | 73.7% | 143 / 150 |
-| `Bodu.Financial.ExchangeRates.Fixer` | Stable | 96.7% | 75% | 147 / 152 |
+| `Bodu.Financial.ExchangeRates` | Stable | 91.7% | 89% | 400 / 436 |
+| `Bodu.Financial.ExchangeRates (shared source)` | Stable | 95.7% | 91.1% | 133 / 139 |
+| `Bodu.Financial.ExchangeRates.Boe` | Stable | 98.6% | 92.3% | 272 / 276 |
+| `Bodu.Financial.ExchangeRates.Caching` | Stable | 92.9% | 89.9% | 1392 / 1499 |
+| `Bodu.Financial.ExchangeRates.Caching.Distributed` | Stable | 93.5% | 91.9% | 173 / 185 |
+| `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | 95.4% | 94.8% | 310 / 325 |
+| `Bodu.Financial.ExchangeRates.DependencyInjection` | Stable | 100% | 100% | 75 / 75 |
+| `Bodu.Financial.ExchangeRates.Ecb` | Stable | 100% | 100% | 301 / 301 |
+| `Bodu.Financial.ExchangeRates.ExchangeRateHost` | Stable | 96.5% | 75.7% | 137 / 142 |
+| `Bodu.Financial.ExchangeRates.Fixer` | Stable | 97.9% | 77.3% | 141 / 144 |
 | `Bodu.Financial.ExchangeRates.Fred` | Stable | 99.3% | 93.5% | 135 / 136 |
-| `Bodu.Financial.ExchangeRates.Imf` | Experimental | 90.9% | 88.5% | 289 / 318 |
-| `Bodu.Financial.ExchangeRates.Oanda` | Experimental | 97% | 89.2% | 164 / 169 |
-| `Bodu.Financial.ExchangeRates.Ofx` | Experimental | 97.6% | 88.9% | 124 / 127 |
-| `Bodu.Financial.ExchangeRates.Rba` | Stable | 94.4% | 89.5% | 303 / 321 |
-| `Bodu.Financial.ExchangeRates.Xe` | Experimental | 95.4% | 86.6% | 228 / 239 |
-| `Bodu.Financial.ExchangeRates.Yahoo` | Experimental | 96% | 73.1% | 143 / 149 |
-| `Bodu.Financial.Serialization.Json` | Stable | 95% | 89.4% | 551 / 580 |
-| `Bodu.Formats.Excel.Binary` | Stable | 92.6% | 85.4% | 731 / 789 |
-| `Bodu.Formats.Outlook` | Stable | 95.9% | 88.9% | 71 / 74 |
-| `Bodu.Formats.Outlook.Msg` | Stable | 94.2% | 90.2% | 524 / 556 |
-| `Bodu.Globalization.Calendar` | Stable | 97% | 89.6% | 3370 / 3474 |
+| `Bodu.Financial.ExchangeRates.Imf` | Experimental | 95.8% | 93.5% | 339 / 354 |
+| `Bodu.Financial.ExchangeRates.Oanda` | Experimental | 99.4% | 98.4% | 156 / 157 |
+| `Bodu.Financial.ExchangeRates.Ofx` | Experimental | 100% | 97.8% | 126 / 126 |
+| `Bodu.Financial.ExchangeRates.Rba` | Stable | 99.7% | 97.4% | 331 / 332 |
+| `Bodu.Financial.ExchangeRates.Xe` | Experimental | 95.8% | 92.1% | 230 / 240 |
+| `Bodu.Financial.ExchangeRates.Yahoo` | Experimental | 98.9% | 90.8% | 177 / 179 |
+| `Bodu.Financial.Serialization.Json` | Stable | 95.1% | 89.5% | 562 / 591 |
+| `Bodu.Formats.Excel.Binary` | Stable | 96.4% | 93.9% | 623 / 646 |
+| `Bodu.Formats.Outlook` | Stable | 100% | 100% | 106 / 106 |
+| `Bodu.Formats.Outlook (shared source)` | Stable | 97.2% | 95.1% | 310 / 319 |
+| `Bodu.Formats.Outlook.Msg` | Stable | 94.8% | 93.5% | 436 / 460 |
+| `Bodu.Formats.Outlook.Pst` | Stable | 94% | 88.5% | 489 / 520 |
+| `Bodu.Globalization.Calendar` | Stable | 98.1% | 93.7% | 4082 / 4162 |
 | `Bodu.Globalization.Calendar.Africa` | Stable | 100% | 66.7% | 26 / 26 |
 | `Bodu.Globalization.Calendar.Americas` | Stable | 100% | 83.3% | 29 / 29 |
 | `Bodu.Globalization.Calendar.AsiaPacific` | Stable | 100% | 75% | 16 / 16 |
 | `Bodu.Globalization.Calendar.Build` | Preview | n/a | n/a | n/a |
-| `Bodu.Globalization.Calendar.Builder` | Stable | 95.7% | 88% | 1692 / 1768 |
-| `Bodu.Globalization.Calendar.Caching` | Stable | 91.2% | 86.5% | 622 / 682 |
+| `Bodu.Globalization.Calendar.Builder` | Stable | 95.9% | 90.2% | 1935 / 2017 |
+| `Bodu.Globalization.Calendar.Caching` | Stable | 92.2% | 88% | 661 / 717 |
 | `Bodu.Globalization.Calendar.Caching.Distributed` | Stable | 95.2% | 93.2% | 118 / 124 |
 | `Bodu.Globalization.Calendar.Caching.Sqlite` | Stable | 93.2% | 95.8% | 193 / 207 |
 | `Bodu.Globalization.Calendar.DependencyInjection` | Stable | 95.7% | 66.7% | 90 / 94 |
 | `Bodu.Globalization.Calendar.Europe` | Stable | 100% | 83.3% | 30 / 30 |
 | `Bodu.Globalization.Calendar.MiddleEast` | Stable | 100% | 66.7% | 26 / 26 |
-| `Bodu.Globalization.Calendar.Plugins` | Stable | 92% | 82.7% | 208 / 226 |
+| `Bodu.Globalization.Calendar.Plugins` | Stable | 100% | 86.7% | 226 / 226 |
 | `Bodu.Globalization.Calendar.Tool` | Preview | 99.2% | 98.4% | 130 / 131 |
-| `Bodu.Globalization.Recurrence` | Stable | 91.3% | 89.4% | 1314 / 1439 |
-| `Bodu.IO.Compound` | Stable | 98.8% | 94.1% | 2220 / 2247 |
-| `Bodu.IO.Hashing` | Stable | 98.7% | 96% | 2518 / 2551 |
+| `Bodu.Globalization.Recurrence` | Stable | 95.9% | 94.6% | 1942 / 2025 |
+| `Bodu.IO.Biff` | Stable | 99.7% | 97.8% | 1154 / 1158 |
+| `Bodu.IO.Compound` | Stable | 99.1% | 95.6% | 2489 / 2512 |
+| `Bodu.IO.Hashing` | Stable | 98.7% | 96% | 2519 / 2552 |
 | `Bodu.IO.Hashing (shared source)` | Stable | 100% | 100% | 48 / 48 |
-| `Bodu.IO.Pst` | Stable | 100% | 100% | 408 / 408 |
-| `Bodu.Numerics` | Stable | 94.2% | 91% | 2090 / 2219 |
-| `Bodu.Numerics.Serialization.Json` | Stable | 92.5% | 83.6% | 494 / 534 |
-| `Bodu.Security.Cryptography` | Stable | 98.4% | 94.1% | 13684 / 13912 |
-| `Bodu.Text.Bencode` | Stable | 93.1% | 91.7% | 1525 / 1638 |
-| `Bodu.Text.Configuration` | Stable | 95.5% | 94.7% | 1134 / 1187 |
-| `Bodu.Text.Delimited` | Stable | 91.7% | 85.9% | 824 / 899 |
-| `Bodu.Text.DotEnv` | Stable | 90.3% | 86.7% | 652 / 722 |
-| `Bodu.Text.Encoding` | Stable | 95.5% | 93.8% | 3036 / 3178 |
+| `Bodu.IO.Pst` | Stable | 97.7% | 96.1% | 1254 / 1283 |
+| `Bodu.Numerics` | Stable | 94.5% | 91.7% | 2171 / 2297 |
+| `Bodu.Numerics.Serialization.Json` | Stable | 92.6% | 84.1% | 501 / 541 |
+| `Bodu.Security.Cryptography` | Stable | 97.6% | 93.3% | 20787 / 21289 |
+| `Bodu.Text.Bencode` | Stable | 94% | 92.1% | 1582 / 1683 |
+| `Bodu.Text.Configuration` | Stable | 95.7% | 95% | 1181 / 1234 |
+| `Bodu.Text.Delimited` | Stable | 95.2% | 95.3% | 968 / 1017 |
+| `Bodu.Text.DotEnv` | Stable | 94.4% | 96.5% | 645 / 683 |
+| `Bodu.Text.Encoding` | Stable | 95.7% | 94.3% | 3009 / 3145 |
 | `Bodu.Text.Filtering` | Stable | 98.3% | 97.7% | 458 / 466 |
 | `Bodu.Text.Formats` | Stable | n/a | n/a | n/a |
-| `Bodu.Text.Ini` | Stable | 90.7% | 85.3% | 830 / 915 |
+| `Bodu.Text.Ini` | Stable | 95.4% | 94.6% | 879 / 921 |
 | `Bodu.Text.Serialization` | Stable | 100% | 100% | 72 / 72 |
-| `Bodu.Text.Serialization (shared source)` | Stable | 93.4% | 89% | 606 / 649 |
-| `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
-| `Bodu.Text.Yaml` | Stable | 90.7% | 88.9% | 2435 / 2685 |
+| `Bodu.Text.Serialization (line-format shared source)` | Stable | 98.9% | 97.3% | 269 / 272 |
+| `Bodu.Text.Serialization (shared source)` | Stable | 99.9% | 97.3% | 921 / 922 |
+| `Bodu.Text.Toml` | Stable | 96.5% | 93.8% | 3059 / 3171 |
+| `Bodu.Text.Yaml` | Stable | 94.7% | 93.4% | 3160 / 3337 |
 | `Caching (shared source)` | Stable | 92.7% | 93.8% | 102 / 110 |
 
 ### Excluded by design
@@ -77,7 +79,7 @@ Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Co
 - `Bodu.Globalization.Calendar.Build` - MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.
 - `Bodu.Text.Formats` - Umbrella meta-package: references the three format libraries and ships no source of its own.
 
-**Overall:** 96.1% (66879 / 69560 lines across 59 collected package(s)).
+**Overall:** 97% (81865 / 84354 lines across 64 collected package(s)).
 
 ## Baseline evidence
 
@@ -87,7 +89,33 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `f629e0beea64b7650a5ff9485b5edcaf71a76c8d`
-- `Avx512F.IsSupported` on the collecting host: `true`
+- Commit: `8aba55ac47fff4c32862f42f8c004ff587f551c2`
+- `Avx512F.IsSupported` on the collecting hosts, by shard: `full` = `true`
+- Architecture of the collecting hosts: `x86_64`
 - Phantom rows discarded: 0
 - Files with stale line numbering: 0
+
+### Hardware-gating decisions
+
+Each package's hardware-dependent files are judged by the shard that collected its own test
+project, whatever the other shards' hosts supported: `measured` means that host could execute
+them, `excluded` that it could not. A package no manifest names falls back to the fleet-wide
+rule, which judges across every collecting host.
+
+- `Bodu.Core` ARM64: excluded, decided by shard `full`, which collected `Bodu.Core.Test` (architecture `x86_64`)
+- `Bodu.Core` AVX-512: measured, decided by shard `full`, which collected `Bodu.Core.Test` (`Avx512F.IsSupported` = `true`)
+- `Bodu.Security.Cryptography` ARM64: excluded, decided by shard `full`, which collected `Bodu.Security.Cryptography.Test` (architecture `x86_64`)
+- `Bodu.Security.Cryptography` AVX-512: measured, decided by shard `full`, which collected `Bodu.Security.Cryptography.Test` (`Avx512F.IsSupported` = `true`)
+
+### Hardware-gated files excluded from the denominator
+
+The host that collected each package's own tests could not execute these implementations -
+AVX-512 code without AVX-512, ARM64 code off ARM64 - so the JIT could not select them there,
+whatever the other shards saw. They are exercised by the standard known-answer suites on
+capable hardware, including the ARM64 CI job, and are **not** a missing-test gap.
+
+- `Bodu.Core/src/Extensions/VectorRotation.AdvSimd.cs`
+- `Bodu.Security.Cryptography/src/Security.Cryptography/Argon2Core.AdvSimd.cs`
+- `Bodu.Security.Cryptography/src/Security.Cryptography/Blake2sCore.AdvSimd.cs`
+- `Bodu.Security.Cryptography/src/Security.Cryptography/Ghash.PmullIsa.cs`
+- `Bodu.Security.Cryptography/src/Security.Cryptography/ScryptCore.AdvSimd.cs`
