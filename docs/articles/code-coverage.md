@@ -92,8 +92,11 @@ nothing, and an artifact whose manifests predate the project list is judged in
 full. The list is only as good as the manifests: a diff-scoped job collects its
 projects one invocation at a time, so a `--project` run's manifest keeps the
 names of the one it replaces (#1372), and a project whose tests failed is named
-by none (#1373). The ratchet also fails for a judged package that has no
-floor, so a new package is gated from its first collection. The floor is
+by none and leaves no raw output, since the script removes its directory rather
+than let the merge count the partial file coverlet wrote before the failure, so
+the package is absent from the matrix as from the manifest (#1373). The ratchet
+also fails for a judged package that has no floor, so a new package is gated
+from its first collection. The floor is
 a gate, not a target: a package well above it is not
 "finished", and a package at it is not in trouble. What the invariant buys is
 that a new gap has to be introduced deliberately - the ratchet is built to fail

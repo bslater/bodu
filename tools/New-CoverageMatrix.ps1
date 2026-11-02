@@ -682,9 +682,9 @@ if ($Check) {
         }
     }
 
-    # Manifests that name their projects but leave every collected row unjudged - every collected project's tests
-    # failed (#1373), or a manifest written before #1372 named the last of several projects alone - must not read
-    # as a ratchet satisfied over nothing.
+    # Manifests that name their projects but leave every collected row unjudged - a manifest written before #1372
+    # named the last of several projects alone, or a failed project's partial output reached the merge, which
+    # collect-coverage.sh has removed since #1373 - must not read as a ratchet satisfied over nothing.
     $collectedCount = @($rows | Where-Object Collected).Count
     if ($manifestsNameProjects -and $collectedCount -gt 0 -and $judged -eq 0) {
         $failures.Add("none of the $collectedCount collected package(s) was judged: no collection manifest names any of their test projects")
