@@ -47,11 +47,14 @@
     drift from parallel execution. Default: 0.5.
 
 .PARAMETER Check
-    Compare against the ratchet floors and exit non-zero on a regression, or when a judged package has no
-    floor in the threshold file. A package is judged only when a collection manifest names its own test
-    project, <Package>.Test: a pull request's diff-scoped run instruments the collected projects' dependencies
-    too, and reports the few lines those tests happen to execute in them (#1371). The rows left unjudged are
-    listed, one line each. Writes no matrix.
+    Compare against the ratchet floors and exit non-zero on a regression, when a judged package has no floor
+    in the threshold file, or when no collected package could be judged. A package is judged only when a
+    collection manifest names its own test project, <Package>.Test: a pull request's diff-scoped run
+    instruments the collected projects' dependencies too, and reports the few lines those tests happen to
+    execute in them (#1371). A shared-source unit is judged only when every host's test project is named, and
+    a package with no test project of its own (Bodu.Text.Serialization) only when every packable package that
+    references it has its own named, since each is a union over those packages. The rows left unjudged are
+    listed, one line each, with the test projects no manifest names. Writes no matrix.
 
 .EXAMPLE
     pwsh tools/New-CoverageMatrix.ps1
@@ -614,10 +617,12 @@ if ($Check) {
     # execute in them, which read as 90-point breaches of packages the run never measured (#1371). A package is
     # therefore judged only when a manifest names its own test project, <Package>.Test, the lookup the hardware
     # gating makes above; a shared-source unit only when every host's is named, since the unit is the union over
-    # its hosts; and a package with no test project of its own only when every package that references it had its
-    # own collected, for the same reason. The rows left unjudged are listed, so the verdict never shrinks silently.
-    # A manifest written before the 'projects' list names nothing, so an artifact with no such list is judged in
-    # full, as before.
+    # its hosts; and a package with no test project of its own only when every package that references it has its
+    # own named, for the same reason. Each row left unjudged is listed with the test projects no manifest names,
+    # which is what the script knows: a manifest that named one of several collected projects (#1372) and a
+    # project whose tests failed (#1373) read the same as a dependency, so the line does not say why, and the
+    # verdict never shrinks silently. A manifest written before the 'projects' list names nothing, so an artifact
+    # with no such list is judged in full, as before.
     $manifestsNameProjects = @($manifests | Where-Object { $null -ne $_.PSObject.Properties['projects'] }).Count -gt 0
     $judged = 0
     $unjudged = [System.Collections.Generic.List[string]]::new()
@@ -630,17 +635,19 @@ if ($Check) {
             $reason = $null
 
             if ($set) {
-                if (@($set.Hosts | Where-Object { (Get-CollectingManifests "$_.Test").Count -eq 0 }).Count -gt 0) {
-                    $reason = 'not every host was collected'
+                $missing = @($set.Hosts | ForEach-Object { "$_.Test" } | Where-Object { (Get-CollectingManifests $_).Count -eq 0 })
+                if ($missing.Count -gt 0) {
+                    $reason = "no collection manifest names every host's test project; missing $($missing -join ', ')"
                 }
             }
             elseif ($testProjectNames -notcontains "$($row.Package).Test" -and $referencedBy.ContainsKey($row.Package)) {
-                if (@($referencedBy[$row.Package] | Where-Object { (Get-CollectingManifests "$_.Test").Count -eq 0 }).Count -gt 0) {
-                    $reason = 'not every package that references it was collected'
+                $missing = @($referencedBy[$row.Package] | ForEach-Object { "$_.Test" } | Where-Object { (Get-CollectingManifests $_).Count -eq 0 })
+                if ($missing.Count -gt 0) {
+                    $reason = "no collection manifest names every referencing package's test project; missing $($missing -join ', ')"
                 }
             }
             elseif ((Get-CollectingManifests "$($row.Package).Test").Count -eq 0) {
-                $reason = 'instrumented only as a dependency of the collected projects'
+                $reason = "no collection manifest names $($row.Package).Test"
             }
 
             if ($reason) {
@@ -673,6 +680,14 @@ if ($Check) {
                     $row.Package, $metric, $actual, $expected.Value, $Grace))
             }
         }
+    }
+
+    # Manifests that name their projects but leave every collected row unjudged - every collected project's tests
+    # failed (#1373), or a manifest written before #1372 named the last of several projects alone - must not read
+    # as a ratchet satisfied over nothing.
+    $collectedCount = @($rows | Where-Object Collected).Count
+    if ($manifestsNameProjects -and $collectedCount -gt 0 -and $judged -eq 0) {
+        $failures.Add("none of the $collectedCount collected package(s) was judged: no collection manifest names any of their test projects")
     }
 
     if ($phantom.Count -gt 0) {

@@ -77,17 +77,22 @@ Every collected package sits at or above **90% line coverage**, and
 `bld/coverage-thresholds.json` holds a per-package floor at roughly its measured
 rate (the measurement less the 0.5pp grace band, as
 `tools/Update-CoverageThresholds.ps1` records it). The ratchet,
-`tools/New-CoverageMatrix.ps1 -Check`, judges a package only when the run
-collected that package's own test project, `<Package>.Test`, as the collection
-manifests name it; a shared-source unit only when every host's was collected,
-and `Bodu.Text.Serialization`, which has no test project of its own, only when
-every format package that references it was. A pull request's run is
-diff-scoped, and the collected test projects load their dependencies, so
+`tools/New-CoverageMatrix.ps1 -Check`, judges a package only when a collection
+manifest names that package's own test project, `<Package>.Test`; a
+shared-source unit only when every host's is named, and
+`Bodu.Text.Serialization`, which has no test project of its own, only when
+every format package that references it has its own named. A pull request's
+run is diff-scoped, and the collected test projects load their dependencies, so
 coverlet reports the few lines those tests happen to execute in `Bodu.Core` and
 the like, which read as 90-point breaches of packages the run never measured
-(#1371); such rows are listed as not judged instead, the verdict says how many
-packages were judged, and an artifact whose manifests predate the project list
-is judged in full. The ratchet also fails for a judged package that has no
+(#1371); such rows are listed as not judged instead, each with the test projects
+no manifest names, the verdict says how many packages were judged, a run in
+which no collected package could be judged fails rather than passing over
+nothing, and an artifact whose manifests predate the project list is judged in
+full. The list is only as good as the manifests: a diff-scoped job collects its
+projects one invocation at a time, so a `--project` run's manifest keeps the
+names of the one it replaces (#1372), and a project whose tests failed is named
+by none (#1373). The ratchet also fails for a judged package that has no
 floor, so a new package is gated from its first collection. The floor is
 a gate, not a target: a package well above it is not
 "finished", and a package at it is not in trouble. What the invariant buys is
@@ -200,7 +205,9 @@ simply never triggers, because neither path is unreachable any more.
 The classification is decided **per package, by the host that ran that
 package's own tests**. Every collection manifest records, beside the host's
 `avx512Supported` and `arch`, the names of the test projects the shard
-collected (`projects`), and the matrix gates a package's `*.Avx512.cs` and
+collected (`projects`; a `--project` or `--filter` run adds the names of the
+manifest it replaces, since the raw directory keeps those results, #1372), and
+the matrix gates a package's `*.Avx512.cs` and
 `*.Vector512.cs` files on the manifest whose `projects` names `<Package>.Test`,
 whatever the other shards saw. GitHub's hosted runners are a mixed fleet, and
 judging AVX-512 availability across the whole fleet counted the cryptography

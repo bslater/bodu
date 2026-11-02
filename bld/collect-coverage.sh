@@ -44,7 +44,10 @@
 # 'n/a (hardware-gated)' rather than 0%. The ARM64 instruction-set shims (*.AdvSimd.cs, *.PmullIsa.cs)
 # are gated the same way on any host that is not ARM64; the ARM64 job in .github/workflows/build-test.yml
 # runs them. The matrix decides each package's gating from the manifest of the shard that collected
-# that package's own test project, which is why the manifest names them (#1364). See
+# that package's own test project, which is why the manifest names them (#1364), and the ratchet judges
+# only the packages it names. A --project or --filter run, which leaves the other projects' results in
+# the raw directory, keeps the names the manifest it replaces held, so a diff-scoped job that collects
+# its projects one invocation at a time ends with a manifest naming them all (#1372). See
 # docs/articles/code-coverage.md.
 #
 # Exit code: 0 when every selected project collected successfully, 1 otherwise.
@@ -65,7 +68,7 @@ list_only=false
 scalar_pass=false
 
 usage() {
-    sed -n '2,51p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,54p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ $# -gt 0 ]; do
@@ -349,9 +352,35 @@ fi
 # reads them to find the shard that collected a package's own test project, because that shard's host
 # is the only one whose capabilities say anything about the package's hardware-gated files: the hosted
 # runners are a mixed fleet, and judging AVX-512 across every shard counted the cryptography kernels
-# as uncovered whenever the crypto shard lacked it while another shard had it (#1364).
+# as uncovered whenever the crypto shard lacked it while another shard had it (#1364). The ratchet
+# reads the same list to judge only the packages whose own test project ran (#1371).
+#
+# A partial run - --project or --filter, not a shard - adds the names the manifest it replaces already
+# holds, as --no-probe carries the AVX-512 answer forward: the raw directory keeps the earlier
+# projects' results and the merge reads them all, and coverage.yml's diff-scoped job collects its
+# projects one invocation at a time, so a manifest naming the last invocation's project alone left
+# every other package the job measured looking like one whose tests never ran (#1372). A full run and
+# a shard name what they collected and nothing else.
+named=$collected
+if [ -z "$shard_spec" ] && { [ -n "$single_project" ] || [ -n "$filter" ]; } && [ -f "$manifest" ]; then
+    carried=0
+    while IFS= read -r previous; do
+        [ -n "$previous" ] || continue
+        for existing in ${collected_names[@]+"${collected_names[@]}"}; do
+            [ "$existing" = "$previous" ] && continue 2
+        done
+        collected_names+=("$previous")
+        named=$((named + 1))
+        carried=$((carried + 1))
+    done < <(sed -n 's/^ *"projects": \[\(.*\)\].*$/\1/p' "$manifest" | grep -oE '"[^"]+"' | tr -d '"')
+
+    if [ "$carried" -gt 0 ]; then
+        echo "Carrying forward $carried project name(s) from $manifest"
+    fi
+fi
+
 projects_json="[]"
-if [ "$collected" -gt 0 ]; then
+if [ "$named" -gt 0 ]; then
     projects_json="[$(printf '"%s", ' "${collected_names[@]}")]"
     projects_json="${projects_json%, ]}]"
 fi
@@ -367,7 +396,7 @@ cat > "$manifest" <<JSON
   "configuration": "$configuration",
   "framework": "$framework",
   "shard": "${shard_spec:-full}",
-  "projectsCollected": $collected,
+  "projectsCollected": $named,
   "projects": $projects_json,
   "avx512Supported": "$avx512",
   "os": "$(uname -s)",
