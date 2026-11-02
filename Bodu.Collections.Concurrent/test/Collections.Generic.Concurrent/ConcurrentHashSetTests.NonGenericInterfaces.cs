@@ -226,4 +226,21 @@ public partial class ConcurrentHashSetTests
             collection.CopyTo(new string[5], 0);
         });
     }
+
+    /// <summary>
+    /// Verifies that the non-generic <see cref="ICollection.CopyTo" /> omits a node another thread has logically
+    /// deleted but not yet unlinked - the marker installed, the unlink still pending - and copies every other element.
+    /// </summary>
+    [TestMethod]
+    public void ICollectionCopyTo_WhenElementIsMarkedButNotUnlinked_ShouldOmitItAndCopyOthers()
+    {
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
+        Assert.IsTrue(set.MarkRemovedWithoutUnlink(2));
+        ICollection collection = set;
+        var array = new int[2];
+
+        collection.CopyTo(array, 0);
+
+        CollectionAssert.AreEquivalent(new[] { 1, 3 }, array);
+    }
 }

@@ -165,4 +165,69 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsEmpty(errors, "Indexer threw during concurrent enqueue.");
     }
 
+    /// <summary>
+    /// Verifies that when the head is observed past the tail - the two positions read at different moments while
+    /// consumers drain the buffer - the indexer clamps the count to zero and rejects every index as out of range.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenHeadObservedPastTail_ShouldClampCountToZeroAndThrowArgumentOutOfRangeException()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.SetPositions(head: 5, tail: 3);
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = buffer[0];
+        });
+
+        Assert.AreEqual("index", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that when the tail is observed more than <see cref="ConcurrentCircularBuffer{T}.Capacity" /> ahead of
+    /// the head - a stale head read against producers that have wrapped - the indexer clamps the count to the
+    /// capacity, so the last slot of the ring is reachable and the index after it is out of range.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenTailObservedMoreThanCapacityAheadOfHead_ShouldClampCountToCapacity()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        for (int i = 0; i < 4; i++)
+            buffer.Enqueue(new TestItem(i));
+        buffer.SetPositions(head: 0, tail: 4 + 3);
+
+        Assert.AreEqual(3, buffer[3].Value, "The last slot of the clamped window must read its published element.");
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = buffer[4];
+        });
+
+        Assert.AreEqual("index", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that when the slot at the requested position never carries its publication mark - a slot a producer
+    /// has claimed but not yet published, on every attempt - the indexer exhausts its retry budget and throws
+    /// <see cref="InvalidOperationException" /> with the snapshot-unstable message rather than returning a torn value,
+    /// while the stable slot after it still reads normally.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenSlotNeverCarriesItsPublicationMark_ShouldThrowInvalidOperationException()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.SetSlotSequence(slotIndex: 0, sequence: 0);
+
+        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = buffer[0];
+        });
+
+        Assert.AreEqual(ConcurrentCollectionsResourceStrings.Op_Invalid_ConcurrentSnapshotUnstable, ex.Message);
+        Assert.AreEqual(2, buffer[1].Value);
+    }
+
 }

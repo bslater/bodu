@@ -247,6 +247,40 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
+    /// Gets or sets the action <see cref="Clear" /> invokes between its read of the current generation and the
+    /// compare-and-swap that replaces it; <see langword="null" />, the default, invokes nothing.
+    /// </summary>
+    /// <remarks>
+    /// This is a test seam. The test assembly sets it for the duration of one call so that a competing
+    /// <see cref="Clear" /> can run exactly in the window in which the swap can be lost, which drives the retry
+    /// deterministically; it costs the operation one null check per attempt.
+    /// </remarks>
+    internal Action? ClearRaceHook { get; set; }
+
+    /// <summary>
+    /// Gets or sets the action <see cref="Remove" /> invokes between its read of the found node's successor and the
+    /// compare-and-swap that logically deletes the node; <see langword="null" />, the default, invokes nothing.
+    /// </summary>
+    /// <remarks>
+    /// This is a test seam. The test assembly sets it for the duration of one call so that a competing delete of the
+    /// same element, or an insert after it, can run exactly in the window in which the logical delete can be lost,
+    /// which drives the retry deterministically; it costs the operation one null check per attempt.
+    /// </remarks>
+    internal Action? RemoveRaceHook { get; set; }
+
+    /// <summary>
+    /// Gets or sets the action <see cref="InitializeBucket" /> invokes between the traversal that finds no sentinel for
+    /// the bucket and the compare-and-swap that links a new one; <see langword="null" />, the default, invokes nothing.
+    /// </summary>
+    /// <remarks>
+    /// This is a test seam. The test assembly sets it for the duration of one call so that a competing initializer of
+    /// the same bucket can run exactly in the window in which the link can be lost, which drives the retry and the
+    /// adoption of the winner's sentinel deterministically; it costs a bucket's initialization one null check per
+    /// attempt.
+    /// </remarks>
+    internal Action? InitializeBucketRaceHook { get; set; }
+
+    /// <summary>
     /// Adds the specified element to the set.
     /// </summary>
     /// <param name="item">The element to add.</param>
@@ -316,6 +350,8 @@ public sealed partial class ConcurrentHashSet<T>
         {
             Core core = Volatile.Read(ref _core);
             var replacement = new Core(Volatile.Read(ref core._buckets).Length);
+
+            ClearRaceHook?.Invoke();
 
             // CAS rather than a blind write so the replacement's bucket count is derived from the very generation
             // being replaced - a racing grow can never be shrunk away by a stale observation.
@@ -411,6 +447,8 @@ public sealed partial class ConcurrentHashSet<T>
                 spinner.SpinOnce();
                 continue;
             }
+
+            RemoveRaceHook?.Invoke();
 
             // Logical delete: fold the mark into _next so any competing insert-after or second delete fails its CAS.
             if (ReferenceEquals(Interlocked.CompareExchange(ref found._next, Node.CreateMarker(succ), succ), succ))
@@ -521,6 +559,89 @@ public sealed partial class ConcurrentHashSet<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static ulong MakeSentinelKey(int bucketNo) =>
         (ulong)ReverseBits((uint)bucketNo) << 1;
+
+    /// <summary>
+    /// Returns the sentinel published in the bucket array for the specified bucket, or <see langword="null" /> when the
+    /// bucket has not been initialized. Exposed to the test assembly as an opaque reference.
+    /// </summary>
+    /// <param name="bucketNo">The bucket index.</param>
+    /// <returns>The published sentinel, or <see langword="null" />.</returns>
+    /// <remarks>
+    /// This is a test seam; <paramref name="bucketNo" /> must be less than <see cref="BucketCount" />.
+    /// </remarks>
+    internal object? GetBucketShortcut(int bucketNo)
+    {
+        Core core = Volatile.Read(ref _core);
+        Node?[] buckets = Volatile.Read(ref core._buckets);
+
+        return Volatile.Read(ref buckets[bucketNo]);
+    }
+
+    /// <summary>
+    /// Links the sentinel of the specified bucket into the split-ordered list without publishing it to the bucket
+    /// array: the state a racing initializer leaves between its list insert and its publication. Exposed to the test
+    /// assembly.
+    /// </summary>
+    /// <param name="bucketNo">The bucket index.</param>
+    /// <returns>
+    /// The linked sentinel - or the one already linked - as an opaque reference a test can compare with the result of
+    /// <see cref="GetBucketShortcut" />.
+    /// </returns>
+    /// <remarks>
+    /// This is a test seam, for a quiescent set and a <paramref name="bucketNo" /> between 1 and
+    /// <see cref="BucketCount" /> - 1. The next operation that targets the bucket runs <see cref="InitializeBucket" />,
+    /// whose traversal finds the linked sentinel and adopts it instead of creating a second one.
+    /// </remarks>
+    internal object LinkSentinelUnpublished(int bucketNo)
+    {
+        Core core = Volatile.Read(ref _core);
+        Node?[] buckets = Volatile.Read(ref core._buckets);
+        int parentNo = bucketNo & ((1 << BitOperations.Log2((uint)bucketNo)) - 1);
+        Node parent = Volatile.Read(ref buckets[parentNo]) ?? InitializeBucket(core, buckets, parentNo);
+        ulong key = MakeSentinelKey(bucketNo);
+
+        if (Find(parent, key, matchData: false, default!, out Node pred, out Node? curr))
+            return curr!;
+
+        Node created = Node.CreateSentinel(key, next: curr);
+        Interlocked.CompareExchange(ref pred._next, created, curr);
+
+        return created;
+    }
+
+    /// <summary>
+    /// Logically deletes the specified element - installs its deletion marker and decrements the count - without the
+    /// best-effort physical unlink that <see cref="Remove" /> performs: the state a deleter leaves between the two
+    /// phases of a removal, or after losing its unlink compare-and-swap. Exposed to the test assembly.
+    /// </summary>
+    /// <param name="item">The element to mark.</param>
+    /// <returns>
+    /// <see langword="true" /> if the element was present and has been marked; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// This is a test seam, for a quiescent set. The marked node stays linked until a traversal that helps unlink
+    /// passes it, so the traversals that skip markers without helping - <see cref="Contains" />, <see cref="ToArray" />
+    /// and the enumerator - can be driven over it deterministically.
+    /// </remarks>
+    internal bool MarkRemovedWithoutUnlink(T item)
+    {
+        int hashCode = _comparer.GetHashCode(item);
+        ulong key = MakeDataKey(hashCode);
+        Core core = Volatile.Read(ref _core);
+        Node sentinel = GetBucketSentinel(core, hashCode);
+
+        if (!Find(sentinel, key, matchData: true, item, out _, out Node? curr))
+            return false;
+
+        // On a quiescent set the traversal has unlinked any marker ahead of the node, so the logical delete is
+        // uncontested and the compare-and-swap cannot fail.
+        Node found = curr!;
+        Node? succ = Volatile.Read(ref found._next);
+        Interlocked.CompareExchange(ref found._next, Node.CreateMarker(succ), succ);
+        Interlocked.Decrement(ref core._count);
+
+        return true;
+    }
 
     /// <summary>
     /// Converts an expected-element-count hint into a bucket-shortcut array length: a power of two between
@@ -643,6 +764,8 @@ public sealed partial class ConcurrentHashSet<T>
                 sentinel = curr!;
                 break;
             }
+
+            InitializeBucketRaceHook?.Invoke();
 
             Node created = Node.CreateSentinel(key, next: curr);
             if (ReferenceEquals(Interlocked.CompareExchange(ref pred._next, created, curr), curr))

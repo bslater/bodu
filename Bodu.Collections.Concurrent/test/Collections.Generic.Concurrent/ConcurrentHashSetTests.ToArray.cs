@@ -62,4 +62,25 @@ public partial class ConcurrentHashSetTests
         Assert.HasCount(3, array);
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, array);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.ToArray" /> skips a node another thread has logically deleted but
+    /// not yet unlinked - the marker installed, the unlink still pending - and keeps every other element, and that a
+    /// later insert of the same element unlinks the marked node and lands.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenElementIsMarkedButNotUnlinked_ShouldOmitItAndKeepOthers()
+    {
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
+        Assert.IsFalse(set.MarkRemovedWithoutUnlink(42), "An absent element has no node to mark.");
+        Assert.IsTrue(set.MarkRemovedWithoutUnlink(2));
+
+        int[] snapshot = set.ToArray();
+
+        CollectionAssert.AreEquivalent(new[] { 1, 3 }, snapshot);
+        Assert.AreEqual(2, set.Count);
+        Assert.IsFalse(set.Contains(2));
+        Assert.IsTrue(set.Add(2), "A later insert must unlink the marked node and add a fresh element.");
+        AssertContainsExactly(set, 1, 2, 3);
+    }
 }

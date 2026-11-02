@@ -110,4 +110,53 @@ public partial class ConcurrentLruCacheTests
         Assert.IsTrue(cache.TryGetValue("a", out int value));
         Assert.AreEqual(10, value);
     }
+
+    /// <summary>
+    /// Verifies that a write within capacity returns without maintaining when another thread holds the maintenance
+    /// lock - the contending writer skips the cycle rather than waiting - and that a later maintenance run converges
+    /// the queue the skipped cycles left over its slice.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenMaintenanceLockHeldByAnotherThread_ShouldReturnWithoutMaintaining()
+    {
+        // Capacity 6 partitions as hot 2 / warm 2 / cold 2.
+        var cache = new ConcurrentLruCache<string, int>(capacity: 6);
+        using var held = new ManualResetEventSlim(false);
+        using var release = new ManualResetEventSlim(false);
+        var holder = new Thread(() =>
+        {
+            lock (cache.MaintenanceLock)
+            {
+                held.Set();
+                release.Wait();
+            }
+        })
+        {
+            IsBackground = true,
+        };
+        holder.Start();
+        held.Wait();
+
+        try
+        {
+            cache.Add("a", 1);
+            cache.Add("b", 2);
+            cache.Add("c", 3);
+
+            Assert.AreEqual(3, cache.Count);
+            Assert.AreEqual(3, cache.HotCount, "No cycle may have run: every entry must still sit in hot, over its slice.");
+            Assert.AreEqual(0, cache.ColdCount);
+        }
+        finally
+        {
+            release.Set();
+            holder.Join();
+        }
+
+        cache.RunMaintenance();
+
+        Assert.AreEqual(2, cache.HotCount, "The later maintenance run must drain hot back to its slice.");
+        Assert.AreEqual(1, cache.ColdCount);
+        AssertContainsExactly(cache, ("a", 1), ("b", 2), ("c", 3));
+    }
 }

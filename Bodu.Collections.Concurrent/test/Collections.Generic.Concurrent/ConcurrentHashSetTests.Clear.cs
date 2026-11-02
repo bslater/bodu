@@ -74,7 +74,7 @@ public partial class ConcurrentHashSetTests
     public void Clear_WhenTableHasGrown_ShouldNotShrinkBelowGrownCapacity()
     {
         var set = new ConcurrentHashSet<int>(Enumerable.Range(0, 20_000));
-        int grownBucketCount = set.BucketCount;
+        var grownBucketCount = set.BucketCount;
 
         set.Clear();
 
@@ -96,5 +96,43 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(5_000, set.Count);
         for (int i = 0; i < 5_000; i++)
             Assert.IsTrue(set.Contains(i), $"Key {i} was lost after Clear and reuse.");
+    }
+
+    /// <summary>
+    /// Verifies that when a competing <see cref="ConcurrentHashSet{T}.Clear" /> swaps the generation in the window
+    /// between this call's read of it and its compare-and-swap, the call loses the swap, retries against the new
+    /// generation and clears the element that generation received, so the set is empty on return and keeps its
+    /// bucket count.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenCompetingClearSwapsGenerationBeforeCompareAndSwap_ShouldRetryAndClearNewGeneration()
+    {
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
+        var bucketCount = set.BucketCount;
+        var hookInvocations = 0;
+        set.ClearRaceHook = () =>
+        {
+            hookInvocations++;
+            set.ClearRaceHook = null;
+            set.Clear();
+            Assert.IsTrue(set.Add(99), "The element added to the competitor's generation must land.");
+        };
+
+        try
+        {
+            set.Clear();
+        }
+        finally
+        {
+            set.ClearRaceHook = null;
+        }
+
+        Assert.AreEqual(1, hookInvocations);
+        Assert.AreEqual(0, set.Count);
+        Assert.IsTrue(set.IsEmpty);
+        Assert.IsFalse(set.Contains(99), "The retried swap must have replaced the generation that held the racing add.");
+        Assert.AreEqual(bucketCount, set.BucketCount);
+        Assert.IsTrue(set.Add(4));
+        AssertContainsExactly(set, 4);
     }
 }

@@ -454,8 +454,12 @@ public static class NotableDatePluginLoader
             or TypeLoadException
             or FileNotFoundException
             or FileLoadException
-            or BadImageFormatException)
+            or BadImageFormatException
+            or ArgumentException
+            or NotSupportedException)
         {
+            // An attribute can name any type. Activator.CreateInstance rejects an open generic type definition with
+            // ArgumentException, and void or a byref-like struct with NotSupportedException, before any constructor runs.
             throw new PluginActivationException(
                 string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, pluginType.FullName ?? pluginType.Name),
                 pluginType,
