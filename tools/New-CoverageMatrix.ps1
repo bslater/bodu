@@ -619,9 +619,10 @@ if ($Check) {
     # gating makes above; a shared-source unit only when every host's is named, since the unit is the union over
     # its hosts; and a package with no test project of its own only when every package that references it has its
     # own named, for the same reason. Each row left unjudged is listed with the test projects no manifest names,
-    # which is what the script knows: a manifest that named one of several collected projects (#1372) and a
-    # project whose tests failed (#1373) read the same as a dependency, so the line does not say why, and the
-    # verdict never shrinks silently. A manifest written before the 'projects' list names nothing, so an artifact
+    # which is what the script knows: a package instrumented only through another collected project's run reads
+    # the same as a dependency, so the line does not say why, and the verdict never shrinks silently; since #1372
+    # the manifest names every collected project, and since #1373 a failed project leaves no output behind. A
+    # manifest written before the 'projects' list names nothing, so an artifact
     # with no such list is judged in full, as before.
     $manifestsNameProjects = @($manifests | Where-Object { $null -ne $_.PSObject.Properties['projects'] }).Count -gt 0
     $judged = 0
