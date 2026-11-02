@@ -77,8 +77,18 @@ Every collected package sits at or above **90% line coverage**, and
 `bld/coverage-thresholds.json` holds a per-package floor at roughly its measured
 rate (the measurement less the 0.5pp grace band, as
 `tools/Update-CoverageThresholds.ps1` records it). The ratchet,
-`tools/New-CoverageMatrix.ps1 -Check`, also fails for a collected package that
-has no floor, so a new package is gated from its first collection. The floor is
+`tools/New-CoverageMatrix.ps1 -Check`, judges a package only when the run
+collected that package's own test project, `<Package>.Test`, as the collection
+manifests name it; a shared-source unit only when every host's was collected,
+and `Bodu.Text.Serialization`, which has no test project of its own, only when
+every format package that references it was. A pull request's run is
+diff-scoped, and the collected test projects load their dependencies, so
+coverlet reports the few lines those tests happen to execute in `Bodu.Core` and
+the like, which read as 90-point breaches of packages the run never measured
+(#1371); such rows are listed as not judged instead, the verdict says how many
+packages were judged, and an artifact whose manifests predate the project list
+is judged in full. The ratchet also fails for a judged package that has no
+floor, so a new package is gated from its first collection. The floor is
 a gate, not a target: a package well above it is not
 "finished", and a package at it is not in trouble. What the invariant buys is
 that a new gap has to be introduced deliberately - the ratchet is built to fail

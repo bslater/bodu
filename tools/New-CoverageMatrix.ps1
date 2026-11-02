@@ -47,8 +47,11 @@
     drift from parallel execution. Default: 0.5.
 
 .PARAMETER Check
-    Compare against the ratchet floors and exit non-zero on a regression, or when a collected package has no
-    floor in the threshold file. Writes no matrix.
+    Compare against the ratchet floors and exit non-zero on a regression, or when a judged package has no
+    floor in the threshold file. A package is judged only when a collection manifest names its own test
+    project, <Package>.Test: a pull request's diff-scoped run instruments the collected projects' dependencies
+    too, and reports the few lines those tests happen to execute in them (#1371). The rows left unjudged are
+    listed, one line each. Writes no matrix.
 
 .EXAMPLE
     pwsh tools/New-CoverageMatrix.ps1
@@ -161,9 +164,9 @@ $SharedSourceUnits = @($SharedSourceSets | ForEach-Object { $_.Unit })
 # bld/collect-coverage.sh writes one per shard (environment.shard-i-of-N.json; environment.json for a full
 # run) recording the collecting host's capabilities - avx512Supported, arch - and, in 'projects', the names
 # of the test projects the shard collected. The hardware gating below is decided per package from the
-# manifest whose project list names that package's own test project; the fleet-wide verdicts here are the
-# rule the matrix applied before manifests named their projects, kept as the fallback for artifacts that
-# predate the list.
+# manifest whose project list names that package's own test project, and -Check judges a package only when
+# one does (#1371); the fleet-wide verdicts here are the rule the matrix applied before manifests named
+# their projects, kept as the fallback for artifacts that predate the list, which -Check judges in full.
 # ---------------------------------------------------------------------------------------------------------------
 $manifests = @(Get-ChildItem -Path $ReportDirectory -Filter 'environment*.json' -ErrorAction SilentlyContinue |
     ForEach-Object { Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json })
@@ -224,6 +227,30 @@ $packableProjects = Get-ChildItem -Path $repoRoot -Filter '*.csproj' -Recurse -F
     Where-Object { (Get-Content -LiteralPath $_.FullName -Raw) -notmatch '<IsPackable>\s*false\s*</IsPackable>' }
 
 $packableNames = @($packableProjects | ForEach-Object { $_.BaseName } | Sort-Object -Unique)
+
+# The test projects in the tree, by name, and for each packable package the packable packages that reference
+# it directly. A package with no test project of its own is tested through the packages that reference it -
+# today only Bodu.Text.Serialization, whose attribute family and naming policies the six format packages
+# compile against and whose lines their tests execute - so the ratchet judges it as it judges a shared-source
+# unit, as a union over those packages (#1371).
+$testProjectNames = @(Get-ChildItem -Path $repoRoot -Filter '*.Test.csproj' -Recurse -File |
+    Where-Object {
+        $rel = $_.FullName.Substring($repoRoot.Length + 1).Replace('\', '/')
+        $rel -match '/test/' -and
+        $rel -notmatch '^(Bodu\.CodeStyle|samples|tools)/'
+    } |
+    ForEach-Object { $_.BaseName })
+
+$referencedBy = @{}
+foreach ($project in $packableProjects) {
+    $content = Get-Content -LiteralPath $project.FullName -Raw
+    foreach ($match in [regex]::Matches($content, '<ProjectReference\s[^>]*?Include\s*=\s*"([^"]+)"')) {
+        $referenced = [IO.Path]::GetFileNameWithoutExtension($match.Groups[1].Value.Replace('\', '/'))
+        if ($packableNames -notcontains $referenced) { continue }
+        if (-not $referencedBy.ContainsKey($referenced)) { $referencedBy[$referenced] = [System.Collections.Generic.List[string]]::new() }
+        if (-not $referencedBy[$referenced].Contains($project.BaseName)) { $referencedBy[$referenced].Add($project.BaseName) }
+    }
+}
 
 # Package status (Stable / Preview / Experimental) as published by the package matrix.
 $status = @{}
@@ -581,10 +608,50 @@ if ($Check) {
     $thresholds = Get-Content -LiteralPath $ThresholdPath -Raw | ConvertFrom-Json
     $failures = [System.Collections.Generic.List[string]]::new()
 
+    # Which rows to judge. A pull request's run is diff-scoped: coverage.yml collects only the test projects for
+    # the production sources the diff touched, and those projects load their dependencies, so coverlet instruments
+    # Bodu.Core, Bodu.Collections and the like as well and reports the few lines the collected tests happen to
+    # execute in them, which read as 90-point breaches of packages the run never measured (#1371). A package is
+    # therefore judged only when a manifest names its own test project, <Package>.Test, the lookup the hardware
+    # gating makes above; a shared-source unit only when every host's is named, since the unit is the union over
+    # its hosts; and a package with no test project of its own only when every package that references it had its
+    # own collected, for the same reason. The rows left unjudged are listed, so the verdict never shrinks silently.
+    # A manifest written before the 'projects' list names nothing, so an artifact with no such list is judged in
+    # full, as before.
+    $manifestsNameProjects = @($manifests | Where-Object { $null -ne $_.PSObject.Properties['projects'] }).Count -gt 0
+    $judged = 0
+    $unjudged = [System.Collections.Generic.List[string]]::new()
+
     foreach ($row in $rows) {
         if (-not $row.Collected) { continue }
 
-        # A collected package without a floor is ungated: it could lose all of its coverage and still pass. That is a
+        if ($manifestsNameProjects) {
+            $set = $SharedSourceSets | Where-Object { $_.Unit -eq $row.Package } | Select-Object -First 1
+            $reason = $null
+
+            if ($set) {
+                if (@($set.Hosts | Where-Object { (Get-CollectingManifests "$_.Test").Count -eq 0 }).Count -gt 0) {
+                    $reason = 'not every host was collected'
+                }
+            }
+            elseif ($testProjectNames -notcontains "$($row.Package).Test" -and $referencedBy.ContainsKey($row.Package)) {
+                if (@($referencedBy[$row.Package] | Where-Object { (Get-CollectingManifests "$_.Test").Count -eq 0 }).Count -gt 0) {
+                    $reason = 'not every package that references it was collected'
+                }
+            }
+            elseif ((Get-CollectingManifests "$($row.Package).Test").Count -eq 0) {
+                $reason = 'instrumented only as a dependency of the collected projects'
+            }
+
+            if ($reason) {
+                $unjudged.Add("$($row.Package) not judged: $reason")
+                continue
+            }
+        }
+
+        $judged++
+
+        # A judged package without a floor is ungated: it could lose all of its coverage and still pass. That is a
         # failure in its own right, so a new package is gated from its first collection. Its floor is its measured
         # rate less the grace band, as tools/Update-CoverageThresholds.ps1 records it.
         $floor = $thresholds.PSObject.Properties[$row.Package]
@@ -620,13 +687,15 @@ if ($Check) {
         exit 1
     }
 
+    foreach ($u in $unjudged) { Write-Host $u }
+
     if ($failures.Count -gt 0) {
-        Write-Host "Coverage ratchet failed:" -ForegroundColor Red
+        Write-Host "Coverage ratchet failed ($judged package(s) judged, $($unjudged.Count) left unjudged):" -ForegroundColor Red
         foreach ($f in $failures) { Write-Host "  $f" -ForegroundColor Red }
         exit 1
     }
 
-    Write-Host "Coverage ratchet satisfied for $(@($rows | Where-Object Collected).Count) collected package(s)."
+    Write-Host "Coverage ratchet satisfied: $judged package(s) judged, $($unjudged.Count) left unjudged."
     exit 0
 }
 
