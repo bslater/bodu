@@ -44,8 +44,17 @@
 # 'n/a (hardware-gated)' rather than 0%. The ARM64 instruction-set shims (*.AdvSimd.cs, *.PmullIsa.cs)
 # are gated the same way on any host that is not ARM64; the ARM64 job in .github/workflows/build-test.yml
 # runs them. The matrix decides each package's gating from the manifest of the shard that collected
-# that package's own test project, which is why the manifest names them (#1364). See
+# that package's own test project, which is why the manifest names them (#1364), and the ratchet judges
+# only the packages it names. A --project or --filter run, which leaves the other projects' results in
+# the raw directory, keeps the names the manifest it replaces held, so a diff-scoped job that collects
+# its projects one invocation at a time ends with a manifest naming them all (#1372). See
 # docs/articles/code-coverage.md.
+#
+# A project that fails - at restore, at build, in its tests, or by producing other than one coverage
+# file - leaves nothing behind: its raw directory is removed, the test log and any coverage file written
+# before the failure included, and a run of record's failure removes its '<Name>.scalar' directory too,
+# so the upload and the merge cannot count a partial result as collected, and the manifest neither names
+# the project nor carries its name forward (#1373).
 #
 # Exit code: 0 when every selected project collected successfully, 1 otherwise.
 # ---------------------------------------------------------------------------------------------------------------
@@ -65,7 +74,7 @@ list_only=false
 scalar_pass=false
 
 usage() {
-    sed -n '2,51p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,60p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ $# -gt 0 ]; do
@@ -226,6 +235,35 @@ CSHARP
 status=0
 collected=0
 collected_names=()
+failed_names=()
+
+# Nothing of a failed project survives the run. coverlet writes its file when the test host exits, whatever
+# the tests' outcome, so after a test failure raw/<Name>/<guid>/coverage.cobertura.xml held the lines the run
+# reached before it failed: coverage.yml uploads raw/**/coverage.cobertura.xml with if: always(), the merge
+# globs the same pattern, and the matrix then showed the package as collected at that partial figure while
+# the manifest, which names only what collected, left it out (#1373). Removing the directory, the trx log
+# included, leaves the upload and the merge nothing to find, and the manifest below neither names the
+# project nor carries its name forward from the manifest this run replaces. A run of record's failure also
+# takes the parallel '<Name>.scalar' directory with it: a scalar pass supplements a result that no longer
+# exists, and left alone it would credit the package from the scalar path by itself. A failed scalar pass
+# removes only its own directory; the run of record stands and keeps its name.
+discard_output() {
+    local project_name="$1" name="$2"
+    local candidates=("$raw_dir/$name")
+    [ "$scalar_pass" = true ] || candidates+=("$raw_dir/$project_name.scalar")
+
+    local removed=() dir
+    for dir in "${candidates[@]}"; do
+        [ -e "$dir" ] || continue
+        rm -rf "${dir:?}"
+        removed+=("$dir")
+    done
+    failed_names+=("$project_name")
+
+    if [ "${#removed[@]}" -gt 0 ]; then
+        echo "Removed ${removed[*]}: a project that failed leaves no coverage behind"
+    fi
+}
 
 while read -r proj; do
     [ -n "$proj" ] || continue
@@ -244,6 +282,7 @@ while read -r proj; do
     if ! dotnet restore "$proj"; then
         echo "error: restore failed for $name" >&2
         status=1
+        discard_output "$project_name" "$name"
         echo "::endgroup::"
         continue
     fi
@@ -251,6 +290,7 @@ while read -r proj; do
     if ! dotnet build "$proj" --configuration "$configuration" --framework "$framework" --no-restore; then
         echo "error: build failed for $name" >&2
         status=1
+        discard_output "$project_name" "$name"
         echo "::endgroup::"
         continue
     fi
@@ -293,6 +333,7 @@ while read -r proj; do
             echo "error: $distinct different coverage.cobertura.xml files produced for $name; expected one run for $framework" >&2
             echo "$reports" >&2
             status=1
+            discard_output "$project_name" "$name"
         elif [ -n "$first" ]; then
             cp "$first" "$raw_dir/$name.cobertura.tmp"
             find "$raw_dir/$name" -mindepth 1 -type d -exec rm -rf {} + 2>/dev/null
@@ -302,10 +343,12 @@ while read -r proj; do
         else
             echo "error: no coverage.cobertura.xml produced for $name" >&2
             status=1
+            discard_output "$project_name" "$name"
         fi
     else
         echo "error: tests failed for $name" >&2
         status=1
+        discard_output "$project_name" "$name"
     fi
 
     echo "::endgroup::"
@@ -349,9 +392,47 @@ fi
 # reads them to find the shard that collected a package's own test project, because that shard's host
 # is the only one whose capabilities say anything about the package's hardware-gated files: the hosted
 # runners are a mixed fleet, and judging AVX-512 across every shard counted the cryptography kernels
-# as uncovered whenever the crypto shard lacked it while another shard had it (#1364).
+# as uncovered whenever the crypto shard lacked it while another shard had it (#1364). The ratchet
+# reads the same list to judge only the packages whose own test project ran (#1371).
+#
+# A partial run - --project or --filter, not a shard - adds the names the manifest it replaces already
+# holds, as --no-probe carries the AVX-512 answer forward: the raw directory keeps the earlier
+# projects' results and the merge reads them all, and coverage.yml's diff-scoped job collects its
+# projects one invocation at a time, so a manifest naming the last invocation's project alone left
+# every other package the job measured looking like one whose tests never ran (#1372). A name this run
+# selected and failed to collect is not carried: its raw directory is gone (discard_output), so the merge
+# has nothing of it, and the manifest must say the same (#1373). A full run and a shard name what they
+# collected and nothing else.
+named=$collected
+if [ -z "$shard_spec" ] && { [ -n "$single_project" ] || [ -n "$filter" ]; } && [ -f "$manifest" ]; then
+    carried=0
+    dropped=0
+    while IFS= read -r previous; do
+        [ -n "$previous" ] || continue
+        for existing in ${collected_names[@]+"${collected_names[@]}"}; do
+            [ "$existing" = "$previous" ] && continue 2
+        done
+        for failed in ${failed_names[@]+"${failed_names[@]}"}; do
+            if [ "$failed" = "$previous" ]; then
+                dropped=$((dropped + 1))
+                continue 2
+            fi
+        done
+        collected_names+=("$previous")
+        named=$((named + 1))
+        carried=$((carried + 1))
+    done < <(sed -n 's/^ *"projects": \[\(.*\)\].*$/\1/p' "$manifest" | grep -oE '"[^"]+"' | tr -d '"')
+
+    if [ "$carried" -gt 0 ]; then
+        echo "Carrying forward $carried project name(s) from $manifest"
+    fi
+    if [ "$dropped" -gt 0 ]; then
+        echo "Dropping $dropped project name(s) held by $manifest: their collection failed in this run"
+    fi
+fi
+
 projects_json="[]"
-if [ "$collected" -gt 0 ]; then
+if [ "$named" -gt 0 ]; then
     projects_json="[$(printf '"%s", ' "${collected_names[@]}")]"
     projects_json="${projects_json%, ]}]"
 fi
@@ -367,7 +448,7 @@ cat > "$manifest" <<JSON
   "configuration": "$configuration",
   "framework": "$framework",
   "shard": "${shard_spec:-full}",
-  "projectsCollected": $collected,
+  "projectsCollected": $named,
   "projects": $projects_json,
   "avx512Supported": "$avx512",
   "os": "$(uname -s)",
