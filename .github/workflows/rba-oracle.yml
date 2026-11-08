@@ -1,15 +1,16 @@
 name: RBA published-rate oracle
 
 # Holds the Bodu.Financial.ExchangeRates.Rba reader to rates the RBA itself published (#1361). The rows of
-# RbaPublishedRateTests download the RBA's own era workbooks and its F11.1 CSV and check thirteen rates typed
-# by hand from those publications, so the reader is held to its source rather than to the synthetic workbooks
-# the other RBA tests compute their answers from. The rows are in the Stress tier and run only when
-# BODU_TEST_RBA_LIVE is set, so no default build or pull request run reaches the network; this workflow is
-# where they run, weekly and on manual dispatch.
+# RbaPublishedRateTests download the RBA's own era workbooks and check thirteen rates typed by hand from
+# those workbooks and from the F11.1 CSV that restates the current era's workbook, so the reader is held to
+# its source rather than to the synthetic workbooks the other RBA tests compute their answers from. The rows
+# are in the Stress tier and run only when BODU_TEST_RBA_LIVE is set, so no default build or pull request run
+# reaches the network; this workflow is where they run, weekly and on manual dispatch.
 #
 # It needs the network to www.rba.gov.au. A failure means that either the reader or the RBA's published file
 # changed - a revised figure, a changed layout, a moved era boundary - and the failing row's citation names
-# the file to re-read before its constant is changed.
+# the file to re-read before its constant is changed. A row typed from the CSV is read back against
+# 2023-current.xls as well, since that workbook, not the CSV, is the file the reader parsed.
 
 on:
   schedule:
