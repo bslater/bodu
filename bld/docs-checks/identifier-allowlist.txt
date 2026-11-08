@@ -49,3 +49,6 @@ PublishAot
 IsAotCompatible   # MSBuild property that turns on the trim and AOT analyzers for a library
 MSTest.TestFramework
 JavaScriptEncoder.UnsafeRelaxedJsonEscaping   # System.Text.Encodings.Web member named in the Complex<T> JSON note
+
+# Fields of the coverage tooling's machine-readable rows, named by the coverage article; not types.
+HardwareGated   # the hardware-gating verdict tools/New-CoverageMatrix.ps1 writes into each packages.json row (#1377)

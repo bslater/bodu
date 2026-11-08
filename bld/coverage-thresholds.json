@@ -4,47 +4,47 @@
     "branch": 95.4
   },
   "Bodu.Collections.Concurrent": {
-    "line": 94.4,
-    "branch": 91.2
+    "line": 97.0,
+    "branch": 94.1
   },
   "Bodu.Core": {
     "line": 98.1,
     "branch": 95.9
   },
   "Bodu.Extensions.Configuration.Text": {
-    "line": 96.8,
-    "branch": 87.0
+    "line": 99.5,
+    "branch": 97.0
   },
   "Bodu.Financial": {
-    "line": 96.8,
-    "branch": 86.4
+    "line": 96.9,
+    "branch": 87.2
   },
   "Bodu.Financial.DependencyInjection": {
     "line": 99.5,
     "branch": 99.5
   },
   "Bodu.Financial.ExchangeRates": {
-    "line": 90.0,
-    "branch": 84.3
+    "line": 91.2,
+    "branch": 88.5
   },
   "Bodu.Financial.ExchangeRates (shared source)": {
     "line": 95.2,
     "branch": 90.6
   },
   "Bodu.Financial.ExchangeRates.Boe": {
-    "line": 90.5,
-    "branch": 84.2
+    "line": 98.1,
+    "branch": 91.8
   },
   "Bodu.Financial.ExchangeRates.Caching": {
-    "line": 91.1,
-    "branch": 88.1
+    "line": 92.4,
+    "branch": 89.4
   },
   "Bodu.Financial.ExchangeRates.Caching.Distributed": {
     "line": 93.0,
     "branch": 91.4
   },
   "Bodu.Financial.ExchangeRates.Caching.Sqlite": {
-    "line": 94.3,
+    "line": 94.9,
     "branch": 94.3
   },
   "Bodu.Financial.ExchangeRates.DependencyInjection": {
@@ -52,56 +52,56 @@
     "branch": 99.5
   },
   "Bodu.Financial.ExchangeRates.Ecb": {
-    "line": 91.0,
-    "branch": 79.4
+    "line": 99.5,
+    "branch": 99.5
   },
   "Bodu.Financial.ExchangeRates.ExchangeRateHost": {
-    "line": 94.4,
-    "branch": 68.2
+    "line": 96.0,
+    "branch": 75.2
   },
   "Bodu.Financial.ExchangeRates.Fixer": {
-    "line": 96.2,
-    "branch": 74.5
+    "line": 97.4,
+    "branch": 76.8
   },
   "Bodu.Financial.ExchangeRates.Fred": {
     "line": 98.8,
     "branch": 93.0
   },
   "Bodu.Financial.ExchangeRates.Imf": {
-    "line": 90.4,
-    "branch": 88.0
+    "line": 95.3,
+    "branch": 93.0
   },
   "Bodu.Financial.ExchangeRates.Oanda": {
-    "line": 96.5,
-    "branch": 88.7
+    "line": 98.9,
+    "branch": 97.9
   },
   "Bodu.Financial.ExchangeRates.Ofx": {
-    "line": 97.1,
-    "branch": 88.4
+    "line": 99.5,
+    "branch": 97.3
   },
   "Bodu.Financial.ExchangeRates.Rba": {
-    "line": 93.9,
-    "branch": 89.0
+    "line": 99.2,
+    "branch": 96.9
   },
   "Bodu.Financial.ExchangeRates.Xe": {
-    "line": 94.9,
-    "branch": 86.1
+    "line": 95.3,
+    "branch": 91.6
   },
   "Bodu.Financial.ExchangeRates.Yahoo": {
-    "line": 95.5,
-    "branch": 72.6
+    "line": 98.4,
+    "branch": 90.3
   },
   "Bodu.Financial.Serialization.Json": {
-    "line": 94.5,
-    "branch": 88.9
+    "line": 94.6,
+    "branch": 89.0
   },
   "Bodu.Formats.Excel.Binary": {
-    "line": 92.1,
-    "branch": 84.9
+    "line": 95.9,
+    "branch": 93.4
   },
   "Bodu.Formats.Outlook": {
-    "line": 95.4,
-    "branch": 88.4
+    "line": 99.5,
+    "branch": 99.5
   },
   "Bodu.Formats.Outlook (shared source)": {
     "line": 96.7,
@@ -116,8 +116,8 @@
     "branch": 88.0
   },
   "Bodu.Globalization.Calendar": {
-    "line": 96.5,
-    "branch": 89.1
+    "line": 97.6,
+    "branch": 93.2
   },
   "Bodu.Globalization.Calendar.Africa": {
     "line": 99.5,
@@ -132,12 +132,12 @@
     "branch": 74.5
   },
   "Bodu.Globalization.Calendar.Builder": {
-    "line": 95.2,
-    "branch": 87.5
+    "line": 95.4,
+    "branch": 89.7
   },
   "Bodu.Globalization.Calendar.Caching": {
-    "line": 90.7,
-    "branch": 86.0
+    "line": 91.7,
+    "branch": 87.5
   },
   "Bodu.Globalization.Calendar.Caching.Distributed": {
     "line": 94.7,
@@ -160,24 +160,24 @@
     "branch": 66.2
   },
   "Bodu.Globalization.Calendar.Plugins": {
-    "line": 91.5,
-    "branch": 82.2
+    "line": 99.5,
+    "branch": 86.2
   },
   "Bodu.Globalization.Calendar.Tool": {
     "line": 98.7,
     "branch": 97.9
   },
   "Bodu.Globalization.Recurrence": {
-    "line": 90.8,
-    "branch": 88.9
+    "line": 95.4,
+    "branch": 94.1
   },
   "Bodu.IO.Biff": {
-    "line": 90.0,
-    "branch": 85.0
+    "line": 99.2,
+    "branch": 97.3
   },
   "Bodu.IO.Compound": {
-    "line": 98.3,
-    "branch": 93.6
+    "line": 98.6,
+    "branch": 95.1
   },
   "Bodu.IO.Hashing": {
     "line": 98.2,
@@ -188,48 +188,48 @@
     "branch": 99.5
   },
   "Bodu.IO.Pst": {
-    "line": 96.6,
-    "branch": 93.3
+    "line": 97.2,
+    "branch": 95.6
   },
   "Bodu.Numerics": {
-    "line": 93.7,
-    "branch": 90.5
+    "line": 94.0,
+    "branch": 91.2
   },
   "Bodu.Numerics.Serialization.Json": {
-    "line": 92.0,
-    "branch": 83.1
+    "line": 92.1,
+    "branch": 83.6
   },
   "Bodu.Security.Cryptography": {
     "line": 96.9,
     "branch": 92.0
   },
   "Bodu.Text.Bencode": {
-    "line": 92.6,
-    "branch": 91.2
+    "line": 93.5,
+    "branch": 91.6
   },
   "Bodu.Text.Configuration": {
-    "line": 95.0,
-    "branch": 94.2
+    "line": 95.2,
+    "branch": 94.5
   },
   "Bodu.Text.Delimited": {
-    "line": 90.4,
-    "branch": 84.8
+    "line": 94.7,
+    "branch": 94.8
   },
   "Bodu.Text.DotEnv": {
-    "line": 89.8,
-    "branch": 86.2
+    "line": 93.9,
+    "branch": 96.0
   },
   "Bodu.Text.Encoding": {
-    "line": 95.0,
-    "branch": 93.3
+    "line": 95.2,
+    "branch": 93.8
   },
   "Bodu.Text.Filtering": {
     "line": 97.8,
     "branch": 97.2
   },
   "Bodu.Text.Ini": {
-    "line": 90.2,
-    "branch": 84.8
+    "line": 94.9,
+    "branch": 94.1
   },
   "Bodu.Text.Serialization": {
     "line": 99.5,
@@ -240,16 +240,16 @@
     "branch": 96.8
   },
   "Bodu.Text.Serialization (shared source)": {
-    "line": 92.9,
-    "branch": 88.5
+    "line": 99.4,
+    "branch": 96.8
   },
   "Bodu.Text.Toml": {
-    "line": 95.0,
-    "branch": 92.3
+    "line": 96.0,
+    "branch": 93.3
   },
   "Bodu.Text.Yaml": {
-    "line": 90.7,
-    "branch": 89.3
+    "line": 94.2,
+    "branch": 92.9
   },
   "Caching (shared source)": {
     "line": 92.2,
