@@ -391,10 +391,20 @@ lines that select and dispatch them, the `KernelKind.Avx512` arms and the
 `Vector512.IsHardwareAccelerated` paths inside the scalar files, cannot execute
 either, and no file pattern names them. The floor was reset to 96.9 / 92.0, the
 figure the scheduled run of 25 October 2026 reads with the exclusion applied,
-so the package meets it on either kind of runner. A later
-`tools/Update-CoverageThresholds.ps1` from a run whose crypto shard had AVX-512
-would raise it past what a shard without AVX-512 can reach, so that floor is
-raised only from a run whose crypto shard lacked AVX-512.
+so the package meets it on either kind of runner. Raised from a run whose
+crypto shard had AVX-512, it would pass what a shard without AVX-512 can reach,
+so that floor is raised only from a run whose crypto shard lacked AVX-512, and
+the tooling applies the rule rather than leaving it to the reader (#1377).
+`tools/New-CoverageMatrix.ps1` records each package's hardware-gating verdict
+in its `packages.json` row as `HardwareGated`: `null` for a package with no
+gated files, `excluded` when the shard that collected its own test project
+could execute none of them, `counted` when it could execute some, and `unknown`
+when the manifests could not say. `tools/Update-CoverageThresholds.ps1` holds
+both floors of a `counted` or `unknown` row and says why, raises an `excluded`
+row as any other, and warns once over rows that carry no field at all, written
+before the matrix recorded it, where the rule must still be applied by hand.
+The scheduled run of 1 November 2026, whose crypto shard had AVX-512, measured
+the package at 97.5 / 93.3, and the tool holds its floor at 96.9 / 92.0.
 
 The last two sets joined the table the same way, from a net10.0 collection of
 the 20 test projects under `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`,
