@@ -28,7 +28,9 @@
          excluded from the denominator rather than as 0%. The host that counts is the one that
          collected the package's own test project, <Package>.Test, which each collection manifest
          names: the shards run on a mixed fleet, and another shard's host proves nothing about
-         kernels that only the package's own tests call (#1364).
+         kernels that only the package's own tests call (#1364). Each package's verdict is written to
+         its packages.json row as HardwareGated, for tools/Update-CoverageThresholds.ps1, which raises
+         a floor only from a run whose shard could not execute the kernels (#1377).
 
 .PARAMETER ReportPath
     Merged Cobertura report. Default: artifacts/coverage/report/Cobertura.xml.
@@ -530,6 +532,18 @@ foreach ($gate in $HardwareGates) {
     }
 }
 
+# One verdict per package for its packages.json row, from the decisions above: $null for a package with no gated
+# files; 'counted' when the shard that collected its tests could execute some of them (a verdict of 'true' on any
+# gate, so those files were measured); 'excluded' when it could execute none (every verdict 'false', so the files
+# left the denominator); 'unknown' otherwise. tools/Update-CoverageThresholds.ps1 raises a package's floor only
+# from a run whose row is 'excluded': where the kernels could run, the lines that select and dispatch them ran too,
+# and no file pattern names those, so the figure is one a host without the hardware never reaches (#1377).
+$hardwareVerdicts = @{}
+foreach ($group in ($gateDecisions | Group-Object Package)) {
+    $verdicts = @($group.Group | ForEach-Object { $_.Verdict })
+    $hardwareVerdicts[$group.Name] = if ($verdicts -contains 'true') { 'counted' } elseif (@($verdicts | Where-Object { $_ -ne 'false' }).Count -eq 0) { 'excluded' } else { 'unknown' }
+}
+
 # ---------------------------------------------------------------------------------------------------------------
 # Aggregate per package
 # ---------------------------------------------------------------------------------------------------------------
@@ -586,14 +600,15 @@ $rows = foreach ($name in $reportable) {
     $excluded = $notMeasurable.ContainsKey($name)
 
     [pscustomobject]@{
-        Package      = $name
-        Status       = if ($status.ContainsKey($name)) { $status[$name] } elseif ($SharedSourceUnits -contains $name) { 'Stable' } else { '' }
-        Collected    = [bool]$bucket -and -not $excluded
-        Excluded     = $excluded
-        CoveredLines = if ($bucket -and -not $excluded) { $bucket.CoveredLines } else { 0 }
-        TotalLines   = if ($bucket -and -not $excluded) { $bucket.TotalLines } else { 0 }
-        LineRate     = if ($bucket -and -not $excluded) { Get-Rate $bucket.CoveredLines $bucket.TotalLines } else { $null }
-        BranchRate   = if ($bucket -and -not $excluded) { Get-Rate $bucket.CoveredBranches $bucket.TotalBranches } else { $null }
+        Package       = $name
+        Status        = if ($status.ContainsKey($name)) { $status[$name] } elseif ($SharedSourceUnits -contains $name) { 'Stable' } else { '' }
+        Collected     = [bool]$bucket -and -not $excluded
+        Excluded      = $excluded
+        CoveredLines  = if ($bucket -and -not $excluded) { $bucket.CoveredLines } else { 0 }
+        TotalLines    = if ($bucket -and -not $excluded) { $bucket.TotalLines } else { 0 }
+        LineRate      = if ($bucket -and -not $excluded) { Get-Rate $bucket.CoveredLines $bucket.TotalLines } else { $null }
+        BranchRate    = if ($bucket -and -not $excluded) { Get-Rate $bucket.CoveredBranches $bucket.TotalBranches } else { $null }
+        HardwareGated = if ($hardwareVerdicts.ContainsKey($name)) { $hardwareVerdicts[$name] } else { $null }
     }
 }
 
@@ -816,10 +831,13 @@ Set-Content -LiteralPath $OutputPath -Value $sb.ToString() -NoNewline
 # Machine-readable companion. tools/Update-CoverageThresholds.ps1 consumes this rather than
 # re-parsing the Cobertura report, so the phantom / shared-source / hardware-gated corrections are
 # applied in exactly one place and the ratchet can never be computed from a different denominator
-# than the published matrix.
+# than the published matrix. HardwareGated is the package's hardware-gating verdict (see
+# $hardwareVerdicts): null for a package with no gated files, 'counted' when the shard that collected
+# its tests could execute them, 'excluded' when it could not, 'unknown' when that could not be
+# determined; that tool holds the floors of a 'counted' or 'unknown' package (#1377).
 $rowsPath = Join-Path $ReportDirectory 'packages.json'
 $rows |
-    Select-Object Package, Status, Collected, LineRate, BranchRate, CoveredLines, TotalLines |
+    Select-Object Package, Status, Collected, LineRate, BranchRate, CoveredLines, TotalLines, HardwareGated |
     ConvertTo-Json -Depth 3 |
     Set-Content -LiteralPath $rowsPath
 

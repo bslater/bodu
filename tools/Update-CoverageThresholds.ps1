@@ -18,6 +18,19 @@
     Packages absent from the run keep their existing floors, so collecting a subset (a PR-scoped
     run, or a single shard) can never erase the rest of the ratchet.
 
+    A package with hardware-gated files - Bodu.Security.Cryptography, whose AVX-512 kernels and ARM64
+    shims the JIT selects only on a host that can execute them, and Bodu.Core, whose instruction-set
+    rotation shims those kernels are built on - is judged by the shard that collected its own test
+    project, and each row records that shard's verdict as New-CoverageMatrix.ps1 decided it, in
+    HardwareGated: null for a package with no gated files, 'excluded' when the host could execute none
+    of them (the files left the denominator), 'counted' when it could execute some, and 'unknown' when
+    the manifests could not say. On a host that could execute them the kernels and the lines that
+    dispatch to them all run, so a floor recorded from that figure is one a host that cannot never
+    reaches: both floors of a 'counted' or 'unknown' row are held, with the reason printed, and an
+    'excluded' row is raised as any other (#1377). Rows that carry no HardwareGated property at all were
+    written before the field existed; they are raised as before, under one warning that the rule must
+    be applied by hand.
+
 .PARAMETER RowsPath
     Package rows from New-CoverageMatrix.ps1. Default: artifacts/coverage/report/packages.json.
 
@@ -68,7 +81,12 @@ if (Test-Path -LiteralPath $ThresholdPath) {
 }
 
 $raised = [System.Collections.Generic.List[string]]::new()
+$heldForHardware = [System.Collections.Generic.List[string]]::new()
 $held = 0
+
+# A row written before the matrix recorded the verdict carries no HardwareGated property at all; a package with no
+# gated files carries it as null. Only the former leaves the hardware rule to the reader.
+$rowsWithoutVerdict = @($rows | Where-Object { $_.Collected -and $null -eq $_.PSObject.Properties['HardwareGated'] })
 
 foreach ($row in ($rows | Sort-Object Package)) {
     if (-not $row.Collected) { continue }
@@ -78,6 +96,23 @@ foreach ($row in ($rows | Sort-Object Package)) {
     }
 
     $entry = $existing[$row.Package]
+
+    # Where the shard that collected the package's tests could execute its hardware-gated kernels, or no manifest
+    # could say, the figure includes the kernels and the lines that dispatch to them, which a shard without the
+    # hardware never reaches; both floors stay where they are.
+    $verdict = $row.PSObject.Properties['HardwareGated']
+    if ($verdict -and $verdict.Value -in @('counted', 'unknown')) {
+        $held += @(@($row.LineRate, $row.BranchRate) | Where-Object { $null -ne $_ }).Count
+        $reason = if ($verdict.Value -eq 'counted') {
+            'the shard that collected its tests could execute its hardware-gated kernels'
+        }
+        else {
+            'whether the shard that collected its tests could execute its hardware-gated kernels could not be determined'
+        }
+        $heldForHardware.Add(("{0}: line {1}% and branch {2}% held (measured {3}% / {4}%); {5}, and the floor is raised only from a run whose shard could not." -f
+            $row.Package, $entry['line'], $entry['branch'], $row.LineRate, $row.BranchRate, $reason))
+        continue
+    }
 
     foreach ($metric in @('line', 'branch')) {
         $measured = if ($metric -eq 'line') { $row.LineRate } else { $row.BranchRate }
@@ -111,6 +146,10 @@ if ($PSCmdlet.ShouldProcess($ThresholdPath, "Update $($raised.Count) coverage fl
     Set-Content -LiteralPath $ThresholdPath -Value $json
 }
 
+if ($rowsWithoutVerdict.Count -gt 0) {
+    Write-Warning "The rows at '$RowsPath' record no hardware-gating verdict (no HardwareGated field: they were written before tools/New-CoverageMatrix.ps1 recorded it), so the cryptography rule must be applied by hand: the Bodu.Security.Cryptography floor is raised only from a run whose crypto shard could not execute its hardware-gated kernels (#1377)."
+}
+
 if ($raised.Count -gt 0) {
     Write-Host "Raised $($raised.Count) floor(s):"
     foreach ($entry in $raised) { Write-Host "  $entry" }
@@ -119,5 +158,10 @@ else {
     Write-Host "No floor raised; the ratchet is unchanged."
 }
 
-Write-Host "$held metric(s) held at or below their existing floor (never lowered)."
+if ($heldForHardware.Count -gt 0) {
+    Write-Host "Held $($heldForHardware.Count) hardware-gated package(s):"
+    foreach ($entry in $heldForHardware) { Write-Host "  $entry" }
+}
+
+Write-Host "$held metric(s) held (never lowered): at or below their existing floor, or hardware-gated and collected where their kernels could run."
 Write-Host "Thresholds: $ThresholdPath"
