@@ -50,14 +50,17 @@ jobs:
       - name: Decide collection scope
         id: decide
         # The rule is bld/coverage-scope.sh, which bld/policy/tests/test_coverage_scope.py holds to its
-        # cases in the Policy Gate; this step only names the event and, on a pull request, pipes the
-        # changed paths to it. The pipe is safe because the script reads the whole list before it tests
-        # anything (#1337). The script writes the three output lines (mode, projects, shards) itself.
+        # cases in the Policy Gate; this step only names the event and, on a pull request, hands it the
+        # changed paths. The diff is taken into a variable first, so a git failure stops the step under
+        # errexit before the script can decide anything from an empty list, and the script reads the
+        # here-string whole before it tests anything (#1337). The script writes the three output lines
+        # (mode, projects, shards) itself.
         run: |
           set -euo pipefail
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git diff --name-only "origin/${{ github.base_ref }}...HEAD" | bash bld/coverage-scope.sh >> "$GITHUB_OUTPUT"
+            changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+            bash bld/coverage-scope.sh <<< "$changed" >> "$GITHUB_OUTPUT"
           else
             bash bld/coverage-scope.sh --event "${{ github.event_name }}" >> "$GITHUB_OUTPUT"
           fi
