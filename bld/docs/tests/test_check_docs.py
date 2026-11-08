@@ -594,6 +594,34 @@ class CheckSpellingTests(unittest.TestCase):
         self.assertEqual(1, len(found), found)
         self.assertTrue(found[0].startswith("Widgets/src/Widget.cs:5:"), found[0])
 
+    def test_check_spelling_when_root_lies_under_an_ignored_folder_of_an_enclosing_repository_should_walk_it(self) -> None:
+        """Verifies that a root git lists nothing for, a plain tree under an ignored folder of an enclosing repository, is walked rather than read as empty."""
+        git_repository(self.root, {"README.md": "# Enclosing\n"})
+        inner = os.path.join(self.root, ".claude", "worktrees", "x")
+        write_tree(inner, {"Widgets/src/Widget.cs": SPELLING_SOURCE})
+        found = check_docs.check_spelling(inner, self.checks)
+        self.assertEqual(1, len(found), found)
+        self.assertTrue(found[0].startswith("Widgets/src/Widget.cs:5:"), found[0])
+
+    def test_check_spelling_when_root_is_not_a_repository_should_leave_a_nested_repository_unread(self) -> None:
+        """Verifies that the walk a non-repository root takes stops at a nested repository, which the git listing shows as one entry and never reads into, so both modes read the same files."""
+        write_tree(self.root, {
+            "Widgets/src/Widget.cs": SPELLING_SOURCE,
+            "nested/Widgets/src/Inner.cs": SPELLING_SOURCE,
+        })
+        os.mkdir(os.path.join(self.root, "nested", ".git"))
+        found = self.check()
+        self.assertEqual(1, len(found), found)
+        self.assertTrue(found[0].startswith("Widgets/src/Widget.cs:5:"), found[0])
+
+    def test_check_spelling_when_root_is_not_a_repository_should_pass_over_a_dangling_symlink(self) -> None:
+        """Verifies that the walk drops a symlink whose target is gone, as the git listing drops a file that is gone, rather than failing on reading it."""
+        write_tree(self.root, {"Widgets/src/Widget.cs": SPELLING_SOURCE})
+        os.symlink(os.path.join(self.root, "Widgets", "src", "Missing.cs"), os.path.join(self.root, "Widgets", "src", "Dangling.cs"))
+        found = self.check()
+        self.assertEqual(1, len(found), found)
+        self.assertTrue(found[0].startswith("Widgets/src/Widget.cs:5:"), found[0])
+
     def test_spelling_source_files_when_repository_is_read_should_list_its_tracked_sources(self) -> None:
         """Verifies that the repository's own sources are found, so the check cannot pass by reading nothing."""
         files = {os.path.relpath(path, check_docs.ROOT).replace(os.sep, "/") for path in check_docs.spelling_source_files(check_docs.ROOT)}
