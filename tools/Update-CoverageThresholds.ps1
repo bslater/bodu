@@ -19,11 +19,12 @@
     run, or a single shard) can never erase the rest of the ratchet.
 
     A package with hardware-gated files - Bodu.Security.Cryptography, whose AVX-512 kernels and ARM64
-    shims the JIT selects only on a host that can execute them - is judged by the shard that collected
-    its own test project, and each row records that shard's verdict as New-CoverageMatrix.ps1 decided
-    it, in HardwareGated: null for a package with no gated files, 'excluded' when the host could execute
-    none of them (the files left the denominator), 'counted' when it could execute some, and 'unknown'
-    when the manifests could not say. On a host that could execute them the kernels and the lines that
+    shims the JIT selects only on a host that can execute them, and Bodu.Core, whose instruction-set
+    rotation shims those kernels are built on - is judged by the shard that collected its own test
+    project, and each row records that shard's verdict as New-CoverageMatrix.ps1 decided it, in
+    HardwareGated: null for a package with no gated files, 'excluded' when the host could execute none
+    of them (the files left the denominator), 'counted' when it could execute some, and 'unknown' when
+    the manifests could not say. On a host that could execute them the kernels and the lines that
     dispatch to them all run, so a floor recorded from that figure is one a host that cannot never
     reaches: both floors of a 'counted' or 'unknown' row are held, with the reason printed, and an
     'excluded' row is raised as any other (#1377). Rows that carry no HardwareGated property at all were

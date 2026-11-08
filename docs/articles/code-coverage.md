@@ -404,7 +404,10 @@ both floors of a `counted` or `unknown` row and says why, raises an `excluded`
 row as any other, and warns once over rows that carry no field at all, written
 before the matrix recorded it, where the rule must still be applied by hand.
 The scheduled run of 1 November 2026, whose crypto shard had AVX-512, measured
-the package at 97.5 / 93.3, and the tool holds its floor at 96.9 / 92.0.
+the package at 97.5 / 93.3, and the tool holds its floor at 96.9 / 92.0. The
+same file patterns name `Bodu.Core`'s `VectorRotation` instruction-set shims,
+so its floor is held by the same rule, and raised only from a run whose Core
+shard lacked AVX-512.
 
 The last two sets joined the table the same way, from a net10.0 collection of
 the 20 test projects under `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`,
