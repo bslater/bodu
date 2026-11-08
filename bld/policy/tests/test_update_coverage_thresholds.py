@@ -144,6 +144,17 @@ class HardwareGatedRowTests(unittest.TestCase):
         self.assertRegex(run.output, r"\b2 metric\(s\) held\b")
         self.assertNotIn(NO_VERDICT_WARNING, run.output)
 
+    def test_floor_when_row_is_counted_and_package_has_no_floor_should_not_be_given_one(self) -> None:
+        """A held package without a floor is left without one: a 0 / 0 placeholder would pass -Check at any coverage."""
+        run = run_script([row("Bodu.NewGated", 95.0, 90.0, HardwareGated="counted")], {"Bodu.Other": {"line": 90.0, "branch": 80.0}})
+
+        self.assertEqual(0, run.returncode, run.output)
+        self.assertEqual({"Bodu.Other": {"line": 90.0, "branch": 80.0}}, run.thresholds)
+        self.assertNotIn("->", run.output)
+        self.assertRegex(run.output, r"Bodu\.NewGated.*no floor")
+        self.assertIn(HELD_COUNTED, run.output)
+        self.assertNotIn(NO_VERDICT_WARNING, run.output)
+
     def test_floor_when_row_is_unknown_should_be_held_on_both_metrics_and_say_why(self) -> None:
         run = run_script([row(CRYPTO, 97.5, 93.3, HardwareGated="unknown")], {CRYPTO: CRYPTO_FLOORS})
 
