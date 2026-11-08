@@ -91,15 +91,11 @@ $rowsWithoutVerdict = @($rows | Where-Object { $_.Collected -and $null -eq $_.PS
 foreach ($row in ($rows | Sort-Object Package)) {
     if (-not $row.Collected) { continue }
 
-    if (-not $existing.Contains($row.Package)) {
-        $existing[$row.Package] = [ordered]@{ line = 0.0; branch = 0.0 }
-    }
-
-    $entry = $existing[$row.Package]
-
     # Where the shard that collected the package's tests could execute its hardware-gated kernels, or no manifest
     # could say, the figure includes the kernels and the lines that dispatch to them, which a shard without the
-    # hardware never reaches; both floors stay where they are.
+    # hardware never reaches; both floors stay where they are. A package held before it has any floor is left
+    # without one rather than given the 0 / 0 placeholder the raise path starts from, since that placeholder would
+    # satisfy the ratchet's "collected but has no floor" guard at any coverage.
     $verdict = $row.PSObject.Properties['HardwareGated']
     if ($verdict -and $verdict.Value -in @('counted', 'unknown')) {
         $held += @(@($row.LineRate, $row.BranchRate) | Where-Object { $null -ne $_ }).Count
@@ -109,10 +105,23 @@ foreach ($row in ($rows | Sort-Object Package)) {
         else {
             'whether the shard that collected its tests could execute its hardware-gated kernels could not be determined'
         }
-        $heldForHardware.Add(("{0}: line {1}% and branch {2}% held (measured {3}% / {4}%); {5}, and the floor is raised only from a run whose shard could not." -f
-            $row.Package, $entry['line'], $entry['branch'], $row.LineRate, $row.BranchRate, $reason))
+        if ($existing.Contains($row.Package)) {
+            $entry = $existing[$row.Package]
+            $heldForHardware.Add(("{0}: line {1}% and branch {2}% held (measured {3}% / {4}%); {5}, and the floor is raised only from a run whose shard could not." -f
+                $row.Package, $entry['line'], $entry['branch'], $row.LineRate, $row.BranchRate, $reason))
+        }
+        else {
+            $heldForHardware.Add(("{0}: no floor yet, and none recorded (measured {1}% / {2}%); {3}, and its first floor comes from a run whose shard could not, or by hand." -f
+                $row.Package, $row.LineRate, $row.BranchRate, $reason))
+        }
         continue
     }
+
+    if (-not $existing.Contains($row.Package)) {
+        $existing[$row.Package] = [ordered]@{ line = 0.0; branch = 0.0 }
+    }
+
+    $entry = $existing[$row.Package]
 
     foreach ($metric in @('line', 'branch')) {
         $measured = if ($metric -eq 'line') { $row.LineRate } else { $row.BranchRate }
@@ -147,7 +156,7 @@ if ($PSCmdlet.ShouldProcess($ThresholdPath, "Update $($raised.Count) coverage fl
 }
 
 if ($rowsWithoutVerdict.Count -gt 0) {
-    Write-Warning "The rows at '$RowsPath' record no hardware-gating verdict (no HardwareGated field: they were written before tools/New-CoverageMatrix.ps1 recorded it), so the cryptography rule must be applied by hand: the Bodu.Security.Cryptography floor is raised only from a run whose crypto shard could not execute its hardware-gated kernels (#1377)."
+    Write-Warning "The rows at '$RowsPath' record no hardware-gating verdict (no HardwareGated field: they were written before tools/New-CoverageMatrix.ps1 recorded it), so the hardware rule must be applied by hand: a package with hardware-gated files (Bodu.Security.Cryptography and Bodu.Core today; the matrix's hardware-gating decisions name them) has its floor raised only from a run in which the shard that collected its tests could not execute those files (#1377)."
 }
 
 if ($raised.Count -gt 0) {
