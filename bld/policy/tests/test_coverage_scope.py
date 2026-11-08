@@ -224,6 +224,62 @@ class FullRunTests(ScopeTestCase):
         self.assert_collects(run_scope(["Bodu.Numerics/src/Fraction.cs"], event="pull_request"), NUMERICS_TEST)
 
 
+class BuildFolderTests(ScopeTestCase):
+    """What under bld/ defers (#1376).
+
+    The deferral exists for the build configuration the whole tree shares: the MSBuild property and target files,
+    the coverage scripts and their thresholds, and the release manifest, where the per-project mapping would be a
+    full run in disguise. bld/ also holds documentation and artwork, which cannot change what a test run covers, so
+    a change to those is judged like any other path outside bld/: the production sources beside it decide.
+    """
+
+    def test_decide_when_release_notes_and_project_source_changed_should_collect_its_test_project(self) -> None:
+        changed = ["bld/RELEASING.md", "Bodu.Numerics/src/Fraction.cs"]
+
+        self.assert_collects(run_scope(changed), NUMERICS_TEST)
+
+    def test_decide_when_only_release_notes_changed_should_collect_nothing(self) -> None:
+        self.assert_nothing_to_collect(run_scope(["bld/RELEASING.md"]))
+
+    def test_decide_when_only_signing_or_policy_notes_changed_should_collect_nothing(self) -> None:
+        self.assert_nothing_to_collect(run_scope(["bld/SIGNING.md", "bld/policy/POLICIES.md"]))
+
+    def test_decide_when_only_icons_readme_changed_should_collect_nothing(self) -> None:
+        self.assert_nothing_to_collect(run_scope(["bld/icons/README.md"]))
+
+    def test_decide_when_only_artwork_changed_should_collect_nothing(self) -> None:
+        changed = ["bld/artwork/generate-hero-banners.py", "bld/icons/Bodu.Core.png", "bld/icons/svg/Bodu.Core.svg"]
+
+        self.assert_nothing_to_collect(run_scope(changed))
+
+    def test_decide_when_release_notes_and_bodu_core_source_changed_should_defer(self) -> None:
+        self.assert_deferred(run_scope(["bld/RELEASING.md", "Bodu.Core/src/ThrowHelper.cs"]))
+
+    def test_decide_when_release_notes_and_build_props_changed_should_defer(self) -> None:
+        self.assert_deferred(run_scope(["bld/RELEASING.md", "bld/Bodu.props"]))
+
+    def test_decide_when_build_props_under_bld_changed_should_defer(self) -> None:
+        self.assert_deferred(run_scope(["bld/Bodu.props"]))
+
+    def test_decide_when_build_targets_under_bld_changed_should_defer(self) -> None:
+        self.assert_deferred(run_scope(["bld/InternalsVisibleTo.targets"]))
+
+    def test_decide_when_coverage_script_changed_should_defer(self) -> None:
+        self.assert_deferred(run_scope(["bld/collect-coverage.sh"]))
+
+    def test_decide_when_coverage_thresholds_changed_should_defer(self) -> None:
+        self.assert_deferred(run_scope(["bld/coverage-thresholds.json"]))
+
+    def test_decide_when_release_manifest_changed_should_defer(self) -> None:
+        self.assert_deferred(run_scope(["bld/release-manifest.txt"]))
+
+    def test_decide_when_build_props_under_bld_leads_a_list_longer_than_a_pipe_buffer_should_defer(self) -> None:
+        """The #1337 order again, for the bld/ test: a deferring path first, then more than a pipe buffer of others."""
+        changed = ["bld/Bodu.props"] + [f"bld/icons/svg/Icon{i}.svg" for i in range(LONG_LIST_LENGTH)]
+
+        self.assert_deferred(run_scope(changed))
+
+
 class UsageTests(ScopeTestCase):
     """The option surface."""
 
