@@ -1,0 +1,90 @@
+name: RBA published-rate oracle
+
+# Holds the Bodu.Financial.ExchangeRates.Rba reader to rates the RBA itself published (#1361). The rows of
+# RbaPublishedRateTests download the RBA's own era workbooks and its F11.1 CSV and check thirteen rates typed
+# by hand from those publications, so the reader is held to its source rather than to the synthetic workbooks
+# the other RBA tests compute their answers from. The rows are in the Stress tier and run only when
+# BODU_TEST_RBA_LIVE is set, so no default build or pull request run reaches the network; this workflow is
+# where they run, weekly and on manual dispatch.
+#
+# It needs the network to www.rba.gov.au. A failure means that either the reader or the RBA's published file
+# changed - a revised figure, a changed layout, a moved era boundary - and the failing row's citation names
+# the file to re-read before its constant is changed.
+
+on:
+  schedule:
+    # Weekly, Monday 04:17 UTC: off the hour and the half hour, and outside the busy 13:00-17:00 UTC window,
+    # where the hosted queue delays a scheduled run.
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  oracle:
+    # One image: the rows check the reader against the RBA's files, not the platform. The label is named
+    # rather than ubuntu-latest so the move of that label to 26.04 cannot change the image under a
+    # scheduled run unannounced.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
+          # change. The .NET 8 SDK beside it packs the Bodu.CodeStyle analyzer and runs the net8.0 leg.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
+
+      - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
+        working-directory: Bodu.CodeStyle
+        run: |
+          dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
+            --configuration Release \
+            --output "${{ github.workspace }}/local-packages"
+
+      - name: Restore
+        run: dotnet restore Bodu.Financial.ExchangeRates.Rba/test/Bodu.Financial.ExchangeRates.Rba.Test.csproj
+
+      - name: Build
+        run: |
+          # Warnings are errors, as in build-test.yml: the oracle is only worth its network trips on a
+          # build that would pass the pull request gate.
+          dotnet build Bodu.Financial.ExchangeRates.Rba/test/Bodu.Financial.ExchangeRates.Rba.Test.csproj \
+            --configuration Release \
+            --no-restore \
+            -p:TreatWarningsAsErrors=true
+
+      # stress.runsettings selects the Stress tier, which every default run excludes, and lifts the session
+      # guard to 60 minutes; the name filter narrows that tier to the oracle, so the assembly's other Stress
+      # rows, which need no network, stay with the on-demand stress.runsettings runs. BODU_TEST_RBA_LIVE is
+      # what makes the rows run rather than report inconclusive.
+      - name: Test the reader against the RBA's published files
+        env:
+          BODU_TEST_RBA_LIVE: "1"
+        run: |
+          dotnet test Bodu.Financial.ExchangeRates.Rba/test/Bodu.Financial.ExchangeRates.Rba.Test.csproj \
+            --configuration Release \
+            --no-build \
+            --settings stress.runsettings \
+            --filter "FullyQualifiedName~RbaPublishedRateTests" \
+            --logger trx \
+            --results-directory TestResults
+
+      - name: Upload TRX artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rba-oracle-trx
+          path: TestResults/**/*.trx
+          retention-days: 14
+          if-no-files-found: warn
