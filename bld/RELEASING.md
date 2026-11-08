@@ -121,8 +121,9 @@ version, which is what keeps the lock-step set coherent.
 ## Dry run
 
 Actions → **Release** → *Run workflow* with `publish` unchecked. The run
-real-signs and packs all packable projects, stages the manifest set, and
-uploads two artifacts without pushing anything:
+real-signs and packs all packable projects, stages the manifest set, consumes
+it from a clean cache (below), and uploads two artifacts without pushing
+anything:
 
 - `nuget-packages` - everything that packed (debugging aid).
 - `nuget-packages-publish` - exactly what a tag would publish. Inspect this.
@@ -146,8 +147,15 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-The tag run packs, stages the manifest set, and pushes each `.nupkg` (and
-its `.snupkg`) to nuget.org.
+The tag run packs, stages the manifest set, consumes it from a clean cache,
+and pushes each `.nupkg` (and its `.snupkg`) to nuget.org. The consume step
+is `bld/consumer-smoke.sh` over the real-signed pack, the check the
+`shipping-pack` job of `build-test.yml` runs on every pull request's
+public-signed pack: every manifest package is restored into a console project
+outside the checkout, from an empty NuGet cache and with no project reference,
+on every framework in `BoduNetTargets`, built with warnings as errors and run.
+It runs before anything is uploaded or published, so a packaging mistake only a
+consumer sees fails the release while every version is still unpublished.
 
 **The `v` must be lowercase.** `release.yml` triggers on `tags: ['v*']`, and
 GitHub Actions tag filters are case-sensitive, so a tag pushed as `V1.0.0`
@@ -187,7 +195,8 @@ unable to confirm that anything is new.
    and its README, icon, and license render.
 2. Consume the published packages from a clean cache, with the script the
    `shipping-pack` job of `build-test.yml` runs against every pull request's
-   pack, pointed at nuget.org and the Stable version just published (the
+   pack and the release run ran against its real-signed pack before
+   publishing, pointed at nuget.org and the Stable version just published (the
    preview stream's version is read from `BoduPreviewVersion` in
    `bld/Versioning.props`, or passed as `--preview-version`):
 
