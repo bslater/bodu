@@ -101,12 +101,15 @@ a gate, not a target: a package well above it is not
 "finished", and a package at it is not in trouble. What the invariant buys is
 that a new gap has to be introduced deliberately - the ratchet is built to fail
 the build before an untested subsystem can arrive quietly inside an otherwise
-healthy package total. In `.github/workflows/coverage.yml` the ratchet is
-report-only until its floors have proven stable: its outcome is written under a
-"Coverage ratchet" heading in the job summary, a failure also raises a warning
-annotation, and the check's output is kept as `ratchet.txt` in the
-`coverage-report` artifact, so a failed ratchet no longer passes unnoticed
-behind a green run.
+healthy package total. In `.github/workflows/coverage.yml` the ratchet fails
+the aggregate job on a breach. It ran report-only until its floors had proven
+stable on the default branch: the dispatched full run #299 and the scheduled run
+#300 of 2026-11-01 both satisfied it for every collected package, and the floors
+were then raised from run #300. Its outcome is written under a "Coverage
+ratchet" heading in the job summary, a failure also raises an error annotation,
+and the check's output is kept as `ratchet.txt` in the `coverage-report`
+artifact, so a failure carries the check's own text rather than a bare exit
+code.
 
 Two consequences worth stating, because both were live questions while the floor
 was being established:

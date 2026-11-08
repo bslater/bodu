@@ -227,22 +227,16 @@ jobs:
 
       - name: Enforce ratchet
         id: ratchet
-        # Report-only for now. Flipping a ratchet to hard-fail on the day it is written turns every
-        # pull request red and gets it switched off within a week, so the floors need to prove stable
-        # first - and they cannot start proving anything until this workflow runs somewhere other than
-        # the branch that introduced it.
-        #
-        # Flip to hard-fail (delete this line) once BOTH hold:
-        #   1. this workflow has merged to the default branch, and
-        #   2. the weekly scheduled run has completed green there twice in a row.
-        #
-        # Until (1) the schedule never fires, because GitHub only runs scheduled workflows from the
-        # default branch - so a green run on a feature branch is not evidence of anything.
-        continue-on-error: true
+        # Hard-fail. The step ran report-only (continue-on-error) from the day the ratchet was written
+        # until its floors had proven stable on the default branch: after the per-package hardware
+        # gating (#1364) and the floor corrections (#1357), the dispatched full run #299 and the weekly
+        # scheduled run #300 of 2026-11-01 both satisfied it for every collected package, and the floors
+        # were then raised from run #300. A breach now fails this job, on a pull request's diff-scoped
+        # run as on the weekly full run. The Publish summary step still states the outcome and keeps the
+        # check's own text, since this step's trace is a bare "Process completed with exit code 1".
         run: |
           # The output is kept beside the report, so it lands in the coverage-report artifact, and the
-          # exit code returned is pwsh's, not tee's. The Publish summary step reads both, because with
-          # continue-on-error this step's own trace is a bare "Process completed with exit code 1".
+          # exit code returned is pwsh's, not tee's. The Publish summary step reads both.
           mkdir -p artifacts/coverage/report
           pwsh tools/New-CoverageMatrix.ps1 -Check 2>&1 | tee artifacts/coverage/report/ratchet.txt
           exit "${PIPESTATUS[0]}"
@@ -256,9 +250,9 @@ jobs:
             cat artifacts/coverage/report/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
-          # The ratchet step keeps the job green when it fails, so its outcome is stated here, with the
-          # captured output, and as a warning annotation: two scheduled runs failed the ratchet with no
-          # trace but a bare exit-code annotation.
+          # The ratchet step's own trace on a failure is a bare exit code, so its outcome is stated here,
+          # with the captured output, and as an error annotation: two scheduled runs once failed the
+          # ratchet with no trace but a bare exit-code annotation, while the step was report-only.
           {
             echo
             echo "## Coverage ratchet"
@@ -268,7 +262,7 @@ jobs:
                 echo "Coverage ratchet satisfied."
                 ;;
               failure)
-                echo "Coverage ratchet FAILED (report-only until the floors stabilize)."
+                echo "Coverage ratchet FAILED."
                 echo
                 echo '```text'
                 if [ -f artifacts/coverage/report/ratchet.txt ]; then
@@ -286,7 +280,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$RATCHET_OUTCOME" = "failure" ]; then
-            echo "::warning::Coverage ratchet failed (report-only): see the job summary"
+            echo "::error::Coverage ratchet failed: see the job summary"
           fi
 
       - name: Upload report
