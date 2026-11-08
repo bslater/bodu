@@ -116,12 +116,15 @@ a gate, not a target: a package well above it is not
 "finished", and a package at it is not in trouble. What the invariant buys is
 that a new gap has to be introduced deliberately - the ratchet is built to fail
 the build before an untested subsystem can arrive quietly inside an otherwise
-healthy package total. In `.github/workflows/coverage.yml` the ratchet is
-report-only until its floors have proven stable: its outcome is written under a
-"Coverage ratchet" heading in the job summary, a failure also raises a warning
-annotation, and the check's output is kept as `ratchet.txt` in the
-`coverage-report` artifact, so a failed ratchet no longer passes unnoticed
-behind a green run.
+healthy package total. In `.github/workflows/coverage.yml` the ratchet fails
+the aggregate job on a breach. It ran report-only until its floors had proven
+stable on the default branch: the dispatched full run #299 and the scheduled run
+#300 of 2026-11-01 both satisfied it for every collected package, and the floors
+were then raised from run #300. Its outcome is written under a "Coverage
+ratchet" heading in the job summary, a failure also raises an error annotation,
+and the check's output is kept as `ratchet.txt` in the `coverage-report`
+artifact, so a failure carries the check's own text rather than a bare exit
+code.
 
 Two consequences worth stating, because both were live questions while the floor
 was being established:
@@ -406,10 +409,23 @@ lines that select and dispatch them, the `KernelKind.Avx512` arms and the
 `Vector512.IsHardwareAccelerated` paths inside the scalar files, cannot execute
 either, and no file pattern names them. The floor was reset to 96.9 / 92.0, the
 figure the scheduled run of 25 October 2026 reads with the exclusion applied,
-so the package meets it on either kind of runner. A later
-`tools/Update-CoverageThresholds.ps1` from a run whose crypto shard had AVX-512
-would raise it past what a shard without AVX-512 can reach, so that floor is
-raised only from a run whose crypto shard lacked AVX-512.
+so the package meets it on either kind of runner. Raised from a run whose
+crypto shard had AVX-512, it would pass what a shard without AVX-512 can reach,
+so that floor is raised only from a run whose crypto shard lacked AVX-512, and
+the tooling applies the rule rather than leaving it to the reader (#1377).
+`tools/New-CoverageMatrix.ps1` records each package's hardware-gating verdict
+in its `packages.json` row as `HardwareGated`: `null` for a package with no
+gated files, `excluded` when the shard that collected its own test project
+could execute none of them, `counted` when it could execute some, and `unknown`
+when the manifests could not say. `tools/Update-CoverageThresholds.ps1` holds
+both floors of a `counted` or `unknown` row and says why, raises an `excluded`
+row as any other, and warns once over rows that carry no field at all, written
+before the matrix recorded it, where the rule must still be applied by hand.
+The scheduled run of 1 November 2026, whose crypto shard had AVX-512, measured
+the package at 97.5 / 93.3, and the tool holds its floor at 96.9 / 92.0. The
+same file patterns name `Bodu.Core`'s `VectorRotation` instruction-set shims,
+so its floor is held by the same rule, and raised only from a run whose Core
+shard lacked AVX-512.
 
 The last two sets joined the table the same way, from a net10.0 collection of
 the 20 test projects under `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`,
