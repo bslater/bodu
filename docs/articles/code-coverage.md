@@ -55,11 +55,14 @@ On a pull request `bld/coverage-scope.sh` decides the scope from the changed
 paths: each changed `<Project>/src/**` path selects that project's test project,
 a diff that changes no production source collects nothing, and a change to
 shared build configuration (`Directory.Build.props`, `Directory.Build.targets`,
-`Directory.Packages.props`, anything under `bld/`, `coverage.runsettings`) or to
-`Bodu.Core/src/` defers the whole collection to the scheduled run, since the
-per-project mapping would then be a full run in disguise.
-`bld/policy/tests/test_coverage_scope.py`, which the Policy Gate runs, holds the
-script to those cases.
+`Directory.Packages.props`, `coverage.runsettings`, and the files under `bld/`
+other than its Markdown and the artwork under `bld/artwork/` and `bld/icons/`)
+or to `Bodu.Core/src/` defers the whole collection to the scheduled run, since
+the per-project mapping would then be a full run in disguise. Documentation
+and artwork cannot change what a test run covers, so a change to them under
+`bld/` is judged like one anywhere else, by the production sources beside it
+(#1376). `bld/policy/tests/test_coverage_scope.py`, which the Policy Gate runs,
+holds the script to those cases.
 
 The current measured figures live in [Coverage baseline](coverage-baseline.md).
 

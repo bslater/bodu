@@ -16,9 +16,12 @@
 #
 # The decision, in order:
 #   1. A change to shared build configuration (Directory.Build.props, Directory.Build.targets,
-#      Directory.Packages.props, anything under bld/, coverage.runsettings) or to Bodu.Core/src fans out to
-#      effectively every project, so a "diff-scoped" run would be a full run wearing a disguise. Defer to the
-#      scheduled baseline instead of pretending to be quick: mode=skip, with the reason on standard error.
+#      Directory.Packages.props, coverage.runsettings, and the files under bld/ other than its Markdown and the
+#      artwork under bld/artwork/ and bld/icons/) or to Bodu.Core/src fans out to effectively every project, so
+#      a "diff-scoped" run would be a full run wearing a disguise. Defer to the scheduled baseline instead of
+#      pretending to be quick: mode=skip, with the reason on standard error. Documentation and artwork cannot
+#      change what a test run covers, so a change to them under bld/ is judged like one anywhere else: by the
+#      production sources beside it (#1376).
 #   2. Otherwise each changed <Project>/src/** path maps to the <Project>/test/*.Test.csproj files beside it,
 #      resolved against the current directory, so run the script from the repository root. Bodu.CodeStyle is
 #      left out, as the full run (which collects bodu.slnx) leaves it out: it is a separate solution that
@@ -80,7 +83,14 @@ fi
 # The whole list, read once; see the header for why every test below runs over a here-string of it.
 changed=$(cat)
 
-if grep -qE '^(Directory\.Build\.(props|targets)|Directory\.Packages\.props|bld/|coverage\.runsettings|Bodu\.Core/src/)' <<< "$changed"; then
+# The files under bld/ that defer: everything but its Markdown and the artwork under bld/artwork/ and
+# bld/icons/ (#1376). Neither grep takes -q, so both read the whole list and the first cannot die of
+# SIGPIPE, and the `|| true` keeps a list with no path under bld/ (grep's exit 1) from ending the
+# script under errexit.
+build_configuration=$(grep -E '^bld/' <<< "$changed" | grep -vE '\.md$|^bld/(artwork|icons)/' || true)
+
+if grep -qE '^(Directory\.Build\.(props|targets)|Directory\.Packages\.props|coverage\.runsettings|Bodu\.Core/src/)' <<< "$changed" \
+    || [ -n "$build_configuration" ]; then
     echo "Diff touches shared build configuration or Bodu.Core; deferring to the scheduled full run." >&2
     echo "mode=skip"
     echo "projects="
