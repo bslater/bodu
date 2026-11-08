@@ -1,8 +1,11 @@
-"""Tests for the target-framework, session-limit and spelling checks in bld/check-docs.py."""
+"""Tests for the target-framework, session-limit and spelling checks in bld/check-docs.py, and for the files its
+checks find under a checkout."""
 
 from __future__ import annotations
 
 import os
+import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -495,6 +498,22 @@ def write_tree(root: str, files: dict[str, str]) -> None:
             stream.write(text)
 
 
+def git_repository(root: str, files: dict[str, str]) -> None:
+    """Makes ``root`` a git repository holding ``files``, with everything under it committed.
+
+    Its .gitignore excludes ``.claude/worktrees/``, as the repository's own does: the folder ``git worktree add`` and
+    Claude Code's worktree isolation put a second checkout in (#1379).
+    """
+    if shutil.which("git") is None:
+        raise unittest.SkipTest("git is not installed")
+    write_tree(root, {".gitignore": ".claude/worktrees/\n", **files})
+    for arguments in (["init", "-q"], ["add", "--all"], ["commit", "-q", "-m", "Initial"]):
+        subprocess.run(
+            ["git", "-C", root, "-c", "init.defaultBranch=main", "-c", "user.name=Tests",
+             "-c", "user.email=tests@example.invalid", "-c", "commit.gpgsign=false", *arguments],
+            check=True, capture_output=True)
+
+
 class CheckSpellingTests(unittest.TestCase):
     """The sources check_spelling reads, the data files it reads them against, and how it reports what it finds."""
 
@@ -539,6 +558,49 @@ class CheckSpellingTests(unittest.TestCase):
         })
         self.assertEqual([], self.check())
 
+    def test_check_spelling_when_source_is_under_a_git_ignored_folder_should_report_nothing(self) -> None:
+        """Verifies that a second checkout under the ignored .claude/worktrees/ is not read, so its copy of an allowlisted line is not reported (#1379)."""
+        git_repository(self.root, {"Widgets/src/Widget.cs": SPELLING_SOURCE})
+        write_tree(self.root, {
+            "bld/docs-checks/us-spelling-allowlist.txt": "Widgets/src/Widget.cs:5  Quotes a third-party message verbatim.\n",
+            ".claude/worktrees/x/Widgets/src/Widget.cs": SPELLING_SOURCE,
+        })
+        self.assertEqual([], self.check())
+
+    def test_check_spelling_when_source_is_untracked_but_not_ignored_should_report_it(self) -> None:
+        """Verifies that a new file a developer has not yet added to git is still read, as every file of the checkout is."""
+        git_repository(self.root, {"Widgets/src/Widget.cs": SPELLING_SOURCE})
+        write_tree(self.root, {
+            "bld/docs-checks/us-spelling-allowlist.txt": "Widgets/src/Widget.cs:5  Quotes a third-party message verbatim.\n",
+            "Widgets/src/Gadget.cs": SPELLING_SOURCE,
+        })
+        found = self.check()
+        self.assertEqual(1, len(found), found)
+        self.assertTrue(found[0].startswith("Widgets/src/Gadget.cs:5:"), found[0])
+
+    def test_check_spelling_when_tracked_source_is_deleted_should_report_nothing(self) -> None:
+        """Verifies that a tracked file deleted from disk but still in the index is passed over rather than failing the check."""
+        git_repository(self.root, {"Widgets/src/Widget.cs": SPELLING_SOURCE})
+        os.remove(os.path.join(self.root, "Widgets", "src", "Widget.cs"))
+        self.assertEqual([], self.check())
+
+    def test_check_spelling_when_root_is_not_a_repository_should_walk_it_and_leave_the_claude_folder_unread(self) -> None:
+        """Verifies that a root git cannot list is walked instead, and that the walk prunes .claude, where the worktrees live."""
+        write_tree(self.root, {
+            "Widgets/src/Widget.cs": SPELLING_SOURCE,
+            ".claude/worktrees/x/Widgets/src/Widget.cs": SPELLING_SOURCE,
+        })
+        found = self.check()
+        self.assertEqual(1, len(found), found)
+        self.assertTrue(found[0].startswith("Widgets/src/Widget.cs:5:"), found[0])
+
+    def test_spelling_source_files_when_repository_is_read_should_list_its_tracked_sources(self) -> None:
+        """Verifies that the repository's own sources are found, so the check cannot pass by reading nothing."""
+        files = {os.path.relpath(path, check_docs.ROOT).replace(os.sep, "/") for path in check_docs.spelling_source_files(check_docs.ROOT)}
+        self.assertIn("Bodu.Core/src/ThrowHelper.cs", files)
+        self.assertIn("Bodu.Globalization.Calendar/test/Globalization.Calendar/BahaiHolyDayKnownAnswerTests.cs", files)
+        self.assertEqual([], sorted(path for path in files if path.startswith(".claude/")))
+
     def test_check_spelling_when_allowlist_names_the_line_or_file_should_report_nothing(self) -> None:
         """Verifies that an allowlisted line, and every line of an allowlisted file, are excused."""
         write_tree(self.root, {
@@ -575,6 +637,43 @@ class CheckSpellingTests(unittest.TestCase):
     def test_check_spelling_when_check_is_named_on_the_command_line_should_run_it(self) -> None:
         """Verifies that 'spelling' is a check the command line runs, and that 'all' includes it."""
         self.assertIn("spelling", check_docs.CHECK_NAMES)
+
+
+def packable_project(package_id: str | None = None) -> str:
+    element = f"    <PackageId>{package_id}</PackageId>\n" if package_id is not None else ""
+    return (
+        "<Project Sdk=\"Microsoft.NET.Sdk\">\n\n  <PropertyGroup>\n"
+        f"    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>\n{element}  </PropertyGroup>\n\n</Project>\n")
+
+
+class PackablePackageIdsTests(unittest.TestCase):
+    """The project files packable_package_ids maps under a root, and the folders it leaves unread."""
+
+    def setUp(self) -> None:
+        self._directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self._directory.cleanup)
+        self.root = self._directory.name
+        self.project = os.path.join(self.root, "Widgets", "src", "Widgets.csproj")
+
+    def test_packable_package_ids_when_project_is_under_a_git_ignored_folder_should_not_read_it(self) -> None:
+        """Verifies that a second checkout under the ignored .claude/worktrees/ is not read, so its copy of a project cannot stand in for the checkout's own (#1379)."""
+        git_repository(self.root, {"Widgets/src/Widgets.csproj": packable_project()})
+        write_tree(self.root, {".claude/worktrees/x/Widgets/src/Widgets.csproj": packable_project("Widgets.Stale")})
+        self.assertEqual({"Widgets": self.project}, check_docs.packable_package_ids(self.root))
+
+    def test_packable_package_ids_when_root_is_not_a_repository_should_walk_it_and_leave_the_claude_folder_unread(self) -> None:
+        """Verifies that a root git cannot list is walked instead, and that the walk prunes .claude, where the worktrees live."""
+        write_tree(self.root, {
+            "Widgets/src/Widgets.csproj": packable_project(),
+            ".claude/worktrees/x/Widgets/src/Widgets.csproj": packable_project("Widgets.Stale"),
+        })
+        self.assertEqual({"Widgets": self.project}, check_docs.packable_package_ids(self.root))
+
+    def test_packable_package_ids_when_repository_is_read_should_map_each_package_to_its_project(self) -> None:
+        """Verifies that the repository's own packable projects are found, keyed by package id, so no check passes by finding none."""
+        packages = check_docs.packable_package_ids()
+        self.assertEqual(os.path.join(check_docs.ROOT, "Bodu.Core", "src", "Bodu.Core.csproj"), packages.get("Bodu.Core"))
+        self.assertIn("Bodu.Globalization.Calendar.Europe", packages)
 
 
 if __name__ == "__main__":
