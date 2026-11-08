@@ -575,6 +575,20 @@ jobs:
           fi
           echo "PUBLISH_DIR=$PUBLISH_DIR" >> "$GITHUB_ENV"
 
+      # The consumer boundary (#1362), on the real-signed packages this run would publish. Every package
+      # the pack wrote is restored into a console project outside the checkout, from an empty NuGet
+      # cache, with no project reference, on every framework in BoduNetTargets, then built with warnings
+      # as errors and run - the same check build-test.yml's shipping-pack job runs on the public-signed
+      # pack. A packaging mistake that only a consumer sees - a dependency missing from a nuspec, a
+      # documentation file left out, a framework claimed but not carried - fails the release here, with
+      # nothing uploaded or published yet, rather than after a nuget.org version that cannot be withdrawn.
+      - name: Consume the real-signed packages from a clean cache
+        shell: bash
+        run: |
+          bash bld/consumer-smoke.sh \
+            --feed "$ARTIFACTS_DIR" \
+            --output "$RUNNER_TEMP/consumer-smoke"
+
       - name: Upload package artifacts
         uses: actions/upload-artifact@v7
         with:
