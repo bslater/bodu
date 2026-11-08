@@ -49,59 +49,21 @@ jobs:
 
       - name: Decide collection scope
         id: decide
+        # The rule is bld/coverage-scope.sh, which bld/policy/tests/test_coverage_scope.py holds to its
+        # cases in the Policy Gate; this step only names the event and, on a pull request, hands it the
+        # changed paths. The diff is taken into a variable first, so a git failure stops the step under
+        # errexit before the script can decide anything from an empty list, and the script reads the
+        # here-string whole before it tests anything (#1337). The script writes the three output lines
+        # (mode, projects, shards) itself.
         run: |
           set -euo pipefail
 
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "mode=full" >> "$GITHUB_OUTPUT"
-            echo "projects=" >> "$GITHUB_OUTPUT"
-            echo "shards=$(seq -s, 1 "$SHARD_COUNT")" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
-
-          # A change to shared build configuration or to Bodu.Core fans out to effectively every
-          # project, so a "diff-scoped" run would be a full run wearing a disguise. Defer to the
-          # scheduled baseline instead of pretending to be quick.
-          #
-          # A here-string rather than `echo "$changed" | grep -q`: grep -q exits at its first match,
-          # and on a diff longer than a pipe buffer echo is still writing then, dies of SIGPIPE, and
-          # under `pipefail` turns the test false, so a run this should skip went on to collect
-          # every project the diff named (#1337).
-          if grep -qE '^(Directory\.Build\.(props|targets)|Directory\.Packages\.props|bld/|coverage\.runsettings|Bodu\.Core/src/)' <<< "$changed"; then
-            echo "Diff touches shared build configuration or Bodu.Core; deferring to the scheduled full run."
-            echo "mode=skip" >> "$GITHUB_OUTPUT"
-            echo "projects=" >> "$GITHUB_OUTPUT"
-            echo "shards=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Map each changed <Project>/src/** path to that project's test project. Bodu.CodeStyle is
-          # left out, as the full run (which collects bodu.slnx) leaves it out: it is a separate
-          # solution that codestyle-build-test.yml builds and tests on its own SDK, and its test
-          # projects target net8.0 alone, not the framework collect-coverage.sh builds (#1336).
-          projects=""
-          for dir in $(echo "$changed" | grep -E '/src/' | sed -E '/^Bodu\.CodeStyle\//d; s|/src/.*||' | sort -u); do
-            for candidate in "$dir"/test/*.Test.csproj; do
-              [ -f "$candidate" ] && projects="$projects $candidate"
-            done
-          done
-
-          # sed rather than `grep -v`: grep exits 1 when it filters every line out, and under
-          # `pipefail` that kills the step before the "nothing to collect" branch below can run.
-          projects=$(echo "$projects" | tr ' ' '\n' | sed '/^$/d' | sort -u | tr '\n' ' ')
-
-          if [ -z "$projects" ]; then
-            echo "No production source changed; nothing to collect."
-            echo "mode=skip" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+            bash bld/coverage-scope.sh <<< "$changed" >> "$GITHUB_OUTPUT"
           else
-            echo "Collecting: $projects"
-            echo "mode=diff" >> "$GITHUB_OUTPUT"
+            bash bld/coverage-scope.sh --event "${{ github.event_name }}" >> "$GITHUB_OUTPUT"
           fi
-
-          echo "projects=$projects" >> "$GITHUB_OUTPUT"
-          echo "shards=1" >> "$GITHUB_OUTPUT"
 
   # ---------------------------------------------------------------------------------------------
   # Collect. Shards are balanced inside collect-coverage.sh by test-project size, so the matrix
