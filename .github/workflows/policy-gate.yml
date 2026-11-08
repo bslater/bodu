@@ -79,7 +79,8 @@ jobs:
 
       # The checker's own tests run first, so a broken checker cannot pass the change. They hold its
       # generated-file rule to the one Roslyn's analyzers apply, and the analyzer package's version to
-      # the Directory.Packages.props pin.
+      # the Directory.Packages.props pin. The discovery also picks up test_coverage_scope.py, which holds
+      # bld/coverage-scope.sh, the Coverage workflow's scope decision, to its cases.
       - name: Coding-policy checker tests
         run: python3 -m unittest discover -s bld/policy/tests -t bld/policy/tests
 

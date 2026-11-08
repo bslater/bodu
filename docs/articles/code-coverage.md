@@ -49,6 +49,18 @@ data. Code compiled only for an older framework, such as a polyfill guarded by
 `#if !NET9_0_OR_GREATER`, is outside the measured assembly and so outside the
 denominator.
 
+**A pull request collects what it touched.** `.github/workflows/coverage.yml`
+collects every test project, in shards, on its weekly schedule and on dispatch.
+On a pull request `bld/coverage-scope.sh` decides the scope from the changed
+paths: each changed `<Project>/src/**` path selects that project's test project,
+a diff that changes no production source collects nothing, and a change to
+shared build configuration (`Directory.Build.props`, `Directory.Build.targets`,
+`Directory.Packages.props`, anything under `bld/`, `coverage.runsettings`) or to
+`Bodu.Core/src/` defers the whole collection to the scheduled run, since the
+per-project mapping would then be a full run in disguise.
+`bld/policy/tests/test_coverage_scope.py`, which the Policy Gate runs, holds the
+script to those cases.
+
 The current measured figures live in [Coverage baseline](coverage-baseline.md).
 
 `tools/Filter-CoverageXml.ps1` extracts a single assembly's results from a
