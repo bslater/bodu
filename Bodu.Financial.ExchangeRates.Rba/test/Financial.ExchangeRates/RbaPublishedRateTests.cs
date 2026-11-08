@@ -28,9 +28,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// The live test is environment-gated, as the Redis integration tests are: it runs only when
 /// <c>BODU_TEST_RBA_LIVE</c> is set to a non-empty value, and reports inconclusive otherwise, so the default build
 /// reaches no network. It is in the Stress tier, which every default run excludes, so it is run on demand with
-/// <c>stress.runsettings</c>. The provider is built from default options against the RBA's live base address, with no
-/// disk cache and a one-minute HTTP timeout, and the eras the rows need are downloaded once per test run and shared by
-/// every row. The guard over the row set runs offline in every tier.
+/// <c>stress.runsettings</c>, and the <c>rba-oracle.yml</c> workflow (<c>.github/workflows/rba-oracle.yml</c>) runs
+/// the rows weekly, and on manual dispatch, against the RBA's live files. The provider is built from default options
+/// against the RBA's live base address, with no disk cache and a one-minute HTTP timeout, and the eras the rows need
+/// are downloaded once per test run and shared by every row. The guard over the row set runs offline in every tier.
 /// </para>
 /// </remarks>
 [TestClass]
