@@ -64,7 +64,7 @@ import re
 import subprocess
 import sys
 
-ROOT =os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
 CHECKS = os.path.join(ROOT, "bld", "docs-checks")
 
@@ -121,10 +121,14 @@ def repository_files(root: str) -> list[str]:
     files, and the untracked files no ignore rule excludes, which is what a checkout holds that a check should
     read. A new file not yet added is read; build output, and a second checkout under the ignored
     ``.claude/worktrees/``, are not (#1379). A path the index still holds for a file deleted from disk is dropped.
-    When git is not installed, or ``root`` is not inside a work tree, the tree is walked instead, pruning the
-    folders git would ignore by name.
+    When git is not installed, when ``root`` is not inside a work tree, or when ``root`` itself lies under a
+    folder the enclosing repository ignores (where git would list nothing), the tree is walked instead, pruning
+    the folders git would ignore by name and stopping at any nested repository.
     """
     try:
+        ignored = subprocess.run(["git", "-C", root, "check-ignore", "-q", "."], capture_output=True)
+        if ignored.returncode == 0:
+            return _walked_files(root)
         listing = subprocess.run(
             ["git", "-C", root, "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
             capture_output=True, check=True)
@@ -136,11 +140,16 @@ def repository_files(root: str) -> list[str]:
 
 
 def _walked_files(root: str) -> list[str]:
-    """Returns every file below ``root`` outside the folders git would ignore, in the order ``repository_files`` uses."""
+    """Returns every file below ``root`` outside the folders git would ignore, in the order ``repository_files`` uses.
+
+    A folder holding a ``.git`` entry is another repository, a submodule or a nested checkout, which the git listing
+    shows as one entry and never reads into; the walk stops at it too. A symlink whose target is gone is dropped, as
+    the listing drops a file that is gone.
+    """
     files: list[str] = []
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in _UNLISTED_DIRS]
-        files += [os.path.join(dirpath, name) for name in filenames]
+        dirnames[:] = [d for d in dirnames if d not in _UNLISTED_DIRS and not os.path.exists(os.path.join(dirpath, d, ".git"))]
+        files += [path for path in (os.path.join(dirpath, name) for name in filenames) if os.path.isfile(path)]
     return sorted(files)
 
 
