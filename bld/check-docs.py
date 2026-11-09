@@ -40,6 +40,13 @@ Nine checks, each independently runnable, all run by ``all``:
                and bld/docs-checks/us-spelling-allowlist.txt excuses a line
                that must keep one, with its reason
 
+The checks that read the checkout's own files (packages, publication, status
+and targets through the packable projects, and spelling) read the files git
+lists for it, tracked or untracked but not ignored, so build output and a
+second checkout under the ignored .claude/worktrees/ are never read (#1379);
+without git, or outside a work tree, they walk the tree and prune the folders
+git would ignore.
+
 Allow-lists live in bld/docs-checks/*.txt (one entry per line, ``#`` comments).
 The namespace allow-list is *debt*: entries are namespaces that still lack an
 overview and should be removed as overviews are written, never added to.
@@ -54,6 +61,7 @@ from __future__ import annotations
 import glob
 import os
 import re
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -92,6 +100,57 @@ def docs_pages(include_apidoc: bool = False) -> list[str]:
             continue
         pages.append(path)
     return sorted(pages)
+
+
+# ------------------------------------------------------------- files (what the checks read)
+
+
+# The folders the walk prunes when git cannot list a checkout's files: git's own folder, and the ones the
+# repository's .gitignore excludes in every checkout - Claude Code's worktrees (#1379), Visual Studio's cache,
+# build output and node packages.
+_UNLISTED_DIRS = frozenset({".git", ".claude", ".vs", "bin", "obj", "node_modules"})
+
+# The tracked trees no check reads: code kept for reference, and the separate Bodu.CodeStyle solution.
+_UNREAD_TREES = frozenset({"archive", "Bodu.CodeStyle"})
+
+
+def repository_files(root: str) -> list[str]:
+    """Returns every file under ``root`` that git does not ignore, as absolute paths in a stable order.
+
+    The files are the ones ``git ls-files --cached --others --exclude-standard`` lists from ``root``: the tracked
+    files, and the untracked files no ignore rule excludes, which is what a checkout holds that a check should
+    read. A new file not yet added is read; build output, and a second checkout under the ignored
+    ``.claude/worktrees/``, are not (#1379). A path the index still holds for a file deleted from disk is dropped.
+    When git is not installed, when ``root`` is not inside a work tree, or when ``root`` itself lies under a
+    folder the enclosing repository ignores (where git would list nothing), the tree is walked instead, pruning
+    the folders git would ignore by name and stopping at any nested repository.
+    """
+    try:
+        ignored = subprocess.run(["git", "-C", root, "check-ignore", "-q", "."], capture_output=True)
+        if ignored.returncode == 0:
+            return _walked_files(root)
+        listing = subprocess.run(
+            ["git", "-C", root, "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+            capture_output=True, check=True)
+    except (OSError, subprocess.CalledProcessError):
+        return _walked_files(root)
+
+    files = (os.path.join(root, *os.fsdecode(name).split("/")) for name in listing.stdout.split(b"\0") if name)
+    return sorted(path for path in files if os.path.isfile(path))
+
+
+def _walked_files(root: str) -> list[str]:
+    """Returns every file below ``root`` outside the folders git would ignore, in the order ``repository_files`` uses.
+
+    A folder holding a ``.git`` entry is another repository, a submodule or a nested checkout, which the git listing
+    shows as one entry and never reads into; the walk stops at it too. A symlink whose target is gone is dropped, as
+    the listing drops a file that is gone.
+    """
+    files: list[str] = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in _UNLISTED_DIRS and not os.path.exists(os.path.join(dirpath, d, ".git"))]
+        files += [path for path in (os.path.join(dirpath, name) for name in filenames) if os.path.isfile(path)]
+    return sorted(files)
 
 
 # ---------------------------------------------------------------- orphans
@@ -562,27 +621,25 @@ def check_targets() -> list[str]:
 # ------------------------------------------------------- packages (definition of done)
 
 
-def packable_package_ids() -> dict[str, str]:
+def packable_package_ids(root: str = ROOT) -> dict[str, str]:
     """Maps each packable package id to the project file that ships it.
 
     The discovery rule matches the CI "Validate package inventory" step: every ``**/src/*.csproj``
     outside the archive and CodeStyle trees that does not opt out with ``<IsPackable>false</IsPackable>``,
-    keyed by ``<PackageId>`` when the project overrides it (the regional calendar data packs do).
+    keyed by ``<PackageId>`` when the project overrides it (the regional calendar data packs do). The
+    projects are found among the files git lists for ``root`` (``repository_files``), so a second checkout
+    under an ignored folder cannot contribute one.
     """
     ids: dict[str, str] = {}
-    for dirpath, dirnames, filenames in os.walk(ROOT):
-        dirnames[:] = [d for d in dirnames if d not in ("archive", "Bodu.CodeStyle", "obj", "bin", ".git")]
-        if os.path.basename(dirpath) != "src":
+    for path in repository_files(root):
+        parts = os.path.relpath(path, root).split(os.sep)
+        if len(parts) < 2 or parts[-2] != "src" or not parts[-1].endswith(".csproj") or _UNREAD_TREES.intersection(parts[:-1]):
             continue
-        for name in filenames:
-            if not name.endswith(".csproj"):
-                continue
-            path = os.path.join(dirpath, name)
-            text = read(path)
-            if re.search(r"<IsPackable>\s*false", text, re.IGNORECASE):
-                continue
-            match = re.search(r"<PackageId>([^<]+)</PackageId>", text)
-            ids[match.group(1) if match else name[: -len(".csproj")]] = path
+        text = read(path)
+        if re.search(r"<IsPackable>\s*false", text, re.IGNORECASE):
+            continue
+        match = re.search(r"<PackageId>([^<]+)</PackageId>", text)
+        ids[match.group(1) if match else parts[-1][: -len(".csproj")]] = path
     return ids
 
 
@@ -852,9 +909,9 @@ def check_sessions() -> list[str]:
 
 
 # The folders whose C# the spelling check reads: a project's production and test sources, and the source shared
-# into several projects. Samples are not library documentation, and Bodu.CodeStyle is a separate solution.
+# into several projects. Samples are not library documentation, and Bodu.CodeStyle (in ``_UNREAD_TREES``) is a
+# separate solution.
 _SPELLING_SOURCE_DIRS = frozenset({"src", "test", "shared"})
-_SPELLING_SKIPPED_DIRS = frozenset({".git", ".vs", "bin", "obj", "node_modules", "archive", "Bodu.CodeStyle"})
 
 # A line of XML documentation. A fourth slash makes an ordinary comment.
 _DOC_LINE = re.compile(r"^[ \t]*///(?!/)(.*)$")
@@ -1043,13 +1100,16 @@ def spelling_findings(text: str, pairs: dict[str, str]) -> list[tuple[int, str, 
 
 
 def spelling_source_files(root: str) -> list[str]:
-    """Returns every C# file under a ``src``, ``test`` or ``shared`` folder below ``root``, in a stable order."""
+    """Returns every C# file under a ``src``, ``test`` or ``shared`` folder below ``root``, in a stable order.
+
+    The files are the ones git lists for ``root`` (``repository_files``), less the trees no check reads, so build
+    output and a second checkout under an ignored folder are not read (#1379).
+    """
     files = []
-    for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = sorted(d for d in dirnames if d not in _SPELLING_SKIPPED_DIRS)
-        if not _SPELLING_SOURCE_DIRS.intersection(os.path.relpath(dirpath, root).split(os.sep)):
-            continue
-        files += [os.path.join(dirpath, name) for name in sorted(filenames) if name.endswith(".cs")]
+    for path in repository_files(root):
+        folders = os.path.relpath(path, root).split(os.sep)[:-1]
+        if path.endswith(".cs") and _SPELLING_SOURCE_DIRS.intersection(folders) and not _UNREAD_TREES.intersection(folders):
+            files.append(path)
     return files
 
 
