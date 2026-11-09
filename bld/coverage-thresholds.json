@@ -4,12 +4,12 @@
     "branch": 95.4
   },
   "Bodu.Collections.Concurrent": {
-    "line": 97.0,
-    "branch": 94.1
+    "line": 98.9,
+    "branch": 97.8
   },
   "Bodu.Core": {
-    "line": 98.1,
-    "branch": 95.9
+    "line": 98.4,
+    "branch": 96.2
   },
   "Bodu.Extensions.Configuration.Text": {
     "line": 99.5,
@@ -161,7 +161,7 @@
   },
   "Bodu.Globalization.Calendar.Plugins": {
     "line": 99.5,
-    "branch": 86.2
+    "branch": 96.4
   },
   "Bodu.Globalization.Calendar.Tool": {
     "line": 98.7,
