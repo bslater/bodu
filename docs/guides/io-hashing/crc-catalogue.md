@@ -14,7 +14,7 @@ The CRC parameter sets in this catalogue are sourced from **Greg Cook's CRC RevE
 
 The catalogue is distributed as part of the CRC RevEng project at <https://reveng.sourceforge.io/>. Please consult the upstream page for the authoritative parameter definitions, alias history, and license terms that apply to the underlying data.
 
-- **Catalogue last fetched (UTC):** 2026-06-09T06:48:50Z
+- **Catalogue last fetched (UTC):** 2026-11-22T03:02:42Z
 - **Entries in source:** 113
 
 ## Accessing standards
