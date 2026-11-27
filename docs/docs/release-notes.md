@@ -8,11 +8,12 @@ Every Bodu release moves one or both of the two version streams, Stable and Prev
 
 ## Upgrading to 1.3.1
 
-1.3.1 is a patch release: every Stable package moves to 1.3.1 with fixes and no change to its public API, and the preview stream stays at 0.7.2. The [1.3.1 release notes](https://github.com/bslater/bodu/releases/tag/v1.3.1) list every fix and the issue behind it; this section covers what can need a change in your code. If you are moving from a release before 1.3.0, read the [1.3.0 release notes](https://github.com/bslater/bodu/releases/tag/v1.3.0) as well: 1.3.0 replaced `WeekPattern` with `DayOfWeekSet` and promoted ten packages to Stable.
+1.3.1 moves every Stable package to 1.3.1 with fixes and additions, and the preview stream stays at 0.7.2. No public member is removed or changed. The [1.3.1 release notes](https://github.com/bslater/bodu/releases/tag/v1.3.1) list every fix and the issue behind it; this section covers what can need a change in your code. If you are moving from a release before 1.3.0, read the [1.3.0 release notes](https://github.com/bslater/bodu/releases/tag/v1.3.0) as well: 1.3.0 replaced `WeekPattern` with `DayOfWeekSet` and promoted ten packages to Stable.
 
 ### Update your package references
 
-- **Move every Stable Bodu package to 1.3.1 in the same change.** No public member is added, removed, or changed, so code that builds against 1.3.0 builds against 1.3.1.
+- **Move every Stable Bodu package to 1.3.1 in the same change.** No public member is removed or changed, so code that builds against 1.3.0 builds against 1.3.1.
+- **`Bodu.Financial.DependencyInjection` depends on `Microsoft.Extensions.Logging.Abstractions`**, which it uses to report a monetary-context reload it rejects.
 - **The IMF, Yahoo, and OFX providers stay at 0.7.2.** They depend on the 1.3.0 Stable packages and run beside the 1.3.1 ones you reference.
 
 ### Breaking changes
@@ -31,16 +32,23 @@ These changes need no code change to compile, but they can change what your code
   - `Bodu.Financial.Serialization.Json`: currency codes read under `FinancialJsonPolicy.Lenient`.
   - The five regional calendar data packs: the country codes that `LoadResource` and `CreateService` take.
 - **The YAML reader rejects a `%TAG` handle that holds a letter or digit outside ASCII**, which YAML 1.2 does not allow in a named handle.
+- **`Base62.GetMaxDecodedLength` returns the character count**, a bound the decoded length never exceeds, where it returned about three-quarters of it and was too small for text that leads with `0` digits.
 - **The notable-date cache resolves and stores a territory under one normalized form.** `CachingNotableDateService` trims the territory and upper-cases its ASCII letters, then resolves and caches that one form, so `" SE"` resolves Sweden's dates where it resolved none, and can no longer empty Sweden's cached year for every later caller. A territory that holds a character outside ASCII is resolved on every call and never cached. A custom `INotableDateCache` should normalize its keys the same way, as [writing a cache backend](../guides/calendar/caching/custom-backend.md) describes.
 - **Exceptions change type or message.**
   - `NotableDatePluginLoader.LoadFrom` reports a plugin type that cannot be created, such as an open generic type, `void`, or a `ref struct`, as the `PluginActivationException` it documents, where an `ArgumentException` or a `NotSupportedException` escaped.
   - `Bech32.DecodeToBytes` reports a data part that does not convert to whole bytes with a message that says so, where it gave the data-alphabet message with its placeholder unfilled.
 
+### What is new
+
+- **Monetary contexts from configuration.** `FinancialOptions` carries a default monetary context and named ones, bound from the `Financial` configuration section, with a `MonetaryRoundingMode` that covers the five `MidpointRounding` modes and stochastic rounding. The new `IMonetaryContextResolver` (`Default`, `Get`, `TryGet`) follows `IOptionsMonitor<FinancialOptions>`, so a configuration reload changes the contexts it returns without a restart, and a reload with invalid settings is logged and leaves the previous contexts serving. See [configuring monetary contexts](../guides/financial/dependency-injection.md#configuring-monetary-contexts).
+- **UTF-8, buffer-writer, and GUID overloads for Base45 and Base62**, the shapes the other five encodings of the `IBinaryEncoding` family already had: `DecodeFromUtf8`, `EncodeToUtf8`, `TryEncodeToUtf8`, `Encode` and `EncodeToUtf8` into an `IBufferWriter<T>`, and `Encode(Guid)`, `DecodeGuid`, and `TryDecodeGuid`. See [Base45](../guides/text-encoding/base45.md#utf-8-buffer-writers-and-guids) and [Base62](../guides/text-encoding/base62.md#utf-8-buffer-writers-and-guids).
+- **`Bodu.IO.Compound` and `Bodu.Text.Encoding` are declared AOT-compatible**, so the trim and AOT analyzers check them on every build. See [trimming and native AOT](topics/trimming-and-native-aot.md).
+
 ## Release history
 
 | Release | Published | What it shipped |
 |---|---|---|
-| 1.3.1 | This release | Every Stable package at 1.3.1, with fixes only, as above. |
+| 1.3.1 | This release | Every Stable package at 1.3.1, with the fixes and additions above. |
 | [1.3.0](https://github.com/bslater/bodu/releases/tag/v1.3.0) | 2026-10-16 | Every Stable package at 1.3.0, ten packages promoted to Stable, and the Experimental providers at 0.7.2. |
 | [`Bodu.Globalization.Calendar` 1.0.1](https://github.com/bslater/bodu/releases/tag/Bodu.Globalization.Calendar-1.0.1) | 2026-10-01 | Out of band: working-day lookups no longer overflow the stack. |
 | [`Bodu.Core` 1.0.1](https://github.com/bslater/bodu/releases/tag/Bodu.Core-1.0.1) and [`Bodu.Security.Cryptography` 1.2.0](https://github.com/bslater/bodu/releases/tag/Bodu.Security.Cryptography-1.2.0) | 2026-10-01 | Out of band: further cryptography speed-ups, with the `Bodu.Core` internals they call. |
