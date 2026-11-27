@@ -8,14 +8,14 @@ Bodu packages install separately, but they do not version separately. Every pack
 
 ## Two version streams
 
-| Stream | Version in the 1.3.0 release | Packages on it |
+| Stream | Version in the 1.3.1 release | Packages on it |
 |---|---|---|
-| **Stable stream** | 1.3.0 | Every Stable package: 53 packages, all published to nuget.org. |
+| **Stable stream** | 1.3.1 | Every Stable package: 53 packages, all published to nuget.org. |
 | **Preview stream** | 0.7.2 | Every Preview and Experimental package: `Bodu.Financial.ExchangeRates.Imf`, `.Yahoo`, and `.Ofx` (Experimental, published), plus four packages that are [not published](#packages-that-are-not-on-nugetorg). |
 
 Within a stream every package carries the same version, and a matched version across `Bodu.*` packages is a set that was built, tested, and released together. Two rules follow for your project file:
 
-- **Keep every Bodu package from the same stream on the same version.** When you move `Bodu.Core` to 1.3.0, move the other Stable Bodu packages you reference to 1.3.0 in the same change. NuGet resolves a mismatched set, but only the matched one was tested together.
+- **Keep every Bodu package from the same stream on the same version.** When you move `Bodu.Core` to 1.3.1, move the other Stable Bodu packages you reference to 1.3.1 in the same change. NuGet resolves a mismatched set, but only the matched one was tested together.
 - **A Preview-stream package depends on the Stable packages of its own release.** `Bodu.Financial.ExchangeRates.Imf` 0.7.2 depends on `Bodu.Financial.ExchangeRates` and `Bodu.Core` 1.3.0, so referencing it alongside the Stable packages raises nothing below 1.3.0.
 
 A release is cut from one tag, which publishes every package in the shipping manifest at the version its stream is at. A stream whose version did not move publishes nothing new.
@@ -59,7 +59,7 @@ A Preview package is **promoted** to Stable once its API has settled. It joins t
 | Container and mail-store readers | `Bodu.IO.Pst`, `Bodu.Formats.Outlook`, `Bodu.Formats.Outlook.Msg`, `Bodu.Formats.Outlook.Pst` |
 | Exchange-rate providers over published APIs | `Bodu.Financial.ExchangeRates.Boe`, `.Ecb`, `.Rba`, `.Fixer`, `.ExchangeRateHost`, `.Fred` |
 
-A package settles its API while it is still Preview, so the release that promotes it can still change its API: read the [release notes](release-notes.md#upgrading-to-130) when you move one of these packages from 0.7.1 to 1.3.0. From 1.3.0 on, each is held to the Stable promise.
+A package settles its API while it is still Preview, so the release that promotes it can still change its API: read the [1.3.0 release notes](https://github.com/bslater/bodu/releases/tag/v1.3.0) when you move one of these packages from 0.7.1 to 1.3.0 or later. From 1.3.0 on, each is held to the Stable promise.
 
 A package can also move the other way. In 1.3.0 the IMF, Yahoo, and OFX providers were retiered from Preview to Experimental, because each reads a feed its operator does not publish as an API. They stay on the Preview stream, at 0.7.2.
 

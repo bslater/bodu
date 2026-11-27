@@ -3,23 +3,18 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-10-14. Bodu 1.0.0 shipped on 2026-09-24, after the
+*Last updated: 2026-11-27. Bodu 1.0.0 shipped on 2026-09-24, after the
 0.5.0, 0.6.0 and 0.7.0 waves put 56 packages on nuget.org;
 `Bodu.Security.Cryptography` 1.1.0 and 1.2.0, `Bodu.Core` 1.0.1 and
-`Bodu.Globalization.Calendar` 1.0.1 followed out of band. Next is 1.3.0:
-every Stable package ships at 1.3.0, ten of them promoted from the
-preview stream, and the three Experimental exchange-rate providers still
-published ship at 0.7.2.
-Since the previous revision (2026-08-19): the `.pst` mail-store reader
-landed, with ANSI stores and a hardening pass; the `Bodu.IO.Biff` codec
-arrived beneath a `.xls` reader that now reads BIFF5 too; the .NET
-projects multi-target `net8.0;net10.0`; the packages version in a
-Stable and a Preview stream, each validated against its own last
-release; the cryptography performance plans were carried out; the
-calendar value sets replaced `WeekPattern`; recurrence gained sub-daily
-rules, the Quartz cron tokens and point queries that start where the
-query does; and eleven structured-format readers were held to other
-libraries' release-note fixes. The detail is in git and the release
+`Bodu.Globalization.Calendar` 1.0.1 followed out of band, and 1.3.0, on
+2026-10-16, brought every Stable package back to one version. Next is
+1.3.1, a patch release of the Stable stream with fixes only; the
+Preview stream stays at 0.7.2.
+Since the previous revision (2026-10-14): 1.3.0 shipped; CI builds and
+tests on Windows beside Linux, and consumes the real-signed packages
+before a release publishes them; the coverage ratchet fails the run that
+breaches it; and a sweep of the readers of ASCII text found several that
+accepted characters outside ASCII. The detail is in git and the release
 notes.*
 
 ## How to read this
@@ -256,8 +251,32 @@ proposals can be closed quickly.
 
 ## Active focus
 
-The focus is the 1.3.0 release, and everything planned for it has
-landed on master:
+**1.3.1.** A patch release of the Stable stream that adds, removes and
+changes no public API:
+
+- **Look-alike letters in ASCII grammars.** .NET's invariant casing maps
+  U+017F LATIN SMALL LETTER LONG S to `S` and U+212A KELVIN SIGN to `k`,
+  the only two characters outside ASCII that it maps into ASCII, and the
+  readers that changed case through it accepted them: Bech32 and the
+  encoding registry's names (#1384), Crockford32 (#1386), the cron, RRULE
+  weekday and duration parsers (#1387), the calendar value sets' masks
+  and formats (#1388), the lenient financial JSON converters (#1389) and
+  the regional calendar data packs (#1390). Each now changes the case of the
+  ASCII letters alone. The YAML reader accepted any Unicode letter or
+  digit in a `%TAG` handle, where YAML 1.2 allows ASCII ones (#1391).
+- **Messages and exception types.** `Bech32.DecodeToBytes` names a data
+  part that does not convert to whole bytes (#1385), and the calendar
+  plugin loader reports every type it cannot create as
+  `PluginActivationException` (#1369).
+
+**1.4.0.** The additive items the per-project sections list, foremost
+packaging `Bodu.Text.Formats.Generators`, deciding whether to publish
+the calendar toolchain, the AOT-compatibility declarations under *AOT
+and trim readiness*, the UTF-8, buffer-writer and `Guid` overloads that
+`Base45`, `Base62` and `Bech32` lack, and public resumable reader states
+for the Delimited, DotEnv and INI readers.
+
+**1.3.0, shipped.** Everything planned for it landed:
 
 **Release-note fix catalogues.** Each structured-format reader is held
 to the defect fixes that comparable libraries list in their release
