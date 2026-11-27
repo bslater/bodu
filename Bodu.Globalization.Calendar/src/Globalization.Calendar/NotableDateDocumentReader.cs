@@ -38,6 +38,8 @@ internal static class NotableDateDocumentReader
     /// <returns>The parsed <see cref="ParsedNotableDateDocument" />.</returns>
     public static ParsedNotableDateDocument Read(IDocumentNode root, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, root);
+
         root.CheckRequired(NotableDateSchemaType.NotableDateResource, diagnostics);
 
         return new ParsedNotableDateDocument(
@@ -60,6 +62,8 @@ internal static class NotableDateDocumentReader
     {
         if (node is null)
             return ResolutionPolicy.Default;
+
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, node);
 
         IReadOnlyList<string>? precedence = node.OptionalScalarList("CategoryPrecedence", "Category", "value", "categoryPrecedence", "categoryPrecedence", diagnostics);
 
@@ -85,6 +89,8 @@ internal static class NotableDateDocumentReader
 
         foreach (IDocumentNode policy in root.List("AdjustmentPolicies", "AdjustmentPolicy", "adjustmentPolicies"))
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, policy);
+
             policy.CheckRequired(NotableDateSchemaType.AdjustmentPolicy, diagnostics);
             IDocumentNode? trigger = policy.Child("trigger");
             IDocumentNode? action = policy.Child("action");
@@ -97,7 +103,7 @@ internal static class NotableDateDocumentReader
                 ? []
                 : ParseEnumList(trigger.ScalarList(null, "Weekday", "value", "weekdays", "trigger weekdays", diagnostics), DayOfWeek.Monday, "trigger weekdays", diagnostics);
 
-            policies.Add(new AdjustmentPolicy(
+            var adjustmentPolicy = new AdjustmentPolicy(
                 ReadPatterned(policy, "id", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
                 ParseInt(policy.Scalar("priority"), 0, "adjustment policy priority", diagnostics),
                 ReadScope(policy.Child("scope"), diagnostics),
@@ -119,7 +125,10 @@ internal static class NotableDateDocumentReader
                 ReadPatterned(action, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics),
                 action?.Scalar("handlerKey"),
                 trigger?.Scalar("handlerKey"),
-                ReadHandlerParameters(policy)));
+                ReadHandlerParameters(policy));
+
+            PositionedDiagnosticCollection.Record(diagnostics, adjustmentPolicy, policy);
+            policies.Add(adjustmentPolicy);
         }
 
         return policies;
@@ -153,6 +162,8 @@ internal static class NotableDateDocumentReader
         if (node is null)
             return AdjustmentScope.Global;
 
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, node);
+
         IReadOnlyList<(string? Qualifier, string Name)> ruleRefs = node.QualifiedReferenceList(null, "Rule", "notableDateRef", "ruleRef", "ruleRefs", NotableDateSchemaType.RuleRef, "scope ruleRefs", diagnostics);
         foreach ((string? qualifier, string name) in ruleRefs)
         {
@@ -184,17 +195,22 @@ internal static class NotableDateDocumentReader
 
         foreach (IDocumentNode notableDate in root.List("NotableDates", "NotableDate", "notableDates"))
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, notableDate);
+
             notableDate.CheckRequired(NotableDateSchemaType.NotableDate, diagnostics);
             string id = ReadPatterned(notableDate, "id", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty;
 
-            definitions.Add(new NotableDateDefinition(
+            var definition = new NotableDateDefinition(
                 id,
                 notableDate.Scalar("displayName") ?? string.Empty,
                 ParseEnum(notableDate.Scalar("category"), NotableDateCategory.None, "category", diagnostics),
                 ParseBool(notableDate.Scalar("defaultNonWorkingDay"), false, "defaultNonWorkingDay", diagnostics),
                 ReadBoundedInt(notableDate, "defaultDurationDays", NotableDateSchemaRange.PositiveInteger, "defaultDurationDays", diagnostics) ?? 1,
                 notableDate.TextList("Tags", "Tag", "value", "tags", "tags", diagnostics),
-                ReadRules(notableDate, id, diagnostics)));
+                ReadRules(notableDate, id, diagnostics));
+
+            PositionedDiagnosticCollection.Record(diagnostics, definition, notableDate);
+            definitions.Add(definition);
         }
 
         return definitions;
@@ -226,6 +242,8 @@ internal static class NotableDateDocumentReader
     /// <returns>The parsed <see cref="NotableDateRule" />.</returns>
     private static NotableDateRule ReadRule(IDocumentNode node, string notableDateId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, node);
+
         node.CheckRequired(NotableDateSchemaType.Rule, diagnostics);
         string id = ReadPatterned(node, "id", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty;
         IDocumentNode? strategyNode = node.Child("strategy");
@@ -239,7 +257,7 @@ internal static class NotableDateDocumentReader
         IReadOnlyList<string> adjustments = CheckPatterns(node, node.TextList("Adjustments", "Adjustment", "policyRef", "adjustments", "rule adjustments", diagnostics), NotableDateSchemaPattern.Identifier, "adjustments", diagnostics);
         IReadOnlyList<string> tags = node.TextList("Tags", "Tag", "value", "tags", "rule tags", diagnostics);
 
-        return recurrence is not null
+        NotableDateRule rule = recurrence is not null
             ? new NotableDateRule(
                 id,
                 ParseInt(node.Scalar("priority"), 0, "rule priority", diagnostics),
@@ -260,6 +278,10 @@ internal static class NotableDateDocumentReader
                 ReadStrategy(strategyNode, applicability.Calendar, notableDateId, id, diagnostics),
                 adjustments,
                 tags);
+
+        PositionedDiagnosticCollection.Record(diagnostics, rule, node);
+
+        return rule;
     }
 
     /// <summary>
@@ -320,6 +342,8 @@ internal static class NotableDateDocumentReader
         if (node is null)
             return new RuleApplicability(CalendarSystem.Gregorian, null, null, [], [], []);
 
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, node);
+
         return new RuleApplicability(
             ParseEnum(node.Scalar("calendar"), CalendarSystem.Gregorian, "calendar", diagnostics),
             ReadBoundedInt(node, "fromYear", NotableDateSchemaRange.UnsignedShort, "applicability fromYear", diagnostics),
@@ -354,6 +378,8 @@ internal static class NotableDateDocumentReader
     /// </remarks>
     private static IDateCalculationStrategy ReadStrategy(IDocumentNode? node, CalendarSystem calendar, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, node);
+
         try
         {
             return ReadStrategyCore(node, calendar, notableDateId, ruleId, diagnostics);
@@ -388,6 +414,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("fixed") is IDocumentNode fixedStrategy)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, fixedStrategy);
+
             fixedStrategy.CheckRequired(NotableDateSchemaType.FixedStrategy, diagnostics);
             bool skipLeapMonth = ParseBool(fixedStrategy.Scalar("skipLeapMonth"), false, "fixed skipLeapMonth", diagnostics);
             (int month, string? monthAlias) = ParseFixedMonth(fixedStrategy.Scalar("month"), calendar, skipLeapMonth, notableDateId, ruleId, diagnostics);
@@ -403,6 +431,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("dayOfWeekInMonth") is IDocumentNode dayOfWeekInMonth)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, dayOfWeekInMonth);
+
             dayOfWeekInMonth.CheckRequired(NotableDateSchemaType.DayOfWeekInMonthStrategy, diagnostics);
             return new DayOfWeekInMonthStrategy(
                 ParseMonth(dayOfWeekInMonth.Scalar("month"), notableDateId, ruleId, diagnostics),
@@ -412,6 +442,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("weekdayNearDate") is IDocumentNode weekdayNearDate)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, weekdayNearDate);
+
             weekdayNearDate.CheckRequired(NotableDateSchemaType.WeekdayNearDateStrategy, diagnostics);
             return new WeekdayNearDateStrategy(
                 ParseMonth(weekdayNearDate.Scalar("month"), notableDateId, ruleId, diagnostics),
@@ -422,6 +454,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("relativeWeekdayInMonth") is IDocumentNode relativeWeekdayInMonth)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, relativeWeekdayInMonth);
+
             relativeWeekdayInMonth.CheckRequired(NotableDateSchemaType.RelativeWeekdayInMonthStrategy, diagnostics);
             return new RelativeWeekdayInMonthStrategy(
                 ParseMonth(relativeWeekdayInMonth.Scalar("month"), notableDateId, ruleId, diagnostics),
@@ -433,6 +467,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("offsetFromRule") is IDocumentNode offsetFromRule)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, offsetFromRule);
+
             offsetFromRule.CheckRequired(NotableDateSchemaType.OffsetFromRuleStrategy, diagnostics);
             string? ruleRef = ReadPatterned(offsetFromRule, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics);
             return new OffsetFromRuleStrategy(
@@ -443,12 +479,16 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("algorithm") is IDocumentNode algorithm)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, algorithm);
+
             algorithm.CheckRequired(NotableDateSchemaType.AlgorithmStrategy, diagnostics);
             return new AlgorithmDateStrategy(algorithm.Scalar("key") ?? string.Empty);
         }
 
         if (node.Child("weekdayNearRule") is IDocumentNode weekdayNearRule)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, weekdayNearRule);
+
             weekdayNearRule.CheckRequired(NotableDateSchemaType.WeekdayNearRuleStrategy, diagnostics);
             string? ruleRef = ReadPatterned(weekdayNearRule, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics);
             return new WeekdayNearRuleStrategy(
@@ -461,6 +501,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("nthWeekdayFromRule") is IDocumentNode nthWeekdayFromRule)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, nthWeekdayFromRule);
+
             nthWeekdayFromRule.CheckRequired(NotableDateSchemaType.NthWeekdayFromRuleStrategy, diagnostics);
             string? ruleRef = ReadPatterned(nthWeekdayFromRule, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics);
             return new NthWeekdayFromRuleStrategy(
@@ -473,6 +515,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("workingDayOffsetFromRule") is IDocumentNode workingDayOffsetFromRule)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, workingDayOffsetFromRule);
+
             workingDayOffsetFromRule.CheckRequired(NotableDateSchemaType.WorkingDayOffsetFromRuleStrategy, diagnostics);
             string? ruleRef = ReadPatterned(workingDayOffsetFromRule, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics);
             return new WorkingDayOffsetFromRuleStrategy(
@@ -484,6 +528,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("workingDayInMonth") is IDocumentNode workingDayInMonth)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, workingDayInMonth);
+
             workingDayInMonth.CheckRequired(NotableDateSchemaType.WorkingDayInMonthStrategy, diagnostics);
             return new WorkingDayInMonthStrategy(
                 ParseMonth(workingDayInMonth.Scalar("month"), notableDateId, ruleId, diagnostics),
@@ -492,6 +538,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("ordinalDayOfMonth") is IDocumentNode ordinalDayOfMonth)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, ordinalDayOfMonth);
+
             ordinalDayOfMonth.CheckRequired(NotableDateSchemaType.OrdinalDayOfMonthStrategy, diagnostics);
             return new OrdinalDayOfMonthStrategy(
                 ParseMonth(ordinalDayOfMonth.Scalar("month"), notableDateId, ruleId, diagnostics),
@@ -500,6 +548,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("isoWeekDate") is IDocumentNode isoWeekDate)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, isoWeekDate);
+
             isoWeekDate.CheckRequired(NotableDateSchemaType.IsoWeekDateStrategy, diagnostics);
             return new IsoWeekDateStrategy(
                 ReadBoundedInt(isoWeekDate, "week", NotableDateSchemaRange.IsoWeekValue, "isoWeekDate week", diagnostics) ?? 1,
@@ -508,6 +558,8 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("dayOfYear") is IDocumentNode dayOfYear)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, dayOfYear);
+
             dayOfYear.CheckRequired(NotableDateSchemaType.DayOfYearStrategy, diagnostics);
             return new DayOfYearStrategy(ReadBoundedInt(dayOfYear, "ordinal", NotableDateSchemaRange.NonZeroOrdinal, "dayOfYear ordinal", diagnostics) ?? 1);
         }
@@ -531,6 +583,7 @@ internal static class NotableDateDocumentReader
     {
         int? durationDays = ReadBoundedInt(ruleNode, "durationDays", NotableDateSchemaRange.PositiveInteger, "durationDays", diagnostics);
         IDocumentNode? duration = ruleNode.Child("duration");
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, duration);
         duration?.CheckRequired(NotableDateSchemaType.Duration, diagnostics);
         IDocumentNode? untilDate = duration?.Child("untilDate");
 
@@ -597,10 +650,14 @@ internal static class NotableDateDocumentReader
         if (node is null)
             return null;
 
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, node);
+
         try
         {
             if (node.Child("dailyInterval") is IDocumentNode dailyInterval)
             {
+                using PositionedDiagnosticCollection.Scope kindScope = PositionedDiagnosticCollection.Enter(diagnostics, dailyInterval);
+
                 dailyInterval.CheckRequired(NotableDateSchemaType.DailyIntervalRecurrence, diagnostics);
                 return new DailyIntervalRecurrenceStrategy(
                     ParseNullableDate(dailyInterval.Scalar("anchorDate"), "dailyInterval anchorDate", diagnostics) ?? default,
@@ -609,6 +666,8 @@ internal static class NotableDateDocumentReader
 
             if (node.Child("weekly") is IDocumentNode weekly)
             {
+                using PositionedDiagnosticCollection.Scope kindScope = PositionedDiagnosticCollection.Enter(diagnostics, weekly);
+
                 weekly.CheckRequired(NotableDateSchemaType.WeeklyRecurrence, diagnostics);
                 List<DayOfWeek> days = ParseEnumList(weekly.ScalarList(null, "Day", "dayOfWeek", "days", "weekly days", diagnostics), DayOfWeek.Monday, "weekly days", diagnostics);
                 return new WeeklyRecurrenceStrategy(
@@ -619,6 +678,8 @@ internal static class NotableDateDocumentReader
 
             if (node.Child("monthlyDay") is IDocumentNode monthlyDay)
             {
+                using PositionedDiagnosticCollection.Scope kindScope = PositionedDiagnosticCollection.Enter(diagnostics, monthlyDay);
+
                 monthlyDay.CheckRequired(NotableDateSchemaType.MonthlyDayRecurrence, diagnostics);
                 return new MonthlyDayRecurrenceStrategy(
                     ReadBoundedInt(monthlyDay, "dayOfMonth", NotableDateSchemaRange.DayValue, "monthlyDay dayOfMonth", diagnostics) ?? 1,
@@ -629,6 +690,8 @@ internal static class NotableDateDocumentReader
 
             if (node.Child("monthlyWeekday") is IDocumentNode monthlyWeekday)
             {
+                using PositionedDiagnosticCollection.Scope kindScope = PositionedDiagnosticCollection.Enter(diagnostics, monthlyWeekday);
+
                 monthlyWeekday.CheckRequired(NotableDateSchemaType.MonthlyWeekdayRecurrence, diagnostics);
                 return new MonthlyWeekdayRecurrenceStrategy(
                     ParseEnum(monthlyWeekday.Scalar("dayOfWeek"), DayOfWeek.Monday, "monthlyWeekday dayOfWeek", diagnostics),
@@ -661,6 +724,9 @@ internal static class NotableDateDocumentReader
 
         foreach (IDocumentNode operation in root.List("Overrides", null, "overrides"))
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, operation);
+
+            int read = overrides.Count;
             string notableDateRef = ReadPatterned(operation, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty;
 
             // An operation that names none, and an AddRule without its rule, are reported rather than dropped, as the
@@ -687,6 +753,9 @@ internal static class NotableDateDocumentReader
                 default:
                     break;
             }
+
+            if (overrides.Count > read)
+                PositionedDiagnosticCollection.Record(diagnostics, overrides[^1], operation);
         }
 
         return overrides;
@@ -750,21 +819,30 @@ internal static class NotableDateDocumentReader
 
         foreach (IDocumentNode import in root.List("Imports", "Import", "imports"))
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, import);
+
             import.CheckRequired(NotableDateSchemaType.Import, diagnostics);
             List<NotableDateImportUse> uses = new();
             foreach (IDocumentNode use in import.List(null, "Use", "uses"))
             {
+                using PositionedDiagnosticCollection.Scope useScope = PositionedDiagnosticCollection.Enter(diagnostics, use);
+
                 use.CheckRequired(NotableDateSchemaType.ImportUse, diagnostics);
-                uses.Add(new NotableDateImportUse(
+                var importUse = new NotableDateImportUse(
                     ReadPatterned(use, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
                     ReadPatterned(use, "as", NotableDateSchemaPattern.Identifier, diagnostics),
                     ReadPatterned(use, "territory", NotableDateSchemaPattern.TerritoryCode, diagnostics),
                     ParseNullableEnum<NotableDateCategory>(use.Scalar("category"), "import use category", diagnostics),
                     ParseNullableBool(use.Scalar("nonWorking"), "import use nonWorking", diagnostics),
-                    CheckPatterns(use, use.OptionalTextList("Adjustments", "Adjustment", "policyRef", "adjustments", "import use adjustments", diagnostics), NotableDateSchemaPattern.Identifier, "adjustments", diagnostics)));
+                    CheckPatterns(use, use.OptionalTextList("Adjustments", "Adjustment", "policyRef", "adjustments", "import use adjustments", diagnostics), NotableDateSchemaPattern.Identifier, "adjustments", diagnostics));
+
+                PositionedDiagnosticCollection.Record(diagnostics, importUse, use);
+                uses.Add(importUse);
             }
 
-            imports.Add(new NotableDateImport(import.Scalar("resource") ?? string.Empty, uses));
+            var notableDateImport = new NotableDateImport(import.Scalar("resource") ?? string.Empty, uses);
+            PositionedDiagnosticCollection.Record(diagnostics, notableDateImport, import);
+            imports.Add(notableDateImport);
         }
 
         return imports;
@@ -784,6 +862,8 @@ internal static class NotableDateDocumentReader
     {
         if (node is null)
             return null;
+
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, node);
 
         string? value = node.Scalar(name);
         node.CheckPattern(value, pattern, name, diagnostics);
@@ -811,6 +891,8 @@ internal static class NotableDateDocumentReader
     {
         if (node is null)
             return null;
+
+        using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.Enter(diagnostics, node);
 
         string? text = node.Scalar(name);
         int? value = ParseNullableInt(text, field, diagnostics);

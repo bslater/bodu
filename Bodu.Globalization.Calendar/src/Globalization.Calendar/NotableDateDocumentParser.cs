@@ -41,15 +41,20 @@ internal static class NotableDateDocumentParser
     /// </summary>
     /// <param name="xml">The notable-date document XML content.</param>
     /// <param name="diagnostics">The collection that receives structural and semantic diagnostics.</param>
+    /// <param name="captureSourcePositions">
+    /// <see langword="true" /> to read the document with line information, so that its diagnostics and declarations
+    /// carry their positions in <paramref name="xml" />; <see langword="false" /> for a document whose positions would
+    /// mislead, such as an imported one, whose diagnostics take the position of the import instead.
+    /// </param>
     /// <returns>The parsed <see cref="ParsedNotableDateDocument" />.</returns>
     /// <exception cref="FormatException"><paramref name="xml" /> is not well-formed XML.</exception>
-    public static ParsedNotableDateDocument Parse(string xml, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    public static ParsedNotableDateDocument Parse(string xml, ICollection<NotableDateValidationDiagnostic> diagnostics, bool captureSourcePositions = false)
     {
         XDocument document;
         try
         {
             using var reader = XmlReader.Create(new StringReader(xml), s_readerSettings);
-            document = XDocument.Load(reader);
+            document = XDocument.Load(reader, captureSourcePositions ? LoadOptions.SetLineInfo : LoadOptions.None);
         }
         catch (XmlException ex)
         {
@@ -66,7 +71,8 @@ internal static class NotableDateDocumentParser
     }
 
     /// <summary>
-    /// Validates the document against the embedded XSD, recording each schema violation as a diagnostic.
+    /// Validates the document against the embedded XSD, recording each schema violation as a diagnostic at the position
+    /// the validation reports, when the document was read with line information.
     /// </summary>
     /// <param name="document">The parsed XML document.</param>
     /// <param name="diagnostics">The collection that receives schema diagnostics.</param>
@@ -86,10 +92,18 @@ internal static class NotableDateDocumentParser
                 ? NotableDateValidationSeverity.Error
                 : NotableDateValidationSeverity.Warning;
 
+            NotableDateSourcePosition? position = e.Exception is { } exception
+                ? NotableDateSourcePosition.FromLineInfo(exception.LineNumber, exception.LinePosition)
+                : null;
+
             diagnostics.Add(new NotableDateValidationDiagnostic(
                 severity,
                 "BODU-CAL-SCHEMA",
-                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Format_Invalid_XmlSchema, e.Message)));
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Format_Invalid_XmlSchema, e.Message))
+            {
+                LineNumber = position?.LineNumber,
+                LinePosition = position?.LinePosition,
+            });
         });
     }
 }

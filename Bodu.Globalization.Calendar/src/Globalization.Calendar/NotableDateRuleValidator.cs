@@ -51,6 +51,8 @@ internal static class NotableDateRuleValidator
 
         foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
+            using PositionedDiagnosticCollection.Scope policyScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, policy);
+
             CheckPattern(policy.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
             CheckPatterns(policy.Scope.Territories, NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics);
             CheckPatterns(policy.Scope.NotableDateRefs, NotableDateSchemaPattern.Identifier, "notableDateRefs", diagnostics);
@@ -73,10 +75,14 @@ internal static class NotableDateRuleValidator
 
         foreach (NotableDateDefinition definition in resource.NotableDates)
         {
+            using PositionedDiagnosticCollection.Scope definitionScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, definition);
+
             CheckPattern(definition.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
 
             foreach (NotableDateRule rule in definition.Rules)
             {
+                using PositionedDiagnosticCollection.Scope ruleScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, rule);
+
                 CheckPattern(rule.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
                 CheckPatterns(rule.Applicability.Territories, NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics);
                 CheckPatterns(rule.AdjustmentPolicyRefs, NotableDateSchemaPattern.Identifier, "adjustments", diagnostics);
@@ -102,6 +108,8 @@ internal static class NotableDateRuleValidator
     {
         foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
+            using PositionedDiagnosticCollection.Scope policyScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, policy);
+
             CheckRange(policy.Scope.FromYear, NotableDateSchemaRange.UnsignedShort, "fromYear", diagnostics);
             CheckRange(policy.Scope.ToYear, NotableDateSchemaRange.UnsignedShort, "toYear", diagnostics);
             CheckRanges(policy.Scope.OnlyYears, NotableDateSchemaRange.UnsignedShort, "onlyYears", diagnostics);
@@ -115,10 +123,14 @@ internal static class NotableDateRuleValidator
 
         foreach (NotableDateDefinition definition in resource.NotableDates)
         {
+            using PositionedDiagnosticCollection.Scope definitionScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, definition);
+
             CheckRange(definition.DefaultDurationDays, NotableDateSchemaRange.PositiveInteger, "defaultDurationDays", diagnostics);
 
             foreach (NotableDateRule rule in definition.Rules)
             {
+                using PositionedDiagnosticCollection.Scope ruleScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, rule);
+
                 RuleApplicability applicability = rule.Applicability;
                 CheckRange(applicability.FromYear, NotableDateSchemaRange.UnsignedShort, "fromYear", diagnostics);
                 CheckRange(applicability.ToYear, NotableDateSchemaRange.UnsignedShort, "toYear", diagnostics);
@@ -160,6 +172,8 @@ internal static class NotableDateRuleValidator
 
         foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
+            using PositionedDiagnosticCollection.Scope policyScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, policy);
+
             CheckAllDefined(policy.Scope.Calendars, "scope calendars", diagnostics);
             CheckAllDefined(policy.Scope.Categories, "scope categories", diagnostics);
             CheckDefined(policy.Trigger, "trigger type", diagnostics);
@@ -176,10 +190,14 @@ internal static class NotableDateRuleValidator
 
         foreach (NotableDateDefinition definition in resource.NotableDates)
         {
+            using PositionedDiagnosticCollection.Scope definitionScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, definition);
+
             CheckDefined(definition.Category, "category", diagnostics);
 
             foreach (NotableDateRule rule in definition.Rules)
             {
+                using PositionedDiagnosticCollection.Scope ruleScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, rule);
+
                 if (rule.Category is NotableDateCategory category)
                     CheckDefined(category, "category", diagnostics);
 
@@ -291,6 +309,8 @@ internal static class NotableDateRuleValidator
     {
         foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
+            using PositionedDiagnosticCollection.Scope policyScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, policy);
+
             if (policy.Scope.FromYear is int from && policy.Scope.ToYear is int to && from > to)
             {
                 diagnostics.Add(new NotableDateValidationDiagnostic(
@@ -312,6 +332,8 @@ internal static class NotableDateRuleValidator
 
         foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
+            using PositionedDiagnosticCollection.Scope policyScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, policy);
+
             if (!seen.Add(policy.Id))
             {
                 diagnostics.Add(new NotableDateValidationDiagnostic(
@@ -332,6 +354,8 @@ internal static class NotableDateRuleValidator
     {
         foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
+            using PositionedDiagnosticCollection.Scope policyScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, policy);
+
             switch (policy.Action)
             {
                 case AdjustmentAction.ReplaceWithRule:
@@ -361,6 +385,8 @@ internal static class NotableDateRuleValidator
     {
         foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
+            using PositionedDiagnosticCollection.Scope policyScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, policy);
+
             if (policy.Trigger == AdjustmentTrigger.Custom && string.IsNullOrEmpty(policy.TriggerHandlerKey))
             {
                 diagnostics.Add(new NotableDateValidationDiagnostic(
@@ -426,6 +452,8 @@ internal static class NotableDateRuleValidator
 
         foreach (NotableDateDefinition definition in resource.NotableDates)
         {
+            using PositionedDiagnosticCollection.Scope definitionScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, definition);
+
             if (!seenConcepts.Add(definition.Id))
             {
                 diagnostics.Add(new NotableDateValidationDiagnostic(
@@ -460,6 +488,8 @@ internal static class NotableDateRuleValidator
 
         foreach (NotableDateRule rule in definition.Rules)
         {
+            using PositionedDiagnosticCollection.Scope ruleScope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, rule);
+
             if (!seenRules.Add(rule.Id))
             {
                 diagnostics.Add(new NotableDateValidationDiagnostic(

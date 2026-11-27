@@ -21,7 +21,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// through <see cref="NotableDateResourceLoader" /> - so a clean result guarantees <see cref="Build()" /> succeeds
     /// for the same document. A document too incomplete to serialize (a missing resource identifier, a concept with no
     /// rules, a rule with no strategy) is reported as a <c>BODU-CAL-BUILDER-INCOMPLETE</c> error diagnostic rather than
-    /// an exception.
+    /// an exception. The diagnostics carry no <see cref="NotableDateValidationDiagnostic.LineNumber" /> or
+    /// <see cref="NotableDateValidationDiagnostic.LinePosition" />, because the XML they would point into is the
+    /// builder's own serialization rather than text anyone wrote.
     /// </remarks>
     public IReadOnlyList<NotableDateValidationDiagnostic> Validate() =>
         Validate(null);
@@ -70,6 +72,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// <see langword="true" /> when the document built without error-severity diagnostics; otherwise
     /// <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// The diagnostics carry no <see cref="NotableDateValidationDiagnostic.LineNumber" /> or
+    /// <see cref="NotableDateValidationDiagnostic.LinePosition" />, because the XML they would point into is the
+    /// builder's own serialization rather than text anyone wrote.
+    /// </remarks>
     public bool TryBuild(Func<string, string?>? importResolver, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics)
     {
         string xml;
@@ -88,6 +95,6 @@ public sealed partial class NotableDateDocumentBuilder
             return false;
         }
 
-        return NotableDateResourceLoader.TryLoad(xml, importResolver ?? (_ => null), out resource, out diagnostics);
+        return NotableDateResourceLoader.TryLoad(xml, importResolver ?? (_ => null), algorithms: null, captureSourcePositions: false, out resource, out diagnostics);
     }
 }

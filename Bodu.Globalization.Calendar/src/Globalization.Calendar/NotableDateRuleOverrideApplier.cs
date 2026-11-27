@@ -30,6 +30,8 @@ internal static class NotableDateRuleOverrideApplier
 
         foreach (NotableDateRuleOverride operation in overrides)
         {
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, operation);
+
             int index = working.FindIndex(d => string.Equals(d.Id, operation.NotableDateRef, StringComparison.Ordinal));
             if (index < 0)
             {
@@ -40,7 +42,10 @@ internal static class NotableDateRuleOverrideApplier
                 continue;
             }
 
-            working[index] = ApplyToDefinition(working[index], operation, diagnostics);
+            // A rewritten concept keeps the position of the one it replaces, or else takes the override's.
+            NotableDateDefinition applied = ApplyToDefinition(working[index], operation, diagnostics);
+            PositionedDiagnosticCollection.RecordFrom(diagnostics, applied, working[index]);
+            working[index] = applied;
         }
 
         return working;
@@ -83,7 +88,10 @@ internal static class NotableDateRuleOverrideApplier
                     return definition;
                 }
 
-                rules[ruleIndex] = ApplyPatch(rules[ruleIndex], patch);
+                // A patched rule is reported at the patch, the part of it that the loaded document wrote.
+                NotableDateRule patched = ApplyPatch(rules[ruleIndex], patch);
+                PositionedDiagnosticCollection.RecordFrom(diagnostics, patched, patch);
+                rules[ruleIndex] = patched;
                 return definition.WithRules(rules);
             }
 

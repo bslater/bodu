@@ -6,6 +6,8 @@
 
 using System.Globalization;
 using System.Text;
+using System.Text.Json;
+using System.Xml;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -137,16 +139,48 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, ILogger? logger = null)
+    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, ILogger? logger = null) =>
+        Load(xml, resourceResolver, algorithms, logger, captureSourcePositions: true);
+
+    /// <summary>
+    /// Loads and validates a notable-date document from XML content, giving its diagnostics their positions in
+    /// <paramref name="xml" /> or leaving them without.
+    /// </summary>
+    /// <param name="xml">The notable-date document XML content.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="algorithms">
+    /// A registry of custom algorithm keys to accept during validation, or <see langword="null" />.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
+    /// </param>
+    /// <param name="captureSourcePositions">
+    /// <see langword="true" /> to give each diagnostic its position in <paramref name="xml" />;
+    /// <see langword="false" /> for XML that no reader wrote, such as a builder's serialization, whose positions would
+    /// mean nothing to them.
+    /// </param>
+    /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="xml" /> is empty or white-space.</exception>
+    /// <exception cref="FormatException"><paramref name="xml" /> is not well-formed XML.</exception>
+    /// <exception cref="NotableDateValidationException">
+    /// The notable-date document produced one or more error diagnostics.
+    /// </exception>
+    internal static NotableDateResource Load(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, ILogger? logger, bool captureSourcePositions)
     {
         ThrowHelper.ThrowIfNull(xml);
         ThrowHelper.ThrowIfNull(resourceResolver);
         if (string.IsNullOrWhiteSpace(xml)) throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_DocumentContentEmpty, nameof(xml));
 
         List<NotableDateValidationDiagnostic> diagnostics = new();
-        ParsedNotableDateDocument document = NotableDateDocumentParser.Parse(xml, diagnostics);
+        ICollection<NotableDateValidationDiagnostic> sink = captureSourcePositions ? new PositionedDiagnosticCollection(diagnostics) : diagnostics;
+        ParsedNotableDateDocument document = NotableDateDocumentParser.Parse(xml, sink, captureSourcePositions);
 
-        return Build(document, resourceResolver, algorithms, diagnostics, logger);
+        return Build(document, resourceResolver, algorithms, diagnostics, sink, logger);
     }
 
     /// <summary>
@@ -261,7 +295,7 @@ public static class NotableDateResourceLoader
         List<NotableDateValidationDiagnostic> diagnostics = new();
         ParsedNotableDateDocument document = NotableDateJsonDocumentParser.Parse(json, diagnostics);
 
-        return Build(document, resourceResolver, algorithms, diagnostics, logger);
+        return Build(document, resourceResolver, algorithms, diagnostics, diagnostics, logger);
     }
 
     /// <summary>
@@ -356,27 +390,67 @@ public static class NotableDateResourceLoader
     /// <exception cref="ArgumentNullException">
     /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
     /// </exception>
-    public static bool TryLoad(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics)
+    public static bool TryLoad(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics) =>
+        TryLoad(xml, resourceResolver, algorithms, captureSourcePositions: true, out resource, out diagnostics);
+
+    /// <summary>
+    /// Attempts to load and validate a notable-date document from XML content, collecting every diagnostic, with its
+    /// position in <paramref name="xml" /> or without one.
+    /// </summary>
+    /// <param name="xml">The notable-date document XML content.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry consulted when validating <c>Algorithm</c> strategy keys, or
+    /// <see langword="null" /> for built-ins only.
+    /// </param>
+    /// <param name="captureSourcePositions">
+    /// <see langword="true" /> to give each diagnostic its position in <paramref name="xml" />;
+    /// <see langword="false" /> for XML that no reader wrote, such as a builder's serialization, whose positions would
+    /// mean nothing to them.
+    /// </param>
+    /// <param name="resource">
+    /// The loaded resource, or <see langword="null" /> when the document does not validate.
+    /// </param>
+    /// <param name="diagnostics">Every diagnostic the parse, import resolution, and validation produced.</param>
+    /// <returns>
+    /// <see langword="true" /> when the document loaded without error-severity diagnostics; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    internal static bool TryLoad(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, bool captureSourcePositions, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics)
     {
         ThrowHelper.ThrowIfNull(xml);
         ThrowHelper.ThrowIfNull(resourceResolver);
 
         List<NotableDateValidationDiagnostic> collected = new();
+        ICollection<NotableDateValidationDiagnostic> sink = captureSourcePositions ? new PositionedDiagnosticCollection(collected) : collected;
         resource = null;
         diagnostics = collected;
 
         ParsedNotableDateDocument document;
         try
         {
-            document = NotableDateDocumentParser.Parse(xml, collected);
+            document = NotableDateDocumentParser.Parse(xml, sink, captureSourcePositions);
         }
         catch (FormatException ex)
         {
-            collected.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-SYNTAX", ex.Message));
+            NotableDateSourcePosition? position = captureSourcePositions && ex.InnerException is XmlException xmlException
+                ? NotableDateSourcePosition.FromLineInfo(xmlException.LineNumber, xmlException.LinePosition)
+                : null;
+
+            collected.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-SYNTAX", ex.Message)
+            {
+                LineNumber = position?.LineNumber,
+                LinePosition = position?.LinePosition,
+            });
             return false;
         }
 
-        resource = BuildCore(document, resourceResolver, algorithms, collected, null);
+        resource = BuildCore(document, resourceResolver, algorithms, sink, null);
         return resource is not null;
     }
 
@@ -457,7 +531,16 @@ public static class NotableDateResourceLoader
         }
         catch (FormatException ex)
         {
-            collected.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-SYNTAX", ex.Message));
+            // A JSON element records no position, so a JSON document's syntax error is the one diagnostic that has one.
+            NotableDateSourcePosition? position = ex.InnerException is JsonException jsonException
+                ? NotableDateSourcePosition.FromJson(json, jsonException)
+                : null;
+
+            collected.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-SYNTAX", ex.Message)
+            {
+                LineNumber = position?.LineNumber,
+                LinePosition = position?.LinePosition,
+            });
             return false;
         }
 
@@ -475,7 +558,12 @@ public static class NotableDateResourceLoader
     /// A registry of custom algorithm keys to accept during validation, or <see langword="null" />.
     /// </param>
     /// <param name="diagnostics">
-    /// The diagnostics accumulated during parsing, extended by import resolution and validation.
+    /// The diagnostics accumulated during parsing, extended by import resolution and validation, which a failure
+    /// carries in its exception.
+    /// </param>
+    /// <param name="sink">
+    /// The collection the import resolution and validation add to: <paramref name="diagnostics" /> itself, or a
+    /// <see cref="PositionedDiagnosticCollection" /> over it.
     /// </param>
     /// <param name="logger">
     /// The logger that receives load diagnostics, or <see langword="null" /> for <see cref="NullLogger.Instance" />.
@@ -484,9 +572,9 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    private static NotableDateResource Build(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics, ILogger? logger)
+    private static NotableDateResource Build(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics, ICollection<NotableDateValidationDiagnostic> sink, ILogger? logger)
     {
-        NotableDateResource? resource = BuildCore(document, resourceResolver, algorithms, diagnostics, logger);
+        NotableDateResource? resource = BuildCore(document, resourceResolver, algorithms, sink, logger);
         if (resource is null)
         {
             throw new NotableDateValidationException(
@@ -517,7 +605,7 @@ public static class NotableDateResourceLoader
     /// The assembled resource, or <see langword="null" /> when validation produced one or more error-severity
     /// diagnostics.
     /// </returns>
-    private static NotableDateResource? BuildCore(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics, ILogger? logger)
+    private static NotableDateResource? BuildCore(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, ICollection<NotableDateValidationDiagnostic> diagnostics, ILogger? logger)
     {
         ILogger log = logger ?? NullLogger.Instance;
 
@@ -574,6 +662,10 @@ public static class NotableDateResourceLoader
 
         foreach (NotableDateImport import in document.Imports)
         {
+            // Everything an import brings in, its own document's diagnostics among them, is reported at the Import
+            // element of the loaded document; an import of an imported document has no position and keeps it.
+            using PositionedDiagnosticCollection.Scope scope = PositionedDiagnosticCollection.EnterDeclaration(diagnostics, import);
+
             if (!visiting.Add(import.Resource))
             {
                 AddError(diagnostics, "BODU-CAL-IMPORT-CYCLE", CalendarResourceStrings.Validation_ImportCycle, import.Resource);
@@ -609,7 +701,10 @@ public static class NotableDateResourceLoader
                 foreach (AdjustmentPolicy policy in sourcePolicies)
                 {
                     if (policyIds.Add(policy.Id))
+                    {
+                        PositionedDiagnosticCollection.RecordFrom(diagnostics, policy, null);
                         policies.Add(policy);
+                    }
                 }
 
                 foreach (NotableDateDefinition concept in SelectImportedConcepts(import, sourceConcepts, diagnostics))
@@ -649,7 +744,10 @@ public static class NotableDateResourceLoader
         if (import.Uses.Count == 0)
         {
             foreach (NotableDateDefinition concept in sourceConcepts)
+            {
+                RecordImported(diagnostics, concept, null);
                 yield return concept;
+            }
 
             yield break;
         }
@@ -659,12 +757,30 @@ public static class NotableDateResourceLoader
             NotableDateDefinition? concept = sourceConcepts.FirstOrDefault(c => string.Equals(c.Id, use.NotableDateRef, StringComparison.Ordinal));
             if (concept is null)
             {
-                AddError(diagnostics, "BODU-CAL-IMPORT-CONCEPT", CalendarResourceStrings.Validation_ImportConceptNotFound, import.Resource, use.NotableDateRef);
+                using (PositionedDiagnosticCollection.EnterDeclaration(diagnostics, use))
+                    AddError(diagnostics, "BODU-CAL-IMPORT-CONCEPT", CalendarResourceStrings.Validation_ImportConceptNotFound, import.Resource, use.NotableDateRef);
+
                 continue;
             }
 
-            yield return ApplyUse(concept, use);
+            NotableDateDefinition used = ApplyUse(concept, use);
+            RecordImported(diagnostics, used, use);
+            yield return used;
         }
+    }
+
+    /// <summary>
+    /// Records an imported concept and its rules at the position of the <c>Use</c> element that selected it, or else at
+    /// the <c>Import</c> element under examination, so that the validation reports them there.
+    /// </summary>
+    /// <param name="diagnostics">The collection the diagnostics are added to.</param>
+    /// <param name="concept">The imported concept, as the resource will hold it.</param>
+    /// <param name="use">The <c>Use</c> element that selected the concept, or <see langword="null" /> for none.</param>
+    private static void RecordImported(ICollection<NotableDateValidationDiagnostic> diagnostics, NotableDateDefinition concept, NotableDateImportUse? use)
+    {
+        PositionedDiagnosticCollection.RecordFrom(diagnostics, concept, use);
+        foreach (NotableDateRule rule in concept.Rules)
+            PositionedDiagnosticCollection.RecordFrom(diagnostics, rule, use);
     }
 
     /// <summary>

@@ -301,8 +301,13 @@ public sealed partial class NotableDateDocumentBuilder
     /// or an adjustment policy is missing a trigger, action, or emission.
     /// </exception>
     /// <exception cref="NotableDateValidationException">The loader produced one or more error diagnostics.</exception>
+    /// <remarks>
+    /// The exception's diagnostics carry no <see cref="NotableDateValidationDiagnostic.LineNumber" /> or
+    /// <see cref="NotableDateValidationDiagnostic.LinePosition" />, because the XML they would point into is the
+    /// builder's own serialization rather than text anyone wrote.
+    /// </remarks>
     public NotableDateResource Build(Func<string, string?>? importResolver) =>
-        NotableDateResourceLoader.Load(ToXml(), importResolver ?? (_ => null));
+        NotableDateResourceLoader.Load(ToXml(), importResolver ?? (_ => null), algorithms: null, logger: null, captureSourcePositions: false);
 
     /// <summary>
     /// Materializes the document and wraps it in a mutable provider.

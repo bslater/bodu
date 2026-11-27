@@ -90,6 +90,14 @@
   <data name="Op_NotSupported_BinaryPackType" xml:space="preserve">
     <value>The binary rule-pack format cannot encode '{0}'; it supports only the built-in calculation strategies, recurrence strategies, and duration definitions.</value>
   </data>
+  <data name="Validation_DiagnosticAtLine" xml:space="preserve">
+    <value>{0} (line {1})</value>
+    <comment>{0} is the rendered diagnostic; {1} is its line number.</comment>
+  </data>
+  <data name="Validation_DiagnosticAtLineAndPosition" xml:space="preserve">
+    <value>{0} (line {1}, position {2})</value>
+    <comment>{0} is the rendered diagnostic; {1} is its line number and {2} its position on the line.</comment>
+  </data>
   <data name="Validation_DuplicateAdjustmentPolicyId" xml:space="preserve">
     <value>Duplicate adjustment-policy identifier '{0}'.</value>
   </data>
