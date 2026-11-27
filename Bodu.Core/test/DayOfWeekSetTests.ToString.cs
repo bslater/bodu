@@ -215,6 +215,19 @@ public partial class DayOfWeekSetTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.ToString(string)" /> throws <see cref="FormatException" /> for the format
+    /// U+017F LATIN SMALL LETTER LONG S, which invariant uppercasing maps to the <c>S</c> format.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenFormatIsLongS_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = DayOfWeekSet.All.ToString("ſ");
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.ToString(string, System.IFormatProvider)" /> with a non-null format
     /// provider produces the same output as the format-only overload - the provider is currently ignored, but the
     /// call site must still execute.

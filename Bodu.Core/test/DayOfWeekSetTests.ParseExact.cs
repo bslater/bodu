@@ -192,6 +192,20 @@ public partial class DayOfWeekSetTests
     public void ParseExact_WhenFormatIsUnrecognised_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = DayOfWeekSet.ParseExact("_M_W_F_", "Z"); });
 
     /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.ParseExact(string, string)" /> throws <see cref="FormatException" /> for
+    /// the format U+017F LATIN SMALL LETTER LONG S, which invariant uppercasing maps to the <c>S</c> format.
+    /// </summary>
+    [TestMethod]
+    public void ParseExact_WhenFormatIsLongS_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = DayOfWeekSet.ParseExact("SMTWTFS", "ſ"); });
+
+    /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.ParseExact(string, string)" /> throws <see cref="FormatException" /> in the
+    /// <c>S</c> format for a mask that writes its <c>S</c> letters as U+017F LATIN SMALL LETTER LONG S.
+    /// </summary>
+    [TestMethod]
+    public void ParseExact_WhenSundayFirstMaskHasLongS_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = DayOfWeekSet.ParseExact("ſMTWTFſ", "S"); });
+
+    /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.ParseExact(string, string)" /> throws
     /// <see cref="ArgumentNullException" /> when the input is <see langword="null" />.
     /// </summary>

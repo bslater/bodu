@@ -19,6 +19,13 @@ public partial class DayOfWeekSetTests
     public void Parse_WhenInputContainsInvalidCharacter_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = DayOfWeekSet.Parse("SMTWTFX"); });
 
     /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.Parse(string)" /> throws <see cref="FormatException" /> for a mask that
+    /// writes its <c>S</c> letters as U+017F LATIN SMALL LETTER LONG S, which invariant uppercasing maps to <c>S</c>.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMaskHasLongS_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = DayOfWeekSet.Parse("ſMTWTFſ"); });
+
+    /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.Parse(string)" /> correctly auto-detects and parses a
     /// binary string.
     /// </summary>
