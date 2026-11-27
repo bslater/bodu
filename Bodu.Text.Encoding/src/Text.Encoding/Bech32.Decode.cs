@@ -159,8 +159,14 @@ public static partial class Bech32
             return false;
         }
 
+        // Lower the ASCII letters only. Invariant lowercasing also maps U+212A KELVIN SIGN to 'k', which would carry a
+        // character outside US-ASCII past the range and charset checks below.
         Span<char> lower = source.Length <= 128 ? stackalloc char[source.Length] : new char[source.Length];
-        source.ToLowerInvariant(lower);
+        for (int i = 0; i < source.Length; i++)
+        {
+            char c = source[i];
+            lower[i] = char.IsAsciiLetterUpper(c) ? (char)(c | 0x20) : c;
+        }
 
         int separator = lower.LastIndexOf(Separator);
         if (separator < 0)
