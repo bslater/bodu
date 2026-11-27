@@ -164,6 +164,27 @@ public sealed partial class Bech32Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Bech32.DecodeToBytes(string, out string, out byte[], out Bech32Encoding)" /> reports a
+    /// data part whose 5-bit groups do not repack into whole bytes with a <see cref="FormatException" /> whose message
+    /// names that failure, rather than the data-alphabet message with its placeholder unfilled.
+    /// </summary>
+    [TestMethod]
+    public void DecodeToBytes_WhenGroupsDoNotRepackIntoBytes_ShouldThrowFormatExceptionNamingTheFailure()
+    {
+        // A single 5-bit group carries five bits, too few for a whole byte.
+        string encoded = Bech32.Encode("test", [31]);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            Bech32.DecodeToBytes(encoded, out _, out _, out _);
+        });
+
+        Assert.IsFalse(ex.Message.Contains("{0}", StringComparison.Ordinal), ex.Message);
+        Assert.IsFalse(ex.Message.Contains("alphabet", StringComparison.OrdinalIgnoreCase), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("bytes", StringComparison.OrdinalIgnoreCase), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that
     /// <see cref="Bech32.TryDecodeToBytes(ReadOnlySpan{char}, out string, out byte[], out Bech32Encoding)" /> returns
     /// <see langword="false" /> for a string whose 8-bit payload round-trips when written in ASCII but whose
