@@ -8,14 +8,14 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 `Bodu.Security.Cryptography` 1.1.0 and 1.2.0, `Bodu.Core` 1.0.1 and
 `Bodu.Globalization.Calendar` 1.0.1 followed out of band, and 1.3.0, on
 2026-10-16, brought every Stable package back to one version. Next is
-1.3.1, a patch release of the Stable stream with fixes only; the
+1.3.1, a release of the Stable stream with fixes and additions; the
 Preview stream stays at 0.7.2.
 Since the previous revision (2026-10-14): 1.3.0 shipped; CI builds and
 tests on Windows beside Linux, and consumes the real-signed packages
 before a release publishes them; the coverage ratchet fails the run that
-breaches it; and a sweep of the readers of ASCII text found several that
-accepted characters outside ASCII. The detail is in git and the release
-notes.*
+breaches it; a sweep of the readers of ASCII text found several that
+accepted characters outside ASCII; and five of the additions planned
+for 1.4.0 moved into 1.3.1. The detail is in git and the release notes.*
 
 ## How to read this
 
@@ -251,8 +251,8 @@ proposals can be closed quickly.
 
 ## Active focus
 
-**1.3.1.** A patch release of the Stable stream that adds, removes and
-changes no public API:
+**1.3.1.** A release of the Stable stream that removes and changes no
+public API. Its fixes:
 
 - **Look-alike letters in ASCII grammars.** .NET's invariant casing maps
   U+017F LATIN SMALL LETTER LONG S to `S` and U+212A KELVIN SIGN to `k`,
@@ -270,17 +270,35 @@ changes no public API:
   could empty Sweden's cached year for every later caller. The decorator
   now resolves and caches one normalized form, and never caches a
   territory outside ASCII (#1392).
+- **Base62's decoded-length bound.** `Base62.GetMaxDecodedLength`
+  returned about three-quarters of the character count, too small for
+  text that leads with `0` digits (#1393).
 - **Messages and exception types.** `Bech32.DecodeToBytes` names a data
   part that does not convert to whole bytes (#1385), and the calendar
   plugin loader reports every type it cannot create as
   `PluginActivationException` (#1369).
 
+Its additions, each on an existing type or beside one:
+
+- **Monetary contexts from configuration.** `FinancialOptions` carries a
+  default monetary context and named ones, and the new
+  `IMonetaryContextResolver` follows `IOptionsMonitor<FinancialOptions>`,
+  so a configuration reload changes them without a restart.
+- **UTF-8, buffer-writer and `Guid` overloads for `Base45` and
+  `Base62`**, the shapes the rest of the `IBinaryEncoding` family has.
+- **Positions on calendar diagnostics.**
+  `NotableDateValidationDiagnostic` carries the line and position of the
+  XML text it concerns.
+- **Block reads for the line formats.** `DelimitedReaderState`,
+  `DotEnvReaderState` and `IniReaderState` let the three token readers
+  resume across input blocks, as `TomlReaderState` lets `Utf8TomlReader`.
+- **AOT declarations.** `Bodu.IO.Compound` and `Bodu.Text.Encoding`
+  declare `IsAotCompatible`, so the trim and AOT analyzers check them.
+
 **1.4.0.** The additive items the per-project sections list, foremost
 packaging `Bodu.Text.Formats.Generators`, deciding whether to publish
-the calendar toolchain, the AOT-compatibility declarations under *AOT
-and trim readiness*, the UTF-8, buffer-writer and `Guid` overloads that
-`Base45`, `Base62` and `Bech32` lack, and public resumable reader states
-for the Delimited, DotEnv and INI readers.
+the calendar toolchain, and the AOT-compatibility declarations that
+remain under *AOT and trim readiness*.
 
 **1.3.0, shipped.** Everything planned for it landed:
 
@@ -515,8 +533,10 @@ Forward-looking:
 
 - **Audit `Base*.Utf8.cs` writer parity.** Confirm every encoder's UTF-8
   span surface has full `IUtf8SpanFormattable`-style parity with the
-  char paths: `Base16`, `Base32`, `Base58`, `Base64` and `Base85` carry
-  `Utf8` partials, while `Base45`, `Base62` and `Bech32` have none.
+  char paths. Every encoder of the `IBinaryEncoding` family carries a
+  `Utf8` partial from 1.3.1, when `Base45` and `Base62` gained theirs;
+  `Bech32`, whose text carries a human-readable part and a checksum,
+  has none, as `Base58Check` has none.
 - **Reversible short-ID encodings (Sqids / the Hashids successor).**
   Heavily used independently-built functionality with no BCL equivalent;
   fits this project's alphabet-transform focus and the check-digit
@@ -661,7 +681,10 @@ three. Reflection-free binding is in place: the
 implementations for `[DelimitedRecord]` / `[IniSection]` partial POCOs,
 consumed by the factory overloads on `DelimitedSerializer` /
 `IniSerializer` without `RequiresUnreferencedCode` or
-`RequiresDynamicCode`.
+`RequiresDynamicCode`. From 1.3.1 the three token readers also resume
+across input blocks through the public `DelimitedReaderState`,
+`DotEnvReaderState` and `IniReaderState`, as `Utf8TomlReader` does
+through `TomlReaderState`.
 
 Forward-looking:
 
@@ -669,10 +692,6 @@ Forward-looking:
   icon/hero artwork, release-manifest entry). Wave 2 shipped without it:
   the project is still `IsPackable=false`, so its factories reach only
   consumers who reference the project directly.
-- **Resumable reader states** (`*ReaderState`) as public API, so
-  consumers can drive their own segment loops, as `TomlReaderState`
-  already allows; the serializers' incremental surfaces keep the
-  segment-accumulation logic internal.
 
 ### `Bodu.Text.Configuration`
 
@@ -823,9 +842,12 @@ Current state: Stable; first shipped at 0.6.0. `IServiceCollection`
 extensions declared in the `Bodu.Financial` namespace -
 `AddFinancialService`, the `IFinancialServiceBuilder` chain,
 `UseCurrencyResolution`, `FinancialOptions`, named monetary contexts.
+From 1.3.1 `FinancialOptions` binds a default monetary context and named
+ones from configuration, and `IMonetaryContextResolver` follows
+`IOptionsMonitor<FinancialOptions>`, keeping the last valid contexts
+when a reload is invalid.
 
-- **Add `IOptionsMonitor<FinancialOptions>` rebuild support** so
-  rounding/context config changes propagate without a restart.
+No open items recorded.
 
 ### `Bodu.Financial.ExchangeRates.*` *(provider + caching family)*
 
@@ -1128,13 +1150,10 @@ the canonical loader. `Validate()` / `TryBuild(...)` and the loader's
 throwing, `SaveBinary` writes the sealed `.bcal` form, and the round-trip
 guarantees between builder output, the loader and the JSON subset are
 documented in `docs/guides/calendar/round-trip-guarantees.md`, each pinned
-by a named test.
+by a named test. From 1.3.1 a diagnostic about a document loaded from XML
+text also carries the line and position of what it concerns.
 
-Forward-looking:
-
-- **Source locations on diagnostics** - the remaining nicety from the
-  lint item: `NotableDateValidationDiagnostic` carries a severity, a
-  code and a message, but no position.
+No open items recorded.
 
 ### `Bodu.Globalization.Calendar.Tool` / `Bodu.Globalization.Calendar.Build`
 
