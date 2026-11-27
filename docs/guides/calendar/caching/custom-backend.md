@@ -20,7 +20,7 @@ The unit of storage is <xref:Bodu.Globalization.Calendar.Caching.NotableDateCach
 
 ## Invariants a backend must honour
 
-1. **Territory keys are case-insensitive.** `us` and `US` address the same entry; a subdivision (`CA-ON`) and its parent (`CA`) are distinct. Normalise to `Trim().ToUpperInvariant()` on both read and write, and persist the normalised form.
+1. **Territory keys are case-insensitive.** `us` and `US` address the same entry; a subdivision (`CA-ON`) and its parent (`CA`) are distinct. Normalize on both read and write by trimming the territory and upper-casing its ASCII letters `a`-`z` alone, and persist the normalized form. Do not use `ToUpperInvariant`: it also maps U+017F LATIN SMALL LETTER LONG S to `S`, so a look-alike such as `ſE` would share `SE`'s entry. The decorator never hands a backend a territory outside ASCII, and it resolves each year for the normalized form it caches.
 2. **Version match is exact and ordinal.** Serve an entry only when its `ResourceVersion` equals the requested one; a store drops every stored entry whose version differs from the incoming entry's, so a resource reload invalidates the territory wholesale.
 3. **Freshness is strict.** An entry exactly one time-to-live old is stale (`ComputedAtUtc + ttl <= asOf` is a miss). `NotableDateCacheEntry.IsFresh` encodes this; use it rather than re-deriving it.
 4. **Ordering round-trips.** `Occurrences` must come back in exactly the order they were stored - the service's date-then-identity order. The decorator assembles multi-year range results by concatenation and relies on this; a backend that cannot preserve order forces a sort fallback on every read.

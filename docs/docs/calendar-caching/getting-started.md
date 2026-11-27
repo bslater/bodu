@@ -339,8 +339,19 @@ public sealed class DictionaryNotableDateCache : INotableDateCache
     public void Clear() =>
         _entries.Clear();
 
-    private static string Normalize(string territory) =>
-        territory.Trim().ToUpperInvariant();
+    private static string Normalize(string territory)
+    {
+        // Raise the ASCII letters alone: ToUpperInvariant also turns U+017F LATIN SMALL LETTER LONG S into S, which
+        // would let a look-alike share the territory's entry.
+        char[] key = territory.Trim().ToCharArray();
+        for (int i = 0; i < key.Length; i++)
+        {
+            if (char.IsAsciiLetterLower(key[i]))
+                key[i] = (char)(key[i] - ('a' - 'A'));
+        }
+
+        return new string(key);
+    }
 }
 ```
 

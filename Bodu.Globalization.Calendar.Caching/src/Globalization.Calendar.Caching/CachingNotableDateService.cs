@@ -60,6 +60,13 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <see cref="MutableNotableDateResourceProvider.Reload(NotableDateResource)" /> invalidates every cached year on the
 /// next query. Without a provider, a fixed version token from the options is used.
 /// </para>
+/// <para>
+/// A territory is trimmed and its ASCII letters are upper-cased once, and that one form is both resolved by the wrapped
+/// service and used as the cache key, so <c>us</c>, <c>US </c> and <c>US</c> share one entry and one answer. A
+/// territory that holds a character outside ASCII names no ISO 3166 territory, and is resolved by the wrapped service
+/// on every call without being cached: invariant casing maps U+017F LATIN SMALL LETTER LONG S to <c>S</c>, so a backend
+/// that changes case more widely than the cache key could otherwise file its answer under another territory's entry.
+/// </para>
 /// </remarks>
 public sealed class CachingNotableDateService
     : INotableDateService, IDisposable
@@ -165,13 +172,22 @@ public sealed class CachingNotableDateService
         if (range.EndDate < range.StartDate)
             return _inner.Resolve(range, territory);
 
+        // A territory outside ASCII names no ISO 3166 territory, and a backend that changes case more widely than the
+        // cache key could file its answer under another territory's entry, so it is never cached.
+        if (!System.Text.Ascii.IsValid(territory))
+            return _inner.Resolve(range, territory);
+
+        // One normalized form serves both the wrapped service and the cache, so a year computed for a territory is
+        // always stored under that territory's own key.
+        string key = NotableDateCacheRules.NormalizeTerritory(territory);
+
         DateTimeOffset now = _timeProvider.GetUtcNow();
         string version = ResolveVersion();
 
         // Jitter is keyed by the normalized territory (not territory+year) so the batch and per-year read paths,
         // which share this one time-to-live for the whole span, always agree on freshness.
         TimeSpan ttl = _options.TtlJitter > 0
-            ? CacheFreshness.WithJitter(_options.Ttl, NotableDateCacheRules.NormalizeTerritory(territory), _options.TtlJitter)
+            ? CacheFreshness.WithJitter(_options.Ttl, key, _options.TtlJitter)
             : _options.Ttl;
 
         int firstYear = range.StartDate.Year;
@@ -180,7 +196,7 @@ public sealed class CachingNotableDateService
 
         if (firstYear == lastYear)
         {
-            IReadOnlyList<NotableDate> year = ResolveYear(territory, firstYear, version, ttl, now);
+            IReadOnlyList<NotableDate> year = ResolveYear(key, firstYear, version, ttl, now);
 
             // Whole-civil-year window (the Resolve(year, territory) extension shape): the cached year list is the
             // answer itself - no clipping, no copying.
@@ -196,21 +212,21 @@ public sealed class CachingNotableDateService
         // territory state read instead of once per year; other backends are consulted per year.
         if (_cache is INotableDateCacheBatchReader batchReader)
         {
-            NotableDateCacheEntry?[] years = batchReader.GetYears(territory, firstYear, lastYear, version, ttl, now);
+            NotableDateCacheEntry?[] years = batchReader.GetYears(key, firstYear, lastYear, version, ttl, now);
             for (int year = firstYear; year <= lastYear; year++)
             {
                 NotableDateCacheEntry? entry = years[year - firstYear];
                 IReadOnlyList<NotableDate> occurrences;
                 if (entry is not null)
                 {
-                    Log.CacheHit(_logger, _options.CacheHitLogLevel, territory, year, (now - entry.ComputedAtUtc).TotalSeconds);
-                    CalendarCachingMeter.CacheHit(territory);
-                    MaybeScheduleRefreshAhead(territory, year, version, ttl, entry.ComputedAtUtc, now);
+                    Log.CacheHit(_logger, _options.CacheHitLogLevel, key, year, (now - entry.ComputedAtUtc).TotalSeconds);
+                    CalendarCachingMeter.CacheHit(key);
+                    MaybeScheduleRefreshAhead(key, year, version, ttl, entry.ComputedAtUtc, now);
                     occurrences = entry.Occurrences;
                 }
                 else
                 {
-                    occurrences = ComputeAndStoreYear(territory, year, version, ttl, now);
+                    occurrences = ComputeAndStoreYear(key, year, version, ttl, now);
                 }
 
                 AppendInRange(assembled, occurrences, range, TakenFrom(year, firstYear), inclusion);
@@ -219,7 +235,7 @@ public sealed class CachingNotableDateService
         else
         {
             for (int year = firstYear; year <= lastYear; year++)
-                AppendInRange(assembled, ResolveYear(territory, year, version, ttl, now), range, TakenFrom(year, firstYear), inclusion);
+                AppendInRange(assembled, ResolveYear(key, year, version, ttl, now), range, TakenFrom(year, firstYear), inclusion);
         }
 
         return EnsureOrdered(assembled);
