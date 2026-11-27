@@ -41,6 +41,33 @@ public sealed class Crockford32Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Crockford32.Compute(ReadOnlySpan{char})" /> rejects U+017F LATIN SMALL LETTER LONG S in
+    /// the body, which invariant uppercasing maps to <c>'S'</c> but which is outside the Crockford Base32 alphabet.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsLongS_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Crockford32.Compute("ſ5".AsSpan());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Crockford32.IsValid(ReadOnlySpan{char})" /> rejects a body that holds U+017F LATIN
+    /// SMALL LETTER LONG S where the valid <c>"S5W"</c> holds <c>'S'</c>.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsLongS_ShouldReturnFalse() => Assert.IsFalse(Crockford32.IsValid("ſ5W".AsSpan()));
+
+    /// <summary>
+    /// Verifies that <see cref="Crockford32.IsValid(ReadOnlySpan{char})" /> rejects U+017F LATIN SMALL LETTER LONG S as
+    /// the check symbol where the valid <c>"SS"</c> holds <c>'S'</c>.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenCheckSymbolIsLongS_ShouldReturnFalse() => Assert.IsFalse(Crockford32.IsValid("Sſ".AsSpan()));
+
+    /// <summary>
     /// Verifies that decoding is case-insensitive: a lowercase body produces the same check symbol as its uppercase
     /// equivalent.
     /// </summary>
