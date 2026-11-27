@@ -49,7 +49,7 @@ A document with only warnings is valid: `lint` prints the warnings and exits `0`
 
 ## The diagnostic line format
 
-Each diagnostic prints on its own line as `[Severity] CODE: message`, where `CODE` is the stable `BODU-CAL-*` identifier from the [validation diagnostics catalogue](../validation-diagnostics.md). The runs below are real output from `CalendarTool.Run` against documents in the repository's test fixtures:
+Each diagnostic prints on its own line as `[Severity] CODE: message`, where `CODE` is the stable `BODU-CAL-*` identifier from the [validation diagnostics catalogue](../validation-diagnostics.md), followed by `(line N, position M)` when the diagnostic carries the place in the document it concerns: every diagnostic of an XML document does, and in a JSON document only the error for text that is not well-formed (see [Where a diagnostic points](../validation-diagnostics.md#where-a-diagnostic-points)). The runs below are real output from `CalendarTool.Run` against documents in the repository's test fixtures:
 
 ```text
 $ bodu-calendar lint easter.xml
@@ -57,12 +57,12 @@ easter.xml: OK - resource 'fixture.easter' is valid (0 diagnostic(s)).
 [exit 0]
 
 $ bodu-calendar lint invalid-unknown-algorithm.xml
-[Error] BODU-CAL-ALGORITHM: Notable date 'x', rule 'r': algorithm key 'not-a-real-algorithm' is not recognized.
+[Error] BODU-CAL-ALGORITHM: Notable date 'x', rule 'r': algorithm key 'not-a-real-algorithm' is not recognized. (line 5, position 15)
 invalid-unknown-algorithm.xml: FAILED - 1 error(s), 1 total diagnostic(s).
 [exit 1]
 
 $ bodu-calendar lint invalid-unknown-policy-ref.xml
-[Error] BODU-CAL-ADJREF: Rule 'r' references undefined adjustment policy 'missing-policy'.
+[Error] BODU-CAL-ADJREF: Rule 'r' references undefined adjustment policy 'missing-policy'. (line 5, position 15)
 invalid-unknown-policy-ref.xml: FAILED - 1 error(s), 1 total diagnostic(s).
 [exit 1]
 
@@ -75,7 +75,7 @@ Unsupported document extension '.bcal': expected .xml or .json.          (stderr
 [exit 2]
 ```
 
-The summary line's shape is fixed: `<file>: OK - resource '<id>' is valid (<n> diagnostic(s)).` on success and `<file>: FAILED - <errors> error(s), <total> total diagnostic(s).` on failure, so a log scraper can match on `: OK -` / `: FAILED -` and an editor can match `^\[(Error|Warning|Information)\] (BODU-CAL-[A-Z0-9-]+): `.
+The summary line's shape is fixed: `<file>: OK - resource '<id>' is valid (<n> diagnostic(s)).` on success and `<file>: FAILED - <errors> error(s), <total> total diagnostic(s).` on failure, so a log scraper can match on `: OK -` / `: FAILED -` and an editor can match `^\[(Error|Warning|Information)\] (BODU-CAL-[A-Z0-9-]+): `, and the position, where there is one, with ` \(line (\d+), position (\d+)\)$`. The line and position count from 1.
 
 ## Compiling to `.bcal`
 
@@ -89,8 +89,8 @@ out/easter.bcal: format v1, resource 'fixture.easter' (schema 1.0), 2 notable da
 [exit 0]
 
 $ bodu-calendar compile invalid-unknown-algorithm.xml -o out/bad.bcal
-[Error] BODU-CAL-ALGORITHM: Notable date 'x', rule 'r': algorithm key 'not-a-real-algorithm' is not recognized.          (stderr)
-invalid-unknown-algorithm.xml: FAILED - 1 error(s), 1 total diagnostic(s).                                               (stderr)
+[Error] BODU-CAL-ALGORITHM: Notable date 'x', rule 'r': algorithm key 'not-a-real-algorithm' is not recognized. (line 5, position 15)          (stderr)
+invalid-unknown-algorithm.xml: FAILED - 1 error(s), 1 total diagnostic(s).                                                                     (stderr)
 [exit 1]
 ```
 

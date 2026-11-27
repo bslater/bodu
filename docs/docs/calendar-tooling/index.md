@@ -56,12 +56,12 @@ The document format is selected by extension: `.xml` goes through the XML loader
 | `1` | `CalendarTool.ExitFailure` | A validation or input failure: the document has error diagnostics, the input file does not exist, or (for `info`) the pack is malformed. |
 | `2` | `CalendarTool.ExitUsage` | A usage error: no verb, an unknown verb or option, a missing argument, or an unsupported extension. Usage help is printed. |
 
-Diagnostics print **one per line** as `[Severity] CODE: message` - the <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> `ToString()` form - so build logs, editors, and CI annotations can match on the stable code:
+Diagnostics print **one per line** as `[Severity] CODE: message` - the <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> `ToString()` form - followed by `(line N, position M)` when the diagnostic carries the place in the document it concerns, so build logs, editors, and CI annotations can match on the stable code and point at the line:
 
 ```text
 $ bodu-calendar lint holidays.xml
-[Error] BODU-CAL-SCHEMA: The notable-date document XML failed schema validation: The element 'Rules' in namespace 'urn:bodu:globalization:calendar' has incomplete content. List of possible elements expected: 'Rule' in namespace 'urn:bodu:globalization:calendar'.
-[Error] BODU-CAL-ADJREF: Rule 'fixed' references undefined adjustment policy 'weekend-roll'.
+[Error] BODU-CAL-SCHEMA: The notable-date document XML failed schema validation: The element 'Rules' in namespace 'urn:bodu:globalization:calendar' has incomplete content. List of possible elements expected: 'Rule' in namespace 'urn:bodu:globalization:calendar'. (line 13, position 8)
+[Error] BODU-CAL-ADJREF: Rule 'fixed' references undefined adjustment policy 'weekend-roll'. (line 6, position 10)
 holidays.xml: FAILED - 2 error(s), 2 total diagnostic(s).
 
 $ bodu-calendar lint contoso-holidays.xml
@@ -74,7 +74,7 @@ $ bodu-calendar info packs/holidays.bcal
 packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 notable date(s), 1 adjustment policy(ies), payload sha256 85504d61441ee72109a3325c0859c7a7a40f2139ef5afc9cc23d012ba3b5a63d.
 ```
 
-`lint` writes diagnostics to standard output; `compile` writes them to standard error when it fails. A missing input file is reported (exit `1`) before the extension is examined, so an existing file with an extension other than `.xml` / `.json` is what produces the usage error. The full code table, with the condition behind each code, is in [Calendar validation diagnostics](../../guides/calendar/validation-diagnostics.md). The tool's entry point is also callable in process - `CalendarTool.Run(args, output, error)` - which is how the test suite drives it; the Build task runs the same entry point out of process, through `dotnet exec` on the tool assembly. See the [namespace overview](xref:Bodu.Globalization.Calendar.Tool).
+`lint` writes diagnostics to standard output; `compile` writes them to standard error when it fails. A missing input file is reported (exit `1`) before the extension is examined, so an existing file with an extension other than `.xml` / `.json` is what produces the usage error. The full code table, with the condition behind each code and what each diagnostic's position points at, is in [Calendar validation diagnostics](../../guides/calendar/validation-diagnostics.md). The tool's entry point is also callable in process - `CalendarTool.Run(args, output, error)` - which is how the test suite drives it; the Build task runs the same entry point out of process, through `dotnet exec` on the tool assembly. See the [namespace overview](xref:Bodu.Globalization.Calendar.Tool).
 
 ## `Bodu.Globalization.Calendar.Build` - the MSBuild integration
 

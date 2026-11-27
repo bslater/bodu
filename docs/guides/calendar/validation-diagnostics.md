@@ -4,7 +4,7 @@ title: Calendar validation diagnostics
 
 # Calendar validation diagnostics
 
-Every notable-date document - hand-authored XML/JSON, a bundled catalogue, or a document produced by the <xref:Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder> - passes through one validation pipeline in <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. Each problem the pipeline finds is a <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> carrying a severity, a stable `BODU-CAL-*` code, and a message naming the offending concept, rule, or policy. This page is the code reference and shows the two ways to consume diagnostics: throwing loads and collect-mode linting.
+Every notable-date document - hand-authored XML/JSON, a bundled catalogue, or a document produced by the <xref:Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder> - passes through one validation pipeline in <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. Each problem the pipeline finds is a <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> carrying a severity, a stable `BODU-CAL-*` code, a message naming the offending concept, rule, or policy, and, for a document loaded from XML text, the line and position it concerns. This page is the code reference and shows the two ways to consume diagnostics: throwing loads and collect-mode linting.
 
 ## Throw or collect
 
@@ -40,6 +40,58 @@ Argument errors (`null` inputs) still throw from the `Try` overloads - the `Try`
 | `Error` | The document cannot be loaded. Throwing overloads raise `NotableDateValidationException`; `Try` overloads return `false`. |
 | `Warning` | The document loads, but something merits attention (currently produced only by non-fatal XSD findings under `BODU-CAL-SCHEMA`). |
 | `Information` | Advisory only. |
+
+## Where a diagnostic points
+
+A diagnostic about a document loaded from XML text carries the place in that text it concerns, in `LineNumber` and `LinePosition`. Both count from 1, as the XML reader does, so an element is placed at the first character of its name, just after the `<`; both are `null` on a diagnostic that carries no position. `NotableDateResourceLoader.Load(...)` and `TryLoad(...)` set them, from a string or a stream alike, and `ToString()` appends them to the line it renders:
+
+```text
+[Error] BODU-CAL-ALGORITHM: Notable date 'founders-day', rule 'default': algorithm key 'no-such-algorithm' is not recognized. (line 5, position 15)
+```
+
+| Diagnostic | Points at |
+|---|---|
+| `BODU-CAL-SYNTAX` for the loaded document's own text (reported by `TryLoad`) | The character at which the XML reader failed. |
+| `BODU-CAL-SCHEMA` | The element or attribute the schema validation reports. |
+| A value the reader cannot accept (`BODU-CAL-ENUM`, `BODU-CAL-VALUE`, `BODU-CAL-MONTH`, `BODU-CAL-STRATEGY`, …) | The element that holds the value. |
+| A finding about an adjustment policy, a notable date, or a rule (duplicates, cross-references, durations, …) | That declaration's element; for a repeated identifier, the repeat. |
+| An override that targets a concept or rule that does not exist | The override's element. A rule that a `<PatchRule>` makes invalid is reported at the `<PatchRule>`. |
+| An import the resolver cannot supply, or one that closes a cycle | The `<Import>` element. |
+| A `<Use>` naming a concept its resource does not declare | The `<Use>` element. |
+| Anything an imported resource produces, or anything about a concept, rule, or policy that an import brought in | The `<Import>` or `<Use>` element of the loaded document that brought it in, never a line of the imported resource. |
+
+These diagnostics carry no position:
+
+- **A JSON document's**, except the `BODU-CAL-SYNTAX` error `TryLoadJson` reports for text that is not well-formed, which points at the character the JSON reader failed at. That position counts lines and characters from 1, as an editor does, although the reader's own message, which the diagnostic quotes, counts from zero and in UTF-8 bytes.
+- **The builder's.** `NotableDateDocumentBuilder.Validate()`, `TryBuild(...)`, and `Build()` validate the builder's own serialization of the document, not text you could look the position up in, so their diagnostics carry none, even for a document read with `FromXml` or `FromJson`.
+- **A resource checked before it is written as a pack.** `NotableDateBinaryResource.Write` validates a resource that has no text behind it, and `LoadBinary` reads a `.bcal` pack without validating it again.
+
+The throwing overloads raise `FormatException` for text that is not well-formed rather than a diagnostic. Its `InnerException` is the reader's own exception: an `XmlException`, whose `LineNumber` and `LinePosition` are the ones `TryLoad` reports, or a `JsonException`.
+
+<!-- compile -->
+```csharp
+string xml = """
+    <?xml version="1.0" encoding="utf-8"?>
+    <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="corp.holidays">
+      <NotableDates>
+        <NotableDate id="founders-day" displayName="Founders' Day" category="Observance">
+          <Rules><Rule id="default"><Strategy><Algorithm key="no-such-algorithm" /></Strategy></Rule></Rules>
+        </NotableDate>
+      </NotableDates>
+    </NotableDateResource>
+    """;
+
+if (!NotableDateResourceLoader.TryLoad(xml, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics))
+{
+    foreach (NotableDateValidationDiagnostic diagnostic in diagnostics)
+    {
+        string where = diagnostic.LineNumber is int line ? $"({line},{diagnostic.LinePosition})" : string.Empty;
+        Console.WriteLine($"holidays.xml{where}: {diagnostic.Code}: {diagnostic.Message}");   // holidays.xml(5,15): BODU-CAL-ALGORITHM: ...
+    }
+}
+```
+
+The position takes part in equality: two diagnostics are equal when their severity, code, message, line number, and line position all are, so a diagnostic with a position is not equal to one with the same text and none. To compare a loaded document's diagnostics with an expected one, compare `Severity`, `Code`, and `Message`, or give the expected diagnostic its position: `new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-ALGORITHM", message) { LineNumber = 5, LinePosition = 15 }`.
 
 ## Diagnostic codes
 
