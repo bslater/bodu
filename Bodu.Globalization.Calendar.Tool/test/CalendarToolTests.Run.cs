@@ -57,6 +57,20 @@ public sealed partial class CalendarToolTests
     }
 
     /// <summary>
+    /// Verifies that linting an invalid document prints where in the file each diagnostic points: the invalid rule's
+    /// element, at line 5, position 15.
+    /// </summary>
+    [TestMethod]
+    public void Run_WhenLintingInvalidDocument_ShouldPrintTheDiagnosticsPosition()
+    {
+        string path = WriteScratchFile("lint-invalid-position.xml", InvalidXml);
+
+        (_, string output, _) = RunTool("lint", path);
+
+        Assert.IsTrue(output.Contains("(line 5, position 15)", StringComparison.Ordinal), output);
+    }
+
+    /// <summary>
     /// Verifies that linting a missing file exits with the failure code and names the file.
     /// </summary>
     [TestMethod]

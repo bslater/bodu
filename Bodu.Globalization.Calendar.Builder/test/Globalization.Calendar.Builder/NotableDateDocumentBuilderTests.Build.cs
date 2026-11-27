@@ -158,4 +158,24 @@ public partial class NotableDateDocumentBuilderTests
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(builder.Build);
     }
+
+    /// <summary>
+    /// Verifies that the diagnostics a failed build carries in its <see cref="NotableDateValidationException" /> carry
+    /// no position, because the XML they would point into is the builder's own serialization.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenADocumentFailsValidation_ShouldThrowDiagnosticsWithoutPositions()
+    {
+        NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("demo.build.positions")
+            .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
+                .AddRule("r", x => x.Algorithm("no-such-algorithm")));
+
+        var ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = builder.Build();
+        });
+
+        NotableDateValidationDiagnostic algorithm = ex.Diagnostics.Single(d => d.Code == "BODU-CAL-ALGORITHM");
+        Assert.AreEqual(((int?)null, (int?)null), (algorithm.LineNumber, algorithm.LinePosition));
+    }
 }
