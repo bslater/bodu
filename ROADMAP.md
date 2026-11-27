@@ -1582,8 +1582,8 @@ Current state:
 
 - **Declared AOT-compatible** (`IsAotCompatible`, so the trim and AOT
   analyzers run on every build): `Bodu.Core`, `Bodu.Collections`,
-  `Bodu.Collections.Concurrent`, `Bodu.IO.Hashing`,
-  `Bodu.Security.Cryptography`, `Bodu.Numerics`,
+  `Bodu.Collections.Concurrent`, `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
+  `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, `Bodu.Numerics`,
   `Bodu.Numerics.Serialization.Json`,
   `Bodu.Financial.Serialization.Json`, and
   `Bodu.Globalization.Recurrence`.
@@ -1607,10 +1607,11 @@ Current state:
 
 Target state:
 
-- **Declare the AOT-clean packages that do not yet say so:**
-  `Bodu.IO.Compound`, `Bodu.Text.Encoding`, and the token readers and
-  writers of the text libraries, which are reflection-free on the token
-  path.
+- **Declare the text libraries:** their token readers and writers are
+  reflection-free, but the flag covers a whole assembly, and turning it on
+  for TOML, Bencode and YAML reports the shared converter engine's
+  reflection, which needs trimming annotations threaded through it first.
+  `Bodu.IO.Compound` and `Bodu.Text.Encoding` were declared for 1.3.1.
 - **AOT-clean with work:** the `Bodu.Text.Delimited` / `.Ini`
   `*Serializer` reflection binders have a reflection-free escape hatch
   in the `Bodu.Text.Formats.Generators` factories and the serializer

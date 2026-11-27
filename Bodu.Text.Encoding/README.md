@@ -2,7 +2,7 @@
 
 > **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
-Binary-to-text encodings for .NET 8 and .NET 10 - Base16, Base32, Base45, Base58, Base62, Base64, Base85, and Bech32, plus Base58Check, Base64Url, percent-encoding, and quoted-printable - with a uniform static API, variant selection, encode-time formatting options, and decode-time leniency styles. The five core encodings (Base16, Base32, Base58, Base64, Base85) expose span, string, UTF-8, and `IBufferWriter<>` surfaces with `Try*` and length-calculation overloads for allocation-free use.
+Binary-to-text encodings for .NET 8 and .NET 10 - Base16, Base32, Base45, Base58, Base62, Base64, Base85, and Bech32, plus Base58Check, Base64Url, percent-encoding, and quoted-printable - with a uniform static API, variant selection, encode-time formatting options, and decode-time leniency styles. The seven encodings of the `IBinaryEncoding` family (Base16, Base32, Base45, Base58, Base62, Base64, Base85) expose span, string, UTF-8, and `IBufferWriter<>` surfaces with `Try*` and length-calculation overloads for allocation-free use.
 
 ## Installation
 
@@ -44,7 +44,7 @@ Base32.TryEncode(data, dest, out int written, Base32Variant.Crockford);
 ```
 
 - `Encode` / `Decode`, `TryEncode` / `TryDecode`, `GetEncodedLength` / `GetDecodedLength`.
-- UTF-8 surfaces (`EncodeToUtf8`, `DecodeFromUtf8`) and `IBufferWriter<byte>` / `IBufferWriter<char>` overloads, as static members of the five core encodings.
+- UTF-8 surfaces (`EncodeToUtf8`, `DecodeFromUtf8`) and `IBufferWriter<byte>` / `IBufferWriter<char>` overloads, as static members of the seven encodings of the `IBinaryEncoding` family.
 - `BinaryEncodings` provides variant-aware `IBinaryEncoding` instances for polymorphic selection.
 
 `BaseFormattingOptions` (encode) toggles casing, line breaks, prefixes, spacing, and padding omission; `BaseFormatStyles` (decode) controls leniency - prefix tolerance, whitespace skipping, missing padding, and canonical-form enforcement.
