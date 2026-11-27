@@ -27,6 +27,10 @@ public partial class RecurrenceRuleTests
                 new("count and until together", "FREQ=DAILY;COUNT=2;UNTIL=20260101T000000", typeof(FormatException), MessageContains: "COUNT and UNTIL"),
                 new("signed value at the minimum integer", "FREQ=MONTHLY;BYMONTHDAY=-2147483648", typeof(FormatException), MessageContains: "BYMONTHDAY=-2147483648"),
                 new("weekday ordinal at the minimum integer", "FREQ=MONTHLY;BYDAY=-2147483648MO", typeof(FormatException), MessageContains: "BYDAY=-2147483648MO"),
+
+                // Invariant uppercasing maps U+017F LATIN SMALL LETTER LONG S to an ASCII S; the weekdays are ASCII.
+                new("weekday with a long s", "FREQ=WEEKLY;BYDAY=ſU", typeof(FormatException), MessageContains: "BYDAY=ſU"),
+                new("week start with a long s", "FREQ=WEEKLY;WKST=ſU", typeof(FormatException), MessageContains: "WKST=ſU"),
             };
 
             foreach (InvalidKat<string> row in rows)

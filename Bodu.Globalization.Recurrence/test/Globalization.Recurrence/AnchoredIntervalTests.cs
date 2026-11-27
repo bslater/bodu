@@ -70,6 +70,9 @@ public sealed partial class AnchoredIntervalTests
                 new("hours without time designator", "P4H", typeof(FormatException), MessageContains: "'T' designator"),
                 new("trailing digits without unit", "PT4H30", typeof(FormatException), MessageContains: "not valid"),
                 new("unknown unit", "PT4X", typeof(FormatException), MessageContains: "not valid"),
+
+                // Invariant uppercasing maps U+017F LATIN SMALL LETTER LONG S to an ASCII S; the designators are ASCII.
+                new("seconds unit written with a long s", "PT5ſ", typeof(FormatException), MessageContains: "not valid"),
                 new("unit without digits", "PTH", typeof(FormatException), MessageContains: "not valid"),
                 new("weeks combined with days", "P1W2D", typeof(FormatException), MessageContains: "cannot be combined"),
                 new("weeks combined with time", "P1WT1H", typeof(FormatException), MessageContains: "cannot be combined"),
