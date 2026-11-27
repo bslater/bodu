@@ -168,7 +168,7 @@ public readonly partial struct DayOfWeekSet
         if (format.Length is < 1 or > 2)
             return false;
 
-        char first = char.ToUpperInvariant(format[0]);
+        char first = CalendarValueSet.ToUpperAscii(format[0]);
         if (format.Length == 1)
         {
             switch (first)
@@ -190,7 +190,7 @@ public readonly partial struct DayOfWeekSet
             return true;
         }
 
-        if (first is not ('S' or 'M') || !CalendarValueSet.TryParsePlaceholder(char.ToUpperInvariant(format[1]), out char placeholder))
+        if (first is not ('S' or 'M') || !CalendarValueSet.TryParsePlaceholder(CalendarValueSet.ToUpperAscii(format[1]), out char placeholder))
             return false;
 
         result = new TextFormat(first == 'M', placeholder, Binary: false);
