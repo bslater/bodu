@@ -31,6 +31,7 @@ These changes need no code change to compile, but they can change what your code
   - `Bodu.Financial.Serialization.Json`: currency codes read under `FinancialJsonPolicy.Lenient`.
   - The five regional calendar data packs: the country codes that `LoadResource` and `CreateService` take.
 - **The YAML reader rejects a `%TAG` handle that holds a letter or digit outside ASCII**, which YAML 1.2 does not allow in a named handle.
+- **The notable-date cache resolves and stores a territory under one normalized form.** `CachingNotableDateService` trims the territory and upper-cases its ASCII letters, then resolves and caches that one form, so `" SE"` resolves Sweden's dates where it resolved none, and can no longer empty Sweden's cached year for every later caller. A territory that holds a character outside ASCII is resolved on every call and never cached. A custom `INotableDateCache` should normalize its keys the same way, as [writing a cache backend](../guides/calendar/caching/custom-backend.md) describes.
 - **Exceptions change type or message.**
   - `NotableDatePluginLoader.LoadFrom` reports a plugin type that cannot be created, such as an open generic type, `void`, or a `ref struct`, as the `PluginActivationException` it documents, where an `ArgumentException` or a `NotSupportedException` escaped.
   - `Bech32.DecodeToBytes` reports a data part that does not convert to whole bytes with a message that says so, where it gave the data-alphabet message with its placeholder unfilled.

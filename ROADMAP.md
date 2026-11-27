@@ -264,6 +264,12 @@ changes no public API:
   the regional calendar data packs (#1390). Each now changes the case of the
   ASCII letters alone. The YAML reader accepted any Unicode letter or
   digit in a `%TAG` handle, where YAML 1.2 allows ASCII ones (#1391).
+- **A territory's cached year, kept to its own territory.** The calendar
+  cache keyed a year by the territory trimmed and upper-cased but computed
+  it for the caller's text, so one request for `" SE"` or a look-alike
+  could empty Sweden's cached year for every later caller. The decorator
+  now resolves and caches one normalized form, and never caches a
+  territory outside ASCII (#1392).
 - **Messages and exception types.** `Bech32.DecodeToBytes` names a data
   part that does not convert to whole bytes (#1385), and the calendar
   plugin loader reports every type it cannot create as
