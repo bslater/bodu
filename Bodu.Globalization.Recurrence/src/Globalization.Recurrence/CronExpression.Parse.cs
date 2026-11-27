@@ -310,7 +310,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             return false;
         }
 
-        string? expanded = token.ToUpperInvariant() switch
+        string? expanded = AsciiCasing.ToUpper(token) switch
         {
             "@YEARLY" or "@ANNUALLY" => "0 0 1 1 *",
             "@MONTHLY" => "0 0 1 * *",
@@ -574,7 +574,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// </returns>
     private static bool TryResolveValue(string token, int min, int max, Func<string, int?>? names, out int value)
     {
-        if (names is not null && names(token.ToUpperInvariant()) is int named)
+        if (names is not null && names(AsciiCasing.ToUpper(token)) is int named)
         {
             value = named;
             return true;
