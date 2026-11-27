@@ -84,7 +84,7 @@ public static partial class Bech32
 
         Decode(source.AsSpan(), out hrp, out byte[]? groups, out encoding);
         byte[]? bytes = ConvertBits(groups, 5, 8, pad: false);
-        data = bytes ?? throw new FormatException(EncodingResourceStrings.Format_Invalid_Bech32DataCharacter);
+        data = bytes ?? throw new FormatException(EncodingResourceStrings.Format_Invalid_Bech32DataNotByteAligned);
     }
 
     /// <summary>
