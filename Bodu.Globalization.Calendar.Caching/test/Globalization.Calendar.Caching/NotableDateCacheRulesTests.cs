@@ -188,4 +188,18 @@ public sealed class NotableDateCacheRulesTests
         foreach (NotableDateCacheEntry? slot in batch)
             Assert.IsNull(slot);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateCacheRules.NormalizeTerritory(string)" /> trims a territory and raises its
+    /// ASCII letters, and keeps U+017F LATIN SMALL LETTER LONG S, which invariant uppercasing maps to <c>S</c>, as it
+    /// is, so a look-alike never normalizes to the territory it resembles.
+    /// </summary>
+    /// <param name="territory">The territory as given.</param>
+    /// <param name="expected">The normalized territory.</param>
+    [TestMethod]
+    [DataRow(" se ", "SE")]
+    [DataRow("ca-on", "CA-ON")]
+    [DataRow("ſe", "ſE")]
+    public void NormalizeTerritory_WhenNormalized_ShouldTrimAndRaiseOnlyTheAsciiLetters(string territory, string expected) =>
+        Assert.AreEqual(expected, NotableDateCacheRules.NormalizeTerritory(territory));
 }
