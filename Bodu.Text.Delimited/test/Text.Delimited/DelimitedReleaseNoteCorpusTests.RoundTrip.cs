@@ -6,6 +6,7 @@
 
 using Bodu.Test.Corpus;
 using Bodu.Test.Kat;
+using Bodu.Text.Delimited.Reader;
 
 namespace Bodu.Text.Delimited;
 
@@ -40,5 +41,26 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
 
         if (expected.Length > 0)
             Assert.AreEqual(Escape(expected), Escape(written), $"{fix}: the written bytes differ from the expected ones.");
+    }
+
+    /// <summary>
+    /// Verifies that each cataloged input a fix established as one to write back, read by <c>Utf8DelimitedReader</c> in
+    /// blocks split every way and with a new reader after every token, reports exactly what a single read reports.
+    /// </summary>
+    /// <param name="fix">The catalog row.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(RoundTripRows),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void RoundTrip_WhenFixScenarioIsReadInBlocks_ShouldMatchTheSinglePassTranscript(ReleaseNoteFix fix)
+    {
+        ArgumentNullException.ThrowIfNull(fix);
+
+        DelimitedReaderOptions options = RowOptions.Parse(fix.Options).ToReaderOptions();
+        byte[] input = CorpusEscapes.Decode(fix.Input);
+
+        DelimitedReaderTranscript.AssertEverySplitMatches(input, options, fix.ToString());
     }
 }
