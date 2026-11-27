@@ -59,6 +59,11 @@ public static class FinancialServiceBuilderExtensions
     /// <paramref name="builder" /> or <paramref name="context" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="name" /> is empty or white space.</exception>
+    /// <remarks>
+    /// <see cref="IMonetaryContextResolver" /> also resolves the context by <paramref name="name" />, unless
+    /// <see cref="FinancialOptions.MonetaryContexts" /> configures a context of the same name, which takes precedence
+    /// there; the keyed service always resolves <paramref name="context" />.
+    /// </remarks>
     public static IFinancialServiceBuilder AddMonetaryContext(this IFinancialServiceBuilder builder, string name, MonetaryContext context)
     {
         ThrowHelper.ThrowIfNull(builder);

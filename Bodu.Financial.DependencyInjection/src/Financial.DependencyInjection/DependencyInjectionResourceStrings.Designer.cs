@@ -68,5 +68,50 @@ namespace Bodu.Financial.DependencyInjection {
                 return ResourceManager.GetString("Arg_Invalid_MonetaryContextNameBlank", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No monetary context is configured or registered under the name &apos;{0}&apos;..
+        /// </summary>
+        internal static string IO_KeyNotFound_MonetaryContext {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_MonetaryContext", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The default monetary context in the financial options is not valid: {0}.
+        /// </summary>
+        internal static string Op_Invalid_DefaultMonetaryContextOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DefaultMonetaryContextOptions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The monetary context &apos;{0}&apos; in the financial options is not valid: {1}.
+        /// </summary>
+        internal static string Op_Invalid_MonetaryContextOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MonetaryContextOptions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The monetary context &apos;{0}&apos; in the financial options has no settings..
+        /// </summary>
+        internal static string Op_Invalid_MonetaryContextOptionsMissing {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MonetaryContextOptionsMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A monetary context in the financial options has an empty or white-space name..
+        /// </summary>
+        internal static string Op_Invalid_MonetaryContextOptionsNameBlank {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MonetaryContextOptionsNameBlank", resourceCulture);
+            }
+        }
     }
 }
