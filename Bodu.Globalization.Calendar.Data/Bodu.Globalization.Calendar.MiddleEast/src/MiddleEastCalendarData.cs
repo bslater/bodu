@@ -60,8 +60,7 @@ public static class MiddleEastCalendarData
     {
         ThrowHelper.ThrowIfNull(territory);
 
-        string country = CountryOf(territory);
-        string resourceName = ResourcePrefix + country.ToLowerInvariant() + ".xml";
+        string resourceName = ResourcePrefix + CountryOf(territory) + ".xml";
 
         using Stream stream = typeof(MiddleEastCalendarData).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new ArgumentException(
@@ -107,15 +106,27 @@ public static class MiddleEastCalendarData
         new(LoadResource(territory));
 
     /// <summary>
-    /// Extracts the country code from a territory, returning the segment before any subdivision separator.
+    /// Extracts the country code from a territory, the segment before any subdivision separator, in the lower case of
+    /// the embedded resource names.
     /// </summary>
     /// <param name="territory">The territory code.</param>
-    /// <returns>The uppercase country code.</returns>
+    /// <returns>The country code, with its ASCII letters lowered and every other character unchanged.</returns>
+    /// <remarks>
+    /// Only the ASCII letters change case. Invariant casing also maps U+017F LATIN SMALL LETTER LONG S to <c>S</c> and
+    /// U+212A KELVIN SIGN to <c>k</c>, so a code that holds either would name the resource of the country it resembles.
+    /// </remarks>
     private static string CountryOf(string territory)
     {
         int separator = territory.IndexOf('-', StringComparison.Ordinal);
-        string country = separator < 0 ? territory : territory[..separator];
+        int length = separator < 0 ? territory.Length : separator;
 
-        return country.ToUpperInvariant();
+        return string.Create(length, territory, static (destination, source) =>
+        {
+            for (int i = 0; i < destination.Length; i++)
+            {
+                char c = source[i];
+                destination[i] = char.IsAsciiLetterUpper(c) ? (char)(c | 0x20) : c;
+            }
+        });
     }
 }
