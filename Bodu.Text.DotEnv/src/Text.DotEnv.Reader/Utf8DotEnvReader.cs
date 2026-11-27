@@ -28,6 +28,13 @@ namespace Bodu.Text.DotEnv.Reader;
 /// Key and comment text is exposed verbatim; a string value's quotes are stripped and its escape sequences resolved, so
 /// <see cref="GetString" /> returns the logical value while <see cref="ValueSpan" /> exposes the raw source bytes.
 /// </para>
+/// <para>
+/// An input that arrives in blocks is read with the
+/// <see cref="Utf8DotEnvReader(ReadOnlySpan{byte}, bool, DotEnvReaderState)" /> constructor: over a block that is not
+/// the last, <see cref="Read" /> returns <see langword="false" /> rather than read an entry or a comment line that the
+/// block cuts short, and the next block's reader resumes from <see cref="CurrentState" />, as
+/// <see cref="DotEnvReaderState" /> describes.
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -55,6 +62,24 @@ public ref struct Utf8DotEnvReader
 
     /// <summary>The reader options controlling optional DotEnv syntax.</summary>
     private readonly DotEnvReaderOptions _options;
+
+    /// <summary>Whether no further data follows <see cref="_data" />, so that its end is the end of the input.</summary>
+    private readonly bool _isFinalBlock;
+
+    /// <summary>The offset, in the whole input, of the first byte of <see cref="_data" />.</summary>
+    private readonly long _offsetBase;
+
+    /// <summary>The start, relative to <see cref="_data" />, of the line the block begins on: the length of a byte-order mark skipped at the start of the input, or minus the bytes of the line that earlier blocks consumed.</summary>
+    private readonly int _lineStartBase;
+
+    /// <summary>Whether the block holds no more than the start of a byte-order mark, which more data must complete or refute.</summary>
+    private readonly bool _byteOrderMarkPending;
+
+    /// <summary>The bytes the current token's raw range indexes when the token was carried over in the reader state; otherwise <see langword="null" />, and the range indexes <see cref="_data" />.</summary>
+    private byte[]? _valueSource;
+
+    /// <summary>The bytes the pending string value's raw range indexes when the value was carried over in the reader state; otherwise <see langword="null" />.</summary>
+    private byte[]? _pendingSource;
 
     /// <summary>The read position of the next byte to consume.</summary>
     private int _position;
@@ -117,16 +142,77 @@ public ref struct Utf8DotEnvReader
     /// <param name="data">The DotEnv source bytes.</param>
     /// <param name="options">The reader options controlling optional DotEnv syntax.</param>
     public Utf8DotEnvReader(ReadOnlySpan<byte> data, DotEnvReaderOptions options)
+        : this(data, isFinalBlock: true, new DotEnvReaderState(options))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8DotEnvReader" /> struct over one block of an input, resuming
+    /// from the state captured at the end of the previous block.
+    /// </summary>
+    /// <param name="data">
+    /// The unconsumed bytes carried over from the previous block plus the newly arrived data.
+    /// </param>
+    /// <param name="isFinalBlock">
+    /// <see langword="true" /> when no further data follows this block; <see langword="false" /> to make
+    /// <see cref="Read" /> return <see langword="false" /> rather than read an entry or a comment line that the block
+    /// cuts short.
+    /// </param>
+    /// <param name="state">
+    /// The continuation state: a new <see cref="DotEnvReaderState" /> for the first block, or the previous reader's
+    /// <see cref="CurrentState" /> thereafter.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// An entry or a comment line is read only once the block holds the whole of it: over a block that is not the last,
+    /// it counts as read once its line ending has arrived, after the closing quote of a double-quoted value that runs
+    /// across lines, and a carriage return that ends the block waits for the byte after it, which may be the line feed
+    /// of a CRLF. A multi-byte character that the block cuts short is read once it is whole.
+    /// </para>
+    /// <para>
+    /// A UTF-8 byte-order mark is skipped only at the start of the whole input; a first block that holds no more than
+    /// the start of one is read once more data arrives.
+    /// </para>
+    /// </remarks>
+    public Utf8DotEnvReader(ReadOnlySpan<byte> data, bool isFinalBlock, DotEnvReaderState state)
     {
         _data = data;
-        _options = options;
-
-        // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first key.
-        _position = Utf8LineCursor.ByteOrderMarkLength(data);
-        _line = 1;
-        _tokenLine = 1;
-        _phase = Phase.Start;
+        _options = state.Options;
+        _isFinalBlock = isFinalBlock;
+        _offsetBase = state._bytesConsumed;
+        _line = state._linesRead + 1;
+        _tokenLine = _line;
+        _lineStartBase = -state._bytesInLine;
+        _phase = state._phase;
         _tokenType = DotEnvTokenType.None;
+
+        // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first key. Only the start of
+        // the whole input can hold one, and a block that holds no more than its first bytes, with more data to come,
+        // cannot yet tell it from content.
+        if (!state._pastStart)
+        {
+            if (data.StartsWith(Utf8LineCursor.ByteOrderMark))
+            {
+                _position = Utf8LineCursor.ByteOrderMark.Length;
+                _lineStartBase = _position;
+            }
+            else if (!isFinalBlock && Utf8LineCursor.ByteOrderMark.StartsWith(data))
+            {
+                _byteOrderMarkPending = true;
+            }
+        }
+
+        // A value whose property name was already reported resumes from its copied bytes.
+        if (state._pendingString)
+        {
+            _pendingString = true;
+            _pendingSource = state._pendingRaw;
+            _pendingValueStart = 0;
+            _pendingValueLength = state._pendingRaw?.Length ?? 0;
+            _pendingDecoded = state._pendingDecoded;
+            _pendingLine = state._pendingLine;
+            _pendingExport = state._pendingExport;
+        }
     }
 
     /// <summary>
@@ -136,11 +222,43 @@ public ref struct Utf8DotEnvReader
     public readonly int BytesConsumed => _position;
 
     /// <summary>
+    /// Gets the resumable state to construct the next block's reader from.
+    /// </summary>
+    /// <value>
+    /// The continuation state, capturing the options, the line counter, the byte position within the current line, the
+    /// offset of <see cref="BytesConsumed" /> in the whole input and, after a property name, the value still to report.
+    /// </value>
+    public readonly DotEnvReaderState CurrentState =>
+        new(_options)
+        {
+            _linesRead = _line - 1,
+            _bytesInLine = _position - LineStartAt(_position),
+            _bytesConsumed = _offsetBase + _position,
+            _pastStart = !_byteOrderMarkPending,
+            _phase = _phase,
+            _pendingString = _pendingString,
+            _pendingRaw = _pendingString ? PendingBytes.ToArray() : null,
+            _pendingDecoded = _pendingString ? _pendingDecoded : null,
+            _pendingLine = _pendingString ? _pendingLine : 0,
+            _pendingExport = _pendingString && _pendingExport,
+        };
+
+    /// <summary>
     /// Gets the current object nesting depth.
     /// </summary>
     /// <value>Zero before the document object opens and after it closes; one while inside it.</value>
     public readonly int CurrentDepth =>
         _phase == Phase.Body ? 1 : 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the supplied bytes hold the final block of the input.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when the end of the bytes is the end of the input; <see langword="false" /> when
+    /// <see cref="Read" /> instead returns <see langword="false" /> at an entry or a comment line the block cuts short,
+    /// and the caller supplies more data.
+    /// </value>
+    public readonly bool IsFinalBlock => _isFinalBlock;
 
     /// <summary>
     /// Gets a value indicating whether the current property carried an <c>export</c> prefix.
@@ -175,8 +293,23 @@ public ref struct Utf8DotEnvReader
     /// <value>The raw content bytes, or an empty span for structural tokens.</value>
     public readonly ReadOnlySpan<byte> ValueSpan =>
         _tokenType is DotEnvTokenType.PropertyName or DotEnvTokenType.String or DotEnvTokenType.Comment
-            ? _data.Slice(_valueStart, _valueLength)
+            ? ValueBytes
             : default;
+
+    /// <summary>
+    /// Gets the raw source content bytes of the current token, from the block or from the bytes carried over with it.
+    /// </summary>
+    /// <value>The raw content bytes of the current token.</value>
+    private readonly ReadOnlySpan<byte> ValueBytes =>
+        (_valueSource is null ? _data : _valueSource.AsSpan()).Slice(_valueStart, _valueLength);
+
+    /// <summary>
+    /// Gets the raw source content bytes of the pending string value, from the block or from the bytes carried over
+    /// with it.
+    /// </summary>
+    /// <value>The raw content bytes of the pending string value.</value>
+    private readonly ReadOnlySpan<byte> PendingBytes =>
+        (_pendingSource is null ? _data : _pendingSource.AsSpan()).Slice(_pendingValueStart, _pendingValueLength);
 
     /// <summary>
     /// Decodes the current property name, string value, or comment token as text, stripping quotes and resolving escape
@@ -191,7 +324,7 @@ public ref struct Utf8DotEnvReader
         if (_tokenType is not (DotEnvTokenType.PropertyName or DotEnvTokenType.String or DotEnvTokenType.Comment))
             throw new InvalidOperationException(DotEnvResourceStrings.Op_Invalid_DotEnvTokenNotString);
 
-        return _decoded ?? Encoding.UTF8.GetString(_data.Slice(_valueStart, _valueLength));
+        return _decoded ?? Encoding.UTF8.GetString(ValueBytes);
     }
 
     /// <summary>
@@ -264,9 +397,14 @@ public ref struct Utf8DotEnvReader
     /// Advances the reader to the next token.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document.
+    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document, or, over a
+    /// block that is not the last, when the block ends before the next entry or comment line does.
     /// </returns>
     /// <exception cref="DotEnvFormatException">Thrown when the bytes are not valid DotEnv.</exception>
+    /// <remarks>
+    /// When the block ends before the next entry or comment line does, the reader is left as it was: the current token
+    /// is still the previous one, and <see cref="BytesConsumed" /> counts only the entries and lines read.
+    /// </remarks>
     public bool Read()
     {
         switch (_phase)
@@ -301,7 +439,10 @@ public ref struct Utf8DotEnvReader
     /// <summary>
     /// Attempts to skip the current value.
     /// </summary>
-    /// <returns><see langword="true" /> always, because the reader operates over a complete buffer.</returns>
+    /// <returns>
+    /// <see langword="true" /> always, because the reader reads an entry whole, so the value of a property name is at
+    /// hand once the name is.
+    /// </returns>
     /// <exception cref="DotEnvFormatException">Thrown when the skipped bytes are not valid DotEnv.</exception>
     public bool TrySkip()
     {
@@ -313,12 +454,17 @@ public ref struct Utf8DotEnvReader
     /// Advances through the document body, emitting the pending string value, the next comment or entry, or the closing
     /// object end.
     /// </summary>
-    /// <returns><see langword="true" /> when a token was produced; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a token was produced; <see langword="false" /> when the block, which is not the
+    /// last, ends before the next entry or comment line does.
+    /// </returns>
     private bool ReadBody()
     {
         if (_pendingString)
         {
             _pendingString = false;
+            _valueSource = _pendingSource;
+            _pendingSource = null;
             _valueStart = _pendingValueStart;
             _valueLength = _pendingValueLength;
             _decoded = _pendingDecoded;
@@ -328,12 +474,19 @@ public ref struct Utf8DotEnvReader
             return true;
         }
 
+        if (_byteOrderMarkPending)
+            return false;
+
         while (true)
         {
-            SkipWhitespace();
+            if (!SkipWhitespace())
+                return false;
 
             if (_position >= _data.Length)
             {
+                if (!_isFinalBlock)
+                    return false;
+
                 _phase = Phase.End;
                 _tokenType = DotEnvTokenType.EndObject;
                 _tokenLine = _line;
@@ -346,6 +499,9 @@ public ref struct Utf8DotEnvReader
 
             if (Utf8LineCursor.IsLineEnding(b))
             {
+                if (EndsWithPendingCarriageReturn(_position))
+                    return false;
+
                 SkipLineEnding();
                 continue;
             }
@@ -355,10 +511,15 @@ public ref struct Utf8DotEnvReader
                 int textStart = _position + 1;
                 int end = Utf8LineCursor.EndOfLine(_data, textStart);
 
+                // A comment line is read once its line ending has arrived, so its rest never reads as an entry.
+                if (!_isFinalBlock && (end >= _data.Length || EndsWithPendingCarriageReturn(end)))
+                    return false;
+
                 _position = end;
 
                 if (_options.PreserveComments)
                 {
+                    _valueSource = null;
                     _valueStart = textStart;
                     _valueLength = end - textStart;
                     _decoded = null;
@@ -373,8 +534,15 @@ public ref struct Utf8DotEnvReader
                 continue;
             }
 
-            ReadEntry();
-            return true;
+            int entryStart = _position;
+            int entryLine = _line;
+            if (TryReadEntry())
+                return true;
+
+            // The block ends inside the entry: leave it whole for the next block's reader.
+            _position = entryStart;
+            _line = entryLine;
+            return false;
         }
     }
 
@@ -382,25 +550,55 @@ public ref struct Utf8DotEnvReader
     /// Reads a single <c>KEY=VALUE</c> entry beginning at the cursor, emitting the property name and staging the string
     /// value for the next <see cref="Read" />.
     /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when the entry was read; <see langword="false" /> when the block, which is not the last,
+    /// ends before the entry does, with the cursor and the line counter left anywhere within it.
+    /// </returns>
     /// <exception cref="DotEnvFormatException">Thrown when the entry is malformed.</exception>
-    private void ReadEntry()
+    private bool TryReadEntry()
     {
         int entryLine = _line;
         bool isExport = false;
 
         // Optionally strip an "export " prefix (the word followed by at least one whitespace character).
-        if (_options.AllowExportPrefix &&
-            _data.Length - _position > 6 &&
-            _data.Slice(_position, 6).SequenceEqual("export"u8) &&
-            WhitespaceLengthAt(_position + 6) > 0)
+        if (_options.AllowExportPrefix)
         {
-            isExport = true;
-            _position += 6;
-            SkipWhitespace();
+            ReadOnlySpan<byte> rest = _data[_position..];
+            if (rest.Length > 6 && rest.StartsWith("export"u8))
+            {
+                int whitespace = WhitespaceLengthAt(_position + 6);
+                if (whitespace < 0)
+                    return false;
+
+                if (whitespace > 0)
+                {
+                    isExport = true;
+                    _position += 6;
+                    if (!SkipWhitespace())
+                        return false;
+                }
+            }
+            else if (!_isFinalBlock && "export"u8.StartsWith(rest))
+            {
+                // The block ends within a word that may yet be the prefix, or a key that begins as it does.
+                return false;
+            }
         }
 
-        if (_position >= _data.Length || !IsKeyStart(_data[_position]))
+        if (_position >= _data.Length)
         {
+            if (!_isFinalBlock)
+                return false;
+
+            throw KeyError(DescribeCharacterAt(_position), entryLine);
+        }
+
+        if (!IsKeyStart(_data[_position]))
+        {
+            // A character that the block cuts short is described once it is whole.
+            if (IsCutShort(_position))
+                return false;
+
             throw KeyError(DescribeCharacterAt(_position), entryLine);
         }
 
@@ -412,20 +610,35 @@ public ref struct Utf8DotEnvReader
         int keyLength = _position - keyStart;
 
         // Tolerate optional whitespace around the assignment (KEY = value), matching common .env loaders.
-        SkipWhitespace();
+        if (!SkipWhitespace())
+            return false;
 
-        if (_position >= _data.Length || _data[_position] != (byte)'=')
+        if (_position >= _data.Length)
+        {
+            if (!_isFinalBlock)
+                return false;
+
+            throw MalformedError(entryLine);
+        }
+
+        if (_data[_position] != (byte)'=')
             throw MalformedError(entryLine);
 
         _position++; // consume '='
-        SkipWhitespace();
+        if (!SkipWhitespace())
+            return false;
 
-        ReadValue(entryLine, out int rawStart, out int rawLength, out string? decoded);
+        if (!TryReadValue(entryLine, out int rawStart, out int rawLength, out string? decoded))
+            return false;
 
         // Consume a trailing comment, if there is one, then the line terminator.
         SkipToEndOfLine();
+        if (!_isFinalBlock && (_position >= _data.Length || EndsWithPendingCarriageReturn(_position)))
+            return false;
+
         SkipLineEnding();
 
+        _valueSource = null;
         _valueStart = keyStart;
         _valueLength = keyLength;
         _decoded = null;
@@ -435,11 +648,13 @@ public ref struct Utf8DotEnvReader
 
         // The value starts on the entry's line, even when a double-quoted value goes on past it.
         _pendingString = true;
+        _pendingSource = null;
         _pendingValueStart = rawStart;
         _pendingValueLength = rawLength;
         _pendingDecoded = decoded;
         _pendingExport = isExport;
         _pendingLine = entryLine;
+        return true;
     }
 
     /// <summary>
@@ -451,29 +666,33 @@ public ref struct Utf8DotEnvReader
     /// <param name="decoded">
     /// The decoded value when escape processing applied; otherwise <see langword="null" />.
     /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the value was read; <see langword="false" /> when the block, which is not the last,
+    /// ends before the value, or the whitespace after its closing quote, does.
+    /// </returns>
     /// <exception cref="DotEnvFormatException">
     /// Thrown when a quoted value is unterminated, or when text other than whitespace and a comment follows its closing
     /// quote.
     /// </exception>
-    private void ReadValue(int startLine, out int rawStart, out int rawLength, out string? decoded)
+    private bool TryReadValue(int startLine, out int rawStart, out int rawLength, out string? decoded)
     {
-        if (_position < _data.Length && _data[_position] == (byte)'"')
+        decoded = null;
+
+        // The value's first byte, which may open a quote, is still to come.
+        if (_position >= _data.Length && !_isFinalBlock)
         {
-            ReadDoubleQuoted(startLine, out rawStart, out rawLength, out decoded);
-            SkipAfterClosingQuote();
-            return;
+            rawStart = 0;
+            rawLength = 0;
+            return false;
         }
+
+        if (_position < _data.Length && _data[_position] == (byte)'"')
+            return TryReadDoubleQuoted(startLine, out rawStart, out rawLength, out decoded) && TrySkipAfterClosingQuote();
 
         if (_position < _data.Length && _data[_position] == (byte)'\'')
-        {
-            ReadSingleQuoted(startLine, out rawStart, out rawLength);
-            decoded = null;
-            SkipAfterClosingQuote();
-            return;
-        }
+            return TryReadSingleQuoted(startLine, out rawStart, out rawLength) && TrySkipAfterClosingQuote();
 
-        ReadUnquoted(out rawStart, out rawLength);
-        decoded = null;
+        return TryReadUnquoted(out rawStart, out rawLength);
     }
 
     /// <summary>
@@ -486,6 +705,10 @@ public ref struct Utf8DotEnvReader
     /// The decoded value when the content holds a backslash; otherwise <see langword="null" />, since the content as
     /// written is the value.
     /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the value was read; <see langword="false" /> when the block, which is not the last,
+    /// ends before its closing quote.
+    /// </returns>
     /// <exception cref="DotEnvFormatException">
     /// Thrown when the value is unterminated; the error is reported at the opening quote.
     /// </exception>
@@ -501,18 +724,25 @@ public ref struct Utf8DotEnvReader
     /// UTF-8 sequence reads as U+FFFD and never swallows the byte that follows it.
     /// </para>
     /// </remarks>
-    private void ReadDoubleQuoted(int startLine, out int rawStart, out int rawLength, out string? decoded)
+    private bool TryReadDoubleQuoted(int startLine, out int rawStart, out int rawLength, out string? decoded)
     {
         int quoteOffset = _position;
         _position++; // consume opening '"'
         rawStart = _position;
+        rawLength = 0;
+        decoded = null;
         bool hasBackslash = false;
 
         while (true)
         {
             int next = _data[_position..].IndexOfAny(s_doubleQuotedStops);
             if (next < 0)
+            {
+                if (!_isFinalBlock)
+                    return false;
+
                 throw UnterminatedDoubleQuote(startLine, quoteOffset);
+            }
 
             _position += next;
             byte c = _data[_position];
@@ -525,15 +755,27 @@ public ref struct Utf8DotEnvReader
                 hasBackslash = true;
                 _position++;
                 if (_position >= _data.Length)
+                {
+                    if (!_isFinalBlock)
+                        return false;
+
                     throw UnterminatedDoubleQuote(startLine, quoteOffset);
+                }
 
                 // A backslash before a line ending continues the value on the next line; any other byte after a
                 // backslash is passed over with it, so an escaped quote or backslash neither ends the value nor starts
                 // an escape.
                 if (Utf8LineCursor.IsLineEnding(_data[_position]))
+                {
+                    if (EndsWithPendingCarriageReturn(_position))
+                        return false;
+
                     _line += Utf8LineCursor.ConsumeLineEnding(_data, ref _position);
+                }
                 else
+                {
                     _position++;
+                }
 
                 continue;
             }
@@ -551,6 +793,7 @@ public ref struct Utf8DotEnvReader
         // Without a backslash the content as written is the value, which GetString decodes when it is asked for, as it
         // decodes an unquoted value.
         decoded = hasBackslash ? DecodeEscapes(_data.Slice(rawStart, rawLength)) : null;
+        return true;
     }
 
     /// <summary>
@@ -625,22 +868,31 @@ public ref struct Utf8DotEnvReader
     /// <param name="startLine">The 1-based line on which the opening quote appears.</param>
     /// <param name="rawStart">The source start of the content between the quotes.</param>
     /// <param name="rawLength">The source length of the content between the quotes.</param>
+    /// <returns>
+    /// <see langword="true" /> when the value was read; <see langword="false" /> when the block, which is not the last,
+    /// ends before its closing quote or the line ending that would leave it unterminated.
+    /// </returns>
     /// <exception cref="DotEnvFormatException">
     /// Thrown when the value is unterminated; the error is reported at the opening quote.
     /// </exception>
-    private void ReadSingleQuoted(int startLine, out int rawStart, out int rawLength)
+    private bool TryReadSingleQuoted(int startLine, out int rawStart, out int rawLength)
     {
         int quoteOffset = _position;
         _position++; // consume opening '\''
         rawStart = _position;
+        rawLength = 0;
 
         // The value ends at its closing quote; a line ending or the end of the input before one leaves it unterminated.
         int end = Utf8LineCursor.EndOfLineOr(_data, _position, (byte)'\'');
+        if (end >= _data.Length && !_isFinalBlock)
+            return false;
+
         if (end >= _data.Length || _data[end] != (byte)'\'')
             throw UnterminatedSingleQuote(startLine, quoteOffset);
 
         rawLength = end - rawStart;
         _position = end + 1; // consume closing '\''
+        return true;
     }
 
     /// <summary>
@@ -649,9 +901,19 @@ public ref struct Utf8DotEnvReader
     /// </summary>
     /// <param name="rawStart">The source start of the trimmed value.</param>
     /// <param name="rawLength">The source length of the trimmed value.</param>
-    private void ReadUnquoted(out int rawStart, out int rawLength)
+    /// <returns>
+    /// <see langword="true" /> when the value was read; <see langword="false" /> when the block, which is not the last,
+    /// ends before the line does.
+    /// </returns>
+    private bool TryReadUnquoted(out int rawStart, out int rawLength)
     {
         int lineEnd = Utf8LineCursor.EndOfLine(_data, _position);
+        if (lineEnd >= _data.Length && !_isFinalBlock)
+        {
+            rawStart = 0;
+            rawLength = 0;
+            return false;
+        }
 
         int start = _position;
         int end = lineEnd;
@@ -682,6 +944,7 @@ public ref struct Utf8DotEnvReader
         rawStart = start;
         rawLength = end - start;
         _position = lineEnd;
+        return true;
     }
 
     /// <summary>
@@ -713,17 +976,46 @@ public ref struct Utf8DotEnvReader
     /// except CR and LF, which end a line.
     /// </summary>
     /// <param name="offset">The zero-based offset of the character, within the source.</param>
-    /// <returns>The character's length in bytes, or zero when the character there is not whitespace.</returns>
+    /// <returns>
+    /// The character's length in bytes; zero when the character there is not whitespace; -1 when the block, which is
+    /// not the last, cuts the character short, so that whether it is whitespace is not yet known.
+    /// </returns>
     private readonly int WhitespaceLengthAt(int offset)
     {
         byte first = _data[offset];
         if (first < 0x80)
             return IsAsciiWhitespace(first) ? 1 : 0;
 
-        return Rune.DecodeFromUtf8(_data[offset..], out Rune rune, out int length) == OperationStatus.Done && Rune.IsWhiteSpace(rune)
-            ? length
-            : 0;
+        OperationStatus status = Rune.DecodeFromUtf8(_data[offset..], out Rune rune, out int length);
+        if (status == OperationStatus.NeedMoreData && !_isFinalBlock)
+            return -1;
+
+        return status == OperationStatus.Done && Rune.IsWhiteSpace(rune) ? length : 0;
     }
+
+    /// <summary>
+    /// Determines whether the block, which is not the last, cuts short the multi-byte character that starts at an
+    /// offset.
+    /// </summary>
+    /// <param name="offset">The zero-based offset of the character, within the source.</param>
+    /// <returns>
+    /// <see langword="true" /> when the character is the valid start of a UTF-8 sequence that more data must complete;
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    private readonly bool IsCutShort(int offset) =>
+        !_isFinalBlock && _data[offset] >= 0x80 && Rune.DecodeFromUtf8(_data[offset..], out _, out _) == OperationStatus.NeedMoreData;
+
+    /// <summary>
+    /// Determines whether the byte at a position is a carriage return that ends a block that is not the last, and so
+    /// may be the first half of a CRLF whose line feed is still to come.
+    /// </summary>
+    /// <param name="position">The position of the line-ending byte, within the source.</param>
+    /// <returns>
+    /// <see langword="true" /> when the line ending cannot be consumed until more data arrives; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private readonly bool EndsWithPendingCarriageReturn(int position) =>
+        !_isFinalBlock && position == _data.Length - 1 && _data[position] == (byte)'\r';
 
     /// <summary>
     /// Gets the UTF-8 length of the whitespace character that ends just before an offset: any Unicode whitespace
@@ -746,28 +1038,52 @@ public ref struct Utf8DotEnvReader
     /// <summary>
     /// Advances past whitespace on the current line: any Unicode whitespace character except CR and LF.
     /// </summary>
-    private void SkipWhitespace()
+    /// <returns>
+    /// <see langword="true" /> when the cursor rests on a character that is not whitespace or at the end of the block;
+    /// <see langword="false" /> when the block, which is not the last, cuts short the character there.
+    /// </returns>
+    private bool SkipWhitespace()
     {
-        int length;
-        while (_position < _data.Length && (length = WhitespaceLengthAt(_position)) > 0)
+        while (_position < _data.Length)
+        {
+            int length = WhitespaceLengthAt(_position);
+            if (length < 0)
+                return false;
+
+            if (length == 0)
+                return true;
+
             _position += length;
+        }
+
+        return true;
     }
 
     /// <summary>
     /// Advances past the whitespace after a closing quote, and checks that only a comment or the end of the line
     /// follows it.
     /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when a comment or the end of the line follows; <see langword="false" /> when the block,
+    /// which is not the last, ends first.
+    /// </returns>
     /// <exception cref="DotEnvFormatException">Thrown when any other text follows the closing quote.</exception>
     /// <remarks>
     /// A comment here may follow the quote directly, and is allowed whether or not inline comments are, since
     /// <see cref="DotEnvReaderOptions.DisallowInlineComments" /> governs only unquoted values.
     /// </remarks>
-    private void SkipAfterClosingQuote()
+    private bool TrySkipAfterClosingQuote()
     {
-        SkipWhitespace();
+        if (!SkipWhitespace())
+            return false;
 
-        if (_position < _data.Length && !Utf8LineCursor.IsLineEnding(_data[_position]) && _data[_position] != (byte)'#')
+        if (_position >= _data.Length)
+            return _isFinalBlock;
+
+        if (!Utf8LineCursor.IsLineEnding(_data[_position]) && _data[_position] != (byte)'#')
             throw TextAfterClosingQuoteError();
+
+        return true;
     }
 
     /// <summary>
@@ -789,7 +1105,7 @@ public ref struct Utf8DotEnvReader
     /// <param name="line">The 1-based line number.</param>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException KeyError(string key, int line) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvInvalidKey, key, line), line, ColumnAt(_position), _position);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvInvalidKey, key, line), line, ColumnAt(_position), _offsetBase + _position);
 
     /// <summary>
     /// Creates a malformed-entry exception.
@@ -797,7 +1113,7 @@ public ref struct Utf8DotEnvReader
     /// <param name="line">The 1-based line number.</param>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException MalformedError(int line) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvMalformedEntry, line), line, ColumnAt(_position), _position);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvMalformedEntry, line), line, ColumnAt(_position), _offsetBase + _position);
 
     /// <summary>
     /// Creates an unterminated double-quote exception, reported at the opening quote.
@@ -806,7 +1122,7 @@ public ref struct Utf8DotEnvReader
     /// <param name="quoteOffset">The zero-based byte offset of the opening quote.</param>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException UnterminatedDoubleQuote(int line, int quoteOffset) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote, line), line, ColumnAt(quoteOffset), quoteOffset);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote, line), line, ColumnAt(quoteOffset), _offsetBase + quoteOffset);
 
     /// <summary>
     /// Creates an unterminated single-quote exception, reported at the opening quote.
@@ -815,14 +1131,14 @@ public ref struct Utf8DotEnvReader
     /// <param name="quoteOffset">The zero-based byte offset of the opening quote.</param>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException UnterminatedSingleQuote(int line, int quoteOffset) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote, line), line, ColumnAt(quoteOffset), quoteOffset);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote, line), line, ColumnAt(quoteOffset), _offsetBase + quoteOffset);
 
     /// <summary>
     /// Creates an exception for text that follows a closing quote, reported at the first byte of that text.
     /// </summary>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException TextAfterClosingQuoteError() =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvTextAfterClosingQuote, _line), _line, ColumnAt(_position), _position);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvTextAfterClosingQuote, _line), _line, ColumnAt(_position), _offsetBase + _position);
 
     /// <summary>
     /// Computes the 1-based column of a source offset, counted in bytes from the start of the line that holds it.
@@ -834,7 +1150,21 @@ public ref struct Utf8DotEnvReader
     /// is computed only when an error is raised, so the hot path keeps no line-start state.
     /// </remarks>
     private readonly int ColumnAt(int offset) =>
-        offset - Utf8LineCursor.LineStart(_data, offset) + 1;
+        offset - LineStartAt(offset) + 1;
+
+    /// <summary>
+    /// Finds the start, relative to the block, of the line that holds an offset: just past the last CR or LF before it,
+    /// or, on the line the block begins on, the start that the reader state carries, which may lie in an earlier block.
+    /// </summary>
+    /// <param name="offset">The zero-based byte offset, within the block.</param>
+    /// <returns>
+    /// The offset of the first byte of the line, a byte-order mark at the start of the input not counted.
+    /// </returns>
+    private readonly int LineStartAt(int offset)
+    {
+        int lineBreak = _data[..offset].LastIndexOfAny((byte)'\r', (byte)'\n');
+        return lineBreak >= 0 ? lineBreak + 1 : _lineStartBase;
+    }
 
     /// <summary>
     /// Describes the character at a source offset for an error message: the character as written, or its first byte in
@@ -855,7 +1185,10 @@ public ref struct Utf8DotEnvReader
     /// <summary>
     /// Enumerates the reader lifecycle phases.
     /// </summary>
-    private enum Phase
+    /// <remarks>
+    /// The phase is internal rather than private because <see cref="DotEnvReaderState" /> carries it between blocks.
+    /// </remarks>
+    internal enum Phase
     {
         /// <summary>
         /// Before the synthetic object start has been emitted.

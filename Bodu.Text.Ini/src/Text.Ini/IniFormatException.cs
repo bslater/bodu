@@ -62,6 +62,23 @@ public sealed class IniFormatException
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="IniFormatException" /> class and records the source location at
+    /// which the parse error was detected, in an input that may be longer than <see cref="int.MaxValue" /> bytes.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="line">The 1-based line number at which the error occurred.</param>
+    /// <param name="offset">
+    /// The zero-based byte offset from the start of the input; <see cref="Offset" /> is left <see langword="null" />
+    /// when it is greater than <see cref="int.MaxValue" />.
+    /// </param>
+    internal IniFormatException(string message, int line, long offset)
+        : base(message)
+    {
+        LineNumber = line;
+        Offset = offset <= int.MaxValue ? (int)offset : null;
+    }
+
+    /// <summary>
     /// Gets the 1-based line number at which the parse error was detected, when available.
     /// </summary>
     /// <value>The line number, or <see langword="null" /> when no line is associated with the error.</value>
@@ -70,6 +87,9 @@ public sealed class IniFormatException
     /// <summary>
     /// Gets the zero-based byte offset at which the parse error was detected, when available.
     /// </summary>
-    /// <value>The byte offset, or <see langword="null" /> when no position is associated with the error.</value>
+    /// <value>
+    /// The byte offset, or <see langword="null" /> when no position is associated with the error or the offset is
+    /// greater than <see cref="int.MaxValue" />, as it can be in a long stream read in blocks.
+    /// </value>
     public int? Offset { get; }
 }

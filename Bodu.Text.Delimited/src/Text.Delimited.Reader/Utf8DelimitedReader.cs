@@ -33,8 +33,15 @@ namespace Bodu.Text.Delimited.Reader;
 /// rather than read as a record of one empty field. Under <see cref="DelimitedFieldCountBehavior.Ragged" />, each field
 /// beyond the header's is named by its zero-based column index.
 /// </para>
+/// <para>
+/// An input that arrives in blocks is read with the
+/// <see cref="Utf8DelimitedReader(ReadOnlySpan{byte}, bool, DelimitedReaderState)" /> constructor: over a block that is
+/// not the last, <see cref="Read" /> returns <see langword="false" /> rather than read a record that the block cuts
+/// short, and the next block's reader resumes from <see cref="CurrentState" />, as <see cref="DelimitedReaderState" />
+/// describes.
+/// </para>
 /// </remarks>
-public ref struct Utf8DelimitedReader
+public ref partial struct Utf8DelimitedReader
 {
     /// <summary>The source bytes being read.</summary>
     private readonly ReadOnlySpan<byte> _data;
@@ -53,6 +60,15 @@ public ref struct Utf8DelimitedReader
 
     /// <summary>The offset, in the whole input, of the first byte of <see cref="_data" />.</summary>
     private readonly long _offsetBase;
+
+    /// <summary>Whether no further data follows <see cref="_data" />, so that its end is the end of the input.</summary>
+    private readonly bool _isFinalBlock;
+
+    /// <summary>Whether the block holds no more than the start of a byte-order mark, which more data must complete or refute.</summary>
+    private readonly bool _byteOrderMarkPending;
+
+    /// <summary>The bytes the current record's raw ranges index when the record was carried over in the reader state; otherwise <see langword="null" />, and the ranges index <see cref="_data" />.</summary>
+    private byte[]? _recordSource;
 
     /// <summary>The read position of the next byte to consume.</summary>
     private int _position;
@@ -109,20 +125,92 @@ public ref struct Utf8DelimitedReader
     /// content.
     /// </remarks>
     public Utf8DelimitedReader(ReadOnlySpan<byte> data, DelimitedReaderOptions options)
+        : this(data, isFinalBlock: true, new DelimitedReaderState(options), nameof(options))
     {
-        DelimitedThrowHelper.ThrowIfUnusableDialect(options);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8DelimitedReader" /> struct over one block of an input, resuming
+    /// from the state captured at the end of the previous block.
+    /// </summary>
+    /// <param name="data">
+    /// The unconsumed bytes carried over from the previous block plus the newly arrived data.
+    /// </param>
+    /// <param name="isFinalBlock">
+    /// <see langword="true" /> when no further data follows this block; <see langword="false" /> to make
+    /// <see cref="Read" /> return <see langword="false" /> rather than read a record that the block cuts short.
+    /// </param>
+    /// <param name="state">
+    /// The continuation state: a new <see cref="DelimitedReaderState" /> for the first block, or the previous reader's
+    /// <see cref="CurrentState" /> thereafter.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of the state's options is not an ASCII character or is a
+    /// carriage return or a line feed, when the delimiter equals the quote, or when the comment character equals the
+    /// delimiter or the quote. The comment character is checked even when comments are not allowed.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// A record is read only once the block holds the whole of it: over a block that is not the last, a record counts
+    /// as read once its line ending has arrived, and a carriage return that ends the block waits for the byte after it,
+    /// which may be the line feed of a CRLF. Blank and comment lines are passed over as they arrive.
+    /// </para>
+    /// <para>
+    /// A UTF-8 byte-order mark is skipped only at the start of the whole input; a first block that holds no more than
+    /// the start of one is read once more data arrives.
+    /// </para>
+    /// </remarks>
+    public Utf8DelimitedReader(ReadOnlySpan<byte> data, bool isFinalBlock, DelimitedReaderState state)
+        : this(data, isFinalBlock, state, nameof(state))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8DelimitedReader" /> struct over one block of an input, resuming
+    /// from a state, and names the parameter that supplied the options when they are unusable.
+    /// </summary>
+    /// <param name="data">The bytes of the block.</param>
+    /// <param name="isFinalBlock">Whether no further data follows the block.</param>
+    /// <param name="state">The continuation state, which carries the options.</param>
+    /// <param name="paramName">The name of the caller's parameter that supplied the options.</param>
+    /// <exception cref="ArgumentException">Thrown when the state's options name an unusable dialect.</exception>
+    private Utf8DelimitedReader(ReadOnlySpan<byte> data, bool isFinalBlock, DelimitedReaderState state, string paramName)
+    {
+        DelimitedThrowHelper.ThrowIfUnusableDialect(state.Options, paramName);
 
         _data = data;
-        _options = options;
-        _headers = [];
+        _options = state.Options;
+        _isFinalBlock = isFinalBlock;
+        _headers = state._headers ?? [];
         _fields = [];
         _fieldRanges = [];
-
-        // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first header column.
-        _position = Utf8LineCursor.ByteOrderMarkLength(data);
-        _line = 1;
-        _stage = Stage.Start;
+        _offsetBase = state._bytesConsumed;
+        _line = state._linesRead + 1;
+        _stage = state._stage;
+        _recordLine = state._recordLine;
+        _recordStart = (int)(state._recordOffset - state._bytesConsumed);
         _tokenType = DelimitedTokenType.None;
+
+        // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first header column. Only
+        // the start of the whole input can hold one, and a block that holds no more than its first bytes, with more data
+        // to come, cannot yet tell it from content.
+        if (!state._pastStart)
+        {
+            if (data.StartsWith(Utf8LineCursor.ByteOrderMark))
+                _position = Utf8LineCursor.ByteOrderMark.Length;
+            else if (!isFinalBlock && Utf8LineCursor.ByteOrderMark.StartsWith(data))
+                _byteOrderMarkPending = true;
+        }
+
+        // A record whose tokens were partly reported resumes with the fields left to report, read from copied bytes.
+        if (state._pendingFields is not null)
+        {
+            _fields.AddRange(state._pendingFields);
+            _fieldRanges.AddRange(state._pendingRanges!);
+            _recordSource = state._pendingSource;
+            _fieldIndex = state._fieldIndex;
+            _emittingValue = state._emittingValue;
+        }
     }
 
     /// <summary>
@@ -162,6 +250,46 @@ public ref struct Utf8DelimitedReader
     public readonly int BytesConsumed => _position;
 
     /// <summary>
+    /// Gets the resumable state to construct the next block's reader from.
+    /// </summary>
+    /// <value>
+    /// The continuation state, capturing the options, the header names, the line counter, the offset of
+    /// <see cref="BytesConsumed" /> in the whole input and, between the tokens of a record, the record's fields left to
+    /// report.
+    /// </value>
+    public readonly DelimitedReaderState CurrentState
+    {
+        get
+        {
+            var state = new DelimitedReaderState(_options)
+            {
+                _linesRead = _line - 1,
+                _bytesConsumed = _offsetBase + _position,
+                _pastStart = !_byteOrderMarkPending,
+                _stage = _stage,
+                _headers = _headers.Count > 0 ? _headers : null,
+                _recordLine = _recordLine,
+                _recordOffset = _offsetBase + _recordStart,
+            };
+
+            if (_stage is Stage.RecordObject or Stage.RecordArray)
+                CarryRecord(ref state);
+
+            return state;
+        }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the supplied bytes hold the final block of the input.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when the end of the bytes is the end of the input; <see langword="false" /> when
+    /// <see cref="Read" /> instead returns <see langword="false" /> at a record the block cuts short, and the caller
+    /// supplies more data.
+    /// </value>
+    public readonly bool IsFinalBlock => _isFinalBlock;
+
+    /// <summary>
     /// Gets the 1-based line number at the current read position.
     /// </summary>
     /// <value>The current line number.</value>
@@ -196,7 +324,9 @@ public ref struct Utf8DelimitedReader
     /// </summary>
     /// <value>The raw field bytes.</value>
     public readonly ReadOnlySpan<byte> ValueSpan =>
-        _currentRange.Length > 0 ? _data.Slice(_currentRange.Start, _currentRange.Length) : default;
+        _currentRange.Length > 0
+            ? (_recordSource is null ? _data : _recordSource.AsSpan()).Slice(_currentRange.Start, _currentRange.Length)
+            : default;
 
     /// <summary>
     /// Gets the decoded text of the current property-name or string token.
@@ -210,20 +340,21 @@ public ref struct Utf8DelimitedReader
     /// Advances the reader to the next token.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document.
+    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document, or, over a
+    /// block that is not the last, when the block ends before the next record does.
     /// </returns>
     /// <exception cref="DelimitedFormatException">Thrown when the bytes are not valid delimited text.</exception>
+    /// <remarks>
+    /// When the block ends before the next record does, the reader is left as it was: the current token is still the
+    /// previous one, and <see cref="BytesConsumed" /> counts only the records read and the blank and comment lines
+    /// passed over.
+    /// </remarks>
     public bool Read()
     {
         switch (_stage)
         {
             case Stage.Start:
-                if (_options.HasHeader && LoadRecord())
-                    PromoteFieldsToHeaders();
-
-                _stage = Stage.Body;
-                SetStructural(DelimitedTokenType.StartArray);
-                return true;
+                return StartDocument();
 
             case Stage.Body:
                 return BeginRecordOrEnd();
@@ -241,12 +372,50 @@ public ref struct Utf8DelimitedReader
     }
 
     /// <summary>
+    /// Reads the header row when the options expect one, and starts the document array.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when the document array started; <see langword="false" /> when the block ends before the
+    /// header row does, or holds no more than the start of a byte-order mark.
+    /// </returns>
+    /// <exception cref="DelimitedFormatException">
+    /// Thrown when the header row is malformed, or repeats a name under
+    /// <see cref="DelimitedDuplicateHeaderBehavior.Throw" />.
+    /// </exception>
+    private bool StartDocument()
+    {
+        if (_byteOrderMarkPending)
+            return false;
+
+        if (_options.HasHeader)
+        {
+            ReadStatus status = LoadRecord();
+            if (status == ReadStatus.NeedMoreData)
+                return false;
+
+            if (status == ReadStatus.Complete)
+                PromoteFieldsToHeaders();
+        }
+
+        _stage = Stage.Body;
+        SetStructural(DelimitedTokenType.StartArray);
+        return true;
+    }
+
+    /// <summary>
     /// Begins the next record, or ends the document array when the source is exhausted.
     /// </summary>
-    /// <returns><see langword="true" /> always, because a token is produced in either case.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a token was produced; <see langword="false" /> when the block ends before the next
+    /// record does.
+    /// </returns>
     private bool BeginRecordOrEnd()
     {
-        if (!LoadRecord())
+        ReadStatus status = LoadRecord();
+        if (status == ReadStatus.NeedMoreData)
+            return false;
+
+        if (status == ReadStatus.EndOfInput)
         {
             _stage = Stage.End;
             SetStructural(DelimitedTokenType.EndArray);
@@ -366,30 +535,41 @@ public ref struct Utf8DelimitedReader
     /// Loads the next record's fields, skipping blank and comment lines and applying the malformed-record and
     /// field-count policies.
     /// </summary>
-    /// <returns><see langword="true" /> when a record was loaded; <see langword="false" /> at end of input.</returns>
+    /// <returns>
+    /// <see cref="ReadStatus.Complete" /> when a record was loaded; <see cref="ReadStatus.EndOfInput" /> at the end of
+    /// the input; <see cref="ReadStatus.NeedMoreData" /> when the block ends before the next record does, with the
+    /// cursor at the start of that record or of the line the block cuts short.
+    /// </returns>
     /// <exception cref="DelimitedFormatException">
     /// Thrown when a record is malformed under the configured policy.
     /// </exception>
-    private bool LoadRecord()
+    private ReadStatus LoadRecord()
     {
         while (true)
         {
-            SkipBlankAndCommentLines();
+            if (!SkipBlankAndCommentLines())
+                return ReadStatus.NeedMoreData;
 
             if (_position >= _data.Length)
-                return false;
+                return _isFinalBlock ? ReadStatus.EndOfInput : ReadStatus.NeedMoreData;
 
             // An error about the record as a whole is reported where the record starts, not after its line ending.
             _recordLine = _line;
             _recordStart = _position;
 
-            if (!ParseRecord())
+            ReadStatus parsed = ParseRecord();
+            if (parsed == ReadStatus.NeedMoreData)
+                return RestoreRecordStart();
+
+            if (parsed == ReadStatus.TextAfterClosingQuote)
             {
                 // Text after a closing quote: the cursor is on the offending byte, and the rest of its line belongs to
                 // the malformed record.
                 if (_options.MalformedRecordBehavior == DelimitedMalformedRecordBehavior.SkipRecord)
                 {
-                    SkipRestOfLine();
+                    if (!SkipRestOfLine())
+                        return RestoreRecordStart();
+
                     continue;
                 }
 
@@ -407,30 +587,45 @@ public ref struct Utf8DelimitedReader
                     string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, _headers.Count, _fields.Count), _recordLine, _recordStart);
             }
 
-            return true;
+            return ReadStatus.Complete;
         }
+    }
+
+    /// <summary>
+    /// Moves the cursor back to the start of the record that the block cuts short, so the next block's reader reads it
+    /// whole.
+    /// </summary>
+    /// <returns><see cref="ReadStatus.NeedMoreData" />, always.</returns>
+    private ReadStatus RestoreRecordStart()
+    {
+        _position = _recordStart;
+        _line = _recordLine;
+        return ReadStatus.NeedMoreData;
     }
 
     /// <summary>
     /// Parses a single record from the cursor into <see cref="_fields" /> and <see cref="_fieldRanges" />.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when the record ends at a line ending or the end of the input; <see langword="false" />
-    /// when text follows a closing quote, with the cursor left on the offending byte.
+    /// <see cref="ReadStatus.Complete" /> when the record ends at a line ending or the end of the input;
+    /// <see cref="ReadStatus.TextAfterClosingQuote" /> when text follows a closing quote, with the cursor left on the
+    /// offending byte; <see cref="ReadStatus.NeedMoreData" /> when the block ends before the record does.
     /// </returns>
     /// <exception cref="DelimitedFormatException">Thrown when a quoted field is unterminated.</exception>
-    private bool ParseRecord()
+    private ReadStatus ParseRecord()
     {
         _fields.Clear();
         _fieldRanges.Clear();
+        _recordSource = null;
 
         while (true)
         {
-            if (!ParseField())
-                return false;
+            ReadStatus field = ParseField();
+            if (field != ReadStatus.Complete)
+                return field;
 
             if (_position >= _data.Length)
-                return true;
+                return _isFinalBlock ? ReadStatus.Complete : ReadStatus.NeedMoreData;
 
             if (_data[_position] == (byte)_options.EffectiveDelimiter)
             {
@@ -438,9 +633,13 @@ public ref struct Utf8DelimitedReader
                 continue;
             }
 
-            // A well-formed field ends only at the delimiter, a line ending or the end of the input.
+            // A well-formed field ends only at the delimiter, a line ending or the end of the input. A carriage return
+            // that ends a block that is not the last may be the first half of a CRLF.
+            if (EndsWithPendingCarriageReturn(_position))
+                return ReadStatus.NeedMoreData;
+
             SkipLineEnding();
-            return true;
+            return ReadStatus.Complete;
         }
     }
 
@@ -448,11 +647,12 @@ public ref struct Utf8DelimitedReader
     /// Parses a single field from the cursor, dispatching between quoted and unquoted forms.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when the field ends at the delimiter, a line ending or the end of the input;
-    /// <see langword="false" /> when text follows a closing quote.
+    /// <see cref="ReadStatus.Complete" /> when the field ends at the delimiter, a line ending or the end of the input;
+    /// <see cref="ReadStatus.TextAfterClosingQuote" /> when text follows a closing quote;
+    /// <see cref="ReadStatus.NeedMoreData" /> when the block ends before the field does.
     /// </returns>
     /// <exception cref="DelimitedFormatException">Thrown when a quoted field is unterminated.</exception>
-    private bool ParseField()
+    private ReadStatus ParseField()
     {
         int start = _position;
 
@@ -466,18 +666,27 @@ public ref struct Utf8DelimitedReader
         if (_position < _data.Length && _data[_position] == (byte)_options.EffectiveQuote)
             return ParseQuotedField();
 
+        // At the end of a block that is not the last, the field's first byte, which may be a quote, is still to come.
+        if (_position >= _data.Length && !_isFinalBlock)
+            return ReadStatus.NeedMoreData;
+
         _position = start;
-        ParseUnquotedField();
-        return true;
+        return ParseUnquotedField();
     }
 
     /// <summary>
     /// Parses an unquoted field to the next delimiter or line ending.
     /// </summary>
-    private void ParseUnquotedField()
+    /// <returns>
+    /// <see cref="ReadStatus.Complete" /> when the field ends at the delimiter, a line ending or the end of the input;
+    /// <see cref="ReadStatus.NeedMoreData" /> when the block ends before the field does.
+    /// </returns>
+    private ReadStatus ParseUnquotedField()
     {
         int start = _position;
         _position = Utf8LineCursor.EndOfLineOr(_data, _position, (byte)_options.EffectiveDelimiter);
+        if (_position >= _data.Length && !_isFinalBlock)
+            return ReadStatus.NeedMoreData;
 
         int end = _position;
         if (_options.TrimFields)
@@ -490,6 +699,7 @@ public ref struct Utf8DelimitedReader
 
         _fields.Add(Encoding.UTF8.GetString(_data[start..end]));
         _fieldRanges.Add((start, end - start));
+        return ReadStatus.Complete;
     }
 
     /// <summary>
@@ -497,15 +707,16 @@ public ref struct Utf8DelimitedReader
     /// <see cref="DelimitedReaderOptions.TrimFields" /> skips the spaces and tabs after its closing quote.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when the delimiter, a line ending or the end of the input follows the closing quote;
-    /// <see langword="false" /> when other text does, with the cursor left on it.
+    /// <see cref="ReadStatus.Complete" /> when the delimiter, a line ending or the end of the input follows the closing
+    /// quote; <see cref="ReadStatus.TextAfterClosingQuote" /> when other text does, with the cursor left on it;
+    /// <see cref="ReadStatus.NeedMoreData" /> when the block ends before the field and what follows it do.
     /// </returns>
     /// <exception cref="DelimitedFormatException">Thrown when the field is unterminated.</exception>
     /// <remarks>
     /// The field's content is decoded as whole runs of bytes between quotes, as an unquoted field is decoded, so an
     /// invalid UTF-8 sequence reads as U+FFFD and never swallows the quote, line ending or byte that follows it.
     /// </remarks>
-    private bool ParseQuotedField()
+    private ReadStatus ParseQuotedField()
     {
         byte quote = (byte)_options.EffectiveQuote;
         _position++; // consume opening quote
@@ -517,6 +728,9 @@ public ref struct Utf8DelimitedReader
             int next = _data[_position..].IndexOfAny(quote, (byte)'\r', (byte)'\n');
             if (next < 0)
             {
+                if (!_isFinalBlock)
+                    return ReadStatus.NeedMoreData;
+
                 _position = _data.Length;
                 throw CreateFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedUnterminatedQuote, _line, _position);
             }
@@ -532,6 +746,10 @@ public ref struct Utf8DelimitedReader
                     _position += 2;
                     continue;
                 }
+
+                // A quote that ends a block that is not the last may be the first of a doubled quote.
+                if (_position + 1 == _data.Length && !_isFinalBlock)
+                    return ReadStatus.NeedMoreData;
 
                 break;
             }
@@ -559,9 +777,12 @@ public ref struct Utf8DelimitedReader
         }
 
         // Only the delimiter, a line ending or the end of the input may follow a closing quote.
-        return _position >= _data.Length
-            || _data[_position] == (byte)_options.EffectiveDelimiter
-            || Utf8LineCursor.IsLineEnding(_data[_position]);
+        if (_position >= _data.Length)
+            return _isFinalBlock ? ReadStatus.Complete : ReadStatus.NeedMoreData;
+
+        return _data[_position] == (byte)_options.EffectiveDelimiter || Utf8LineCursor.IsLineEnding(_data[_position])
+            ? ReadStatus.Complete
+            : ReadStatus.TextAfterClosingQuote;
     }
 
     /// <summary>
@@ -617,7 +838,12 @@ public ref struct Utf8DelimitedReader
     /// <summary>
     /// Skips blank lines and, when enabled, comment lines beginning with the comment character.
     /// </summary>
-    private void SkipBlankAndCommentLines()
+    /// <returns>
+    /// <see langword="true" /> when the cursor rests on the start of a record or at the end of the block;
+    /// <see langword="false" /> when the block, which is not the last, ends before a comment line or a line ending
+    /// does, with the cursor left at its start.
+    /// </returns>
+    private bool SkipBlankAndCommentLines()
     {
         while (_position < _data.Length)
         {
@@ -625,18 +851,66 @@ public ref struct Utf8DelimitedReader
 
             if (Utf8LineCursor.IsLineEnding(b))
             {
+                if (EndsWithPendingCarriageReturn(_position))
+                    return false;
+
                 SkipLineEnding();
                 continue;
             }
 
             if (_options.AllowComments && b == (byte)_options.EffectiveCommentChar)
             {
-                _position = Utf8LineCursor.EndOfLine(_data, _position);
+                int end = Utf8LineCursor.EndOfLine(_data, _position);
+                if (end >= _data.Length && !_isFinalBlock)
+                    return false;
+
+                _position = end;
                 continue;
             }
 
-            return;
+            return true;
         }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether the byte at a position is a carriage return that ends a block that is not the last, and so
+    /// may be the first half of a CRLF whose line feed is still to come.
+    /// </summary>
+    /// <param name="position">The position of the line-ending byte, within <see cref="_data" />.</param>
+    /// <returns>
+    /// <see langword="true" /> when the line ending cannot be consumed until more data arrives; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private readonly bool EndsWithPendingCarriageReturn(int position) =>
+        !_isFinalBlock && position == _data.Length - 1 && _data[position] == (byte)'\r';
+
+    /// <summary>
+    /// Copies the fields of the record whose tokens are being reported into a state, with the source bytes their ranges
+    /// index, so that the reader built from the state reports the fields left.
+    /// </summary>
+    /// <param name="state">The state to carry the record in.</param>
+    private readonly void CarryRecord(ref DelimitedReaderState state)
+    {
+        (int Start, int Length)[] ranges = [.. _fieldRanges];
+
+        if (_recordSource is null)
+        {
+            // The ranges index the block; rebase them on a copy of the record's bytes, which the next block lacks.
+            state._pendingSource = _data[_recordStart.._position].ToArray();
+            for (int i = 0; i < ranges.Length; i++)
+                ranges[i] = (ranges[i].Start - _recordStart, ranges[i].Length);
+        }
+        else
+        {
+            state._pendingSource = _recordSource;
+        }
+
+        state._pendingFields = [.. _fields];
+        state._pendingRanges = ranges;
+        state._fieldIndex = _fieldIndex;
+        state._emittingValue = _emittingValue;
     }
 
     /// <summary>
@@ -653,10 +927,18 @@ public ref struct Utf8DelimitedReader
     /// <summary>
     /// Skips the rest of the current line, its line ending included, so that reading continues with the next line.
     /// </summary>
-    private void SkipRestOfLine()
+    /// <returns>
+    /// <see langword="true" /> when the line was skipped; <see langword="false" /> when the block, which is not the
+    /// last, ends before the line does.
+    /// </returns>
+    private bool SkipRestOfLine()
     {
         _position = Utf8LineCursor.EndOfLine(_data, _position);
+        if ((_position >= _data.Length && !_isFinalBlock) || EndsWithPendingCarriageReturn(_position))
+            return false;
+
         SkipLineEnding();
+        return true;
     }
 
     /// <summary>
@@ -679,7 +961,10 @@ public ref struct Utf8DelimitedReader
     /// <summary>
     /// Enumerates the reader lifecycle stages.
     /// </summary>
-    private enum Stage
+    /// <remarks>
+    /// The stage is internal rather than private because <see cref="DelimitedReaderState" /> carries it between blocks.
+    /// </remarks>
+    internal enum Stage
     {
         /// <summary>
         /// Before the document array has started.

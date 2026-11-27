@@ -34,6 +34,12 @@ namespace Bodu.Text.Ini.Reader;
 /// skipped rather than reported as a <see cref="IniTokenType.Comment" /> token, and any other text after the header
 /// throws <see cref="IniFormatException" />.
 /// </para>
+/// <para>
+/// An input that arrives in blocks is read with the
+/// <see cref="Utf8IniReader(ReadOnlySpan{byte}, bool, IniReaderState)" /> constructor: over a block that is not the
+/// last, <see cref="Read" /> returns <see langword="false" /> rather than read a line that the block cuts short, and
+/// the next block's reader resumes from <see cref="CurrentState" />, as <see cref="IniReaderState" /> describes.
+/// </para>
 /// </remarks>
 public ref struct Utf8IniReader
 {
@@ -42,6 +48,15 @@ public ref struct Utf8IniReader
 
     /// <summary>The reader options.</summary>
     private readonly IniReaderOptions _options;
+
+    /// <summary>Whether no further data follows <see cref="_data" />, so that its end is the end of the input.</summary>
+    private readonly bool _isFinalBlock;
+
+    /// <summary>The offset, in the whole input, of the first byte of <see cref="_data" />.</summary>
+    private readonly long _offsetBase;
+
+    /// <summary>Whether the block holds no more than the start of a byte-order mark, which more data must complete or refute.</summary>
+    private readonly bool _byteOrderMarkPending;
 
     /// <summary>The read position of the next byte to consume.</summary>
     private int _position;
@@ -89,16 +104,67 @@ public ref struct Utf8IniReader
     /// <param name="data">The INI source bytes.</param>
     /// <param name="options">The reader options.</param>
     public Utf8IniReader(ReadOnlySpan<byte> data, IniReaderOptions options)
+        : this(data, isFinalBlock: true, new IniReaderState(options))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8IniReader" /> struct over one block of an input, resuming from
+    /// the state captured at the end of the previous block.
+    /// </summary>
+    /// <param name="data">
+    /// The unconsumed bytes carried over from the previous block plus the newly arrived data.
+    /// </param>
+    /// <param name="isFinalBlock">
+    /// <see langword="true" /> when no further data follows this block; <see langword="false" /> to make
+    /// <see cref="Read" /> return <see langword="false" /> rather than read a line that the block cuts short.
+    /// </param>
+    /// <param name="state">
+    /// The continuation state: a new <see cref="IniReaderState" /> for the first block, or the previous reader's
+    /// <see cref="CurrentState" /> thereafter.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// A section header, an entry or a comment is read only once the block holds the whole of its line: over a block
+    /// that is not the last, once the line ending has arrived, and a carriage return that ends the block waits for the
+    /// byte after it, which may be the line feed of a CRLF.
+    /// </para>
+    /// <para>
+    /// A UTF-8 byte-order mark is skipped only at the start of the whole input; a first block that holds no more than
+    /// the start of one is read once more data arrives.
+    /// </para>
+    /// </remarks>
+    public Utf8IniReader(ReadOnlySpan<byte> data, bool isFinalBlock, IniReaderState state)
     {
         _data = data;
-        _options = options;
-
-        // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first section or key.
-        _position = Utf8LineCursor.ByteOrderMarkLength(data);
-        _line = 1;
-        _tokenLine = 1;
-        _tokenStart = _position;
+        _options = state.Options;
+        _isFinalBlock = isFinalBlock;
+        _offsetBase = state._bytesConsumed;
+        _line = state._linesRead + 1;
+        _tokenLine = _line;
         _tokenType = IniTokenType.None;
+
+        // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first section or key. Only the
+        // start of the whole input can hold one, and a block that holds no more than its first bytes, with more data to
+        // come, cannot yet tell it from content.
+        if (!state._pastStart)
+        {
+            if (data.StartsWith(Utf8LineCursor.ByteOrderMark))
+                _position = Utf8LineCursor.ByteOrderMark.Length;
+            else if (!isFinalBlock && Utf8LineCursor.ByteOrderMark.StartsWith(data))
+                _byteOrderMarkPending = true;
+        }
+
+        _tokenStart = _position;
+
+        // A value whose key was already reported resumes first.
+        if (state._pendingString)
+        {
+            _pendingString = true;
+            _pendingValue = state._pendingValue;
+            _pendingLine = state._pendingLine;
+            _pendingStart = (int)(state._pendingOffset - state._bytesConsumed);
+        }
     }
 
     /// <summary>
@@ -106,6 +172,35 @@ public ref struct Utf8IniReader
     /// </summary>
     /// <value>The read position.</value>
     public readonly int BytesConsumed => _position;
+
+    /// <summary>
+    /// Gets the resumable state to construct the next block's reader from.
+    /// </summary>
+    /// <value>
+    /// The continuation state, capturing the options, the line counter, the offset of <see cref="BytesConsumed" /> in
+    /// the whole input and, after a key, the value still to report.
+    /// </value>
+    public readonly IniReaderState CurrentState =>
+        new(_options)
+        {
+            _linesRead = _line - 1,
+            _bytesConsumed = _offsetBase + _position,
+            _pastStart = !_byteOrderMarkPending,
+            _pendingString = _pendingString,
+            _pendingValue = _pendingString ? _pendingValue : null,
+            _pendingLine = _pendingString ? _pendingLine : 0,
+            _pendingOffset = _pendingString ? _offsetBase + _pendingStart : 0,
+        };
+
+    /// <summary>
+    /// Gets a value indicating whether the supplied bytes hold the final block of the input.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when the end of the bytes is the end of the input; <see langword="false" /> when
+    /// <see cref="Read" /> instead returns <see langword="false" /> at a line the block cuts short, and the caller
+    /// supplies more data.
+    /// </value>
+    public readonly bool IsFinalBlock => _isFinalBlock;
 
     /// <summary>
     /// Gets the 1-based line number at which the current token begins.
@@ -129,6 +224,15 @@ public ref struct Utf8IniReader
     internal readonly int TokenStartIndex => _tokenStart;
 
     /// <summary>
+    /// Gets the offset, in the whole input, at which the current token begins.
+    /// </summary>
+    /// <value>
+    /// The offset of the current token's first byte, counted from the start of the whole input rather than of the
+    /// block.
+    /// </value>
+    internal readonly long TokenOffset => _offsetBase + _tokenStart;
+
+    /// <summary>
     /// Gets the kind of the current token.
     /// </summary>
     /// <value>The current token kind.</value>
@@ -146,9 +250,14 @@ public ref struct Utf8IniReader
     /// Advances the reader to the next token.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document.
+    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document, or, over a
+    /// block that is not the last, when the block ends before the next line does.
     /// </returns>
     /// <exception cref="IniFormatException">Thrown when the bytes are not valid INI.</exception>
+    /// <remarks>
+    /// When the block ends before the next line does, the reader is left as it was: the current token is still the
+    /// previous one, and <see cref="BytesConsumed" /> counts only the lines read.
+    /// </remarks>
     public bool Read()
     {
         if (_pendingString)
@@ -161,12 +270,18 @@ public ref struct Utf8IniReader
             return true;
         }
 
+        if (_byteOrderMarkPending)
+            return false;
+
         while (true)
         {
             SkipSpacesAndTabs();
 
             if (_position >= _data.Length)
             {
+                if (!_isFinalBlock)
+                    return false;
+
                 _tokenType = IniTokenType.None;
                 _tokenLine = _line;
                 _tokenStart = _position;
@@ -178,9 +293,16 @@ public ref struct Utf8IniReader
 
             if (Utf8LineCursor.IsLineEnding(b))
             {
+                if (EndsWithPendingCarriageReturn(_position))
+                    return false;
+
                 SkipLineEnding();
                 continue;
             }
+
+            // Every other line is read whole: over a block that is not the last, once its line ending has arrived.
+            if (!_isFinalBlock && !HoldsWholeLine(_position))
+                return false;
 
             if (IsCommentStart(b))
             {
@@ -399,11 +521,37 @@ public ref struct Utf8IniReader
         _line += Utf8LineCursor.ConsumeLineEnding(_data, ref _position);
 
     /// <summary>
+    /// Determines whether the block holds the whole of the line that a position is on, its line ending included.
+    /// </summary>
+    /// <param name="position">A position on the line, within the block.</param>
+    /// <returns>
+    /// <see langword="true" /> when the line's line ending lies within the block and can be consumed; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private readonly bool HoldsWholeLine(int position)
+    {
+        int end = Utf8LineCursor.EndOfLine(_data, position);
+        return end < _data.Length && !EndsWithPendingCarriageReturn(end);
+    }
+
+    /// <summary>
+    /// Determines whether the byte at a position is a carriage return that ends a block that is not the last, and so
+    /// may be the first half of a CRLF whose line feed is still to come.
+    /// </summary>
+    /// <param name="position">The position of the line-ending byte, within the block.</param>
+    /// <returns>
+    /// <see langword="true" /> when the line ending cannot be consumed until more data arrives; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private readonly bool EndsWithPendingCarriageReturn(int position) =>
+        !_isFinalBlock && position == _data.Length - 1 && _data[position] == (byte)'\r';
+
+    /// <summary>
     /// Creates a parse exception with a source location.
     /// </summary>
     /// <param name="message">The error message.</param>
     /// <param name="line">The 1-based line number.</param>
-    /// <returns>The exception to throw.</returns>
+    /// <returns>The exception to throw, at the current position's offset in the whole input.</returns>
     private readonly IniFormatException Error(string message, int line) =>
-        new(message, line, _position);
+        new(message, line, _offsetBase + _position);
 }
