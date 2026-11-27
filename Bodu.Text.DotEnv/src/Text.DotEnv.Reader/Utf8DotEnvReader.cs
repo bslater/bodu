@@ -410,6 +410,11 @@ public ref struct Utf8DotEnvReader
         switch (_phase)
         {
             case Phase.Start:
+                // The document starts after a byte-order mark, so a block that holds no more than the start of one
+                // waits for the data that completes or refutes it.
+                if (_byteOrderMarkPending)
+                    return false;
+
                 _phase = Phase.Body;
                 _tokenType = DotEnvTokenType.StartObject;
                 _tokenLine = _line;
@@ -473,9 +478,6 @@ public ref struct Utf8DotEnvReader
             _tokenLine = _pendingLine;
             return true;
         }
-
-        if (_byteOrderMarkPending)
-            return false;
 
         while (true)
         {
