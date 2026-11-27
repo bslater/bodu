@@ -14,7 +14,7 @@ If you are constructing the financial types by hand - in a console app or a test
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-The package references `Bodu.Financial` and `Bodu.Core`, plus `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Options`, `Microsoft.Extensions.Options.ConfigurationExtensions`, `Microsoft.Extensions.Configuration.Abstractions`, and `Microsoft.Extensions.Configuration.Binder` (for the `IConfiguration` binding overload).
+The package references `Bodu.Financial` and `Bodu.Core`, plus `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Logging.Abstractions` (for the log of a failed options reload), `Microsoft.Extensions.Options`, `Microsoft.Extensions.Options.ConfigurationExtensions`, `Microsoft.Extensions.Configuration.Abstractions`, and `Microsoft.Extensions.Configuration.Binder` (for the `IConfiguration` binding overload).
 
 ## The registration surface
 
@@ -22,7 +22,7 @@ The entry point is the `AddFinancialService` `IServiceCollection` extension (in 
 
 | Method | Registers |
 |---|---|
-| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.FinancialOptions> (currently an empty options class - see [Binding options from configuration](#binding-options-from-configuration)) from the named configuration section. The `sectionName` constant is `ServiceCollectionExtensions.DefaultConfigurationSection`. |
+| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup and the <xref:Bodu.Financial.IMonetaryContextResolver>, and binds <xref:Bodu.Financial.FinancialOptions> (the default and named monetary contexts - see [Configuring monetary contexts](#configuring-monetary-contexts)) from the named configuration section. The `sectionName` constant is `ServiceCollectionExtensions.DefaultConfigurationSection`. |
 | `AddFinancialService(IServiceCollection, Action<IFinancialServiceBuilder> configure)` | The same, with the builder configured imperatively by the delegate. |
 
 ## Composing the builder
@@ -87,7 +87,49 @@ public sealed class CashDeskService
 MonetaryContext cashDesk = provider.GetRequiredKeyedService<MonetaryContext>("CashDesk");
 ```
 
-The name must be non-empty; `AddMonetaryContext` throws `ArgumentException` for a blank name and `ArgumentNullException` for a null context.
+The name must be non-empty; `AddMonetaryContext` throws `ArgumentException` for a blank name and `ArgumentNullException` for a null context. A registered context is fixed when the container is built; to change contexts without a restart, configure them instead, as the next section shows.
+
+## Configuring monetary contexts
+
+<xref:Bodu.Financial.FinancialOptions> carries a default context and named contexts as <xref:Bodu.Financial.MonetaryContextOptions>, the settings of a <xref:Bodu.Financial.MonetaryContext> in a form configuration binds. `AddFinancialService(configuration)` binds them from the `"Financial"` section:
+
+```json
+{
+  "Financial": {
+    "DefaultMonetaryContext": { "Rounding": "AwayFromZero" },
+    "MonetaryContexts": {
+      "Invoicing": { "ScalePolicy": "Custom", "CustomScale": 4 },
+      "CashDesk": { "CashRounding": "CurrencyCashIncrement" }
+    }
+  }
+}
+```
+
+Each setting defaults to its `MonetaryContext.Default` value, so a context names only what it changes. `Rounding` takes a <xref:Bodu.Financial.MonetaryRoundingMode>: `ToEven` (the default), `AwayFromZero`, `ToZero`, `ToNegativeInfinity`, and `ToPositiveInfinity` select a <xref:Bodu.Financial.MidpointRoundingStrategy>, and `Stochastic` the shared <xref:Bodu.Financial.StochasticRoundingStrategy>. `MonetaryContextOptions.ToMonetaryContext()` builds and validates the context the settings describe, if you bind them yourself.
+
+Resolve the contexts through <xref:Bodu.Financial.IMonetaryContextResolver>, which `AddFinancialService` registers as a singleton:
+
+```csharp
+public sealed class InvoiceService
+{
+    private readonly IMonetaryContextResolver _contexts;
+
+    public InvoiceService(IMonetaryContextResolver contexts) =>
+        _contexts = contexts;
+
+    public Money Settle(CalculatedMoney amount) =>
+        amount.RoundToMoney(_contexts.Get("Invoicing"));
+}
+```
+
+Hold the resolver rather than a context it returned: the resolver follows `FinancialOptions` through `IOptionsMonitor<FinancialOptions>`, so when the configuration reloads (an `appsettings.json` edit with `reloadOnChange`, for example) the next call returns a context rebuilt from the new settings, without a restart. Settings that fail validation are treated differently at startup and on a reload:
+
+- **At startup**, the first resolution of the resolver throws `OptionsValidationException`, whose `Failures` name each invalid context.
+- **On a reload**, the failure is logged as an error (event 1001) through the container's `ILoggerFactory`, and the contexts built before stay in effect until a valid edit arrives.
+
+A value the configuration binder cannot convert at all, such as an unknown rounding name, fails inside the options system before the resolver sees it, and the resolver keeps the contexts it built before in that case too.
+
+A name resolves to the configured context first, compared case-insensitively as configuration keys are, and then to a context registered with `AddMonetaryContext`, compared ordinally as keyed services are. A configured context therefore takes precedence over a registered one of the same name in the resolver, while `GetRequiredKeyedService<MonetaryContext>(name)` keeps returning the registered one. `Get` throws `KeyNotFoundException` for a name neither configures nor registers, and `TryGet` returns `false`.
 
 ## Registering exchange-rate providers
 
@@ -125,11 +167,13 @@ string payload = JsonSerializer.Serialize(new Money<USD>(19.99m), financialJson)
 
 ## Binding options from configuration
 
-Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> from the named section (default `"Financial"`). The type currently declares no settings of its own - it is the binding seam for future options:
+Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> from the named section (default `"Financial"`), the default and named monetary contexts that [Configuring monetary contexts](#configuring-monetary-contexts) describes:
 
 ```csharp
 builder.Services.AddFinancialService(builder.Configuration);
 ```
+
+Without a configuration the options keep their defaults, and code can still set them through `services.Configure<FinancialOptions>(...)`.
 
 ## Activating static currency resolution
 

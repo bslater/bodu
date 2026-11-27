@@ -10,7 +10,7 @@
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-Targets `net8.0` and `net10.0`. The registration extension methods, the `IFinancialServiceBuilder` builder, and `FinancialOptions` live in the `Bodu.Financial` namespace.
+Targets `net8.0` and `net10.0`. The registration extension methods, the `IFinancialServiceBuilder` builder, `FinancialOptions` with `MonetaryContextOptions`, and `IMonetaryContextResolver` live in the `Bodu.Financial` namespace.
 
 ## Registration
 
@@ -28,17 +28,29 @@ services.AddFinancialJson(FinancialJsonPolicy.Strict);
 
 | Entry point | Purpose |
 |---|---|
-| `AddFinancialService(IConfiguration?, string)` | Register `ICurrencyLookup`, bind `FinancialOptions`, return an `IFinancialServiceBuilder` |
+| `AddFinancialService(IConfiguration?, string)` | Register `ICurrencyLookup` and `IMonetaryContextResolver`, bind `FinancialOptions`, return an `IFinancialServiceBuilder` |
 | `AddFinancialService(Action<IFinancialServiceBuilder>)` | Register core services and compose fluently |
 | `IFinancialServiceBuilder.AddCurrencyLookup<TLookup>()` | Replace the registered `ICurrencyLookup` |
 | `.AddExchangeRateProvider<T>()` / `(instance)` | Register an `IRateProvider` (first registration wins) |
 | `.AddDatedExchangeRateProvider<T>()` / `(instance)` | Register an `IDatedRateProvider` (first registration wins) |
 | `.AddMonetaryContext(name, context)` | Register a named `MonetaryContext` as a keyed singleton |
+| `IMonetaryContextResolver.Default` / `.Get(name)` / `.TryGet(name, out context)` | Resolve the configured default and named contexts, and the registered ones, following configuration reloads |
 | `IServiceProvider.UseCurrencyResolution()` | Install the container's `ICurrencyLookup` as the process-wide ambient resolver |
 
 The provider methods register through `TryAdd`, and the generic form needs a type the container can construct. A web feed such as the ECB provider needs its own options and `HttpClient`, so register it through its package's `Add<Source>ExchangeRates()` method (for example `AddEcbExchangeRates()` from `Bodu.Financial.ExchangeRates.Ecb`) rather than `AddExchangeRateProvider<EcbRateProvider>()`.
 
-`FinancialOptions` is bound from the supplied configuration section (default `"Financial"`); it currently declares no settings of its own and exists as the binding seam for future options. The JSON registration `services.AddFinancialJson(policy)` (a `JsonSerializerOptions` keyed `"Financial"` with the financial converters) lives in the companion `Bodu.Financial.Serialization.Json` package.
+`FinancialOptions` is bound from the supplied configuration section (default `"Financial"`) and carries a default monetary context and named ones as `MonetaryContextOptions`:
+
+```json
+{
+  "Financial": {
+    "DefaultMonetaryContext": { "Rounding": "AwayFromZero" },
+    "MonetaryContexts": { "Invoicing": { "ScalePolicy": "Custom", "CustomScale": 4 } }
+  }
+}
+```
+
+`IMonetaryContextResolver` serves them and follows `IOptionsMonitor<FinancialOptions>`, so a configuration reload changes the contexts it returns without a restart; settings that fail validation on a reload are logged and leave the previous contexts in effect. A configured name takes precedence over one registered with `AddMonetaryContext`, whose keyed service is unchanged. The JSON registration `services.AddFinancialJson(policy)` (a `JsonSerializerOptions` keyed `"Financial"` with the financial converters) lives in the companion `Bodu.Financial.Serialization.Json` package.
 
 ## Building and testing
 
