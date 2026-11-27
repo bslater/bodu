@@ -72,6 +72,47 @@ Both directions are genuinely incremental: records are parsed and yielded as str
 
 Annotate a partial record type with `[DelimitedRecord]` and reference the `Bodu.Text.Formats.Generators` source generator, and a static `DelimitedFactory` property (`IDelimitedRecordFactory<Trade>`) is emitted at compile time. Passing it to the factory overloads - `Serialize(records, Trade.DelimitedFactory)` / `Deserialize(csvText, Trade.DelimitedFactory)` - avoids the reflection binder entirely, making the path trimming- and AOT-safe. The interface can also be implemented by hand.
 
+### Reading the tokens in blocks
+
+The record streaming above does its own buffering. To walk the tokens of input that arrives in pieces, build a `Utf8DelimitedReader` over each block with `isFinalBlock: false` and a <xref:Bodu.Text.Delimited.Reader.DelimitedReaderState>. `Read()` returns `false` at a record or line that the block cuts short, before it reports any of the record's tokens, and `BytesConsumed` stops before it. Carry the bytes from there into the next buffer, add the data that has arrived, and build the next reader from that buffer and the previous reader's `CurrentState`; the last block is read with `isFinalBlock: true`.
+
+<!-- compile -->
+```csharp
+using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Reader;
+
+static void PrintFields(Stream stream)
+{
+    var state = new DelimitedReaderState(DelimitedReaderOptions.Default);
+    byte[] buffer = new byte[4096];
+    int carried = 0;
+    bool isFinalBlock = false;
+
+    while (!isFinalBlock)
+    {
+        if (carried == buffer.Length)
+            Array.Resize(ref buffer, buffer.Length * 2);   // a record longer than the buffer
+
+        int read = stream.Read(buffer, carried, buffer.Length - carried);
+        isFinalBlock = read == 0;
+        int length = carried + read;
+
+        var reader = new Utf8DelimitedReader(buffer.AsSpan(0, length), isFinalBlock, state);
+        while (reader.Read())
+        {
+            if (reader.TokenType == DelimitedTokenType.String)
+                Console.WriteLine(reader.GetString());
+        }
+
+        state = reader.CurrentState;
+        carried = length - reader.BytesConsumed;
+        buffer.AsSpan(reader.BytesConsumed, carried).CopyTo(buffer);   // the unread bytes start the next block
+    }
+}
+```
+
+Over a block that is not the last, a record counts as read once its line ending has arrived, so a quoted field may run across blocks, a doubled quote split between them included, and a carriage return that ends a block waits for the byte after it, which may be the line feed of a CRLF. The buffer must therefore grow to hold the longest record. The state carries the options and the header names, and `LineNumber` and the line and byte offset of a `DelimitedFormatException` count from the start of the whole input, while `BytesConsumed` and `ValueSpan` stay relative to the block. A byte-order mark is skipped only at the start of the input. A reader built without a state reads its bytes as the whole input, as before.
+
 ## Pattern 4 - TSV and other dialects
 
 The delimiter, quote, and comment characters live on the reader/writer options. Each must be an ASCII character other than CR and LF, and no two may be the same; the reader and writer constructors throw `ArgumentException` otherwise (see [Parser policies](../../docs/formats/parser-policies.md)):

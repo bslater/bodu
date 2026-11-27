@@ -10,6 +10,8 @@ For inputs too large (or too hot) to materialize, each format exposes its forwar
 
 The readers are `ref struct` cursors over `ReadOnlySpan<byte>`: `Read()` advances, `TokenType` reports the token, `GetString()` decodes it, and `LineNumber` / `BytesConsumed` locate it. The writers emit UTF-8 to an `IBufferWriter<byte>` or a `Stream` (call `Flush()` to commit in stream mode).
 
+Each reader also reads input that arrives in pieces. Build it over each block with `isFinalBlock: false` and the format's reader state (<xref:Bodu.Text.Delimited.Reader.DelimitedReaderState>, <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderState>, <xref:Bodu.Text.Ini.Reader.IniReaderState>); `Read()` returns `false` at a record, entry or line that the block cuts short, and the next block, which begins with the bytes from `BytesConsumed` onward, is read by a reader built from the previous reader's `CurrentState`. The per-format guides show the loop: [Delimited](delimited.md), [DotEnv](dotenv.md), [INI](ini.md).
+
 ## Pattern 1 - walk delimited records one at a time
 
 ```csharp
