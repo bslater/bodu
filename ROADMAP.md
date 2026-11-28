@@ -3,19 +3,20 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-11-27. Bodu 1.0.0 shipped on 2026-09-24, after the
+*Last updated: 2026-11-28. Bodu 1.0.0 shipped on 2026-09-24, after the
 0.5.0, 0.6.0 and 0.7.0 waves put 56 packages on nuget.org;
 `Bodu.Security.Cryptography` 1.1.0 and 1.2.0, `Bodu.Core` 1.0.1 and
 `Bodu.Globalization.Calendar` 1.0.1 followed out of band, and 1.3.0, on
 2026-10-16, brought every Stable package back to one version. Next is
-1.3.1, a release of the Stable stream with fixes and additions; the
-Preview stream stays at 0.7.2.
+1.4.0, a minor release of the Stable stream with fixes and additions;
+the Preview stream stays at 0.7.2.
 Since the previous revision (2026-10-14): 1.3.0 shipped; CI builds and
 tests on Windows beside Linux, and consumes the real-signed packages
 before a release publishes them; the coverage ratchet fails the run that
 breaches it; a sweep of the readers of ASCII text found several that
-accepted characters outside ASCII; and five of the additions planned
-for 1.4.0 moved into 1.3.1. The detail is in git and the release notes.*
+accepted characters outside ASCII; and five additions joined those
+fixes, making the release 1.4.0. The detail is in git and the release
+notes.*
 
 ## How to read this
 
@@ -251,8 +252,8 @@ proposals can be closed quickly.
 
 ## Active focus
 
-**1.3.1.** A release of the Stable stream that removes and changes no
-public API. Its fixes:
+**1.4.0.** A minor release of the Stable stream that removes and
+changes no public API. Its fixes:
 
 - **Look-alike letters in ASCII grammars.** .NET's invariant casing maps
   U+017F LATIN SMALL LETTER LONG S to `S` and U+212A KELVIN SIGN to `k`,
@@ -295,7 +296,7 @@ Its additions, each on an existing type or beside one:
 - **AOT declarations.** `Bodu.IO.Compound` and `Bodu.Text.Encoding`
   declare `IsAotCompatible`, so the trim and AOT analyzers check them.
 
-**1.4.0.** The additive items the per-project sections list, foremost
+**1.5.0.** The additive items the per-project sections list, foremost
 packaging `Bodu.Text.Formats.Generators`, deciding whether to publish
 the calendar toolchain, and the AOT-compatibility declarations that
 remain under *AOT and trim readiness*.
@@ -534,7 +535,7 @@ Forward-looking:
 - **Audit `Base*.Utf8.cs` writer parity.** Confirm every encoder's UTF-8
   span surface has full `IUtf8SpanFormattable`-style parity with the
   char paths. Every encoder of the `IBinaryEncoding` family carries a
-  `Utf8` partial from 1.3.1, when `Base45` and `Base62` gained theirs;
+  `Utf8` partial from 1.4.0, when `Base45` and `Base62` gained theirs;
   `Bech32`, whose text carries a human-readable part and a checksum,
   has none, as `Base58Check` has none.
 - **Reversible short-ID encodings (Sqids / the Hashids successor).**
@@ -681,7 +682,7 @@ three. Reflection-free binding is in place: the
 implementations for `[DelimitedRecord]` / `[IniSection]` partial POCOs,
 consumed by the factory overloads on `DelimitedSerializer` /
 `IniSerializer` without `RequiresUnreferencedCode` or
-`RequiresDynamicCode`. From 1.3.1 the three token readers also resume
+`RequiresDynamicCode`. From 1.4.0 the three token readers also resume
 across input blocks through the public `DelimitedReaderState`,
 `DotEnvReaderState` and `IniReaderState`, as `Utf8TomlReader` does
 through `TomlReaderState`.
@@ -842,7 +843,7 @@ Current state: Stable; first shipped at 0.6.0. `IServiceCollection`
 extensions declared in the `Bodu.Financial` namespace -
 `AddFinancialService`, the `IFinancialServiceBuilder` chain,
 `UseCurrencyResolution`, `FinancialOptions`, named monetary contexts.
-From 1.3.1 `FinancialOptions` binds a default monetary context and named
+From 1.4.0 `FinancialOptions` binds a default monetary context and named
 ones from configuration, and `IMonetaryContextResolver` follows
 `IOptionsMonitor<FinancialOptions>`, keeping the last valid contexts
 when a reload is invalid.
@@ -1150,7 +1151,7 @@ the canonical loader. `Validate()` / `TryBuild(...)` and the loader's
 throwing, `SaveBinary` writes the sealed `.bcal` form, and the round-trip
 guarantees between builder output, the loader and the JSON subset are
 documented in `docs/guides/calendar/round-trip-guarantees.md`, each pinned
-by a named test. From 1.3.1 a diagnostic about a document loaded from XML
+by a named test. From 1.4.0 a diagnostic about a document loaded from XML
 text also carries the line and position of what it concerns.
 
 No open items recorded.
@@ -1630,7 +1631,7 @@ Target state:
   reflection-free, but the flag covers a whole assembly, and turning it on
   for TOML, Bencode and YAML reports the shared converter engine's
   reflection, which needs trimming annotations threaded through it first.
-  `Bodu.IO.Compound` and `Bodu.Text.Encoding` were declared for 1.3.1.
+  `Bodu.IO.Compound` and `Bodu.Text.Encoding` were declared for 1.4.0.
 - **AOT-clean with work:** the `Bodu.Text.Delimited` / `.Ini`
   `*Serializer` reflection binders have a reflection-free escape hatch
   in the `Bodu.Text.Formats.Generators` factories and the serializer

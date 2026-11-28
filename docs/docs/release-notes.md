@@ -6,15 +6,15 @@ title: Release notes
 
 Every Bodu release moves one or both of the two version streams, Stable and Preview, as [versioning, stability, and support](versioning-and-support.md) explains. This page says what to change when you upgrade and lists every release. Each release's full notes, with every fix and the issue behind it, are on its [GitHub release](https://github.com/bslater/bodu/releases).
 
-## Upgrading to 1.3.1
+## Upgrading to 1.4.0
 
-1.3.1 moves every Stable package to 1.3.1 with fixes and additions, and the preview stream stays at 0.7.2. No public member is removed or changed. The [1.3.1 release notes](https://github.com/bslater/bodu/releases/tag/v1.3.1) list every fix and the issue behind it; this section covers what can need a change in your code. If you are moving from a release before 1.3.0, read the [1.3.0 release notes](https://github.com/bslater/bodu/releases/tag/v1.3.0) as well: 1.3.0 replaced `WeekPattern` with `DayOfWeekSet` and promoted ten packages to Stable.
+1.4.0 moves every Stable package to 1.4.0 with fixes and additions, and the preview stream stays at 0.7.2. No public member is removed or changed. The [1.4.0 release notes](https://github.com/bslater/bodu/releases/tag/v1.4.0) list every fix and the issue behind it; this section covers what can need a change in your code. If you are moving from a release before 1.3.0, read the [1.3.0 release notes](https://github.com/bslater/bodu/releases/tag/v1.3.0) as well: 1.3.0 replaced `WeekPattern` with `DayOfWeekSet` and promoted ten packages to Stable.
 
 ### Update your package references
 
-- **Move every Stable Bodu package to 1.3.1 in the same change.** No public member is removed or changed, so code that builds against 1.3.0 builds against 1.3.1.
+- **Move every Stable Bodu package to 1.4.0 in the same change.** No public member is removed or changed, so code that builds against 1.3.0 builds against 1.4.0.
 - **`Bodu.Financial.DependencyInjection` depends on `Microsoft.Extensions.Logging.Abstractions`**, which it uses to report a monetary-context reload it rejects.
-- **The IMF, Yahoo, and OFX providers stay at 0.7.2.** They depend on the 1.3.0 Stable packages and run beside the 1.3.1 ones you reference.
+- **The IMF, Yahoo, and OFX providers stay at 0.7.2.** They depend on the 1.3.0 Stable packages and run beside the 1.4.0 ones you reference.
 
 ### Breaking changes
 
@@ -51,7 +51,7 @@ These changes need no code change to compile, but they can change what your code
 
 | Release | Published | What it shipped |
 |---|---|---|
-| 1.3.1 | This release | Every Stable package at 1.3.1, with the fixes and additions above. |
+| 1.4.0 | This release | Every Stable package at 1.4.0, with the fixes and additions above. |
 | [1.3.0](https://github.com/bslater/bodu/releases/tag/v1.3.0) | 2026-10-16 | Every Stable package at 1.3.0, ten packages promoted to Stable, and the Experimental providers at 0.7.2. |
 | [`Bodu.Globalization.Calendar` 1.0.1](https://github.com/bslater/bodu/releases/tag/Bodu.Globalization.Calendar-1.0.1) | 2026-10-01 | Out of band: working-day lookups no longer overflow the stack. |
 | [`Bodu.Core` 1.0.1](https://github.com/bslater/bodu/releases/tag/Bodu.Core-1.0.1) and [`Bodu.Security.Cryptography` 1.2.0](https://github.com/bslater/bodu/releases/tag/Bodu.Security.Cryptography-1.2.0) | 2026-10-01 | Out of band: further cryptography speed-ups, with the `Bodu.Core` internals they call. |
