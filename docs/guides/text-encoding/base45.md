@@ -81,8 +81,32 @@ int written = Base45.Encode(payload, destination);
 int maxBytes = Base45.GetMaxDecodedLength(text.Length);  // decode upper bound
 ```
 
-Base45 is **not streamable** - it has no `OperationStatus` path. Each call needs the entire input: pass the whole
-payload (encode) or the whole string (decode) as a single span.
+Base45 is **not streamable**: each call needs the entire input, so pass the whole payload (encode) or the whole
+string (decode) as a single span.
+
+## UTF-8, buffer writers, and GUIDs
+
+Base45 text is ASCII, so the UTF-8 overloads read and write it as one byte per character, for network and file
+pipelines that work in bytes. `DecodeFromUtf8` follows the `OperationStatus` convention, but because Base45 is not
+streamable it decodes the whole span as one input and never returns `NeedMoreData`. The buffer-writer overloads
+encode straight into an `IBufferWriter<char>` or `IBufferWriter<byte>`, and a `Guid` encodes from the bytes
+`Guid.TryWriteBytes` writes.
+
+<!-- compile -->
+```csharp
+byte[] payload = { 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x21, 0x21 };   // "Hello!!"
+
+byte[] utf8 = Base45.EncodeToUtf8(payload);                      // the ASCII bytes of "%69 VD92EX0"
+
+byte[] decoded = new byte[Base45.GetMaxDecodedLength(utf8.Length)];
+System.Buffers.OperationStatus status = Base45.DecodeFromUtf8(utf8, decoded, out int consumed, out int written);
+
+var writer = new System.Buffers.ArrayBufferWriter<byte>();
+_ = Base45.EncodeToUtf8(payload, writer);                        // into a pipeline's buffer writer
+
+string id = Base45.Encode(Guid.NewGuid());                       // always 24 characters
+Guid back = Base45.DecodeGuid(id);
+```
 
 ## Validation
 

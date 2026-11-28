@@ -33,6 +33,9 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
+    public NotableDateSourcePosition? Position => NotableDateSourcePosition.Of(_element);
+
+    /// <inheritdoc />
     public string? Scalar(string name) =>
         (string?)_element.Attribute(name);
 

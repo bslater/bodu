@@ -203,7 +203,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
             throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_MissingCurrency);
 
         if (_policy == FinancialJsonPolicy.Lenient)
-            currency = currency.Trim().ToUpperInvariant();
+            currency = LenientIsoCode.Normalize(currency);
 
         string expectedIso = CurrencyMetadata<TCurrency>.Value.IsoCode;
         return !string.Equals(currency, expectedIso, StringComparison.Ordinal)

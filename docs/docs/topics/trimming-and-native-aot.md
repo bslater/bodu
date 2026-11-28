@@ -15,6 +15,7 @@ A package **declared AOT-compatible** (`IsAotCompatible` in its project) runs th
 | `Bodu.Core` | Yes | None. The `Enums` description and display-name helpers read enum fields by reflection, but annotate the fields they keep, so they raise no warning. | Everything. |
 | `Bodu.Collections`, `Bodu.Collections.Concurrent` | Yes | None. | Everything. |
 | `Bodu.IO.Hashing`, `Bodu.Security.Cryptography` | Yes | None. | Everything. |
+| `Bodu.IO.Compound`, `Bodu.Text.Encoding` | Yes | None. | Everything. |
 | `Bodu.Globalization.Recurrence` | Yes | None. | Everything. |
 | `Bodu.Numerics` | Yes | None. | Everything; a native-AOT smoke app in the repository publishes and runs it on every change to `Bodu.Numerics`, its JSON companion, or `Bodu.Core`. |
 | `Bodu.Numerics.Serialization.Json` | Yes | The five converter factories' constructors and `AddNumericsJsonConverters` (`[RequiresDynamicCode]`); `FractionJsonExtensions.ToJson` and `FromJson` (both attributes). | Register the closed converters (`FractionJsonConverter<T>`, `IntervalJsonConverter<T>`, `DiscreteIntervalJsonConverter<T>`, `IntervalSetJsonConverter<T>`, `ComplexJsonConverter<T>`, `BigDecimalJsonConverter`) and serialize through a source-generated `JsonSerializerContext`. The smoke app runs this route for every type. |

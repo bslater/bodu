@@ -152,6 +152,24 @@ public abstract class NotableDateCacheContractTests
     }
 
     /// <summary>
+    /// Verifies that a territory written with U+017F LATIN SMALL LETTER LONG S in place of its <c>S</c>, which
+    /// invariant uppercasing maps to <c>S</c>, is kept apart from the territory: storing the look-alike's empty year
+    /// leaves the territory's entry as it was.
+    /// </summary>
+    [TestMethod]
+    public void StoreYear_WhenLookAlikeOfTerritory_ShouldKeepDistinct()
+    {
+        INotableDateCache cache = CreateCache();
+        cache.StoreYear(NotableDateCacheTestFactory.Entry("SE", 2026, "v1", Now), Ttl, Now);
+        cache.StoreYear(NotableDateCacheTestFactory.EmptyEntry("ſE", 2026, "v1", Now), Ttl, Now);
+
+        NotableDateCacheEntry? entry = cache.GetYear("SE", 2026, "v1", Ttl, Now);
+
+        Assert.IsNotNull(entry);
+        Assert.AreEqual(1, entry.Occurrences.Count);
+    }
+
+    /// <summary>
     /// Verifies that a stored year's occurrences round-trip in the order they were supplied, which is the ordering
     /// contract the caching service relies on to assemble range results without re-sorting.
     /// </summary>

@@ -110,4 +110,50 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateResource resource = builder.Build();
         Assert.AreEqual("demo.lint", resource.ResourceId);
     }
+
+    /// <summary>
+    /// A document whose rule, at line 6, references an unknown algorithm key, for the tests that read a document's
+    /// XML into a builder.
+    /// </summary>
+    private const string PositionedUnknownAlgorithmXml = """
+        <?xml version="1.0" encoding="utf-8"?>
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="demo.lint.positions">
+          <NotableDates>
+            <NotableDate id="nd" displayName="ND" category="Observance">
+              <Rules>
+                <Rule id="r"><Strategy><Algorithm key="no-such-algorithm" /></Strategy></Rule>
+              </Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+    /// <summary>
+    /// Verifies that the diagnostics of a document read from XML and then linted carry no position, because the XML
+    /// they would point into is the builder's own serialization, not the text it was read from.
+    /// </summary>
+    [TestMethod]
+    public void Validate_WhenAParsedDocumentFailsValidation_ShouldCarryNoPosition()
+    {
+        IReadOnlyList<NotableDateValidationDiagnostic> diagnostics = NotableDateDocumentBuilder.FromXml(PositionedUnknownAlgorithmXml).Validate();
+
+        NotableDateValidationDiagnostic algorithm = diagnostics.Single(d => d.Code == "BODU-CAL-ALGORITHM");
+        Assert.AreEqual(((int?)null, (int?)null), (algorithm.LineNumber, algorithm.LinePosition));
+    }
+
+    /// <summary>
+    /// Verifies that the diagnostics that <c>TryBuild</c> collects for a builder-made document carry no position.
+    /// </summary>
+    [TestMethod]
+    public void TryBuild_WhenADocumentFailsValidation_ShouldCarryNoPosition()
+    {
+        NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("demo.lint.positions")
+            .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
+                .AddRule("r", x => x.Algorithm("no-such-algorithm")));
+
+        _ = builder.TryBuild(out _, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics);
+
+        NotableDateValidationDiagnostic algorithm = diagnostics.Single(d => d.Code == "BODU-CAL-ALGORITHM");
+        Assert.AreEqual(((int?)null, (int?)null), (algorithm.LineNumber, algorithm.LinePosition));
+    }
 }

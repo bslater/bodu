@@ -46,6 +46,12 @@ internal sealed class JsonDocumentNode
 
     /// <inheritdoc />
     /// <remarks>
+    /// A <see cref="JsonElement" /> records no position in its text, so a JSON node never has one.
+    /// </remarks>
+    public NotableDateSourcePosition? Position => null;
+
+    /// <inheritdoc />
+    /// <remarks>
     /// A property holding an object or an array, which no scalar field accepts, records a <c>BODU-CAL-VALUE</c> error
     /// naming the property and the kind of value it holds, and reads as absent; the JSON literal <c>null</c> reads as
     /// absent without a diagnostic.

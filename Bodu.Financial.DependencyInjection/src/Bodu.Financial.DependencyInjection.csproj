@@ -5,7 +5,7 @@
         <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
         <RootNamespace>Bodu</RootNamespace>
         <Title>Bodu - Financial DI</Title>
-        <Description>Microsoft.Extensions.DependencyInjection registration helpers for Bodu.Financial. Registers the currency lookup, named monetary contexts (keyed singletons), and timeless and dated exchange-rate providers through IFinancialServiceBuilder, binds the (currently empty) FinancialOptions from configuration, and can promote the container's currency lookup to the ambient CurrencyResolution default.</Description>
+        <Description>Microsoft.Extensions.DependencyInjection registration helpers for Bodu.Financial. Registers the currency lookup, named monetary contexts (keyed singletons), and timeless and dated exchange-rate providers through IFinancialServiceBuilder, binds FinancialOptions from configuration, serves the default and named monetary contexts it configures through IMonetaryContextResolver, rebuilt on every IOptionsMonitor change without a restart, and can promote the container's currency lookup to the ambient CurrencyResolution default.</Description>
         <PackageTags>$(PackageTags);financial;money;currency;dependency-injection;di;options</PackageTags>
     </PropertyGroup>
 
@@ -21,6 +21,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Options" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
     </ItemGroup>

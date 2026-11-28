@@ -109,6 +109,49 @@ The defaults merge repeated sections and keep the last duplicate key - the permi
 
 `Utf8IniReader` streams the file **as authored** (section headers, keys, values, comments, in source order). The normalized `IniDocumentReader` pre-parses the whole document - duplicate-section merge declares structure out of source order - and emits the logical object-of-objects token stream that the serializer and read-only DOM consume.
 
+## Reading in blocks
+
+`Utf8IniReader` also reads input that arrives in pieces: build it over each block with `isFinalBlock: false` and an <xref:Bodu.Text.Ini.Reader.IniReaderState>. `Read()` returns `false` at a line that the block cuts short, before it reports any of its tokens, and `BytesConsumed` stops before it. Carry the bytes from there into the next buffer, add the data that has arrived, and build the next reader from that buffer and the previous reader's `CurrentState`; the last block is read with `isFinalBlock: true`.
+
+<!-- compile -->
+```csharp
+using Bodu.Text.Ini;
+using Bodu.Text.Ini.Reader;
+
+static void PrintSectionsAndKeys(Stream stream)
+{
+    var state = new IniReaderState(IniReaderOptions.Default);
+    byte[] buffer = new byte[4096];
+    int carried = 0;
+    bool isFinalBlock = false;
+
+    while (!isFinalBlock)
+    {
+        if (carried == buffer.Length)
+            Array.Resize(ref buffer, buffer.Length * 2);   // a line longer than the buffer
+
+        int read = stream.Read(buffer, carried, buffer.Length - carried);
+        isFinalBlock = read == 0;
+        int length = carried + read;
+
+        var reader = new Utf8IniReader(buffer.AsSpan(0, length), isFinalBlock, state);
+        while (reader.Read())
+        {
+            if (reader.TokenType == IniTokenType.SectionHeader)
+                Console.WriteLine($"[{reader.GetString()}]");
+            else if (reader.TokenType == IniTokenType.PropertyName)
+                Console.WriteLine(reader.GetString());
+        }
+
+        state = reader.CurrentState;
+        carried = length - reader.BytesConsumed;
+        buffer.AsSpan(reader.BytesConsumed, carried).CopyTo(buffer);   // the unread bytes start the next block
+    }
+}
+```
+
+Over a block that is not the last, a section header, an entry or a comment counts as read once its line ending has arrived, so the buffer must grow to hold the longest line, and a carriage return that ends a block waits for the byte after it, which may be the line feed of a CRLF. The state carries the options, and `LineNumber` and the line and byte offset of an `IniFormatException` count from the start of the whole input, while `BytesConsumed` stays relative to the block. A byte-order mark is skipped only at the start of the input. A reader built without a state reads its bytes as the whole input, as before. `IniDocumentReader` has no block mode, since it parses the whole document in its constructor.
+
 ## Dialect
 
 `=` only (no `:`), keys and values trimmed of the spaces and tabs around them, values otherwise literal to end of line (quotes preserved, inline `;`/`#` kept as content), `;` and `#` full-line comments, BOM skipped, LF/CRLF/CR equivalent. See [Parser policies](../../docs/formats/parser-policies.md).

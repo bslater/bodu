@@ -38,7 +38,7 @@ The **cache unit** is one territory's occurrences for one whole civil (Gregorian
 
 | Key component | Normalization |
 |---|---|
-| Territory | Trimmed and upper-cased with the invariant culture, so `us`, `US `, and `US` address one entry. `AU-NSW` and `AU` are distinct - a subdivision query inherits its parent's rules inside the engine, not inside the cache. |
+| Territory | Trimmed, with its ASCII letters upper-cased, so `us`, `US `, and `US` address one entry, and the wrapped service resolves that one form for all three. `AU-NSW` and `AU` are distinct - a subdivision query inherits its parent's rules inside the engine, not inside the cache. A territory that holds a character outside ASCII, such as `ſE` with U+017F LATIN SMALL LETTER LONG S, names no ISO 3166 territory, so it is resolved on every call and never cached. |
 | Year | The civil year, `1`-`9999`. |
 | Resource version | An ordinal string token (see [below](#time-to-live-vs-resource-version)). |
 

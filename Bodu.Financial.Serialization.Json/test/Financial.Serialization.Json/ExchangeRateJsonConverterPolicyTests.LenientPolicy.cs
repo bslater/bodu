@@ -24,4 +24,19 @@ public partial class ExchangeRateJsonConverterPolicyTests
 
         Assert.AreEqual(SampleRate(), result);
     }
+
+    /// <summary>
+    /// Verifies that the lenient policy rejects a code written with U+017F LATIN SMALL LETTER LONG S, which invariant
+    /// uppercasing maps to <c>S</c> but which is not a lowercase ISO letter, with <see cref="JsonException" />.
+    /// </summary>
+    [TestMethod]
+    public void LenientPolicy_WhenCurrencyHasLongS_ShouldThrowJsonException()
+    {
+        string json = "{\"from\":\"uſd\",\"to\":\"jpy\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<ExchangeRate>(json, Options(FinancialJsonPolicy.Lenient));
+        });
+    }
 }

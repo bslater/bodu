@@ -53,9 +53,9 @@ naming an algorithm that does not exist, and a valid pack.
 
 ```text
   malformed input: loaded=False, resource=none
-    [Error] BODU-CAL-SYNTAX: The notable-date document XML is not well-formed: 'not' is an unexpected token. The expected token is '='. Line 1, position 26.
+    [Error] BODU-CAL-SYNTAX: The notable-date document XML is not well-formed: 'not' is an unexpected token. The expected token is '='. Line 1, position 26. (line 1, position 26)
   unknown algorithm key: loaded=False, resource=none
-    [Error] BODU-CAL-ALGORITHM: Notable date 'mystery-day', rule 'x': algorithm key 'no-such-algorithm' is not recognized.
+    [Error] BODU-CAL-ALGORITHM: Notable date 'mystery-day', rule 'x': algorithm key 'no-such-algorithm' is not recognized. (line 5, position 15)
   valid pack: loaded=True, resource=pack.valid
 ```
 
@@ -63,10 +63,13 @@ Nothing throws, including the input that is not XML - which matters because a fi
 is malformed for most of the time it is being edited, so a loader that throws on bad XML cannot
 drive a linter at all. Syntax errors carry codes in the same scheme as semantic ones, so a
 consumer renders one kind of thing rather than two, and the codes match those the throwing
-overloads carry inside `NotableDateValidationException`.
+overloads carry inside `NotableDateValidationException`. Each diagnostic also carries the line
+and position in the text it concerns, in `LineNumber` and `LinePosition`, which `ToString()`
+appends; the syntax error's message, quoted from the XML reader, names the same place.
 
 **APIs demonstrated.** `NotableDateResourceLoader.TryLoad`, `BODU-CAL-SYNTAX` /
-`BODU-CAL-ALGORITHM` diagnostic codes.
+`BODU-CAL-ALGORITHM` diagnostic codes, `NotableDateValidationDiagnostic.LineNumber` /
+`LinePosition`.
 
 ## Layout
 

@@ -36,4 +36,20 @@ public partial class DayOfWeekSetTests
             }
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider)" />
+    /// throws <see cref="FormatException" />, as for any other unsupported format, for the format U+017F LATIN SMALL
+    /// LETTER LONG S, which invariant uppercasing maps to the <c>S</c> format.
+    /// </summary>
+    [TestMethod]
+    public void TryFormat_WhenFormatIsLongS_ShouldThrowFormatException()
+    {
+        char[] chars = new char[64];
+
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = DayOfWeekSet.All.TryFormat(chars, out _, "ſ", null);
+        });
+    }
 }

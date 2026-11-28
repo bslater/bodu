@@ -517,7 +517,8 @@ internal sealed partial class YamlParser
 
     /// <summary>
     /// Determines whether a tag handle is one of the three valid forms: the primary (<c>!</c>), secondary (<c>!!</c>),
-    /// or a named handle (<c>!name!</c>).
+    /// or a named handle (<c>!name!</c>) whose name is made of the ASCII letters, digits and hyphens that YAML 1.2
+    /// calls <c>ns-word-char</c>.
     /// </summary>
     /// <param name="handle">The handle text.</param>
     /// <returns><see langword="true" /> when the handle is well-formed.</returns>
@@ -532,7 +533,7 @@ internal sealed partial class YamlParser
         for (int i = 1; i < handle.Length - 1; i++)
         {
             char c = handle[i];
-            if (!char.IsLetterOrDigit(c) && c != '-')
+            if (!char.IsAsciiLetterOrDigit(c) && c != '-')
                 return false;
         }
 

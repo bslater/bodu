@@ -167,6 +167,160 @@ public sealed class BufferWriterTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base45.Encode(ReadOnlySpan{byte}, IBufferWriter{char})" /> writes the same characters
+    /// as the string-returning Encode and advances the writer by the written count.
+    /// </summary>
+    [TestMethod]
+    public void Base45_Encode_IntoBufferWriter_ShouldMatchStringOutput()
+    {
+        ArrayBufferWriter<char> writer = new();
+
+        int written = Base45.Encode(Payload, writer);
+
+        Assert.AreEqual(Base45.GetEncodedLength(Payload.Length), written);
+        Assert.AreEqual(Base45.Encode(Payload), new string(writer.WrittenSpan));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base45.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte})" /> writes the same UTF-8
+    /// bytes as the byte-array EncodeToUtf8.
+    /// </summary>
+    [TestMethod]
+    public void Base45_EncodeToUtf8_IntoBufferWriter_ShouldMatchArrayOutput()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base45.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base45.EncodeToUtf8(Payload);
+
+        Assert.AreEqual(expected.Length, written);
+        CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that the Base45 buffer-writer overloads write nothing and do not advance the writer for an empty
+    /// source.
+    /// </summary>
+    [TestMethod]
+    public void Base45_Encode_IntoBufferWriterWithEmptyPayload_ShouldWriteNothing()
+    {
+        ArrayBufferWriter<char> chars = new();
+        ArrayBufferWriter<byte> bytes = new();
+
+        Assert.AreEqual(0, Base45.Encode([], chars));
+        Assert.AreEqual(0, Base45.EncodeToUtf8([], bytes));
+        Assert.AreEqual(0, chars.WrittenCount);
+        Assert.AreEqual(0, bytes.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base45.Encode(ReadOnlySpan{byte}, IBufferWriter{char})" /> with a
+    /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Base45_Encode_IntoNullBufferWriter_ShouldThrowExactly()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Base45.Encode(Payload, (IBufferWriter<char>)null!);
+        });
+
+        Assert.AreEqual("writer", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base45.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte})" /> with a
+    /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Base45_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowExactly()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Base45.EncodeToUtf8(Payload, (IBufferWriter<byte>)null!);
+        });
+
+        Assert.AreEqual("writer", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base62.Encode(ReadOnlySpan{byte}, IBufferWriter{char})" /> writes the same characters
+    /// as the string-returning Encode and advances the writer by the written count.
+    /// </summary>
+    [TestMethod]
+    public void Base62_Encode_IntoBufferWriter_ShouldMatchStringOutput()
+    {
+        ArrayBufferWriter<char> writer = new();
+
+        int written = Base62.Encode(Payload, writer);
+
+        Assert.AreEqual(Base62.Encode(Payload).Length, written);
+        Assert.AreEqual(Base62.Encode(Payload), new string(writer.WrittenSpan));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base62.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte})" /> writes the same UTF-8
+    /// bytes as the byte-array EncodeToUtf8.
+    /// </summary>
+    [TestMethod]
+    public void Base62_EncodeToUtf8_IntoBufferWriter_ShouldMatchArrayOutput()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base62.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base62.EncodeToUtf8(Payload);
+
+        Assert.AreEqual(expected.Length, written);
+        CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that the Base62 buffer-writer overloads write nothing and do not advance the writer for an empty
+    /// source.
+    /// </summary>
+    [TestMethod]
+    public void Base62_Encode_IntoBufferWriterWithEmptyPayload_ShouldWriteNothing()
+    {
+        ArrayBufferWriter<char> chars = new();
+        ArrayBufferWriter<byte> bytes = new();
+
+        Assert.AreEqual(0, Base62.Encode([], chars));
+        Assert.AreEqual(0, Base62.EncodeToUtf8([], bytes));
+        Assert.AreEqual(0, chars.WrittenCount);
+        Assert.AreEqual(0, bytes.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base62.Encode(ReadOnlySpan{byte}, IBufferWriter{char})" /> with a
+    /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Base62_Encode_IntoNullBufferWriter_ShouldThrowExactly()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Base62.Encode(Payload, (IBufferWriter<char>)null!);
+        });
+
+        Assert.AreEqual("writer", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base62.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte})" /> with a
+    /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Base62_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowExactly()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Base62.EncodeToUtf8(Payload, (IBufferWriter<byte>)null!);
+        });
+
+        Assert.AreEqual("writer", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.Encode(ReadOnlySpan{byte}, IBufferWriter{char}, Base64Variant, BaseFormattingOptions)" />
     /// writes the same characters as the string-returning Encode.
     /// </summary>

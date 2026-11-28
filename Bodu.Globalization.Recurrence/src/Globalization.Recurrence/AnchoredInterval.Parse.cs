@@ -200,7 +200,7 @@ public sealed partial class AnchoredInterval :
             }
         }
 
-        if (char.ToUpperInvariant(s[0]) != 'P')
+        if (AsciiCasing.ToUpper(s[0]) != 'P')
         {
             failureMessage = RecurrenceResourceStrings.Format_Invalid_DurationMissingPrefix;
             return false;
@@ -215,7 +215,7 @@ public sealed partial class AnchoredInterval :
 
         while (index < s.Length)
         {
-            if (char.ToUpperInvariant(s[index]) == 'T')
+            if (AsciiCasing.ToUpper(s[index]) == 'T')
             {
                 // The time designator may appear once, before any H/M/S component and after any W component is ruled out.
                 if (inTime || lastUnit > DurationUnit.Days)
@@ -252,7 +252,7 @@ public sealed partial class AnchoredInterval :
                 return false;
             }
 
-            char unitChar = char.ToUpperInvariant(s[index]);
+            char unitChar = AsciiCasing.ToUpper(s[index]);
             DurationUnit unit = unitChar switch
             {
                 'W' => DurationUnit.Weeks,

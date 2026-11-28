@@ -155,7 +155,7 @@ public sealed class Crockford32
     {
         if ((uint)(ch - '0') <= 9u) return ch - '0';
 
-        char u = char.ToUpperInvariant(ch);
+        char u = ToUpperAscii(ch);
         return u switch
         {
             'O' => 0,
@@ -192,7 +192,7 @@ public sealed class Crockford32
         int value = TryDecodeBody(ch);
         if (value >= 0) return value;
 
-        return char.ToUpperInvariant(ch) switch
+        return ToUpperAscii(ch) switch
         {
             '*' => 32,
             '~' => 33,
@@ -231,4 +231,16 @@ public sealed class Crockford32
 
         return value;
     }
+
+    /// <summary>
+    /// Returns an ASCII lower-case letter in upper case, and every other character unchanged.
+    /// </summary>
+    /// <param name="ch">The character to raise.</param>
+    /// <returns><paramref name="ch" />, with <c>'a'</c>-<c>'z'</c> raised to <c>'A'</c>-<c>'Z'</c>.</returns>
+    /// <remarks>
+    /// Invariant uppercasing would also map U+017F LATIN SMALL LETTER LONG S to <c>'S'</c>, admitting a character the
+    /// alphabet does not hold.
+    /// </remarks>
+    private static char ToUpperAscii(char ch) =>
+        char.IsAsciiLetterLower(ch) ? (char)(ch - ('a' - 'A')) : ch;
 }

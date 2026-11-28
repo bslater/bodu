@@ -517,6 +517,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The Bech32 data part does not convert to whole bytes..
+        /// </summary>
+        internal static string Format_Invalid_Bech32DataNotByteAligned {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32DataNotByteAligned", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The Bech32 human-readable part is empty..
         /// </summary>
         internal static string Format_Invalid_Bech32EmptyHrp {

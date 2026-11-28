@@ -164,6 +164,101 @@ public sealed class GuidEncodingTests
     }
 
     /// <summary>
+    /// Verifies the Base45 GUID round trip, and that the encoding is the Base45 text of the
+    /// <see cref="Guid.TryWriteBytes(Span{byte})" /> bytes.
+    /// </summary>
+    [TestMethod]
+    public void Base45_EncodeGuid_RoundTrip_ShouldRecoverOriginalGuid()
+    {
+        string encoded = Base45.Encode(TestGuid);
+        Guid decoded = Base45.DecodeGuid(encoded.AsSpan());
+
+        Assert.AreEqual(Base45.Encode(TestGuid.ToByteArray()), encoded);
+        Assert.AreEqual(TestGuid, decoded);
+    }
+
+    /// <summary>
+    /// Verifies that Base45 produces 24 characters for any GUID: eight three-character groups, one per byte pair.
+    /// </summary>
+    [TestMethod]
+    public void Base45_EncodeGuid_ShouldProduceTwentyFourCharacters()
+    {
+        Assert.AreEqual(24, Base45.Encode(TestGuid).Length);
+        Assert.AreEqual(24, Base45.Encode(Guid.Empty).Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base45.TryDecodeGuid" /> returns <see langword="false" /> and emits
+    /// <see cref="Guid.Empty" /> when the decoded payload is not exactly 16 bytes, or the text is not Base45.
+    /// </summary>
+    /// <param name="text">The text to decode.</param>
+    [TestMethod]
+    [DataRow("BB8")]
+    [DataRow("bb8")]
+    public void Base45_TryDecodeGuid_WhenNotASixteenByteEncoding_ShouldReturnFalseAndEmptyGuid(string text)
+    {
+        bool ok = Base45.TryDecodeGuid(text.AsSpan(), out Guid value);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(Guid.Empty, value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base45.DecodeGuid" /> throws <see cref="FormatException" /> when the decoded payload
+    /// is not exactly 16 bytes.
+    /// </summary>
+    [TestMethod]
+    public void Base45_DecodeGuid_WhenInputNotSixteenBytes_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base45.DecodeGuid("BB8".AsSpan());
+        });
+    }
+
+    /// <summary>
+    /// Verifies the Base62 GUID round trip, for a GUID whose bytes lead with zeros as well as for the test GUID.
+    /// </summary>
+    [TestMethod]
+    public void Base62_EncodeGuid_RoundTrip_ShouldRecoverOriginalGuid()
+    {
+        var leadingZeros = new Guid("00000000-0000-0000-0000-0000000000FF");
+
+        Assert.AreEqual(TestGuid, Base62.DecodeGuid(Base62.Encode(TestGuid).AsSpan()));
+        Assert.AreEqual(leadingZeros, Base62.DecodeGuid(Base62.Encode(leadingZeros).AsSpan()));
+        Assert.AreEqual(Guid.Empty, Base62.DecodeGuid(Base62.Encode(Guid.Empty).AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base62.TryDecodeGuid" /> returns <see langword="false" /> and emits
+    /// <see cref="Guid.Empty" /> when the decoded payload is not exactly 16 bytes, or the text is not Base62.
+    /// </summary>
+    /// <param name="text">The text to decode.</param>
+    [TestMethod]
+    [DataRow("z")]
+    [DataRow("A+B")]
+    public void Base62_TryDecodeGuid_WhenNotASixteenByteEncoding_ShouldReturnFalseAndEmptyGuid(string text)
+    {
+        bool ok = Base62.TryDecodeGuid(text.AsSpan(), out Guid value);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(Guid.Empty, value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base62.DecodeGuid" /> throws <see cref="FormatException" /> when the decoded payload
+    /// is not exactly 16 bytes.
+    /// </summary>
+    [TestMethod]
+    public void Base62_DecodeGuid_WhenInputNotSixteenBytes_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base62.DecodeGuid("z".AsSpan());
+        });
+    }
+
+    /// <summary>
     /// Verifies the Base64 GUID round trip.
     /// </summary>
     [TestMethod]

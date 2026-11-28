@@ -67,4 +67,24 @@
     <value>The monetary-context name must not be empty or white space.</value>
     <comment>ArgumentException thrown when a monetary-context name supplied to a builder method is empty or white space.</comment>
   </data>
+  <data name="IO_KeyNotFound_MonetaryContext" xml:space="preserve">
+    <value>No monetary context is configured or registered under the name '{0}'.</value>
+    <comment>KeyNotFoundException thrown by IMonetaryContextResolver.Get for an unknown name. {0} is the name.</comment>
+  </data>
+  <data name="Op_Invalid_DefaultMonetaryContextOptions" xml:space="preserve">
+    <value>The default monetary context in the financial options is not valid: {0}</value>
+    <comment>Validation failure reported in an OptionsValidationException. {0} is the message of the exception the context's settings raised.</comment>
+  </data>
+  <data name="Op_Invalid_MonetaryContextOptions" xml:space="preserve">
+    <value>The monetary context '{0}' in the financial options is not valid: {1}</value>
+    <comment>Validation failure reported in an OptionsValidationException. {0} is the context name; {1} is the message of the exception its settings raised.</comment>
+  </data>
+  <data name="Op_Invalid_MonetaryContextOptionsMissing" xml:space="preserve">
+    <value>The monetary context '{0}' in the financial options has no settings.</value>
+    <comment>Validation failure reported in an OptionsValidationException when a named context's settings are null. {0} is the context name.</comment>
+  </data>
+  <data name="Op_Invalid_MonetaryContextOptionsNameBlank" xml:space="preserve">
+    <value>A monetary context in the financial options has an empty or white-space name.</value>
+    <comment>Validation failure reported in an OptionsValidationException when a named context's name is empty or white space.</comment>
+  </data>
 </root>

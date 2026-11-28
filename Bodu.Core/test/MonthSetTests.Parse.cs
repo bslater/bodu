@@ -50,6 +50,7 @@ public sealed partial class MonthSetTests
     [DataRow(" JFM________D")]
     [DataRow("JFM________D ")]
     [DataRow("JFM_______D")]
+    [DataRow("JFMAMJJAſOND")]
     public void Parse_WhenTextIsNotALetterMaskOrAList_ShouldThrowFormatExceptionForAList(string text)
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>

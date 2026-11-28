@@ -211,6 +211,9 @@
   <data name="Format_Invalid_Bech32DataCharacter" xml:space="preserve">
     <value>Input contains a character outside the Bech32 data alphabet: '{0}'.</value>
   </data>
+  <data name="Format_Invalid_Bech32DataNotByteAligned" xml:space="preserve">
+    <value>The Bech32 data part does not convert to whole bytes.</value>
+  </data>
   <data name="Format_Invalid_Bech32EmptyHrp" xml:space="preserve">
     <value>The Bech32 human-readable part is empty.</value>
   </data>

@@ -180,11 +180,11 @@ public readonly partial struct MonthSet
             return false;
 
         // The letter mask: J on its own, a placeholder letter on its own, or J followed by a placeholder letter.
-        char first = char.ToUpperInvariant(format[0]);
+        char first = CalendarValueSet.ToUpperAscii(format[0]);
         char? placeholder = null;
         if (format.Length == 2)
         {
-            if (first != 'J' || !CalendarValueSet.TryParsePlaceholder(char.ToUpperInvariant(format[1]), out char named))
+            if (first != 'J' || !CalendarValueSet.TryParsePlaceholder(CalendarValueSet.ToUpperAscii(format[1]), out char named))
                 return false;
 
             placeholder = named;

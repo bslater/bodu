@@ -55,15 +55,15 @@ public static partial class Base62
     /// <param name="charCount">The input character count.</param>
     /// <returns>An upper bound on the decoded byte count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
+    /// <remarks>
+    /// No character decodes to more than one byte, and each leading <c>0</c> decodes to exactly one zero byte, so the
+    /// bound is <paramref name="charCount" /> itself: it is reached by input made only of zeros. Input without leading
+    /// zeros decodes to about 0.744 bytes per character.
+    /// </remarks>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
-        if (charCount == 0)
-            return 0;
-        checked
-        {
-            return ((charCount * 745) / 1000) + 1;
-        }
+        return charCount;
     }
 
     /// <summary>

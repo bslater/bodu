@@ -80,8 +80,8 @@ internal static class IcalValue
     {
         if (token.Length == 2)
         {
-            char a = char.ToUpperInvariant(token[0]);
-            char b = char.ToUpperInvariant(token[1]);
+            char a = AsciiCasing.ToUpper(token[0]);
+            char b = AsciiCasing.ToUpper(token[1]);
             switch ((a, b))
             {
                 case ('S', 'U'):

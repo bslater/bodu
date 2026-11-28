@@ -212,7 +212,7 @@ public sealed class MoneyJsonConverter
             throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_MissingCurrency);
 
         if (_policy == FinancialJsonPolicy.Lenient)
-            currency = currency.Trim().ToUpperInvariant();
+            currency = LenientIsoCode.Normalize(currency);
 
         // Pre-validate the ISO shape so a malformed code surfaces as JsonException rather than the
         // ArgumentException that the Money constructor would otherwise raise.

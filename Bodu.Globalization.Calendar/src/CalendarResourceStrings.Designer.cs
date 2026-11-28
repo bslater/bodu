@@ -142,6 +142,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to {0} (line {1}).
+        /// </summary>
+        internal static string Validation_DiagnosticAtLine {
+            get {
+                return ResourceManager.GetString("Validation_DiagnosticAtLine", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (line {1}, position {2}).
+        /// </summary>
+        internal static string Validation_DiagnosticAtLineAndPosition {
+            get {
+                return ResourceManager.GetString("Validation_DiagnosticAtLineAndPosition", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate adjustment-policy identifier '{0}'..
         /// </summary>
         internal static string Validation_DuplicateAdjustmentPolicyId {

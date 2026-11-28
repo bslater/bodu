@@ -24,4 +24,19 @@ public partial class MoneyJsonConverterPolicyTests
 
         Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), result);
     }
+
+    /// <summary>
+    /// Verifies that the lenient policy rejects a currency code written with U+017F LATIN SMALL LETTER LONG S, which
+    /// invariant uppercasing maps to <c>S</c> but which is not a lowercase ISO letter, with <see cref="JsonException" />.
+    /// </summary>
+    [TestMethod]
+    public void LenientPolicy_WhenCurrencyHasLongS_ShouldThrowJsonException()
+    {
+        string json = "{\"amount\":19.99,\"currency\":\"uſd\"}";
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<Money>(json, Options(FinancialJsonPolicy.Lenient));
+        });
+    }
 }

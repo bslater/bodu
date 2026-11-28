@@ -93,6 +93,23 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that a <c>%TAG</c> directive whose named handle holds a letter or digit outside US-ASCII is rejected
+    /// with <see cref="YamlFormatException" />: YAML 1.2 builds a named handle from <c>ns-word-char</c>, which is the
+    /// ASCII letters and digits and <c>-</c>.
+    /// </summary>
+    /// <param name="wordChar">The character outside US-ASCII that the handle holds.</param>
+    [TestMethod]
+    [DataRow("ä")]
+    [DataRow("١")]
+    public void Parse_WhenNamedTagHandleHasNonAsciiWordChar_ShouldThrow(string wordChar)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var _ = YamlDocument.Parse($"%TAG !{wordChar}! tag:example.com,2000:\n---\nv: 1\n");
+        });
+    }
+
+    /// <summary>
     /// Verifies that the core <c>!!str</c> tag forces a scalar to a string when no overriding handle is in effect.
     /// </summary>
     [TestMethod]

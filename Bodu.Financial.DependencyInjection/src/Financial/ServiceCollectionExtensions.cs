@@ -9,6 +9,7 @@ using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial;
@@ -23,8 +24,9 @@ public static class ServiceCollectionExtensions
     public const string DefaultConfigurationSection = "Financial";
 
     /// <summary>
-    /// Registers the core financial services - an <see cref="ICurrencyLookup" /> singleton and the bound
-    /// <see cref="FinancialOptions" /> - and returns a builder for further composition.
+    /// Registers the core financial services - an <see cref="ICurrencyLookup" /> singleton, the bound
+    /// <see cref="FinancialOptions" />, and the <see cref="IMonetaryContextResolver" /> singleton that serves the
+    /// monetary contexts they configure - and returns a builder for further composition.
     /// </summary>
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
@@ -45,6 +47,12 @@ public static class ServiceCollectionExtensions
     /// <c>JsonSerializerOptions</c> registration (<c>AddFinancialJson</c>) ships in the companion
     /// <c>Bodu.Financial.Serialization.Json</c> package.
     /// </para>
+    /// <para>
+    /// The <see cref="IMonetaryContextResolver" /> follows <see cref="FinancialOptions" /> through
+    /// <see cref="IOptionsMonitor{TOptions}" />, so a reload of the bound section changes the contexts it serves
+    /// without a restart; settings that fail validation on a reload are logged through the container's
+    /// <see cref="ILoggerFactory" />, when one is registered, and leave the previous contexts in effect.
+    /// </para>
     /// </remarks>
     public static IFinancialServiceBuilder AddFinancialService(
         this IServiceCollection services,
@@ -62,6 +70,10 @@ public static class ServiceCollectionExtensions
             optionsBuilder.Bind(configuration.GetSection(sectionName));
 
         services.TryAddSingleton<ICurrencyLookup, CurrencyLookupService>();
+        services.TryAddSingleton<IMonetaryContextResolver>(static provider => new MonetaryContextResolver(
+            provider.GetRequiredService<IOptionsMonitor<FinancialOptions>>(),
+            provider,
+            provider.GetService<ILoggerFactory>()?.CreateLogger<MonetaryContextResolver>()));
 
         return new FinancialServiceBuilder(services);
     }

@@ -6,6 +6,7 @@
 
 using Bodu.Test.Corpus;
 using Bodu.Test.Kat;
+using Bodu.Text.DotEnv.Reader;
 
 namespace Bodu.Text.DotEnv;
 
@@ -40,5 +41,26 @@ public sealed partial class DotEnvReleaseNoteCorpusTests
 
         if (fix.Expected.Length > 0)
             Assert.AreEqual(Canonicalize(fix.Expected), CorpusEscapes.Encode(written), fix.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that each cataloged input a fix established as one to write back, read by <c>Utf8DotEnvReader</c> in
+    /// blocks split every way and with a new reader after every token, reports exactly what a single read reports.
+    /// </summary>
+    /// <param name="fix">The catalog row.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(RoundTripRows),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void RoundTrip_WhenFixScenarioIsReadInBlocks_ShouldMatchTheSinglePassTranscript(ReleaseNoteFix fix)
+    {
+        ArgumentNullException.ThrowIfNull(fix);
+
+        DotEnvReaderOptions options = RowOptions.Parse(fix.Options).ToReaderOptions();
+        byte[] input = CorpusEscapes.Decode(fix.Input);
+
+        DotEnvReaderTranscript.AssertEverySplitMatches(input, options, fix.ToString());
     }
 }

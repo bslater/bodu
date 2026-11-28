@@ -36,6 +36,101 @@ public sealed partial class CachingNotableDateServiceTests
     """;
 
     /// <summary>
+    /// A fixture whose one holiday, Epiphany on 6 January, applies only to the territory <c>SE</c>, so the wrapped
+    /// service resolves it for <c>SE</c> and <c>se</c> and resolves nothing for any other territory text.
+    /// </summary>
+    private const string SwedishEpiphanyXml = """
+    <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.se-epiphany">
+      <NotableDates>
+        <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
+          <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
+            <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+        </NotableDate>
+      </NotableDates>
+    </NotableDateResource>
+    """;
+
+    /// <summary>
+    /// Verifies that resolving a look-alike of a territory first, the territory with white space around it or written
+    /// with U+017F LATIN SMALL LETTER LONG S, which invariant uppercasing maps to <c>S</c>, leaves the territory to be
+    /// served its own year rather than an entry the look-alike's resolution filed under it.
+    /// </summary>
+    /// <param name="lookAlike">The look-alike territory resolved first.</param>
+    [TestMethod]
+    [DataRow(" SE")]
+    [DataRow("SE ")]
+    [DataRow("ſE")]
+    public void Resolve_WhenLookAlikeResolvedFirst_ShouldServeTheTerritoryItsOwnYear(string lookAlike)
+    {
+        var year = new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+        var inner = new NotableDateService(NotableDateResourceLoader.Load(SwedishEpiphanyXml));
+        using var service = new CachingNotableDateService(
+            inner,
+            new InMemoryNotableDateCache(),
+            new NotableDateCachingOptions { Ttl = TimeSpan.FromDays(30), ResourceVersion = "fixed" },
+            timeProvider: new MutableTimeProvider(Now));
+
+        _ = service.Resolve(year, lookAlike);
+
+        CollectionAssert.AreEqual(Describe(inner.Resolve(year, "SE")), Describe(service.Resolve(year, "SE")));
+    }
+
+    /// <summary>
+    /// Verifies that, once a territory's year is cached, the territory written with U+017F LATIN SMALL LETTER LONG S
+    /// is resolved as the wrapped service resolves it rather than served the territory's cached year.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenTerritoryCachedFirst_ShouldNotServeItsYearToALookAlike()
+    {
+        var year = new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+        var inner = new NotableDateService(NotableDateResourceLoader.Load(SwedishEpiphanyXml));
+        using var service = new CachingNotableDateService(
+            inner,
+            new InMemoryNotableDateCache(),
+            new NotableDateCachingOptions { Ttl = TimeSpan.FromDays(30), ResourceVersion = "fixed" },
+            timeProvider: new MutableTimeProvider(Now));
+
+        _ = service.Resolve(year, "SE");
+
+        CollectionAssert.AreEqual(Describe(inner.Resolve(year, "ſE")), Describe(service.Resolve(year, "ſE")));
+    }
+
+    /// <summary>
+    /// Verifies that a territory with white space around it, which addresses the territory's own cache entry, resolves
+    /// the territory's dates on a cold cache rather than the nothing the wrapped service gives the untrimmed text.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenTerritoryHasSurroundingWhiteSpace_ShouldResolveTheTerritory()
+    {
+        var year = new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+        var inner = new NotableDateService(NotableDateResourceLoader.Load(SwedishEpiphanyXml));
+        using var service = new CachingNotableDateService(
+            inner,
+            new InMemoryNotableDateCache(),
+            new NotableDateCachingOptions { Ttl = TimeSpan.FromDays(30), ResourceVersion = "fixed" },
+            timeProvider: new MutableTimeProvider(Now));
+
+        CollectionAssert.AreEqual(Describe(inner.Resolve(year, "SE")), Describe(service.Resolve(year, " SE ")));
+    }
+
+    /// <summary>
+    /// Verifies that a territory holding a character outside ASCII, which names no ISO 3166 territory, is resolved by
+    /// the wrapped service on every call and never cached, so no backend can file its result under another
+    /// territory's entry.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenTerritoryIsNotAscii_ShouldResolveThroughTheWrappedServiceEveryTime()
+    {
+        var time = new MutableTimeProvider(Now);
+        CachingNotableDateService service = BuildService(time, TimeSpan.FromDays(30), out CountingNotableDateService inner, out _);
+
+        _ = service.Resolve(new DateOnly(2026, 1, 1), "ſE");
+        _ = service.Resolve(new DateOnly(2026, 1, 1), "ſE");
+
+        Assert.AreEqual(2, inner.ResolveCount);
+    }
+
+    /// <summary>
     /// Verifies that a window cutting a multi-day occurrence - one that starts before the window, including one that
     /// starts in the previous civil year - resolves exactly as the wrapped service resolves it, through both the
     /// per-year and the batch read paths.

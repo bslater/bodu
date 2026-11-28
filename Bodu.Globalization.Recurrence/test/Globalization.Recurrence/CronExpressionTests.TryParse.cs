@@ -22,6 +22,10 @@ public partial class CronExpressionTests
                 new("wrong field count", "0 9 * *", typeof(FormatException), MessageContains: "number of fields"),
                 new("invalid field value", "0 25 * * *", typeof(FormatException), MessageContains: "'25'"),
                 new("invalid name token", "0 9 * XXX *", typeof(FormatException), MessageContains: "'XXX'"),
+
+                // Invariant uppercasing maps U+017F LATIN SMALL LETTER LONG S to an ASCII S; the names are ASCII.
+                new("day name with a long s", "0 9 * * ſUN", typeof(FormatException), MessageContains: "'ſUN'"),
+                new("month name with a long s", "0 9 1 ſEP *", typeof(FormatException), MessageContains: "'ſEP'"),
                 new("unknown macro", "@fortnightly", typeof(FormatException), MessageContains: "@fortnightly"),
                 new("quartz token in the hour field", "0 L * * *", typeof(FormatException), MessageContains: "'L'"),
                 new("last day offset past thirty", "0 9 L-31 * *", typeof(FormatException), MessageContains: "'L-31'"),

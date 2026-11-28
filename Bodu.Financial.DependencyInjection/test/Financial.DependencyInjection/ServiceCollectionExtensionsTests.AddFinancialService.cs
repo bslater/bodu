@@ -41,6 +41,34 @@ public sealed partial class ServiceCollectionExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <c>AddFinancialService</c> registers an <see cref="IMonetaryContextResolver" /> resolvable as a
+    /// singleton.
+    /// </summary>
+    [TestMethod]
+    public void AddFinancialService_WhenCalled_ShouldRegisterMonetaryContextResolverSingleton()
+    {
+        ServiceProvider provider = new ServiceCollection().AddFinancialService().Services.BuildServiceProvider();
+
+        IMonetaryContextResolver first = provider.GetRequiredService<IMonetaryContextResolver>();
+        IMonetaryContextResolver second = provider.GetRequiredService<IMonetaryContextResolver>();
+
+        Assert.AreSame(first, second);
+    }
+
+    /// <summary>
+    /// Verifies that repeated registration leaves a single <see cref="IMonetaryContextResolver" /> registration.
+    /// </summary>
+    [TestMethod]
+    public void AddFinancialService_WhenCalledTwice_ShouldRegisterResolverOnce()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddFinancialService();
+        services.AddFinancialService();
+
+        Assert.ContainsSingle(d => d.ServiceType == typeof(IMonetaryContextResolver), services);
+    }
+
+    /// <summary>
     /// Verifies that the builder-callback overload throws when the callback is <see langword="null" />.
     /// </summary>
     [TestMethod]

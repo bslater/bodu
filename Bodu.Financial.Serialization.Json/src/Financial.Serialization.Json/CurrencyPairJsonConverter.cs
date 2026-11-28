@@ -164,8 +164,8 @@ public sealed class CurrencyPairJsonConverter
 
         if (_policy == FinancialJsonPolicy.Lenient)
         {
-            from = from.Trim().ToUpperInvariant();
-            to = to.Trim().ToUpperInvariant();
+            from = LenientIsoCode.Normalize(from);
+            to = LenientIsoCode.Normalize(to);
         }
 
         try

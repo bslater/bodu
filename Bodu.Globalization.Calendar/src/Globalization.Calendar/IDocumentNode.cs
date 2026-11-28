@@ -20,6 +20,15 @@ namespace Bodu.Globalization.Calendar;
 internal interface IDocumentNode
 {
     /// <summary>
+    /// Gets the position of the node in the document text, when the document was read with line information.
+    /// </summary>
+    /// <value>
+    /// The position of an XML element read with line information; <see langword="null" /> for a JSON node or an XML
+    /// element read without it.
+    /// </value>
+    NotableDateSourcePosition? Position { get; }
+
+    /// <summary>
     /// Reads a scalar field as a string: an XML attribute, or a JSON property coerced to its string form (a number to
     /// its invariant digits, a boolean to <c>true</c>/<c>false</c>, a string verbatim).
     /// </summary>

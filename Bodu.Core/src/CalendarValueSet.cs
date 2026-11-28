@@ -253,7 +253,7 @@ internal static partial class CalendarValueSet
         if (format.Length != 1)
             return false;
 
-        switch (char.ToUpperInvariant(format[0]))
+        switch (ToUpperAscii(format[0]))
         {
             case 'G':
                 form = NumericForm.List;
@@ -372,6 +372,18 @@ internal static partial class CalendarValueSet
 
         return placeholder != '\0';
     }
+
+    /// <summary>
+    /// Returns an ASCII lower-case letter in upper case, and every other character unchanged.
+    /// </summary>
+    /// <param name="value">The character to raise.</param>
+    /// <returns><paramref name="value" />, with <c>a</c>-<c>z</c> raised to <c>A</c>-<c>Z</c>.</returns>
+    /// <remarks>
+    /// Every text form of the sets is ASCII. Invariant uppercasing would also map U+017F LATIN SMALL LETTER LONG S to
+    /// <c>S</c>, admitting a character that no form holds.
+    /// </remarks>
+    internal static char ToUpperAscii(char value) =>
+        char.IsAsciiLetterLower(value) ? (char)(value - ('a' - 'A')) : value;
 
     /// <summary>
     /// Creates the exception that describes why a text is not a set.
@@ -564,7 +576,7 @@ internal static partial class CalendarValueSet
                 placeholder = c;
 
             // Without a first value from the caller, the first letter that fits only one of the two orders decides it.
-            char letter = char.ToUpperInvariant(c);
+            char letter = ToUpperAscii(c);
             if (first is null)
             {
                 if (letter == letters[i])

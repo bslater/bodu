@@ -91,7 +91,7 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 
 <div class="bodu-card">
   <h3><a href="validation-diagnostics.md">Calendar validation diagnostics</a></h3>
-  <p>The stable <code>BODU-CAL-*</code> code catalogue and severities, and the collect-mode lint surface - <code>TryLoad</code>, <code>Validate</code>, <code>TryBuild</code> - for build tasks and editor integrations.</p>
+  <p>The stable <code>BODU-CAL-*</code> code catalogue and severities, the line and position in the document each diagnostic points at, and the collect-mode lint surface - <code>TryLoad</code>, <code>Validate</code>, <code>TryBuild</code> - for build tasks and editor integrations.</p>
 </div>
 
 <div class="bodu-card">

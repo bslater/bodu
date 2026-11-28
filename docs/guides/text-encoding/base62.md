@@ -75,7 +75,31 @@ ReadOnlySpan<char> result = buffer.AsSpan(0, written);
 
 Exact length is data-dependent (it varies with the leading-zero count and the magnitude of the non-zero portion), so
 the library exposes `GetMaxEncodedLength` / `GetMaxDecodedLength` as upper bounds. Base62 uses big-integer arithmetic
-and is therefore **not streamable** - there is no `OperationStatus` path; each call needs the entire input.
+and is therefore **not streamable**: each call needs the entire input.
+
+## UTF-8, buffer writers, and GUIDs
+
+Base62 text is ASCII, so the UTF-8 overloads read and write it as one byte per character, for network and file
+pipelines that work in bytes. `DecodeFromUtf8` follows the `OperationStatus` convention, but because Base62 is not
+streamable it decodes the whole span as one input and never returns `NeedMoreData`. The buffer-writer overloads
+encode straight into an `IBufferWriter<char>` or `IBufferWriter<byte>`, and a `Guid` encodes from the bytes
+`Guid.TryWriteBytes` writes.
+
+<!-- compile -->
+```csharp
+byte[] payload = { 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x21, 0x21 };   // "Hello!!"
+
+byte[] utf8 = Base62.EncodeToUtf8(payload);                      // the ASCII bytes of Base62.Encode(payload)
+
+byte[] decoded = new byte[Base62.GetMaxDecodedLength(utf8.Length)];
+System.Buffers.OperationStatus status = Base62.DecodeFromUtf8(utf8, decoded, out int consumed, out int written);
+
+var writer = new System.Buffers.ArrayBufferWriter<byte>();
+_ = Base62.EncodeToUtf8(payload, writer);                        // into a pipeline's buffer writer
+
+string id = Base62.Encode(Guid.NewGuid());                       // about 22 characters
+Guid back = Base62.DecodeGuid(id);
+```
 
 ## Validation
 

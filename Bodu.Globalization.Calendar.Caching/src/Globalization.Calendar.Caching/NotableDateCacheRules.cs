@@ -187,18 +187,32 @@ internal static class NotableDateCacheRules
     }
 
     /// <summary>
-    /// Normalizes a territory code to its canonical cache-key form: trimmed and upper-cased with the invariant culture,
-    /// matching the case-insensitive territory matching the notable-date engine applies.
+    /// Normalizes a territory code to its canonical cache-key form: trimmed, with its ASCII letters upper-cased and
+    /// every other character unchanged.
     /// </summary>
     /// <param name="territory">The territory code to normalize.</param>
     /// <returns>The normalized territory code.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// Only the ASCII letters change case. Invariant uppercasing would also map U+017F LATIN SMALL LETTER LONG S to
+    /// <c>S</c>, so a look-alike of a territory would share the territory's entry;
+    /// <see cref="CachingNotableDateService" /> resolves each year for this same form, so the entry under a key always
+    /// holds that key's answer.
+    /// </remarks>
     public static string NormalizeTerritory(string territory)
     {
         ThrowHelper.ThrowIfNull(territory);
 
-        return territory.Trim().ToUpperInvariant();
+        string trimmed = territory.Trim();
+        return string.Create(trimmed.Length, trimmed, static (destination, source) =>
+        {
+            for (int i = 0; i < source.Length; i++)
+            {
+                char c = source[i];
+                destination[i] = char.IsAsciiLetterLower(c) ? (char)(c - ('a' - 'A')) : c;
+            }
+        });
     }
 }

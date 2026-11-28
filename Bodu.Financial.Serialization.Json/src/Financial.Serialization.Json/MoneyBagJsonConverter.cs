@@ -201,7 +201,7 @@ public sealed class MoneyBagJsonConverter
             }
 
             if (_policy == FinancialJsonPolicy.Lenient)
-                iso = iso.Trim().ToUpperInvariant();
+                iso = LenientIsoCode.Normalize(iso);
 
             if (!CurrencyInfo.TryGetCurrencyCode(iso, out CurrencyCode code))
             {

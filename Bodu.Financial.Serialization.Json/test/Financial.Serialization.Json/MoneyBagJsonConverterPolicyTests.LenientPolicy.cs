@@ -29,6 +29,21 @@ public partial class MoneyBagJsonConverterPolicyTests
     }
 
     /// <summary>
+    /// Verifies that the lenient policy rejects an ISO code key written with U+017F LATIN SMALL LETTER LONG S, which
+    /// invariant uppercasing maps to <c>S</c> but which is not a lowercase ISO letter, with <see cref="JsonException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenLenientPolicyAndIsoCodeHasLongS_ShouldThrowJsonException()
+    {
+        string json = "{\"balances\":{\"uſd\":1.5}}";
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<MoneyBag>(json, Options(FinancialJsonPolicy.Lenient));
+        });
+    }
+
+    /// <summary>
     /// Verifies that the lenient policy, which shares the strict shape, rejects a balances map that repeats an ISO
     /// code with <see cref="JsonException" />.
     /// </summary>

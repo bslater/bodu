@@ -176,8 +176,8 @@ public sealed class ExchangeRateJsonConverter
 
         if (_policy == FinancialJsonPolicy.Lenient)
         {
-            from = from.Trim().ToUpperInvariant();
-            to = to.Trim().ToUpperInvariant();
+            from = LenientIsoCode.Normalize(from);
+            to = LenientIsoCode.Normalize(to);
             provider = provider.Trim();
         }
 

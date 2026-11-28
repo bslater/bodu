@@ -165,7 +165,7 @@ The companion **`Bodu.Financial.DependencyInjection`** package - a separate, Sta
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Bodu.Financial` namespace. Both overloads register the default <xref:Bodu.Financial.Currencies.ICurrencyLookup> and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, and timeless and dated exchange-rate providers. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> from a configuration section (default `"Financial"`). Financial JSON registration (`services.AddFinancialJson(policy)`) ships in the companion `Bodu.Financial.Serialization.Json` package.
+The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Bodu.Financial` namespace. Both overloads register the default <xref:Bodu.Financial.Currencies.ICurrencyLookup> and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, and timeless and dated exchange-rate providers. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> from a configuration section (default `"Financial"`): a default monetary context and named ones, which the registered <xref:Bodu.Financial.IMonetaryContextResolver> serves and rebuilds whenever the configuration reloads, without a restart. Financial JSON registration (`services.AddFinancialJson(policy)`) ships in the companion `Bodu.Financial.Serialization.Json` package.
 
 ```csharp
 using Bodu.Financial;
@@ -179,7 +179,7 @@ builder.Services.AddFinancialService(configure: financial =>
 });
 ```
 
-The package references `Bodu.Financial` and `Bodu.Core` plus the `Microsoft.Extensions` abstractions it binds against (`DependencyInjection.Abstractions`, `Options`, `Options.ConfigurationExtensions`, `Configuration.Abstractions`, `Configuration.Binder`); applications that construct the financial types by hand (consoles, libraries, tests) do not need to reference it. See [Financial dependency injection](../../guides/financial/dependency-injection.md) for the full builder surface, options binding, and the post-build `UseCurrencyResolution` activation step.
+The package references `Bodu.Financial` and `Bodu.Core` plus the `Microsoft.Extensions` abstractions it binds against (`DependencyInjection.Abstractions`, `Logging.Abstractions`, `Options`, `Options.ConfigurationExtensions`, `Configuration.Abstractions`, `Configuration.Binder`); applications that construct the financial types by hand (consoles, libraries, tests) do not need to reference it. See [Financial dependency injection](../../guides/financial/dependency-injection.md) for the full builder surface, options binding, and the post-build `UseCurrencyResolution` activation step.
 
 ## Where to go next
 

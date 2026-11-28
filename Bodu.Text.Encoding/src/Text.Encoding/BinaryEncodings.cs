@@ -156,7 +156,11 @@ public static class BinaryEncodings
     {
         ThrowHelper.ThrowIfNull(name);
 
-        return name.ToLowerInvariant() switch
+        // Lower the name only when it is ASCII: invariant lowercasing also maps U+212A KELVIN SIGN to 'k', which would
+        // let a name outside ASCII resolve. Such a name matches no arm and is reported as unknown.
+        string key = System.Text.Ascii.IsValid(name) ? name.ToLowerInvariant() : name;
+
+        return key switch
         {
             "base16" or "base16-lower" or "hex" => Base16Lower,
             "base16-upper" or "hex-upper" => Base16Upper,

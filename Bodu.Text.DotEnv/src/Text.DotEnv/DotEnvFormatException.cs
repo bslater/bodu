@@ -69,6 +69,25 @@ public sealed class DotEnvFormatException
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="DotEnvFormatException" /> class and records the source location at
+    /// which the parse error was detected, in an input that may be longer than <see cref="int.MaxValue" /> bytes.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="line">The 1-based line number at which the error occurred.</param>
+    /// <param name="column">The 1-based column within the line, counted in bytes, at which the error occurred.</param>
+    /// <param name="offset">
+    /// The zero-based byte offset from the start of the input; <see cref="Offset" /> is left <see langword="null" />
+    /// when it is greater than <see cref="int.MaxValue" />.
+    /// </param>
+    internal DotEnvFormatException(string message, int line, int column, long offset)
+        : base(message)
+    {
+        LineNumber = line;
+        ColumnNumber = column;
+        Offset = offset <= int.MaxValue ? (int)offset : null;
+    }
+
+    /// <summary>
     /// Gets the 1-based line number at which the parse error was detected, when available.
     /// </summary>
     /// <value>The line number, or <see langword="null" /> when no line is associated with the error.</value>
@@ -93,7 +112,10 @@ public sealed class DotEnvFormatException
     /// Gets the zero-based byte offset from the start of the UTF-8 source at which the parse error was detected, when
     /// available.
     /// </summary>
-    /// <value>The byte offset, or <see langword="null" /> when no position is associated with the error.</value>
+    /// <value>
+    /// The byte offset, or <see langword="null" /> when no position is associated with the error or the offset is
+    /// greater than <see cref="int.MaxValue" />, as it can be in a long stream read in blocks.
+    /// </value>
     /// <remarks>
     /// The offset and <see cref="ColumnNumber" /> count UTF-8 bytes of the source document, not decoded characters; for
     /// ASCII-only documents the two coincide.

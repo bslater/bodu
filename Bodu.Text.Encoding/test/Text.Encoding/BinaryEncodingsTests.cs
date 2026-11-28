@@ -62,6 +62,20 @@ public sealed class BinaryEncodingsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="BinaryEncodings.Get(string)" /> rejects <c>base32-crockford</c> written with U+212A
+    /// KELVIN SIGN in place of its <c>k</c>, which invariant lowercasing maps to <c>k</c>, with
+    /// <see cref="ArgumentException" />, as for any other unknown name.
+    /// </summary>
+    [TestMethod]
+    public void Get_WhenNameHasKelvinSign_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = BinaryEncodings.Get("base32-crocKford");
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="IBinaryEncoding.IsValid" /> returns <see langword="true" /> for encoded output of
     /// the same encoding and <see langword="false" /> for invalid input.
     /// </summary>

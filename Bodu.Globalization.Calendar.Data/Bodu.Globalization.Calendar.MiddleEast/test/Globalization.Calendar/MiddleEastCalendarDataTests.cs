@@ -25,6 +25,24 @@ public sealed class MiddleEastCalendarDataTests
         MiddleEastCalendarData.CreateService(territory);
 
     /// <summary>
+    /// Verifies that <see cref="MiddleEastCalendarData.LoadResource(string)" /> throws <see cref="ArgumentException" />
+    /// naming <c>territory</c> for a country code written with U+017F LATIN SMALL LETTER LONG S or U+212A KELVIN SIGN,
+    /// which invariant casing maps to an ASCII letter, as for any other country the pack does not provide.
+    /// </summary>
+    /// <param name="territory">The look-alike country code.</param>
+    [TestMethod]
+    [DataRow("\u017FA")]
+    public void LoadResource_WhenCountryCodeHasALookAlikeLetter_ShouldThrowArgumentException(string territory)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = MiddleEastCalendarData.LoadResource(territory);
+        });
+
+        Assert.AreEqual("territory", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that each fixed or nth-weekday Middle East holiday resolves to its known emitted date.
     /// </summary>
     /// <param name="territory">The requested territory code.</param>

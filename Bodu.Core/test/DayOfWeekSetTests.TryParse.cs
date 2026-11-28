@@ -66,6 +66,20 @@ public partial class DayOfWeekSetTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.TryParse" /> returns <see langword="false" /> and sets the result to
+    /// <see cref="DayOfWeekSet.Empty" /> for a mask that writes its <c>S</c> letters as U+017F LATIN SMALL LETTER LONG
+    /// S.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenMaskHasLongS_ShouldReturnFalseAndSetEmpty()
+    {
+        bool success = DayOfWeekSet.TryParse("ſMTWTFſ", out DayOfWeekSet result);
+
+        Assert.IsFalse(success);
+        Assert.AreEqual(DayOfWeekSet.Empty, result);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.TryParse" /> returns <see langword="false" /> and sets the
     /// result to <see cref="DayOfWeekSet.Empty" /> when the input has an invalid length.
     /// </summary>
